@@ -1,0 +1,40 @@
+/* Fix sidebar and dashboard positioning for RTL layout */
+
+/* Adjust sidebar position */
+#sidebar, #mobile-sidebar {
+    width: 160px !important;
+    z-index: 40 !important;
+}
+
+/* Target the specific dashboard container */
+main.container.mx-auto.px-4.py-6 {
+    margin-right: 160px !important;
+    width: calc(100% - 160px) !important;
+    max-width: none !important;
+    padding-right: 1rem !important;
+    padding-left: 1rem !important;
+}
+
+/* Reset min-h-screen margin */
+.min-h-screen.bg-gradient-to-b {
+    margin-right: 0 !important;
+    width: 100% !important;
+}
+
+/* Mobile adjustments */
+@media (max-width: 1023px) {
+    main.container.mx-auto.px-4.py-6 {
+        margin-right: 0 !important;
+        width: 100% !important;
+    }
+}
+
+/* Fix for main content area */
+.main-content {
+    padding-right: 0 !important;
+}
+
+/* Ensure proper spacing between elements */
+.space-y-6 {
+    margin-top: 0 !important;
+}

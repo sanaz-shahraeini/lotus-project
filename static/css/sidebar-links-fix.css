@@ -1,0 +1,82 @@
+/* Sidebar Links with Icons Fix */
+
+/* Ensure proper alignment of icons and text in sidebar links */
+#sidebar a, #mobile-sidebar a,
+#sidebar button, #mobile-sidebar button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 0.75rem 1rem !important;
+    text-align: right !important;
+    width: 100% !important;
+}
+
+/* Fix icon alignment */
+#sidebar i, #mobile-sidebar i {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 1.5rem !important;
+    margin-left: 0.75rem !important;
+    font-size: 1.1rem !important;
+}
+
+/* Ensure text is visible and properly aligned */
+#sidebar .sidebar-text, #mobile-sidebar .sidebar-text {
+    display: inline-block !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 0.85rem !important;
+}
+
+/* Fix dropdown menu positioning */
+#dropdownmenu, #dropdownmenu-mb {
+    right: 0 !important;
+    width: 100% !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Fix dropdown menu items */
+#dropdownmenu li a, #dropdownmenu-mb li a {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 0.5rem 1rem !important;
+    text-align: right !important;
+}
+
+/* Adjust sidebar width for better text display */
+@media (min-width: 1024px) {
+    #sidebar {
+        width: 160px !important;
+    }
+    
+    /* Adjust main content to accommodate wider sidebar */
+    .lg\:pr-\[135px\] {
+        padding-right: 160px !important;
+    }
+}
+
+/* Fix main content positioning to prevent sidebar overlap */
+.main-content {
+    padding-right: 160px !important;
+    transition: padding-right 0.3s ease !important;
+}
+
+@media (max-width: 1023px) {
+    .main-content {
+        padding-right: 0 !important;
+    }
+}
+
+/* Fix mobile sidebar width */
+#mobile-sidebar {
+    width: 160px !important;
+}
+
+/* Fix toggle button position when sidebar is open */
+#toggle-menu.right-32 {
+    right: 170px !important;
+}
