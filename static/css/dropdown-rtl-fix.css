@@ -1,0 +1,45 @@
+/* RTL Dropdown Menu Fixes */
+
+/* Fix dropdown positioning */
+.rtl .relative {
+    position: relative;
+}
+
+/* Fix dropdown menu alignment */
+.rtl .absolute {
+    right: auto !important;
+    left: 0 !important;
+}
+
+/* Fix search dropdown */
+.rtl #callTypeBodyDropDown,
+.rtl #dropdownInternal,
+.rtl #dropdownUrban {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+/* Fix the dropdown items */
+.rtl .dropdown-menu li,
+.rtl #callTypeBodyDropDown li,
+.rtl #dropdownInternal li,
+.rtl #dropdownUrban li {
+    text-align: right !important;
+}
+
+/* Fix dropdown checkbox layout */
+.rtl input[type="checkbox"] {
+    margin-right: 0 !important;
+    margin-left: 0.5rem !important;
+}
+
+/* Fix label placement in dropdowns */
+.rtl label {
+    text-align: right !important;
+}
+
+/* Fix for chevron icon */
+.rtl .fa-chevron-down {
+    margin-right: 0.5rem !important;
+    margin-left: 0 !important;
+} 

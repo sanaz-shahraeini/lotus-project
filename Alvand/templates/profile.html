@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static profileTags %}
+{% block main %}
+    <div class="w-full h-full  my-0 float-left 2xl:pr-20 xl:pr-20 lg:pr-20 md:pr-20">
+        <div class=" w-11/12 mt-9 mr-40 mx-auto rtl">
+            <div class="items-center flex flex-wrap filter-bar w-full h-auto p-[10px] text-right float-right text-sm 2xl:w-1/2 xl:w-1/2 lg:w-1/2 md:w-full sm:w-full">
+
+                <div class="w-full 2xl:w-2/5 xl:w-2/5 lg:w-2/5 md:w-2/5 sm:w-2/5 h-[288px] my-0 mx-[20px] float-right  flex flex-col gap-1 rtl">
+                    <label>نام کاربری: </label>
+                    <input type="text" class="w-4/5 h-5 text-gray-500 text-xs" value="{{ user.username|capfirst }}" disabled
+                           readonly>
+                    <label> نام:</label>
+                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs" value="{{ user.name|capfirst }}" disabled
+                           readonly>
+                    <label>نام خانوادگی: </label>
+                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs" value="{{ user.lastname|capfirst }}"
+                           disabled readonly>
+                    <label> ایمیل:</label>
+                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs text-left "
+                           value="{{ user.email|capfirst }}" disabled readonly>
+                    <label>کد ملی: </label>
+                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
+                           value="{{ user.username|getFieldOfInfo:"nationalcode" }}" disabled readonly>
+                </div>
+                <div class="w-full 2xl:w-2/5 xl:w-2/5 lg:w-2/5 md:w-2/5 sm:w-2/5 h-[280px] my-0 mx-[20px] float-right rtl flex flex-col gap-1">
+                    <label>نقش: </label>
+                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
+                           value="{{ user.group|getGroupnameById }}" disabled readonly>
+                    <label> داخلی:</label>
+                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs" value="{{ user.extension }}" disabled
+                           readonly>
+                    <label for="gender">جنسیت: </label>
+                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
+                           value="{{ user.username|getFieldOfInfo:"gender"|getValueOfIndexes:"gender" }}" disabled readonly>
+                    <label> تاریخ تولد:</label>
+                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs "
+                           value="{{ user.username|getFieldOfInfo:"birthdate" }}" disabled readonly>
+                    <label>وضعیت ایمیل: </label>
+                    {% if not user.email_verified_at %}
+                        <form method="post">
+                            {% csrf_token %}
+                            {% if not email %}
+                                <input type="submit"
+                                       class="w-3/5 h-[30px] bg-blue-400 text-white text-sm border-none rounded-md"
+                                       value="تایید ایمیل" name="verifyEmail">
+                            {% else %}
+                                <button type="button" id="verify"
+                                        class="w-3/5 h-[30px] bg-blue-400 text-white text-sm border-none rounded-md">
+                                    تایید ایمیل
+                                </button>
+                            {% endif %}
+                        </form>
+                    {% else %}
+                        <input type="text" class="w-4/5 h-5  text-gray-500 text-xs "
+                               value="فعال" disabled readonly>
+                    {% endif %}
+
+                </div>
+                <div class=" w-4/5 2xl:w-3/4 xl:w-3/4 lg:w-3/4 md:1/2 h-[100px] float-right rtl flex flex-col gap-1 text-sm mr-[22px]">
+                    <label>آدرس: </label>
+                    <textarea type="text" class="w-full h-[70px] text-gray-500 text-xs" disabled
+                              readonly>{{ user.username|getFieldOfInfo:"address" }}</textarea>
+                </div>
+
+            </div>
+
+            <div class="w-full h-[300px] p-[10px] flex flex-wrap float-right text-sm 2xl:w-1/2 xl:w-1/2 lg:w-1/2 md:w-full sm:w-full">
+
+                <div class="w-full 2xl:w-2/5 xl:w-2/5 lg:w-2/5 md:w-2/5 sm:w-2/5 h-[288px] my-0 mx-[20px] float-right  flex flex-col gap-1">
+                    <label>وضعیت سربازی: </label>
+                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
+                           value="{{ user.username|getFieldOfInfo:"military"|getValueOfIndexes:"military" }}" disabled readonly>
+                    <label> استان:</label>
+                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
+                           value="{{ user.username|getFieldOfInfo:"province"|getValueOfIndexes:"province" }}" disabled readonly>
+                    <label>شهر: </label>
+                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
+                           value="{{ user.username|getFieldOfInfo:"city" }}" disabled readonly>
+                    <label> مدرک:</label>
+                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
+                           value="{{ user.username|getFieldOfInfo:"educationdegree"|getValueOfIndexes:"degree" }}" disabled readonly>
+                    <label>شماره کارت: </label>
+                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
+                           value="{{ user.username|getFieldOfInfo:"cardnumber" }}" disabled readonly>
+                    <label>شماره حساب: </label>
+                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
+                           value="{{ user.username|getFieldOfInfo:"accountnumber" }}" disabled readonly>
+                </div>
+                <div class="w-full 2xl:w-2/5 xl:w-2/5 lg:w-2/5 md:w-2/5 sm:w-2/5 h-[288px] my-0 mx-[20px] float-right flex flex-col gap-1 ">
+                    <label>شماره شبا: </label>
+                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
+                           value="{{ user.username|getFieldOfInfo:"accountnumbershaba" }}" disabled readonly>
+                    <label> شماره همراه:</label>
+                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
+                           value="{{ user.username|getFieldOfInfo:"phonenumber" }}" disabled readonly>
+                    <label>زمینه مدرک:</label>
+                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
+                           value="{{ user.username|getFieldOfInfo:"educationfield" }}" disabled readonly>
+                    <label> تلفن:</label>
+                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
+                           value="{{ user.username|getFieldOfInfo:"telephone" }}" disabled readonly>
+                    <label>وضعیت تاهل: </label>
+                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
+                           value="{{ user.username|getFieldOfInfo:"maritalstatus"|getValueOfIndexes:"marital" }}" disabled readonly>
+
+                    <label>وضعیت حساب: </label>
+                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs "
+                           value="{% if user.active %}فعال{% else %}غیر فعال{% endif %}" disabled readonly>
+                </div>
+            </div>
+            
+
+        </div>
+    </div>
+    {% if email %}
+        <div id="emailMod"
+             class="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75 z-50 {% if not email %}hidden{% endif %}">
+            <div class="bg-white rounded-lg shadow-lg max-w-md w-full">
+                <div class="p-6 text-center">
+                    <div class="flex items-center justify-center w-12 h-12 mx-auto rounded-full">
+                        <i class="fa-solid fa-envelope text-4xl"></i>
+                    </div>
+                    <p>لطفا کد ارسال شده را وارد کنید</p>
+                    <form method="POST" class="mt-1">
+                        {% csrf_token %}
+                        <input type="number" name="code" class="mt-2 rounded" placeholder="کد">
+                        <div class="px-6 pt-5 justify-end gap-2">
+                            <input type="submit" name="resend" value="ارسال مجدد کد" class="px-4 py-2 bg-blue-400 rounded-md text-white hover:bg-blue-500 text-sm">
+                        </div>
+                        <div class="px-6 pt-5 justify-end gap-2">
+                            <button type="button" id="cancel"
+                                    class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 ">لغو
+                            </button>
+                            <input type="submit" id="confirm" class="hidden" name="verify">
+                            <label for="confirm"
+                                   class="px-4 py-2 bg-green-600 rounded-md text-white hover:bg-green-500">تایید</label>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <script>
+        $("#cancel").on('click', function () {
+            $("#emailMod").toggleClass("hidden")
+        })
+        {% if email %}
+            $("#verify").on('click', function () {
+                $("#emailMod").toggleClass("hidden")
+            })
+        {% endif %}
+    </script>
+{% endblock %}

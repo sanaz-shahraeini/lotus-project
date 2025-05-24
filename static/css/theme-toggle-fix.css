@@ -1,0 +1,21 @@
+/* Hide Theme Toggle Button */
+
+/* Completely hide the theme toggle button */
+.theme-toggle, #theme-toggle {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Force light theme */
+html, html.dark {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+}
+
+/* Override any theme-related transitions */
+body, body * {
+    transition-property: transform, opacity, visibility, box-shadow !important;
+    transition-duration: 0.3s !important;
+} 

@@ -1,0 +1,143 @@
+/* 
+ * DASHBOARD RESPONSIVE OVERRIDES
+ * These styles have extremely high specificity to ensure they override existing styles
+ */
+
+/* Force mobile layout */
+@media screen and (max-width: 767.98px) {
+    /* Force stats cards to stack vertically */
+    html body div.min-h-screen main div.dashboard-content-container div.grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4 {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+    }
+    
+    html body div.min-h-screen main div.dashboard-content-container div.grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4 div.stat-card {
+        width: 100% !important;
+        margin-bottom: 0.75rem !important;
+    }
+    
+    /* Force table container to be scrollable */
+    html body div.table-container {
+        overflow-x: auto !important;
+        display: block !important;
+        width: 100% !important;
+    }
+    
+    html body div.table-container table {
+        min-width: 800px !important;
+    }
+    
+    /* Force filter forms to be stacked */
+    html body form div.grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-3 {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+    }
+    
+    html body form div.grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-3 > div {
+        width: 100% !important;
+        margin-bottom: 0.75rem !important;
+    }
+    
+    /* Fix dropdown positioning */
+    html body div.dropdown-position-fix {
+        position: relative !important;
+        width: 100% !important;
+    }
+    
+    html body div.dropdown-menu-fix {
+        position: absolute !important;
+        width: 100% !important;
+        z-index: 50 !important;
+    }
+    
+    /* Force date range inputs to stack */
+    html body div.date-range-container {
+        flex-direction: column !important;
+        width: 100% !important;
+    }
+    
+    html body div.date-range-container div.relative {
+        width: 100% !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* Force action buttons to stack */
+    html body div.action-buttons {
+        flex-direction: column !important;
+        width: 100% !important;
+    }
+    
+    html body div.action-buttons button {
+        width: 100% !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* Force pagination container to stack */
+    html body div.pagination-container {
+        flex-direction: column !important;
+        width: 100% !important;
+    }
+    
+    html body div.pagination-container > div {
+        width: 100% !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* Fix RTL specific issues */
+    html body .rtl, 
+    html body .rtl-mobile-fix {
+        direction: rtl !important;
+        text-align: right !important;
+    }
+    
+    html body .rtl-flex-mobile-fix {
+        flex-direction: row-reverse !important;
+    }
+}
+
+/* Force desktop layout */
+@media screen and (min-width: 768px) {
+    /* Allow stats cards to go horizontal */
+    html body div.min-h-screen main div.dashboard-content-container div.grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4 {
+        display: grid !important;
+    }
+    
+    /* Allow filter sections to go horizontal */
+    html body form div.grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-3 {
+        display: grid !important;
+    }
+    
+    /* Allow date range to go horizontal */
+    html body div.date-range-container {
+        flex-direction: row !important;
+    }
+    
+    html body div.date-range-container div.relative {
+        width: auto !important;
+        flex: 1 !important;
+        margin-bottom: 0 !important;
+    }
+}
+
+/* Critical fixes that apply to all screen sizes */
+html body div.rtl {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+html body div.table-container {
+    direction: rtl !important;
+}
+
+/* Ensure modals appear on top */
+html body div[id$="Modal"] {
+    z-index: 9999 !important;
+}
+
+/* Force table cells to align right */
+html body div.table-container table th,
+html body div.table-container table td {
+    text-align: right !important;
+} 

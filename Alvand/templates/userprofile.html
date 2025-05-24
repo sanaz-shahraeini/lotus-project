@@ -1,0 +1,535 @@
+{% extends "base.html" %}
+{% load static %}
+{% load userProfileTags %}
+{% block main %}
+
+<div class="w-[75%] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 my-7 border border-black relative z-10 overflow-hidden text-sm rtl">
+    <form method="post" id="form" enctype="multipart/form-data" class="p-4">
+        {% csrf_token %}
+        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6 border-b border-black pb-4">
+            <div class="flex flex-col gap-3">
+                <label>ویرایش/اضافه:</label>
+                {{ userform.editOrAdd }}
+                <label>نام کاربری:</label>
+                {{ userform.username }}
+                <label>نام:</label>
+                {{ userform.name }}
+                <label>نام خانوادگی:</label>
+                {{ userform.lastname }}
+                <label>کد ملی:</label>
+                {{ infosform.nationalcode }}
+                <label>داخلی:</label>
+                {{ userform.extension }}
+                <label>تاریخ تولد:</label>
+                {{ infosform.birthdate }}
+                <label id="id_label_groupname">نقش:</label>
+                {{ userform.groupname }}
+            </div>
+            
+            <div class="flex flex-col gap-3">
+                <label>تلفن:</label>
+                {{ infosform.telephone }}
+                <label>شماره همراه:</label>
+                {{ infosform.phonenumber }}
+                <label>جنسیت:</label>
+                {{ infosform.gender }}
+                <label>وضعیت تاهل:</label>
+                {{ infosform.maritalstatus }}
+                <label>وضعیت نظام وظیفه:</label>
+                {{ infosform.military }}
+                <label>زمینه مدرک:</label>
+                {{ infosform.educationfield }}
+                <label>مدرک:</label>
+                {{ infosform.educationdegree }}
+                <label>دسترسی به داخلی:</label>
+                <div class="relative w-full">
+                    <button type="button" id="accessToExtsBtn"
+                            class="w-[140px] border border-gray-500 h-6 flex items-center justify-center">
+                        <i class="fa-regular fa-chevron-down"></i>
+                    </button>
+                    <div id="accessToExtsDp" class="hidden absolute bg-white shadow w-[140px]">
+                        <ul class="p-3 text-sm overflow-y-auto h-[170px]">
+                            {% for ext in userform.usersextension %}
+                                <li class="flex items-center">{{ ext }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="flex flex-col gap-3">
+                <label>ایمیل:</label>
+                {{ userform.email }}
+                <label>استان:</label>
+                {{ infosform.province }}
+                <label>شهر:</label>
+                {{ infosform.city }}
+                <label>شماره شبا:</label>
+                {{ infosform.accountnumbershaba }}
+                <label>شماره کارت:</label>
+                {{ infosform.cardnumber }}
+                <label>شماره حساب:</label>
+                {{ infosform.accountnumber }}
+                <label>سطح دسترسی:</label>
+                <div class="relative w-full">
+                    <button type="button" id="accessLevelBtn"
+                            class="w-[190px] border border-gray-500 h-6 flex items-center justify-center">
+                        <i class="fa-regular fa-chevron-down"></i>
+                    </button>
+                    <div id="accessLevelDp" class="hidden absolute bg-white shadow w-[190px]">
+                        <ul class="p-3 text-sm overflow-y-auto">
+                            <li>
+                                <div class="flex items-center">
+                                    <input type="checkbox"
+                                           class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                                           id="allPerm">
+                                    <label for="allPerm"
+                                           class="ms-2 text-sm font-sm text-gray-900 dark:text-gray-300">تمامی
+                                        مجوز ها</label>
+                                </div>
+                                {% for perm in permform %}
+                                    <div class="flex items-center">
+                                        {{ perm }}
+                                        <label for="{{ perm.id_for_label }}"
+                                               class="ms-2 text-sm font-sm text-gray-900 dark:text-gray-300">{{ perm.label }}</label>
+                                    </div>
+                                {% endfor %}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <label>وضعیت حساب:</label>
+                <label id="{{ userform.active.id_for_label }}" class="bg-gray-300 cursor-pointer relative w-14 h-7 rounded-full flex items-center">
+                    {{ userform.active }}
+                    <span class="w-5 h-5 bg-white absolute rounded-full left-1 top-1 peer-checked:bg-blue-600 peer-checked:left-8 transition-all duration-300"></span>
+                </label>
+            </div>
+
+            <div class="flex flex-col gap-3 col-span-full">
+                <label>آدرس:</label>
+                {{ infosform.address }}
+            </div>
+        </div>
+
+        
+        <div class="w-full flex flex-wrap justify-center gap-4 p-4 items-center">
+            <div class="w-[88px] flex flex-col gap-2 items-center">
+                <img src="" id="id_picurl" class="w-[88px] h-[100px]">
+            </div>
+
+            <div class="w-[190px] flex flex-col gap-2 items-center">
+                <input type="submit" id="save" class="hidden" name="saveUser">
+                <label for="save"
+                       class="w-full h-[33px] bg-green-600 text-white text-center rounded-md py-2 cursor-pointer">ذخیره کاربر</label>
+
+                <input type="file" id="upload" class="hidden" name="uploadPhoto">
+                <label for="upload"
+                       class="w-full h-[33px] bg-green-600 text-white rounded-md text-center py-2 cursor-pointer">
+                    بارگزاری عکس
+                </label>
+            </div>
+
+            <div class="w-[190px] flex flex-col gap-2 items-center">
+                <button type="button"
+                        class="w-full h-[33px] bg-red-600 text-white text-center rounded-md py-2 cursor-pointer"
+                        id="delUserModalBtn">حذف کاربر
+                </button>
+                <button type="button"
+                        class="w-full h-[33px] bg-red-600 text-white text-center rounded-md py-2 cursor-pointer"
+                        id="delUserProfile">حذف پروفایل
+                </button>
+            </div>
+
+            <div class="flex flex-col gap-2 items-center">
+                <button type="button" id="btnpass"
+                        class="w-[160px] h-[37px] bg-yellow-400 text-center rounded-md px-1">
+                    بازنگاری رمز عبور
+                    <i class="fa-solid fa-triangle-exclamation text-xl float-left"></i>
+                    <i class="fa-solid fa-triangle-exclamation text-xl float-right"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+    <div id="changepass" class="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75 z-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg max-w-md w-full">
+            <div class="p-6 text-center">
+                <div class="flex items-center justify-center w-12 h-12 mx-auto rounded-full">
+                    <i class="fa-solid fa-triangle-exclamation text-4xl text-red-600 "></i>
+
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mt-4">هشدار بازنگاری رمز</h3>
+                <p class="text-sm text-gray-900 mt-2">آیا از انجام عملیات تغییر رمز عبور اطمینان دارید؟ </p>
+            </div>
+            <div class="px-6 py-2 bg-gray-50 flex justify-end gap-2">
+
+                <button id="cancelChpass" class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 ">لغو</button>
+
+                <input type="submit" id="confirmChangePass" class="hidden">
+                <label for="confirmChangePass"
+                       class="px-4 py-2 bg-red-500 rounded-md text-white hover:bg-red-500">تایید</label>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div id="deluser" class="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75 z-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg max-w-md w-full">
+            <div class="p-6 text-center">
+                <div class="flex items-center justify-center w-12 h-12 mx-auto rounded-full">
+                    <i class="fa-solid fa-triangle-exclamation text-4xl text-red-600 "></i>
+
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mt-4"> هشدار حذف کاربر </h3>
+                <p class="text-sm text-gray-900 mt-2">آیا از انجام عملیات حذف کاربر اطمینان دارید؟ </p>
+            </div>
+            <div class="px-6 py-2 bg-gray-50 flex justify-end gap-2">
+
+                <button id="canceldelete" class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 ">لغو</button>
+                <input type="submit" id="confirm" class="hidden">
+                <label for="confirm"
+                       class="px-4 py-2 bg-red-500 rounded-md text-white hover:bg-red-500">تایید</label>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div id="delpro" class="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75 z-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg max-w-md w-full">
+            <div class="p-6 text-center">
+                <div class="flex items-center justify-center w-12 h-12 mx-auto rounded-full">
+                    <i class="fa-solid fa-triangle-exclamation text-4xl text-red-600 "></i>
+
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mt-4">هشدار حذف پروفایل</h3>
+                <p class="text-sm text-gray-900 mt-2">آیا از انجام عملیات حذف پروفایل کاربر اطمینان دارید؟ </p>
+            </div>
+            <div class="px-6 py-2 bg-gray-50 flex justify-end gap-2">
+
+                <button id="cancelDelPro" class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 ">لغو</button>
+                <input type="submit" id="confirmDelPro" class="hidden">
+                <label for="confirmDelPro"
+                       class="px-4 py-2 bg-red-500 rounded-md text-white hover:bg-red-500">تایید</label>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            let tec = $(".onChangeCheckBox");
+            let allPerm = $("#allPerm")
+            allPerm.on("change", function () {
+                tec.each(function () {
+                    $(this).prop('checked', allPerm.prop('checked'))
+                })
+            })
+            tec.on('change', function () {
+                let allChecked = true;
+                tec.each(function () {
+                    if (!$(this).prop('checked')) {
+                        allChecked = false;
+                        return false;
+                    }
+                });
+                allPerm.prop('checked', allChecked);
+            })
+        })
+    </script>
+    <script>
+        $(document).ready(function () {
+            const reset = $('#changebtnpass')
+            const modal = $('#changepass')
+            const modalBtn = $('#btnpass')
+            const confirmChPass = $('#confirmChangePass')
+
+            reset.on('click', function () {
+                modal.toggleClass('hidden')
+            })
+            $('#cancelChpass').on('click', function () {
+                if (!modal.hasClass('hidden')) {
+                    modal.addClass('hidden')
+                }
+            })
+            modalBtn.on('click', function () {
+                modal.toggleClass('hidden')
+            })
+            confirmChPass.on('click', function () {
+                var form = $('#form').append('<input type="hidden" name="ChangePassword" value="submit">')
+                form.submit()
+                modal.toggleClass('hidden')
+            })
+        })
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            const reset = $('#deleteuser')
+            const modal = $('#deluser')
+            const modalBtn = $('#delUserModalBtn')
+            const confirm = $('#confirm')
+            reset.on('click', function () {
+                modal.toggleClass('hidden')
+            })
+            $('#canceldelete').on('click', function () {
+                if (!modal.hasClass('hidden')) {
+                    modal.addClass('hidden')
+                }
+            })
+            modalBtn.on('click', function () {
+                modal.toggleClass('hidden')
+            })
+            confirm.on('click', function () {
+                var form = $('#form').append('<input type="hidden" name="deleteUser" value="submit">')
+                form.submit()
+                modal.toggleClass('hidden')
+            })
+        })
+    </script>
+    <script>
+        $(document).ready(function () {
+            const reset = $('#deletepro')
+            const modal = $('#delpro')
+            const modalBtn = $('#delUserProfile')
+            const confirm = $('#confirmDelPro')
+            reset.on('click', function () {
+                modal.toggleClass('hidden')
+            })
+            $('#cancelDelPro').on('click', function () {
+                if (!modal.hasClass('hidden')) {
+                    modal.addClass('hidden')
+                }
+            })
+            modalBtn.on('click', function () {
+                modal.toggleClass('hidden')
+            })
+            confirm.on('click', function () {
+                var form = $('#form').append('<input type="hidden" name="deleteProfile" value="submit">')
+                form.submit()
+                modal.toggleClass('hidden')
+            })
+        })
+    </script>
+
+
+    <script>
+        $(document).ready(function () {
+            const show = $('#accessToExtsDp')
+            $('#accessToExtsBtn').on('click', function () {
+                $('#accessToExtsDp').toggleClass('hidden')
+            });
+
+            $(document).on('click', function (e) {
+                if (!show.hasClass('hidden') && !$(e.target).closest('#accessToExtsBtn, #accessToExtsDp').length) {
+                    show.addClass('hidden');
+                }
+            });
+        });
+
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            const show = $('#accessLevelDp')
+            $('#accessLevelBtn').on('click', function () {
+                $('#accessLevelDp').toggleClass('hidden')
+            });
+
+            $(document).on('click', function (e) {
+                if (!show.hasClass('hidden') && !$(e.target).closest('#accessLevelBtn, #accessLevelDp').length) {
+                    show.addClass('hidden');
+                }
+            });
+        });
+
+    </script>
+
+    <script>
+        const numberInputs = document.querySelectorAll('input[type="number"]');
+
+        numberInputs.forEach(input => {
+            input.addEventListener('input', function (event) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $("#id_accountnumbershaba").on('input', function () {
+                let maxLength = 22;
+                let value = $(this).val();
+                if (value.length > maxLength) {
+                    $(this).val(value.slice(0, maxLength));
+                }
+            });
+
+            $("#id_cardnumber").on('input', function () {
+                let maxLength = 16;
+                let value = $(this).val();
+                if (value.length > maxLength) {
+                    $(this).val(value.slice(0, maxLength));
+                }
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            var spinner = `<style>
+                                input[type="number"]::-webkit-outer-spin-button,
+                                input[type="number"]::-webkit-inner-spin-button{
+                                    -webkit-appearance: none;
+                                }
+                                input[type="number"]{
+                                    -moz-appearance: textfield;
+                                }
+                            </style>`
+            $("head").append(spinner)
+        });
+    </script>
+
+
+    <script>
+        $(document).ready(function () {
+            const $groupnameSelect = $('#id_groupname');
+            const superadminEnname = 'superadmin';
+            const superadminPename = 'ابر مدیر';
+
+            function addOption(selectElement, value, text) {
+                const superadminOptionExists = $(this).find(`option[value="${superadminEnname}"]`).length > 0;
+                if (!superadminOptionExists) {
+                    const $firstOption = $(selectElement).find('option:first-child');
+                    if ($firstOption.length) {
+                        $firstOption.after($('<option>', {
+                            value: value,
+                            text: text
+                        }));
+                    } else {
+                        $(selectElement).append($('<option>', {
+                            value: value,
+                            text: text
+                        }));
+                    }
+                }
+            }
+
+            function removeOption(selectElement, valueToRemove) {
+                const superadminOptionExists = $(this).find(`option[value="${superadminEnname}"]`).length > 0;
+                if (superadminOptionExists) {
+                    $(selectElement).find(`option[value="${valueToRemove}"]`).remove();
+                }
+            }
+            $('#id_editOrAdd').change(function () {
+                var select_edit = $(this).val().toLowerCase();
+                if (select_edit == 'edit') {
+                    $('#id_username').replaceWith(`
+                    <select id="id_username" name="username" class="w-[140px] h-6  text-gray-600 text-xs appearance-none py-[2px]">
+                        <option value='none'> ------ </option>
+                        {% for user in users %}
+                            <option value='{{user.username}}'> {{user.username}} </option>
+                        {% endfor %}
+                    </select>`)
+                    $('#id_username').change(function () {
+                        if($(this).val().toLowerCase() == "none") {
+                            $("form")[0].reset()
+                            $("#id_active input").prop('checked', false)
+                        }
+                        if($(this).val().toLowerCase() == "{{ request.session.user|lower }}"){
+                            $("#id_label_groupname, #id_groupname").hide()
+                        }
+                        else
+                            $("#id_label_groupname, #id_groupname").show()
+                        const userperm = "{{ request.session.user|getUserInfo:"groupname"|safe }}"
+                        if (userperm == "supporter"){
+                            addOption($("#id_groupname"), "superadmin", "ابر مدیر");
+                        }
+                        else{
+                            removeOption($("#id_groupname"), "superadmin")
+                        }
+                        {% with found=True %}
+
+                            {% for user in users%}
+                                {% if found %}
+                                    if ($(this).val().toLowerCase() === "{{ user.username|lower }}") {
+                                        let userexts = {{ user.usersextension|safe }};
+                                        let userExtsTextes = {{ user.username|getListOfExtsGroups|safe }}
+                                        let userPerm = {{ user.username|getUserCanPerm|safe }}
+                                        let keys = Object.keys(userPerm);
+                                        let allTrue = true;
+                                        $('#id_name').val("{{user.name}}")
+                                        $('#id_lastname').val("{{user.lastname}}")
+                                        $('#id_extension').val("{{user.extension}}")
+                                        $('#id_email').val("{{user.email}}")
+                                        $('#id_active').val("{{user.active}}")
+                                        $('#id_groupname').val("{{user.groupname}}")
+                                        $('#id_picurl')[0].src = "{% if user.picurl == 'avatar.png' %}{% static 'pic/' %}{% else %}{% static 'upload/' %}{% endif %}{{user.picurl}}"
+                                        if(userexts.length > 0 | userExtsTextes.length > 0){
+                                            $("#accessToExtsDp ul li input").each(function(){
+                                            if (userexts.includes($(this).val()) | userExtsTextes.includes($(this).val())){
+                                                $(this).prop('checked', true)
+                                            }
+                                            else
+                                                $(this).prop('checked', false)
+                                        })}
+                                        keys.forEach(key => {
+                                            if (userPerm[key]) {
+                                                $("#id_" + key).prop("checked", true);
+                                            } else {
+                                                allTrue = false;
+                                            }
+                                        });
+                                        $("#allPerm").prop("checked", allTrue);
+                                        {% for info in user.username|getObjectOfInfo %}
+                                            $('#id_nationalcode').val("{{info.nationalcode}}")
+                                            $('#id_birthdate').val("{{info.birthdate}}")
+                                            $('#id_telephone').val("{{info.telephone}}")
+                                            $('#id_phonenumber').val("{{info.phonenumber}}")
+                                            $('#id_gender').val("{{info.gender}}")
+                                            $('#id_maritalstatus').val("{{info.maritalstatus}}")
+                                            $('#id_military').val("{{info.military}}")
+                                            $('#id_educationfield').val("{{info.educationfield}}")
+                                            $('#id_educationdegree').val("{{info.educationdegree}}")
+                                            $('#id_province').val("{{info.province}}")
+                                            $('#id_city').val("{{info.city}}")
+                                            $('#id_accountnumbershaba').val("{{info.accountnumbershaba}}")
+                                            $('#id_cardnumber').val("{{info.cardnumber}}")
+                                            $('#id_accountnumber').val("{{info.accountnumber}}")
+                                            $('#id_address').val("{{info.address}}")
+
+
+                                        {% endfor %}
+                                    }
+                                    {% with found=True %}{% endwith %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endwith %}
+                    })
+                } else {
+                    $('#id_username').replaceWith(`
+                    <input type="text" id="id_username" name='username' class="w-[140px] h-6  text-gray-600 text-xs">`)
+                }
+            })
+        })
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#id_gender').change(function () {
+                var selectval = $('#id_gender').val();
+                if (selectval === '1') {
+                    $('#id_military').hide();
+                    $('#labelmilitary').hide();
+                } else {
+                    $('#id_military').show();
+                    $('#labelmilitary').show();
+                }
+            })
+        })
+    </script>
+{% endblock %}

@@ -1,0 +1,45 @@
+/* Base Template Fixes */
+
+/* Completely remove theme toggle button */
+.theme-toggle,
+button.theme-toggle,
+#theme-toggle,
+button#theme-toggle {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+    pointer-events: none !important;
+    z-index: -999 !important;
+}
+
+/* Fix layout with the toggle button removed */
+body .relative {
+    padding-top: 0 !important;
+}
+
+/* Force light theme */
+html.dark {
+    background-color: #f9fafb !important;
+    color: #1f2937 !important;
+}
+
+html.dark * {
+    --bg-color: #f9fafb !important;
+    --text-color: #1f2937 !important;
+    --light-text: #6b7280 !important;
+    --border-color: #e5e7eb !important;
+    --card-bg: white !important;
+}
+
+/* Make sure dropdown menus work properly */
+html.dark .dropdown-menu,
+html.dark .absolute,
+html.dark .modal {
+    --bg-color: #f9fafb !important;
+    --card-bg: white !important;
+    background-color: white !important; 
+} 

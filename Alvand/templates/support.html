@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static baseTags %}
+{% block main %}
+
+<div class="w-full flex flex-col lg:flex-row my-0 justify-center items-center mx-auto ">
+    <!-- introduction -->
+    <div class="w-11/12 lg:w-1/2 2xl:w-1/2 2xl:mr-[80px] xl:mr-[90px] lg:mr-[100px] md:w-4/5 sm:w-4/5 lg:order-2 leading-10 rtl">
+        <p class="text-sm sm:text-base md:text-lg lg:text-base xl:text-xl 2xl:text-2xl text-center text-blue-800 mt-12 px-10 leading-relaxed">
+            ما در شناسنامه «گروه توسعه فناوری نیلوفرآبی» هستیم، ولی شما می‌توانید <span class="font-bold">«لوتوس»</span> هم صدایمان کنید.
+        </p>
+
+        <p class="px-10 mt-4 font-normal leading-loose text-xs sm:text-sm md:text-base lg:text-sm xl:text-base 2xl:text-lg">
+            داستان<span class="font-bold"> لوتوس</span> از آذرماه 1397 شروع شد. از تیم کوچکی که جانش برای یاد گرفتن فناوری و توسعه دادن هوشمندسازی در می‌رفت. اصولاً خاصیت هر گروه جوان و خلاقی این است که ایده‌های بزرگ داشته باشد و برای رسیدن به چیزی که می‌خواهد، نهایت تلاشش را بکند. ایده تیم <span class="font-bold">لوتوس</span> خلق و توسعه نرم‌افزاری در حوزه مخابرات و مراکز تلفن (سانترال) بود. برنامه‌ای که با استفاده از داده‌های ورودی از مرکز تلفن قادر به ساخت گزارشات مفید و کاربردی باشد.
+        </p>
+
+        <p class="text-sm sm:text-base md:text-lg lg:text-base xl:text-xl 2xl:text-2xl text-yellow-600 font-IranSansB mt-4 px-10 leading-relaxed">
+            لوتوس به کاربران خود کمک می‌کند تا از ارتباطات تلفنی تجربه‌ای فراموش‌نشدنی را لمس کنند........
+        </p>
+
+        <p class="px-10 mt-4 font-normal leading-loose text-xs sm:text-sm md:text-base lg:text-sm xl:text-base 2xl:text-lg">
+            حالا می‌توانیم ادعا کنیم که دستیار هوشمند ارتباطات کاربرانی هستیم که به دنبال اطلاعات دقیق و به‌روز از مشتریان و مخاطبین خود هستند. با انرژی حاصل از تولد اولین محصول، تصمیم گرفتیم تا با الهام از نماد گروه، یعنی گل نیلوفر آبی که داری پنج گلبرگ می‌باشد، اقدام به تولید 4 محصول مشابه و هم‌تراز نماییم تا پنج گلبرگ گروه ظهور کند.
+        </p>
+
+        <p class="text-2xl lg:text-2xl xl:text-3xl 2xl:text-4xl text-center mt-9 font-extrabold font-IranNastaliq">
+            به زودی ما را به نام «گروه نرم‌افزاری دانش‌بنیان نیلوفرآبی» می‌شناسید.
+        </p>
+    </div>
+    <!-- image -->
+    <div class="w-full h-auto sm:w-4/5 md:w-1/2 lg:w-2/5 xl:w-2/5 2xl:w-2/5  mt-16 lg:mt-0 lg:order-1">
+        <div class="w-full h-[240px] sm:h-[300px] md:h-[300px] lg:h-[300px] xl:h-[330px] 2xl:h-[410px] bg-cover sm:bg-center md:bg-center lg:bg-center xl:bg-center 2xl:bg-center" style="background-image: url({% static 'pic/support.jpg' %});">
+            <div class="w-[180px] sm:w-[190px] md:w-[250px] lg:w-[200px] xl:w-[260px] 2xl:w-[280px] h-auto text-xs sm:text-xs md:text-sm lg:text-sm xl:text-sm 2xl:text-lg mt-[50px] sm:mt-[80px] md:mt-[60px] lg:mt-[55px] xl:mt-[80px] 2xl:mt-24 xl:mr-[75px] mr-[38px] lg:mr-[52px] 2xl:mr-[40px] md:mr-[40px] float-right text-white rtl p-4">
+                <p>شماره تماس</p>
+                <a href="tel:09030435699" class="block mt-1">09030435699</a>
+                <br>
+                <p>ایمیل</p>
+                <a href="mailto:erfanhosseyni54@gmail.com" class="block">erfanhosseyni54@gmail.com</a>
+                <br>
+                <p>کانال تلگرامی</p>
+                <a href="#" class="block">برای مشاهده کانال کلیک کنید</a>
+                
+                <p class="text-center mt-3">لوتوس{% if getVersion %} - {{ getVersion }}{% endif %}</p>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+{% endblock %}

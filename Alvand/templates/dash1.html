@@ -1,0 +1,1858 @@
+{% extends "base.html" %}
+{% load static %}
+{% load dashboardTags %}
+
+{% block head_extra %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<!-- Consolidated CSS files -->
+<link rel="stylesheet" href="{% static 'css/dashboard.min.css' %}" />
+
+<!-- Modern dashboard styles -->
+<style>
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #4338ca;
+        --primary-light: #818cf8;
+        --secondary: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --light: #f8fafc;
+        --dark: #1e293b;
+        --gray: #64748b;
+        --gray-light: #e2e8f0;
+        --transition: all 0.3s ease;
+    }
+    
+    /* Base RTL Layout */
+    body {
+        direction: rtl;
+        text-align: right;
+        font-family: 'Vazir', system-ui, -apple-system, sans-serif;
+        color: var(--dark);
+        background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+        min-height: 100vh;
+    }
+    
+    /* Modern Card Design */
+    .card {
+        background-color: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        transition: var(--transition);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        overflow: hidden;
+    }
+    
+    .card:hover {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        transform: translateY(-2px);
+    }
+    
+    /* Dashboard Header */
+    .dashboard-header {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        position: relative;
+        overflow: hidden;
+        border-radius: 1rem;
+    }
+    
+    .dashboard-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+        opacity: 0.6;
+    }
+    
+    /* Stat Cards */
+    .stat-card {
+        position: relative;
+        border-radius: 1rem;
+        overflow: hidden;
+        transition: var(--transition);
+    }
+    
+    .stat-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 4px;
+        height: 100%;
+        border-radius: 0 0.75rem 0.75rem 0;
+    }
+    
+    .stat-card.total::after { background-color: var(--primary); }
+    .stat-card.incoming::after { background-color: var(--secondary); }
+    .stat-card.outgoing::after { background-color: var(--warning); }
+    .stat-card.missed::after { background-color: var(--danger); }
+    
+    .stat-icon {
+        transition: var(--transition);
+    }
+    
+    .stat-card:hover .stat-icon {
+        transform: scale(1.1);
+    }
+    
+    /* Modern Table Design */
+    .table-container {
+        overflow-x: auto;
+        border-radius: 1rem;
+        background: white;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+    
+    th {
+        background-color: #f8fafc;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        color: #64748b;
+        padding: 1rem;
+        text-align: right;
+    }
+    
+    td {
+        padding: 1rem;
+        border-bottom: 1px solid #f1f5f9;
+        text-align: right;
+    }
+    
+    tbody tr:hover {
+        background-color: rgba(59, 130, 246, 0.05);
+    }
+    
+    /* Modern Form Elements */
+    .form-input, .form-select, .form-button {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid var(--gray-light);
+        transition: var(--transition);
+    }
+    
+    .form-input:focus, .form-select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+    
+    .form-button {
+        cursor: pointer;
+        font-weight: 500;
+    }
+    
+    .form-button.primary {
+        background-color: var(--primary);
+        color: white;
+    }
+    
+    .form-button.primary:hover {
+        background-color: var(--primary-dark);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .grid-cols-4 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        
+        .mobile-card {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .mobile-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .mobile-card-body {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .desktop-table {
+            display: none;
+        }
+        
+        .mobile-table {
+            display: block;
+        }
+    }
+    
+    @media (min-width: 769px) {
+        .desktop-table {
+            display: block;
+        }
+        
+        .mobile-table {
+            display: none;
+        }
+    }
+</style>
+{% endblock head_extra %}
+
+{% block main %}
+<div class="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
+    <!-- Main Content Area -->
+    <main class="container mx-auto px-4 py-6">
+        <!-- Navbar -->
+        <header class="bg-white shadow-sm sticky top-0 z-30 mb-6 rounded-xl">
+            <div class="px-4 py-4 sm:px-6 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <h1 class="text-xl font-bold text-slate-800">داشبورد لوتوس</h1>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button type="button" id="printbtn" class="px-4 py-2 bg-white hover:bg-slate-50 text-indigo-600 rounded-lg text-sm font-medium transition-colors border border-slate-200 shadow-sm flex items-center">
+                        <i class="fa-solid fa-print ml-1.5"></i> چاپ
+                    </button>
+                    <div class="relative">
+                        <button id="themeToggle" class="p-2 rounded-lg text-slate-500 hover:bg-slate-100 focus:outline-none">
+                            <i class="fa-solid fa-sun text-yellow-500"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="space-y-6">
+            <!-- Dashboard Header with Gradient Background -->
+            <div class="dashboard-header p-6 md:p-8 card">
+                <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">داشبورد لوتوس</h1>
+                        <p class="text-indigo-100 opacity-90">مدیریت و گزارش تماس‌ها - {{ now|date:"Y/m/d" }}</p>
+                    </div>
+                    <div class="flex flex-col sm:flex-row items-center gap-3">
+                        <div class="relative w-full md:w-64">
+                            <input
+                                type="search"
+                                id="quickSearch"
+                                placeholder="جستجوی سریع..."
+                                class="w-full h-12 px-4 pr-4 pl-12 bg-white/10 border border-white/20 rounded-lg text-white placeholder-indigo-200 focus:outline-none focus:ring-2 focus:ring-white/30 focus:bg-white/20"
+                            />
+                            <span class="absolute left-0 inset-y-0 flex items-center pl-4 pointer-events-none h-12">
+                                <i class="fa-solid fa-search text-indigo-400 text-lg"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Cards - Modern UI -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6" id="statsCards">
+                <!-- Total Calls -->
+                <div class="stat-card total card bg-white p-6 hover:border-blue-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-14 h-14 stat-icon bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
+                            <i class="fa-solid fa-phone-volume text-xl"></i>
+                        </div>
+                        <div class="bg-blue-50 text-blue-600 text-xs font-medium px-2.5 py-1 rounded-full">
+                            <i class="fa-solid fa-chart-simple ml-1"></i>
+                            کل تماس‌ها
+                        </div>
+                    </div>
+                    <h3 class="text-3xl font-bold text-slate-800">{{ dashPage.paginator.count|default:"0" }}</h3>
+                    <div class="flex items-center mt-2">
+                        <span class="text-sm font-medium text-slate-500">مجموع تماس‌های ثبت شده</span>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-slate-100">
+                        <div class="flex items-center text-sm">
+                            <i class="fa-solid fa-clock text-slate-400 ml-1.5"></i>
+                            <span class="text-slate-500">آخرین بروزرسانی: چند دقیقه پیش</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Incoming Calls -->
+                <div class="stat-card incoming card bg-white p-6 hover:border-green-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-14 h-14 stat-icon bg-green-100 rounded-full flex items-center justify-center text-green-600">
+                            <i class="fa-solid fa-phone-arrow-down-left text-xl"></i>
+                        </div>
+                        <div class="bg-green-50 text-green-600 text-xs font-medium px-2.5 py-1 rounded-full">
+                            <i class="fa-solid fa-arrow-down ml-1"></i>
+                            ورودی
+                        </div>
+                    </div>
+                    <h3 class="text-3xl font-bold text-slate-800">{{ incoming_calls_count|default:"0" }}</h3>
+                    <div class="flex items-center mt-2">
+                        <span class="text-sm font-medium text-slate-500">تماس‌های دریافت شده</span>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-slate-100">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-green-600 font-medium flex items-center">
+                                <i class="fa-solid fa-circle-check ml-1.5"></i>
+                                موفق
+                            </span>
+                            <span class="text-sm text-slate-500">
+                                {% with percent=incoming_calls_count|default:0|floatformat:1 %}
+                                {% if dashPage.paginator.count > 0 %}
+                                    {{ incoming_calls_count|default:0|floatformat:1 }}%
+                                {% else %}
+                                    0%
+                                {% endif %}
+                                {% endwith %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Outgoing Calls -->
+                <div class="stat-card outgoing card bg-white p-6 hover:border-yellow-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-14 h-14 stat-icon bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600">
+                            <i class="fa-solid fa-phone-arrow-up-right text-xl"></i>
+                        </div>
+                        <div class="bg-yellow-50 text-yellow-600 text-xs font-medium px-2.5 py-1 rounded-full">
+                            <i class="fa-solid fa-arrow-up ml-1"></i>
+                            خروجی
+                        </div>
+                    </div>
+                    <h3 class="text-3xl font-bold text-slate-800">{{ outgoing_calls_count|default:"0" }}</h3>
+                    <div class="flex items-center mt-2">
+                        <span class="text-sm font-medium text-slate-500">تماس‌های ارسال شده</span>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-slate-100">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-yellow-600 font-medium flex items-center">
+                                <i class="fa-solid fa-signal ml-1.5"></i>
+                                فعال
+                            </span>
+                            <span class="text-sm text-slate-500">
+                                {% with percent=outgoing_calls_count|default:0|floatformat:1 %}
+                                {% if dashPage.paginator.count > 0 %}
+                                    {{ outgoing_calls_count|default:0|floatformat:1 }}%
+                                {% else %}
+                                    0%
+                                {% endif %}
+                                {% endwith %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Missed Calls -->
+                <div class="stat-card missed card bg-white p-6 hover:border-red-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-14 h-14 stat-icon bg-red-100 rounded-full flex items-center justify-center text-red-600">
+                            <i class="fa-solid fa-phone-slash text-xl"></i>
+                        </div>
+                        <div class="bg-red-50 text-red-600 text-xs font-medium px-2.5 py-1 rounded-full">
+                            <i class="fa-solid fa-triangle-exclamation ml-1"></i>
+                            از دست رفته
+                        </div>
+                    </div>
+                    <h3 class="text-3xl font-bold text-slate-800">{{ missed_calls_count|default:"0" }}</h3>
+                    <div class="flex items-center mt-2">
+                        <span class="text-sm font-medium text-slate-500">تماس‌های پاسخ داده نشده</span>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-slate-100">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-red-600 font-medium flex items-center">
+                                <i class="fa-solid fa-triangle-exclamation ml-1.5"></i>
+                                ناموفق
+                            </span>
+                            <span class="text-sm text-slate-500">
+                                {% with percent=missed_calls_count|default:0|floatformat:1 %}
+                                {% if dashPage.paginator.count > 0 %}
+                                    {{ missed_calls_count|default:0|floatformat:1 }}%
+                                {% else %}
+                                    0%
+                                {% endif %}
+                                {% endwith %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Bar -->
+            <form method="get" class="bg-white rounded-xl shadow-sm p-5 mb-6 rtl border border-slate-100">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-medium text-slate-800">
+                        <i class="fa-solid fa-filter mr-2 text-blue-500"></i>
+                        فیلتر تماس‌ها
+                    </h3>
+                    <button type="button" id="toggleFilters" class="text-sm text-blue-600 hover:text-blue-800">
+                        <span id="filterText">نمایش فیلترها</span>
+                        <i class="fa-solid fa-chevron-down ml-1" id="filterIcon"></i>
+                    </button>
+                </div>
+                
+                <div id="filterSection" class="hidden">
+                    <div class="filter-bar w-full mx-auto rtl flex flex-wrap gap-4 items-start">
+                        <!-- Filter Columns -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full mb-4">
+                            <!-- Call Type Filter -->
+                            <div class="w-full dropdown-position-fix">
+                                <label class="block text-sm font-medium text-slate-700 mb-2">نوع تماس</label>
+                                <div class="relative">
+                                    <button type="button" id="callTypeDropDown" data-dropdown-toggle="callTypeBodyDropDown"
+                                            class="w-full inline-flex items-center justify-between gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-700 hover:bg-slate-50 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 transition-all">
+                                        <span>انتخاب نوع تماس</span>
+                                        <i class="fa-solid fa-chevron-down text-slate-400 text-xs"></i>
+                                    </button>
+                                    <div id="callTypeBodyDropDown"
+                                         class="hidden z-10 w-full dropdown-menu-fix filter-dropdown mt-1 bg-white rounded-lg shadow-lg border border-slate-200 p-2">
+                                        <ul class="space-y-1 text-sm text-slate-700">
+                                            <li>
+                                                <div class="flex items-center py-2 px-3 rounded hover:bg-slate-50">
+                                                    <input id="call-type-1" name="calls" type="checkbox" value="همه تماس ها"
+                                                           class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 cursor-pointer">
+                                                    <label for="call-type-1" class="mr-2 text-sm text-slate-700 cursor-pointer">همه تماس ها</label>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="flex items-center py-2 px-3 rounded hover:bg-slate-50">
+                                                    <input id="call-type-2" name="calls" type="checkbox" value="تماس های پاسخ داده نشده"
+                                                           class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 cursor-pointer">
+                                                    <label for="call-type-2" class="mr-2 text-sm text-slate-700 cursor-pointer">تماس های پاسخ نداده شده</label>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="flex items-center py-2 px-3 rounded hover:bg-slate-50">
+                                                    <input id="call-type-3" name="calls" type="checkbox" value="تماس های ورودی"
+                                                           class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 cursor-pointer">
+                                                    <label for="call-type-3" class="mr-2 text-sm text-slate-700 cursor-pointer">تماس ‌های ورودی</label>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="flex items-center py-2 px-3 rounded hover:bg-slate-50">
+                                                    <input id="call-type-4" name="calls" type="checkbox" value="تماس های خروجی"
+                                                           class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 cursor-pointer">
+                                                    <label for="call-type-4" class="mr-2 text-sm text-slate-700 cursor-pointer">تماس ‌های خروجی</label>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="flex items-center py-2 px-3 rounded hover:bg-slate-50">
+                                                    <input id="call-type-5" name="calls" type="checkbox" value="تماس های داخلی"
+                                                           class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 cursor-pointer">
+                                                    <label for="call-type-5" class="mr-2 text-sm text-slate-700 cursor-pointer">تماس ‌های داخلی</label>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Internal Line Filter -->
+                            <div class="w-full dropdown-position-fix">
+                                <label class="block text-sm font-medium text-slate-700 mb-2">خط داخلی</label>
+                                <div class="relative">
+                                    <button type="button" id="dropdownInternalLineBtn" data-dropdown-toggle="dropdownInternal"
+                                            class="w-full inline-flex items-center justify-between gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-700 hover:bg-slate-50 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 transition-all">
+                                        <span>انتخاب خط داخلی</span>
+                                        <i class="fa-solid fa-chevron-down text-slate-400 text-xs"></i>
+                                    </button>
+                                    <div id="dropdownInternal"
+                                         class="hidden z-10 w-full dropdown-menu-fix filter-dropdown mt-1 bg-white rounded-lg shadow-lg border border-slate-200 p-2">
+                                        <div class="relative mb-2">
+                                            <input type="text" id="searchInternal" placeholder="جستجو..." 
+                                                   class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg">
+                                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                <i class="fa-solid fa-search text-slate-400"></i>
+                                            </div>
+                                        </div>
+                                        <ul class="space-y-1 text-sm text-slate-700 max-h-60 overflow-y-auto">
+                                            {% for extline in extlines %}
+                                                <li class="internal-line-item">
+                                                    <div class="flex items-center py-2 px-3 rounded hover:bg-slate-50">
+                                                        <input id="internal-line-{{ forloop.counter }}" type="checkbox" name="extline" value="{{ extline }}"
+                                                               class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 cursor-pointer">
+                                                        <label for="internal-line-{{ forloop.counter }}" class="mr-2 text-sm text-slate-700 cursor-pointer">{{ extline }}</label>
+                                                    </div>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Urban Line Filter -->
+                            <div class="w-full dropdown-position-fix">
+                                <label class="block text-sm font-medium text-slate-700 mb-2">خط شهری</label>
+                                <div class="relative">
+                                    <button type="button" id="dropdownUrbanLineBtn" data-dropdown-toggle="dropdownUrban"
+                                            class="w-full inline-flex items-center justify-between gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-700 hover:bg-slate-50 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 transition-all">
+                                        <span>انتخاب خط شهری</span>
+                                        <i class="fa-solid fa-chevron-down text-slate-400 text-xs"></i>
+                                    </button>
+                                    <div id="dropdownUrban"
+                                         class="hidden z-10 w-full dropdown-menu-fix filter-dropdown mt-1 bg-white rounded-lg shadow-lg border border-slate-200 p-2">
+                                        <div class="relative mb-2">
+                                            <input type="text" id="searchUrban" placeholder="جستجو..." 
+                                                   class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg">
+                                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                <i class="fa-solid fa-search text-slate-400"></i>
+                                            </div>
+                                        </div>
+                                        <ul class="space-y-1 text-sm text-slate-700 max-h-60 overflow-y-auto">
+                                            {% for urbanline in urbanlines %}
+                                                <li class="urban-line-item">
+                                                    <div class="flex items-center py-2 px-3 rounded hover:bg-slate-50">
+                                                        <input id="urban-line-{{ forloop.counter }}" name="urbanline" type="checkbox" value="{{ urbanline }}"
+                                                               class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 cursor-pointer">
+                                                        <label for="urban-line-{{ forloop.counter }}" class="mr-2 text-sm text-slate-700 cursor-pointer">{{ urbanline }}</label>
+                                                    </div>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Date range and search row -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+                            <!-- Date Range -->
+                            <div class="col-span-1 lg:col-span-2">
+                                <label class="block text-sm font-medium text-slate-700 mb-2">بازه زمانی</label>
+                                <div class="flex flex-wrap gap-3 date-range-container">
+                                    <div class="relative flex-1">
+                                        <input data-jdp placeholder="از تاریخ" id="dateFrom" name="dateFrom"
+                                               class="w-full px-4 py-2.5 pl-12 bg-white border border-slate-200 rounded-lg text-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:border-blue-500 rtl" onchange="labelInField(this, 'از')" />
+                                        <span class="absolute left-0 inset-y-0 flex items-center pl-4 pointer-events-none">
+                                            <i class="fa-regular fa-calendar text-slate-400 text-lg"></i>
+                                        </span>
+                                    </div>
+                                    <div class="relative flex-1">
+                                        <input data-jdp placeholder="تا تاریخ" id="dateTo" name="dateTo"
+                                               class="w-full px-4 py-2.5 pl-12 bg-white border border-slate-200 rounded-lg text-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:border-blue-500 rtl" onchange="labelInField(this, 'تا')" />
+                                        <span class="absolute left-0 inset-y-0 flex items-center pl-4 pointer-events-none">
+{% extends "base.html" %}
+{% load static %}
+{% load dashboardTags %}
+
+{% block head_extra %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<!-- Consolidated CSS files -->
+<link rel="stylesheet" href="{% static 'css/dashboard.min.css' %}" />
+
+<!-- Modern dashboard styles -->
+<style>
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #4338ca;
+        --primary-light: #818cf8;
+        --secondary: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --light: #f8fafc;
+        --dark: #1e293b;
+        --gray: #64748b;
+        --gray-light: #e2e8f0;
+        --transition: all 0.3s ease;
+    }
+    
+    /* Base RTL Layout */
+    body {
+        direction: rtl;
+        text-align: right;
+        font-family: 'Vazir', system-ui, -apple-system, sans-serif;
+        color: var(--dark);
+        background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+        min-height: 100vh;
+    }
+    
+    /* Modern Card Design */
+    .card {
+        background-color: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        transition: var(--transition);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        overflow: hidden;
+    }
+    
+    .card:hover {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        transform: translateY(-2px);
+    }
+    
+    /* Dashboard Header */
+    .dashboard-header {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        position: relative;
+        overflow: hidden;
+        border-radius: 1rem;
+    }
+    
+    .dashboard-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+        opacity: 0.6;
+    }
+    
+    /* Stat Cards */
+    .stat-card {
+        position: relative;
+        border-radius: 1rem;
+        overflow: hidden;
+        transition: var(--transition);
+    }
+    
+    .stat-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 4px;
+        height: 100%;
+        border-radius: 0 0.75rem 0.75rem 0;
+    }
+    
+    .stat-card.total::after { background-color: var(--primary); }
+    .stat-card.incoming::after { background-color: var(--secondary); }
+    .stat-card.outgoing::after { background-color: var(--warning); }
+    .stat-card.missed::after { background-color: var(--danger); }
+    
+    .stat-icon {
+        transition: var(--transition);
+    }
+    
+    .stat-card:hover .stat-icon {
+        transform: scale(1.1);
+    }
+    
+    /* Modern Table Design */
+    .table-container {
+        overflow-x: auto;
+        border-radius: 1rem;
+        background: white;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+    
+    th {
+        background-color: #f8fafc;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        color: #64748b;
+        padding: 1rem;
+        text-align: right;
+    }
+    
+    td {
+        padding: 1rem;
+        border-bottom: 1px solid #f1f5f9;
+        text-align: right;
+    }
+    
+    tbody tr:hover {
+        background-color: rgba(59, 130, 246, 0.05);
+    }
+    
+    /* Modern Form Elements */
+    .form-input, .form-select, .form-button {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid var(--gray-light);
+        transition: var(--transition);
+    }
+    
+    .form-input:focus, .form-select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+    
+    .form-button {
+        cursor: pointer;
+        font-weight: 500;
+    }
+    
+    .form-button.primary {
+        background-color: var(--primary);
+        color: white;
+    }
+    
+    .form-button.primary:hover {
+        background-color: var(--primary-dark);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .grid-cols-4 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        
+        .mobile-card {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .mobile-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .mobile-card-body {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .desktop-table {
+            display: none;
+        }
+        
+        .mobile-table {
+            display: block;
+        }
+    }
+    
+    @media (min-width: 769px) {
+        .desktop-table {
+            display: block;
+        }
+        
+        .mobile-table {
+            display: none;
+        }
+    }
+</style>
+{% endblock head_extra %}
+
+{% block main %}
+
+<div class="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
+    <!-- Sidebar (mobile drawer) -->
+    <div id="dashboardDrawer" class="fixed inset-0 z-40 transform -translate-x-full transition-transform duration-300 ease-in-out lg:hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50" id="drawerBackdrop"></div>
+        <div class="relative w-64 max-w-[80%] h-full bg-white shadow-xl flex flex-col rtl">
+            <div class="p-4 border-b border-slate-200">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-blue-600">لوتوس</h2>
+                   
+                </div>
+            </div>
+            <!-- <nav class="flex-1 p-4 overflow-y-auto"> -->
+               
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+
+        <!-- Sidebar (desktop) -->
+       
+
+        <!-- Main Content Area -->
+        <main class="flex-1 min-h-screen">
+            <!-- Navbar -->
+            <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-30 rtl">
+                <div class="mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex items-center justify-between h-16 rtl">
+                        <!-- Left side (Mobile menu & title) -->
+                        <div class="flex items-center gap-4 rtl">
+                            <button id="openDrawer" class="lg:hidden p-2 rounded-lg text-slate-500 hover:bg-slate-100">
+                                <i class="fa-solid fa-bars"></i>
+                            </button>
+                            <div>
+                                <h1 class="text-xl font-bold text-slate-800 lg:hidden rtl">داشبورد</h1>
+                            </div>
+                        </div>
+
+                        <!-- Right side (User & Notifications) -->
+                       
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="py-6 px-4 sm:px-6 lg:px-8 rtl dashboard-content-container">
+                <!-- Dashboard Header with Gradient Background -->
+                <div class="dashboard-header p-6 md:p-8 mb-8 rtl">
+                    <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4 rtl">
+                        <div class="rtl">
+                            <h1 class="text-2xl md:text-3xl font-bold text-white mb-2 rtl">داشبورد لوتوس</h1>
+                            <p class="text-indigo-100 opacity-90 rtl">مدیریت و گزارش تماس‌ها - {{ now|date:"Y/m/d" }}</p>
+                        </div>
+                        <div class="flex items-center gap-3 rtl">
+                            <div class="relative w-full md:w-64 flex items-center">
+                                <input
+                                    type="search"
+                                    id="quickSearch"
+                                    placeholder="جستجوی سریع..."
+                                    class="w-full h-12 px-4 pr-4 pl-12 bg-white border border-white/20 rounded-lg text-black placeholder-indigo-200 focus:outline-none focus:ring-2 focus:ring-white/30 focus:bg-white/20 rtl"
+                                    style="box-sizing: border-box;"
+                                />
+                                <span class="absolute left-0 inset-y-0 flex items-center pl-4 pointer-events-none h-12">
+                                    <i class="fa-solid fa-search text-indigo-400 text-lg"></i>
+                                </span>
+                            </div>
+                            <button type="button" id="printbtn" class="px-4 py-2.5 bg-white hover:bg-indigo-50 text-indigo-600 rounded-lg text-sm font-medium transition-colors focus:ring-2 focus:ring-white focus:ring-offset-2 shadow-sm flex items-center rtl">
+                                <i class="fa-solid fa-print ml-1.5"></i> چاپ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Cards - Redesigned with modern UI -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6 mb-8" id="statsCards">
+                    <!-- Total Calls -->
+                    <div class="stat-card total bg-white rounded-xl shadow-md p-6 border border-slate-100 hover:border-blue-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-14 h-14 stat-icon bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
+                                <i class="fa-solid fa-phone-volume text-xl"></i>
+                            </div>
+                            <div class="bg-blue-50 text-blue-600 text-xs font-medium px-2.5 py-1 rounded-full">
+                                <i class="fa-solid fa-chart-simple ml-1"></i>
+                                کل تماس‌ها
+                            </div>
+                        </div>
+                        <h3 class="text-3xl font-bold text-slate-800 rtl">{{ dashPage.paginator.count|default:"0" }}</h3>
+                        <div class="flex items-center mt-2">
+                            <span class="text-sm font-medium text-slate-500">مجموع تماس‌های ثبت شده</span>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-slate-100">
+                            <div class="flex items-center text-sm">
+                                <i class="fa-solid fa-clock text-slate-400 ml-1.5"></i>
+                                <span class="text-slate-500">آخرین بروزرسانی: چند دقیقه پیش</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Incoming Calls -->
+                    <div class="stat-card incoming bg-white rounded-xl shadow-md p-6 border border-slate-100 hover:border-green-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-14 h-14 stat-icon bg-green-100 rounded-full flex items-center justify-center text-green-600">
+                                <i class="fa-solid fa-phone-arrow-down-left text-xl"></i>
+                            </div>
+                            <div class="bg-green-50 text-green-600 text-xs font-medium px-2.5 py-1 rounded-full">
+                                <i class="fa-solid fa-arrow-down ml-1"></i>
+                                ورودی
+                            </div>
+                        </div>
+                        <h3 class="text-3xl font-bold text-slate-800 rtl">{{ incoming_calls_count|default:"0" }}</h3>
+                        <div class="flex items-center mt-2">
+                            <span class="text-sm font-medium text-slate-500">تماس‌های دریافت شده</span>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-slate-100">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-green-600 font-medium flex items-center">
+                                    <i class="fa-solid fa-circle-check ml-1.5"></i>
+                                    موفق
+                                </span>
+                                <span class="text-sm text-slate-500">
+                                    {% with percent=incoming_calls_count|default:0|floatformat:1 %}
+                                    {% if dashPage.paginator.count > 0 %}
+                                        {{ incoming_calls_count|default:0|floatformat:1 }}%
+                                    {% else %}
+                                        0%
+                                    {% endif %}
+                                    {% endwith %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Outgoing Calls -->
+                    <div class="stat-card outgoing bg-white rounded-xl shadow-md p-6 border border-slate-100 hover:border-yellow-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-14 h-14 stat-icon bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600">
+                                <i class="fa-solid fa-phone-arrow-up-right text-xl"></i>
+                            </div>
+                            <div class="bg-yellow-50 text-yellow-600 text-xs font-medium px-2.5 py-1 rounded-full">
+                                <i class="fa-solid fa-arrow-up ml-1"></i>
+                                خروجی
+                            </div>
+                        </div>
+                        <h3 class="text-3xl font-bold text-slate-800 rtl">{{ outgoing_calls_count|default:"0" }}</h3>
+                        <div class="flex items-center mt-2">
+                            <span class="text-sm font-medium text-slate-500">تماس‌های ارسال شده</span>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-slate-100">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-yellow-600 font-medium flex items-center">
+                                    <i class="fa-solid fa-signal ml-1.5"></i>
+                                    فعال
+                                </span>
+                                <span class="text-sm text-slate-500">
+                                    {% with percent=outgoing_calls_count|default:0|floatformat:1 %}
+                                    {% if dashPage.paginator.count > 0 %}
+                                        {{ outgoing_calls_count|default:0|floatformat:1 }}%
+                                    {% else %}
+                                        0%
+                                    {% endif %}
+                                    {% endwith %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Missed Calls -->
+                    <div class="stat-card missed bg-white rounded-xl shadow-md p-6 border border-slate-100 hover:border-red-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-14 h-14 stat-icon bg-red-100 rounded-full flex items-center justify-center text-red-600">
+                                <i class="fa-solid fa-phone-slash text-xl"></i>
+                            </div>
+                            <div class="bg-red-50 text-red-600 text-xs font-medium px-2.5 py-1 rounded-full">
+                                <i class="fa-solid fa-triangle-exclamation ml-1"></i>
+                                از دست رفته
+                            </div>
+                        </div>
+                        <h3 class="text-3xl font-bold text-slate-800 rtl">{{ missed_calls_count|default:"0" }}</h3>
+                        <div class="flex items-center mt-2">
+                            <span class="text-sm font-medium text-slate-500">تماس‌های پاسخ داده نشده</span>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-slate-100">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-red-600 font-medium flex items-center">
+                                    <i class="fa-solid fa-triangle-exclamation ml-1.5"></i>
+                                    ناموفق
+                                </span>
+                                <span class="text-sm text-slate-500">
+                                    {% with percent=missed_calls_count|default:0|floatformat:1 %}
+                                    {% if dashPage.paginator.count > 0 %}
+                                        {{ missed_calls_count|default:0|floatformat:1 }}%
+                                    {% else %}
+                                        0%
+                                    {% endif %}
+                                    {% endwith %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter Bar -->
+                <form method="get" class="bg-white rounded-xl shadow-sm p-5 mb-6 rtl border border-slate-100">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-medium text-slate-800">
+                            <i class="fa-solid fa-filter mr-2 text-blue-500"></i>
+                            فیلتر تماس‌ها
+                        </h3>
+                        <button type="button" id="toggleFilters" class="text-sm text-blue-600 hover:text-blue-800">
+                            <span id="filterText">نمایش فیلترها</span>
+                            <i class="fa-solid fa-chevron-down ml-1" id="filterIcon"></i>
+                        </button>
+                    </div>
+                    
+                    <div id="filterSection" class="hidden">
+                        <div class="filter-bar w-full mx-auto rtl flex flex-wrap gap-4 items-start">
+                            <!-- Filter Columns -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full mb-4">
+                                <!-- Call Type Filter -->
+                                <div class="w-full dropdown-position-fix">
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">نوع تماس</label>
+                                    <div class="relative">
+                                        <button type="button" id="callTypeDropDown" data-dropdown-toggle="callTypeBodyDropDown"
+                                                class="w-full inline-flex items-center justify-between gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-700 hover:bg-slate-50 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 transition-all">
+                                            <span>انتخاب نوع تماس</span>
+                                            <i class="fa-solid fa-chevron-down text-slate-400 text-xs"></i>
+                                        </button>
+                                        <div id="callTypeBodyDropDown"
+                                             class="hidden z-10 w-full dropdown-menu-fix filter-dropdown mt-1 bg-white rounded-lg shadow-lg border border-slate-200 p-2">
+                                            <ul class="space-y-1 text-sm text-slate-700">
+                                                <li>
+                                                    <div class="flex items-center py-2 px-3 rounded hover:bg-slate-50">
+                                                        <input id="call-type-1" name="calls" type="checkbox" value="همه تماس ها"
+                                                               class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 cursor-pointer">
+                                                        <label for="call-type-1" class="mr-2 text-sm text-slate-700 cursor-pointer">همه تماس ها</label>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="flex items-center py-2 px-3 rounded hover:bg-slate-50">
+                                                        <input id="call-type-2" name="calls" type="checkbox" value="تماس های پاسخ داده نشده"
+                                                               class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 cursor-pointer">
+                                                        <label for="call-type-2" class="mr-2 text-sm text-slate-700 cursor-pointer">تماس های پاسخ نداده شده</label>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="flex items-center py-2 px-3 rounded hover:bg-slate-50">
+                                                        <input id="call-type-3" name="calls" type="checkbox" value="تماس های ورودی"
+                                                               class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 cursor-pointer">
+                                                        <label for="call-type-3" class="mr-2 text-sm text-slate-700 cursor-pointer">تماس ‌های ورودی</label>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="flex items-center py-2 px-3 rounded hover:bg-slate-50">
+                                                        <input id="call-type-4" name="calls" type="checkbox" value="تماس های خروجی"
+                                                               class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 cursor-pointer">
+                                                        <label for="call-type-4" class="mr-2 text-sm text-slate-700 cursor-pointer">تماس ‌های خروجی</label>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="flex items-center py-2 px-3 rounded hover:bg-slate-50">
+                                                        <input id="call-type-5" name="calls" type="checkbox" value="تماس های داخلی"
+                                                               class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 cursor-pointer">
+                                                        <label for="call-type-5" class="mr-2 text-sm text-slate-700 cursor-pointer">تماس ‌های داخلی</label>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Internal Line Filter -->
+                                <div class="w-full dropdown-position-fix">
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">خط داخلی</label>
+                                    <div class="relative">
+                                        <button type="button" id="dropdownInternalLineBtn" data-dropdown-toggle="dropdownInternal"
+                                                class="w-full inline-flex items-center justify-between gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-700 hover:bg-slate-50 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 transition-all">
+                                            <span>انتخاب خط داخلی</span>
+                                            <i class="fa-solid fa-chevron-down text-slate-400 text-xs"></i>
+                                        </button>
+                                        <div id="dropdownInternal"
+                                             class="hidden z-10 w-full dropdown-menu-fix filter-dropdown mt-1 bg-white rounded-lg shadow-lg border border-slate-200 p-2">
+                                            <div class="relative mb-2">
+                                                <input type="text" id="searchInternal" placeholder="جستجو..." 
+                                                       class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg">
+                                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                    <i class="fa-solid fa-search text-slate-400"></i>
+                                                </div>
+                                            </div>
+                                            <ul class="space-y-1 text-sm text-slate-700 max-h-60 overflow-y-auto">
+                                                {% for extline in extlines %}
+                                                    <li class="internal-line-item">
+                                                        <div class="flex items-center py-2 px-3 rounded hover:bg-slate-50">
+                                                            <input id="internal-line-{{ forloop.counter }}" type="checkbox" name="extline" value="{{ extline }}"
+                                                                   class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 cursor-pointer">
+                                                            <label for="internal-line-{{ forloop.counter }}" class="mr-2 text-sm text-slate-700 cursor-pointer">{{ extline }}</label>
+                                                        </div>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Urban Line Filter -->
+                                <div class="w-full dropdown-position-fix">
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">خط شهری</label>
+                                    <div class="relative">
+                                        <button type="button" id="dropdownUrbanLineBtn" data-dropdown-toggle="dropdownUrban"
+                                                class="w-full inline-flex items-center justify-between gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-700 hover:bg-slate-50 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 transition-all">
+                                            <span>انتخاب خط شهری</span>
+                                            <i class="fa-solid fa-chevron-down text-slate-400 text-xs"></i>
+                                        </button>
+                                        <div id="dropdownUrban"
+                                             class="hidden z-10 w-full dropdown-menu-fix filter-dropdown mt-1 bg-white rounded-lg shadow-lg border border-slate-200 p-2">
+                                            <div class="relative mb-2">
+                                                <input type="text" id="searchUrban" placeholder="جستجو..." 
+                                                       class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg">
+                                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                    <i class="fa-solid fa-search text-slate-400"></i>
+                                                </div>
+                                            </div>
+                                            <ul class="space-y-1 text-sm text-slate-700 max-h-60 overflow-y-auto">
+                                                {% for urbanline in urbanlines %}
+                                                    <li class="urban-line-item">
+                                                        <div class="flex items-center py-2 px-3 rounded hover:bg-slate-50">
+                                                            <input id="urban-line-{{ forloop.counter }}" name="urbanline" type="checkbox" value="{{ urbanline }}"
+                                                                   class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 cursor-pointer">
+                                                            <label for="urban-line-{{ forloop.counter }}" class="mr-2 text-sm text-slate-700 cursor-pointer">{{ urbanline }}</label>
+                                                        </div>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Date range and search row -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+                                <!-- Date Range -->
+                                <div class="col-span-1 lg:col-span-2">
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">بازه زمانی</label>
+                                    <div class="flex flex-wrap gap-3 date-range-container">
+                                        <div class="relative flex-1">
+                                            <input data-jdp placeholder="از تاریخ" id="dateFrom" name="dateFrom"
+                                                   class="w-full px-4 py-2.5 pl-12 bg-white border border-slate-200 rounded-lg text-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:border-blue-500 rtl" onchange="labelInField(this, 'از')" />
+                                            <span class="absolute left-0 inset-y-0 flex items-center pl-4 pointer-events-none">
+                                                <i class="fa-regular fa-calendar text-slate-400 text-lg"></i>
+                                            </span>
+                                        </div>
+                                        <div class="relative flex-1">
+                                            <input data-jdp placeholder="تا تاریخ" id="dateTo" name="dateTo"
+                                                   class="w-full px-4 py-2.5 pl-12 bg-white border border-slate-200 rounded-lg text-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:border-blue-500 rtl" onchange="labelInField(this, 'تا')" />
+                                            <span class="absolute left-0 inset-y-0 flex items-center pl-4 pointer-events-none">
+                                                <i class="fa-regular fa-calendar text-slate-400 text-lg"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Search -->
+                                <div class="w-full">
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">جستجو</label>
+                                    <div class="relative w-full">
+                                        <input type="search" id="searchBox" placeholder="جستجو شماره یا نام"
+                                               class="w-full px-4 py-2.5 pl-12 bg-white border border-slate-200 rounded-lg text-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:border-blue-500 rtl" />
+                                        <span class="absolute left-0 inset-y-0 flex items-center pl-4 pointer-events-none">
+                                            <i class="fa-solid fa-search text-slate-400 text-lg"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="flex flex-wrap justify-end gap-3 mt-6 border-t border-slate-200 pt-4 action-buttons">
+                            <button type="reset" class="px-4 py-2.5 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg text-sm font-medium transition-colors focus:ring-2 focus:ring-slate-300 focus:ring-offset-2 shadow-sm">
+                                <i class="fa-solid fa-rotate-left mr-1"></i> 
+                                پاک کردن فیلترها
+                            </button>
+                            <button type="button" id="reverse_up" class="px-4 py-2.5 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg text-sm font-medium transition-colors focus:ring-2 focus:ring-slate-300 focus:ring-offset-2 shadow-sm">
+                                <i class="fa-solid fa-arrow-up mr-1"></i>
+                                مرتب‌سازی
+                            </button>
+                            <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm">
+                                <i class="fa-solid fa-filter mr-1"></i>
+                                اعمال فیلتر
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Calls Card -->
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-6 border border-slate-100">
+                    <div class="p-4 border-b border-slate-200 flex items-center justify-between">
+                        <h3 class="font-medium text-slate-800">لیست تماس‌ها</h3>
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm text-slate-500">
+                                <i class="fa-regular fa-clock mr-1"></i>
+                                به‌روزرسانی: چند دقیقه پیش
+                            </span>
+                            <button class="p-1 text-slate-400 hover:text-slate-600">
+                                <i class="fa-solid fa-arrows-rotate"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto w-full table-container">
+                        <table class="w-full min-w-full divide-y divide-slate-200 custom-table" id="table" dir="rtl">
+                            <thead>
+                                <tr class="bg-slate-50">
+                                    <th class="group px-6 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        <div class="flex items-center justify-end">
+                                            <span>ردیف</span>
+                                            <button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <i class="fa-solid fa-sort"></i>
+                                            </button>
+                                        </div>
+                                    </th>
+                                    <th class="group px-6 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        <div class="flex items-center justify-end">
+                                            <span>تاریخ</span>
+                                            <button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <i class="fa-solid fa-sort"></i>
+                                            </button>
+                                        </div>
+                                    </th>
+                                    <th class="group px-6 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        <div class="flex items-center justify-end">
+                                            <span>ساعت</span>
+                                            <button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <i class="fa-solid fa-sort"></i>
+                                            </button>
+                                        </div>
+                                    </th>
+                                    <th class="group px-6 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        <div class="flex items-center justify-end">
+                                            <span>شماره مخاطب</span>
+                                            <button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <i class="fa-solid fa-sort"></i>
+                                            </button>
+                                        </div>
+                                    </th>
+                                    <th class="group px-6 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        <div class="flex items-center justify-end">
+                                            <span>شماره داخلی</span>
+                                            <button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <i class="fa-solid fa-sort"></i>
+                                            </button>
+                                        </div>
+                                    </th>
+                                    <th class="group px-6 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        <div class="flex items-center justify-end">
+                                            <span>خط شهری</span>
+                                            <button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <i class="fa-solid fa-sort"></i>
+                                            </button>
+                                        </div>
+                                    </th>
+                                    <th class="group px-6 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        <div class="flex items-center justify-end">
+                                            <span>مدت زمان تماس</span>
+                                            <button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <i class="fa-solid fa-sort"></i>
+                                            </button>
+                                        </div>
+                                    </th>
+                                    <th class="group px-6 py-3.5 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        <div class="flex items-center justify-center">
+                                            <span>نوع تماس</span>
+                                            <button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <i class="fa-solid fa-sort"></i>
+                                            </button>
+                                        </div>
+                                    </th>
+                                    <th class="group px-6 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        <div class="flex items-center justify-end">
+                                            <span>مدت زمان برق</span>
+                                            <button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <i class="fa-solid fa-sort"></i>
+                                            </button>
+                                        </div>
+                                    </th>
+                                    <th class="group px-6 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        <div class="flex items-center justify-end">
+                                            <span>انتقال یافته</span>
+                                            <button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <i class="fa-solid fa-sort"></i>
+                                            </button>
+                                        </div>
+                                    </th>
+                                    <th class="group px-6 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        <div class="flex items-center justify-end">
+                                            <span>هزینه</span>
+                                            <button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <i class="fa-solid fa-sort"></i>
+                                            </button>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody" class="bg-white divide-y divide-slate-200">
+                                {% if dashPage %}
+                                    {% for rec in dashPage.object_list %}
+                                        <tr class="hover:bg-blue-50/70 transition-colors group">
+                                            <td class="px-6 py-4 text-sm text-slate-800 text-right whitespace-nowrap">
+                                                <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 text-slate-700">
+                                                    {{ forloop.counter0|add:dashPage.start_index }}
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-slate-800 text-right whitespace-nowrap">
+                                                <span class="font-medium">{{ rec.date }}</span>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-slate-800 text-right whitespace-nowrap">
+                                                <span class="font-medium">{{ rec.hour }}</span>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-slate-800 text-right whitespace-nowrap">
+                                                <span class="font-medium">{% if rec.contactnumber %}{{ rec.contactnumber }}{% else %}<span class="text-slate-400">-</span>{% endif %}</span>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-slate-800 text-right whitespace-nowrap">
+                                                <span class="font-medium">{{ rec.extension }}</span>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-slate-800 text-right whitespace-nowrap">
+                                                {% if rec.urbanline %}{{ rec.urbanline }}{% else %}<span class="text-slate-400">-</span>{% endif %}
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-slate-800 text-right whitespace-nowrap">
+                                                <span class="font-medium">{% if rec.durationtime %}{{ rec.durationtime }}{% else %}0{% endif %}</span>
+                                                <span class="text-xs text-slate-400 ml-1">ثانیه</span>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-slate-800 text-center whitespace-nowrap img-print-cell">
+                                                <div class="inline-flex flex-col items-center group relative">
+                                                    <img src="{% static 'pic/' %}{{ rec.calltype|getCallTypeIcon }}"
+                                                         class="w-6 h-6" title="{{ rec.calltype|getRealCallType }}">
+                                                    <span class="opacity-0 group-hover:opacity-100 absolute bottom-full mb-2 bg-slate-800 text-white text-xs rounded py-1 px-2 pointer-events-none transition-opacity whitespace-nowrap">
+                                                        {{ rec.calltype|getRealCallType }}
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-slate-800 text-right whitespace-nowrap">
+                                                {% if rec.beepsnumber %}{{ rec.beepsnumber }}{% else %}0{% endif %}
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-slate-800 text-right whitespace-nowrap">
+                                                {% if rec.transferring %}
+                                                    <span class="inline-flex px-2 py-1 text-xs font-semibold leading-none text-green-800 bg-green-100 rounded-full">بله</span>
+                                                {% else %}
+                                                    <span class="inline-flex px-2 py-1 text-xs font-semibold leading-none text-red-800 bg-red-100 rounded-full">خیر</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-slate-800 text-right whitespace-nowrap cost">
+                                                <span class="font-medium">{% if rec.durationtime %}{{ rec.durationtime|calculateOnePrice:rec.contactnumber }}{% else %}0{% endif %}</span>
+                                                <span class="text-xs text-slate-400 ml-1">تومان</span>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="11" class="px-6 py-10 text-center text-sm text-slate-500">
+                                            <div class="flex flex-col items-center justify-center">
+                                                <svg class="w-12 h-12 text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                </svg>
+                                                <p class="font-medium text-slate-500 mb-1">هیچ تماسی یافت نشد</p>
+                                                <p class="text-slate-400">هیچ تماسی با معیارهای فیلتر انتخاب شده وجود ندارد. لطفاً فیلترهای خود را تغییر دهید.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Mobile optimized view (shows on small screens) -->
+                    <div class="sm:hidden border-t border-slate-200 rtl mobile-view-container">
+                        <div class="px-4 py-3 bg-slate-50 text-xs font-medium text-slate-500 uppercase">تماس‌های اخیر</div>
+                        <ul class="divide-y divide-slate-200 rtl-mobile-fix">
+                            {% if dashPage %}
+                                {% for rec in dashPage.object_list %}
+                                    <li class="p-4 mobile-call-card">
+                                        <div class="flex items-center justify-between mb-2 rtl-flex-mobile-fix">
+                                            <div class="flex items-center rtl-flex-mobile-fix">
+                                                <div class="w-8 h-8 rounded-full flex items-center justify-center 
+                                                    {% if rec.calltype == 'ورودی' %}bg-green-100 text-green-600
+                                                    {% elif rec.calltype == 'خروجی' %}bg-blue-100 text-blue-600
+                                                    {% elif rec.calltype == 'بی‌پاسخ' %}bg-red-100 text-red-600
+                                                    {% else %}bg-slate-100 text-slate-600{% endif %}">
+                                                    <img src="{% static 'pic/' %}{{ rec.calltype|getCallTypeIcon }}" class="w-4 h-4">
+                                                </div>
+                                                <div class="ml-3 rtl-mobile-fix">
+                                                    <p class="text-sm font-medium text-slate-900">{{ rec.contactnumber|default:"شماره ناشناس" }}</p>
+                                                    <p class="text-xs text-slate-500">{{ rec.date }} - {{ rec.hour }}</p>
+                                                </div>
+                                            </div>
+                                            <span class="text-sm font-medium text-slate-900">{{ rec.durationtime|default:"0" }} ثانیه</span>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-2 text-xs text-slate-500 rtl-mobile-fix">
+                                            <div>
+                                                <span class="font-medium">خط داخلی:</span> {{ rec.extension }}
+                                            </div>
+                                            <div>
+                                                <span class="font-medium">خط شهری:</span> {{ rec.urbanline|default:"-" }}
+                                            </div>
+                                            <div>
+                                                <span class="font-medium">هزینه:</span> {{ rec.durationtime|calculateOnePrice:rec.contactnumber|default:"0" }} تومان
+                                            </div>
+                                            <div>
+                                                <span class="font-medium">انتقال:</span> 
+                                                {% if rec.transferring %}
+                                                    <span class="text-green-600">بله</span>
+                                                {% else %}
+                                                    <span class="text-red-600">خیر</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            {% else %}
+                                <li class="p-6 text-center">
+                                    <p class="text-sm text-slate-500">هیچ تماسی یافت نشد</p>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Footer with pagination -->
+                <div class="bg-white rounded-xl shadow-sm p-5 mb-6 rtl border border-slate-100">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pagination-container">
+                        <div class="flex flex-wrap items-center gap-3 pagination-info">
+                            <div class="px-4 py-2.5 bg-blue-50 rounded-lg">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-list text-blue-500"></i>
+                                    <div>
+                                        <span class="text-sm font-medium text-slate-700">تعداد کل:</span>
+                                        <span class="text-sm text-blue-600 font-semibold">{{ dashPage.paginator.count }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="px-4 py-2.5 bg-green-50 rounded-lg">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-sack-dollar text-green-500"></i>
+                                    <div>
+                                        <span class="text-sm font-medium text-slate-700">مجموع هزینه:</span>
+                                        <span class="text-sm text-green-600 font-semibold">
+                                            <span id="totalCosts">0</span>
+                                            <span class="text-slate-600">تومان</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if dashPage %}
+                            <div class="flex items-center w-full sm:w-auto justify-between sm:justify-end gap-2 pagination-controls">
+                                <a href="?p={% if dashPage.has_previous %}{{ dashPage.previous_page_number }}{% else %}1{% endif %}{% for key, value in request.GET.items %}{% if key != 'p' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+                                   class="inline-flex items-center px-3 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 {% if not dashPage.has_previous %}opacity-50 cursor-not-allowed{% endif %}">
+                                    <i class="fa-solid fa-chevron-right ml-1"></i>
+                                    قبلی
+                                </a>
+                                
+                                <div class="hidden sm:flex rounded-lg border border-slate-200 overflow-hidden pagination rtl">
+                                    {% for i in dashPage.paginator.page_range %}
+                                        {% if i == dashPage.number %}
+                                            <span class="px-3 py-2 text-sm font-medium text-white bg-blue-600">{{ i }}</span>
+                                        {% elif i > dashPage.number|add:"-3" and i < dashPage.number|add:"3" %}
+                                            <a href="?p={{ i }}{% for key, value in request.GET.items %}{% if key != 'p' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+                                               class="px-3 py-2 text-sm font-medium text-slate-700 bg-white hover:bg-slate-50">{{ i }}</a>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                
+                                <span class="sm:hidden inline-flex px-3 py-2 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg">
+                                    {{ dashPage.number }} / {{ dashPage.paginator.num_pages }}
+                                </span>
+                                
+                                <a href="?p={% if dashPage.has_next %}{{ dashPage.next_page_number }}{% else %}{{ dashPage.number }}{% endif %}{% for key, value in request.GET.items %}{% if key != 'p' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+                                   class="inline-flex items-center px-3 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 {% if not dashPage.has_next %}opacity-50 cursor-not-allowed{% endif %}">
+                                    بعدی
+                                    <i class="fa-solid fa-chevron-left mr-1"></i>
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </main>
+   
+</div>
+
+<!-- Add to favorites Modal -->
+<div id="favoriteModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black bg-opacity-40" id="favoriteModalBackdrop"></div>
+    <div class="relative max-w-md w-full mx-auto mt-20 bg-white rounded-xl shadow-lg p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-medium text-slate-800">افزودن به موارد دلخواه</h3>
+            <button id="closeFavoriteModal" class="text-slate-500 hover:text-slate-700">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-slate-700 mb-2">نام</label>
+            <input type="text" id="favoriteName" placeholder="نام مورد دلخواه را وارد کنید" 
+                   class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:border-blue-500">
+        </div>
+        <div class="flex justify-end">
+            <button id="saveFavorite" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                ذخیره
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function adjustTableFor20Rows() {
+        const tableContainer = document.querySelector('.table-container');
+        if (!tableContainer) return;
+        
+        // Don't apply fixed height on mobile
+        if (window.innerWidth < 768) {
+            tableContainer.style.height = "auto";
+            tableContainer.style.maxHeight = "400px";
+            return;
+        }
+        
+        const table = tableContainer.querySelector('table');
+        const thead = table.querySelector('thead');
+        const tbody = table.querySelector('tbody');
+        let rowHeight = 0;
+        const firstRow = tbody.querySelector('tr');
+        if (firstRow) {
+            rowHeight = firstRow.clientHeight;
+        } else {
+            rowHeight = 50; // Increased for better spacing
+        }
+        const headerHeight = thead ? thead.clientHeight : 0;
+        const desiredHeight = headerHeight + (Math.min(20, tbody.querySelectorAll('tr').length) * rowHeight);
+        tableContainer.style.height = desiredHeight + "px";
+    }
+
+    window.addEventListener("resize", adjustTableFor20Rows);
+    window.addEventListener("load", adjustTableFor20Rows);
+</script>
+
+<script src="{% static 'js/jquery.js' %}"></script>
+
+<script>
+    $(document).ready(function() {
+        // Toggle filter section
+        $("#toggleFilters").on('click', function() {
+            $("#filterSection").toggleClass('hidden');
+            if ($("#filterSection").hasClass('hidden')) {
+                $("#filterText").text("نمایش فیلترها");
+                $("#filterIcon").removeClass("fa-chevron-up").addClass("fa-chevron-down");
+            } else {
+                $("#filterText").text("پنهان کردن فیلترها");
+                $("#filterIcon").removeClass("fa-chevron-down").addClass("fa-chevron-up");
+            }
+        });
+        
+        // Mobile drawer functionality
+        $("#openDrawer").on('click', function() {
+            $("#dashboardDrawer").removeClass('-translate-x-full');
+        });
+        
+        $("#closeDrawer, #drawerBackdrop").on('click', function() {
+            $("#dashboardDrawer").addClass('-translate-x-full');
+        });
+        
+        // Toggle user menu dropdown
+        $("#userMenuBtn").on('click', function(e) {
+            e.stopPropagation();
+            $("#userMenuDropdown").toggleClass('hidden');
+        });
+        
+        // Close dropdowns when clicking outside
+        $(document).on('click', function() {
+            $("#userMenuDropdown").addClass('hidden');
+            $("#callTypeBodyDropDown, #dropdownInternal, #dropdownUrban").addClass('hidden');
+        });
+        
+        // Filter dropdowns
+        $("#callTypeDropDown").on('click', function(e) {
+            e.stopPropagation();
+            $("#callTypeBodyDropDown").toggleClass('hidden');
+            $("#dropdownInternal, #dropdownUrban").addClass('hidden');
+        });
+        
+        $("#dropdownInternalLineBtn").on('click', function(e) {
+            e.stopPropagation();
+            $("#dropdownInternal").toggleClass('hidden');
+            $("#callTypeBodyDropDown, #dropdownUrban").addClass('hidden');
+        });
+        
+        $("#dropdownUrbanLineBtn").on('click', function(e) {
+            e.stopPropagation();
+            $("#dropdownUrban").toggleClass('hidden');
+            $("#callTypeBodyDropDown, #dropdownInternal").addClass('hidden');
+        });
+        
+        // Search functionality for dropdowns
+        $("#searchInternal").on('keyup input', function() {
+            let filter = $(this).val().toLowerCase();
+            $(".internal-line-item").each(function() {
+                const text = $(this).text().toLowerCase();
+                $(this).toggle(text.indexOf(filter) > -1);
+            });
+        });
+        
+        $("#searchUrban").on('keyup input', function() {
+            let filter = $(this).val().toLowerCase();
+            $(".urban-line-item").each(function() {
+                const text = $(this).text().toLowerCase();
+                $(this).toggle(text.indexOf(filter) > -1);
+            });
+        });
+        
+        // Calculate total costs
+        function callsTablePricesTotal() {
+            let total = 0;
+            $('#tbody tr:visible').each(function() {
+                const costCell = $(this).find('.cost').text();
+                if ($.isNumeric(costCell)) {
+                    total += parseFloat(costCell);
+                }
+            });
+            $('#totalCosts').text(total.toLocaleString('fa-IR'));
+        }
+        
+        callsTablePricesTotal();
+        
+        // Handle reverse button
+        let reversed = false;
+        $('#reverse_up').on('click', function() {
+            const icon = $(this).find('i');
+            icon.toggleClass("fa-arrow-up fa-arrow-down");
+            const rows = [...$('#tbody tr')];
+            if (reversed) {
+                $('#tbody').append(rows);
+            } else {
+                $('#tbody').append(rows.reverse());
+            }
+            reversed = !reversed;
+        });
+        
+        // Handle search filtering
+        $('#searchBox').on('keyup input', function() {
+            let textfil = $(this).val().toLowerCase();
+            $('#tbody tr').each(function() {
+                const rowText = $(this).text().toLowerCase();
+                $(this).toggle(rowText.indexOf(textfil) > -1);
+            });
+            callsTablePricesTotal();
+        });
+        
+        // Handle print functionality
+        $("#printbtn").on("click", function() {
+            printTable();
+        });
+        
+        function printTable() {
+            const table = $("#table").clone();
+            
+            table.find("td.img-print-cell").each(function() {
+                const img = $(this).find("img");
+                const title = img.attr("title") || "بدون عنوان";
+                $(this).html(`
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <img src="${img.attr("src")}" style="max-width: 50px; max-height: 50px; margin-bottom: 5px;">
+                        <span style="font-size: 12px; font-weight: bold;">${title}</span>
+                    </div>
+                `);
+            });
+            
+            const printWindow = window.open('', '', 'height=1123,width=794');
+            printWindow.document.write('<html><head>');
+            printWindow.document.write('<style>');
+            printWindow.document.write(`
+                @page {
+                    size: A4 portrait;
+                    margin: 15mm;
+                }
+                @font-face {
+                    font-family: 'Vazir';
+                    src: url('{% static "fonts/Vazir.woff2" %}') format('woff2');
+                    font-weight: normal;
+                    font-style: normal;
+                }
+                body {
+                    font-family: 'Vazir', Arial, sans-serif;
+                    direction: rtl;
+                    text-align: right;
+                    margin: 0;
+                    padding: 20px;
+                }
+                .header {
+                    text-align: center;
+                    font-size: 18px;
+                    font-weight: bold;
+                    margin-bottom: 30px;
+                    padding-bottom: 10px;
+                    border-bottom: 2px solid #e5e7eb;
+                }
+                .logo {
+                    text-align: center;
+                    margin-bottom: 20px;
+                }
+                .logo img {
+                    max-width: 100px;
+                    height: auto;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin: 0 auto;
+                }
+                th, td {
+                    border: 1px solid #e5e7eb;
+                    padding: 10px;
+                    text-align: right;
+                    font-size: 12px;
+                }
+                th {
+                    background-color: #f9fafb;
+                    font-weight: bold;
+                }
+                tr:nth-child(even) {
+                    background-color: #f9fafb;
+                }
+                .footer {
+                    margin-top: 30px;
+                    text-align: center;
+                    font-size: 12px;
+                    color: #6b7280;
+                }
+                @media print {
+                    body {
+                        width: 100%;
+                        height: 100%;
+                    }
+                }
+            `);
+            printWindow.document.write('</style></head><body>');
+            const today = new Date().toLocaleDateString('fa-IR');
+            printWindow.document.write(`
+                <div class="logo">
+                    <img src="{% static 'pic/logo.png' %}" alt="Logo">
+                </div>
+                <div class="header">
+                    گزارش تماس ها - تاریخ: ${today}
+                </div>
+            `);
+            printWindow.document.write(table.wrap('<div>').parent().html());
+            printWindow.document.write(`
+                <div class="footer">
+                    <p>این گزارش توسط سیستم لوتوس تولید شده است.</p>
+                    <p>تاریخ چاپ: ${today}</p>
+                </div>
+            `);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.document.title = "گزارش تماس ها";
+            printWindow.focus();
+            setTimeout(function() {
+                printWindow.print();
+                printWindow.close();
+            }, 500);
+        }
+        
+        // Check saved filter values
+        let calls = JSON.parse(document.getElementById('calls-data').textContent);
+        let exts = JSON.parse(document.getElementById('exts-data').textContent);
+        let urbanlines = JSON.parse(document.getElementById('urbanlines-data').textContent);
+        let dateFrom = "{{ request.GET.dateFrom }}";
+        let dateTo = "{{ request.GET.dateTo }}";
+        
+        if(calls.length > 0){
+            $("#filterSection").removeClass('hidden');
+            $("#filterText").text("پنهان کردن فیلترها");
+            $("#filterIcon").removeClass("fa-chevron-down").addClass("fa-chevron-up");
+            
+            $("#callTypeBodyDropDown ul li input").each(function(){
+                if(calls.includes($(this).val()))
+                    $(this).prop('checked', true);
+                else
+                    $(this).prop('checked', false);
+            });
+        }
+        
+        if(exts.length > 0){
+            $("#filterSection").removeClass('hidden');
+            $("#filterText").text("پنهان کردن فیلترها");
+            $("#filterIcon").removeClass("fa-chevron-down").addClass("fa-chevron-up");
+            
+            $("#dropdownInternal ul li input").each(function(){
+                if(exts.includes($(this).val()))
+                    $(this).prop('checked', true);
+                else
+                    $(this).prop('checked', false);
+            });
+        }
+        
+        if(urbanlines.length > 0){
+            $("#filterSection").removeClass('hidden');
+            $("#filterText").text("پنهان کردن فیلترها");
+            $("#filterIcon").removeClass("fa-chevron-down").addClass("fa-chevron-up");
+            
+            $("#dropdownUrban ul li input").each(function(){
+                if(urbanlines.includes($(this).val()))
+                    $(this).prop('checked', true);
+                else
+                    $(this).prop('checked', false);
+            });
+        }
+        
+        if(dateFrom.length != 0 && dateTo.length != 0){
+            $("#filterSection").removeClass('hidden');
+            $("#filterText").text("پنهان کردن فیلترها");
+            $("#filterIcon").removeClass("fa-chevron-down").addClass("fa-chevron-up");
+            
+            $("#dateFrom").val(dateFrom);
+            $("#dateTo").val(dateTo);
+        }
+    });
+    
+    // Function for date field formatting
+    function labelInField(input, label) {
+        const selectedDate = input.value;
+        if (selectedDate) {
+            input.value = `${label} ${selectedDate}`;
+        }
+    }
+</script>
+
+<!-- Safe JSON injection for filter values -->
+<script id="calls-data" type="application/json">{{ request.GET|getlist:'calls'|json_script:"calls-data" }}</script>
+<script id="exts-data" type="application/json">{{ request.GET|getlist:'extline'|json_script:"exts-data" }}</script>
+<script id="urbanlines-data" type="application/json">{{ request.GET|getlist:'urbanline'|json_script:"urbanlines-data" }}</script>
+
+{% block js_extra %}
+<script src="{% static 'js/dashboard-rtl.js' %}"></script>
+<script src="{% static 'js/remove-theme-toggle.js' %}"></script>
+<script src="{% static 'js/dashboard-responsive.js' %}"></script>
+<script>
+    // Final responsive fixes to override Tailwind classes
+    window.addEventListener('load', function() {
+        // Force mobile layout for small screens
+        function forceResponsiveLayout() {
+            if (window.innerWidth < 768) {
+                // Fix stat cards layout
+                const statsCards = document.getElementById('statsCards');
+                if (statsCards) {
+                    statsCards.style.display = 'flex';
+                    statsCards.style.flexDirection = 'column';
+                }
+                
+                // Ensure table container is scrollable
+                document.querySelectorAll('.table-container').forEach(el => {
+                    el.style.overflowX = 'auto';
+                    el.style.display = 'block';
+                    el.style.width = '100%';
+                });
+                
+                // Fix form layout
+                document.querySelectorAll('form .grid').forEach(grid => {
+                    grid.style.display = 'flex';
+                    grid.style.flexDirection = 'column';
+                });
+                
+                // Fix dropdown positioning
+                document.querySelectorAll('.dropdown-position-fix').forEach(el => {
+                    el.style.position = 'relative';
+                });
+                
+                // Fix RTL specific issues
+                document.querySelectorAll('.rtl').forEach(el => {
+                    el.style.direction = 'rtl';
+                    el.style.textAlign = 'right';
+                });
+                
+                // Fix form buttons on small screens
+                document.querySelectorAll('form button').forEach(btn => {
+                    btn.style.marginBottom = '0.5rem';
+                });
+                
+                // Force pagination container to be vertical
+                document.querySelectorAll('.pagination-container').forEach(el => {
+                    el.style.flexDirection = 'column';
+                });
+            }
+        }
+        
+        // Apply immediately and on resize
+        forceResponsiveLayout();
+        window.addEventListener('resize', forceResponsiveLayout);
+        
+        // Apply again after a short delay to override any other scripts
+        setTimeout(forceResponsiveLayout, 500);
+        
+        console.log('Final responsive fixes applied');
+    });
+</script>
+{% endblock js_extra %}
+{% endblock main %}
+

@@ -1,0 +1,77 @@
+/* RTL Dashboard Layout Fixes */
+
+/* Force RTL direction for all dashboard elements */
+.rtl {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+/* Ensure the dashboard header has proper RTL layout */
+.dashboard-header {
+    position: relative;
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+/* Fix for header container flex direction */
+.dashboard-header .relative.z-10 {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100%;
+}
+
+/* Fix for column to row change in responsive layouts */
+@media (min-width: 768px) {
+    .dashboard-header .relative.z-10 {
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+    }
+}
+
+/* Fix for right-side header elements layout */
+.dashboard-header .flex.items-center.gap-3 {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+}
+
+/* Fix search field positioning */
+.dashboard-header .relative {
+    position: relative;
+}
+
+/* Fix search icon positioning */
+.dashboard-header .inset-y-0.right-0 {
+    position: absolute;
+    right: 0 !important;
+    left: auto !important;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+}
+
+/* Ensure proper text directions for inputs */
+.dashboard-header input[type="search"],
+.dashboard-header input[type="text"] {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+/* Fix text alignment in main dashboard content */
+.py-6.px-4.sm\:px-6.lg\:px-8.rtl {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+/* Fix button text and icon positioning */
+.dashboard-header button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.dashboard-header button i {
+    margin-left: 0.375rem !important;
+    margin-right: 0 !important;
+} 

@@ -1,0 +1,9 @@
+WMI==1.5.1
+celery==5.4.0
+django-celery-beat==2.7.0
+Redis==5.2.1
+psutil~=6.0.0
+pyserial~=3.5
+Django==5.1.6
+jdatetime==5.0.0
+whitenoise==6.9.0

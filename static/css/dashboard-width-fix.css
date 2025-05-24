@@ -1,0 +1,115 @@
+/* Dashboard Width Adjustment */
+
+/* Make the main content container responsive */
+main.flex-1.min-h-screen {
+    max-width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding: 0 1rem !important;
+    overflow-x: hidden !important;
+}
+
+@media (min-width: 1024px) {
+    main.flex-1.min-h-screen {
+        max-width: calc(100% - 135px) !important;
+        margin-right: 135px !important;
+        padding: 0 2rem !important;
+    }
+}
+
+/* Add maximum width to the content container */
+.py-6.px-4.sm\:px-6.lg\:px-8.rtl {
+    max-width: 1400px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100% !important;
+    padding: 1rem !important;
+}
+
+@media (min-width: 768px) {
+    .py-6.px-4.sm\:px-6.lg\:px-8.rtl {
+        padding: 1.5rem !important;
+    }
+}
+
+/* Make cards responsive */
+.grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4.gap-5.md\:gap-6.mb-8 {
+    display: grid !important;
+    grid-template-columns: repeat(1, 1fr) !important;
+    gap: 1rem !important;
+    width: 100% !important;
+    max-width: 1300px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+@media (min-width: 640px) {
+    .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4.gap-5.md\:gap-6.mb-8 {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4.gap-5.md\:gap-6.mb-8 {
+        grid-template-columns: repeat(4, 1fr) !important;
+    }
+}
+
+/* Adjust table container width */
+.bg-white.rounded-xl.shadow-sm.overflow-hidden.mb-6.border.border-slate-100 {
+    max-width: 1300px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+}
+
+/* Adjust filter form width */
+form.bg-white.rounded-xl.shadow-sm.p-5.mb-6.rtl {
+    max-width: 1300px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100% !important;
+    padding: 1rem !important;
+}
+
+@media (min-width: 768px) {
+    form.bg-white.rounded-xl.shadow-sm.p-5.mb-6.rtl {
+        padding: 1.5rem !important;
+    }
+}
+
+/* Adjust pagination container width */
+.bg-white.rounded-xl.shadow-sm.p-5.mb-6.rtl.border.border-slate-100 {
+    max-width: 1300px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100% !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1280px) {
+    .py-6.px-4.sm\:px-6.lg\:px-8.rtl {
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .py-6.px-4.sm\:px-6.lg\:px-8.rtl {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+}
+
+/* Fix header position with the new width */
+header.bg-white.shadow-sm {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+@media (min-width: 1024px) {
+    header.bg-white.shadow-sm {
+        max-width: calc(100% - 135px) !important;
+    }
+} 

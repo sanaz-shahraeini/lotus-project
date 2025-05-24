@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load errortags %}
+{% block main %}
+    <div class="my-0">
+        <div class=" w-full max-w-[1350px] h-auto mt-1 mx-auto pr-[40px] 2xl:pr-[138px] xl:pr-[138px] lg:pr-[138px] mr-1 flex flex-col rtl">
+            <div class="flex flex-wrap gap-2 justify-items-center items-center px-4 ">
+                <div class="flex items-center gap-2 mr-2">
+                    <!-- button for filter -->
+                    <form method="get" class="flex items-center gap-2 ">
+                    
+                        <button class="w-[65px] h-8 text-white bg-blue-400 rounded-sm text-xs sm:w-20 sm:h-8 md:w-[65px] md:h-8 lg:w-[75px] lg:h-8 xl:w-[85px] xl:h-8 2xl:w-[85px] 2xl:h-8 mt-3 2xl:text-sm xl:text-sm lg:text-sm">
+                            اعمال فیلتر
+                        </button>
+                        <!-- dates -->
+                        <div class="flex items-center gap-2 pt-3">
+                            <input 
+                                id="dateFrom" 
+                                data-jdp 
+                                placeholder="از تاریخ" 
+                                name="dateFrom" 
+                                class="w-24 h-8 text-xs rounded-sm sm:w-[105px] sm:h-7 md:w-[95px] md:h-8 lg:w-[100px] lg:h-8 xl:w-36 xl:h-8 2xl:w-36 2xl:h-8 2xl:text-sm xl:text-sm lg:text-sm text-right"
+                                onchange="labelInField(this, 'از')"
+                            />
+                            <input 
+                                id="dateTo" 
+                                data-jdp 
+                                placeholder="تا تاریخ" 
+                                name="dateTo" 
+                                class="w-24 h-8 text-xs rounded-sm sm:w-[105px] sm:h-7 md:w-[95px] md:h-8 lg:w-[100px] lg:h-8 xl:w-36 xl:h-8 2xl:w-36 2xl:h-8 2xl:text-sm xl:text-sm lg:text-sm text-right"
+                                onchange="labelInField(this, 'تا')"
+                            />
+                        </div>
+                        
+                    </form>
+                </div>
+
+                <div class="flex items-center gap-2 mr-2">
+                    <!-- icon sorting -->
+                    <button id="up" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
+                        <i class="fa-regular fa-arrow-up text-gray-700 cursor-pointer text-lg"></i>
+                    </button>
+                    <!-- search box -->
+                    <input type="search" id="search" name="search-box" placeholder="جستجو خطا"
+                           class="w-[235px] h-8 text-gray-500 text-xs rtl rounded-sm border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none sm:w-[200px] sm:h-7 md:w-[130px] md:h-8 lg:w-48 lg:h-8 xl:w-56 xl:h-8 2xl:w-56 2xl:h-8 2xl:text-sm xl:text-sm lg:text-sm"/>
+                </div>
+        
+                <!-- pagination -->
+                {% if pages %}
+                    <div class="flex items-center gap-2 text-center mr-2">
+                        <a href="{% if pages.has_next %}?p={{ pages.next_page_number }}{% else %}#{% endif %}"
+                           class="w-[65px] h-8 {% if pages.has_next %}bg-blue-600{% else %}bg-blue-200 cursor-not-allowed{% endif %} text-white text-xs rounded-sm p-1 hover:bg-blue-700 transition-colors sm:w-[85px] sm:h-7 md:w-[50px] md:h-8 lg:w-[70px] lg:h-8 xl:w-20 xl:h-8 2xl:w-20 2xl:h-8 2xl:text-sm xl:text-sm lg:text-sm">
+                            بعدی
+                        </a>
+                        <span class="text-sm whitespace-nowrap">
+                            صفحه {{ pages.number }}/{{ pages.paginator.num_pages }}
+                        </span>
+                        <a href="{% if pages.has_previous %}?p={{ pages.previous_page_number }}{% else %}#{% endif %}"
+                           class="w-[65px] h-8 {% if pages.has_previous %}bg-blue-600{% else %}bg-blue-200 cursor-not-allowed{% endif %} text-white text-xs rounded-sm p-1 hover:bg-blue-700 transition-colors sm:w-[85px] sm:h-7 md:w-[50px] md:h-8 lg:w-[70px] lg:h-8 xl:w-20 xl:h-8 2xl:w-20 2xl:h-8 2xl:text-sm xl:text-sm lg:text-sm">
+                            قبلی
+                        </a>
+                    </div>
+                {% endif %}
+        
+                <!-- print button -->
+                <button id='printbtn' class="w-[65px] h-8 text-white mt-2 mr-2 bg-purple-800 rounded-sm text-xs hover:bg-purple-700 transition-colors sm:w-[85px] my-2 sm:h-7 md:w-[50px] md:h-8 lg:w-[70px] lg:h-8 xl:w-20 xl:h-8 2xl:w-20 2xl:h-8 2xl:text-sm xl:text-sm lg:text-sm">
+                    چاپ
+                </button>
+            </div>
+        </div>
+        <!-- table for errors -->
+        <div class="border-2 border-solid border-gray-500 overflow-x-auto mr-[20px] 2xl:mr-[138] xl:mr-[138] lg:mr-[138] m-4 mt-0 flex-grow">
+            <table id='table' class="w-full min-w-full border-2 border-solid border-gray-600 text-sm">
+                <thead class="bg-gray-200">
+                <tr>
+                    <th class="text-center border-2 border-solid border-gray-200">راه حل پیشنهادی</th>
+                    <th class="text-center border-2 border-solid border-gray-200">علت احتمالی</th>
+                    <th class="text-center border-2 border-solid border-gray-200 ">عنوان خطا</th>
+                    <th class="text-center border-2 border-solid border-gray-200">شماره خطا</th>
+                    <th class="text-center border-2 border-solid border-gray-200">ساعت</th>
+                    <th class="text-center border-2 border-solid border-gray-200 ">تاریخ</th>
+                    <th class="text-center border-2 border-solid border-gray-200">ردیف</th>
+                </tr>
+                </thead>
+                <tbody id="errorsTable">
+                {% if pages %}
+                    {% for fault in pages.object_list %}
+                        <tr>
+                            <td class=" h-6 border-2 border-solid border-gray-200 text-center align-bottom"
+                                title="{{ fault.errorcode|getDataOfFields:"solution" }}">
+                                {{ fault.errorcode|getDataOfFields:"solution"|truncatewords:5 }}</td>
+                            <td class="border-2 border-solid border-gray-200 text-center"
+                                title="{{ fault.errorcode|getDataOfFields:"probablecause" }}">
+                                {{ fault.errorcode|getDataOfFields:"probablecause"|truncatewords:5 }}</td>
+                            <td class="border-2 border-solid border-gray-200 text-center" title="{{ fault.errorcode|getDataOfFields:"errormessage" }}">
+                                {{ fault.errorcode|getDataOfFields:"errormessage"|truncatewords:3 }}</td>
+                            <td class="border-2 border-solid border-gray-200 text-center">{{ fault.errorcode }}</td>
+                            <td class="border-2 border-solid border-gray-200 text-center">
+                                {{ fault.created_at|date:'H:i' }}</td>
+                            <td class="border-2 border-solid border-gray-200 text-center">
+                                {{ fault.created_at|date:'Y-m-d'|convertDatesToHijri }}</td>
+                            <td class="border-2 border-solid border-gray-200 text-center">
+                                {{ forloop.counter0|add:pages.start_index }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script>
+        jalaliDatepicker.startWatch({
+            minDate: "attr",
+            maxDate: "today",
+            hideAfterChange: true,
+            autoHide: true,
+            showTodayBtn: true,
+            showEmptyBtn: true,
+            persianDigits: true,
+            topSpace: 10,
+            bottomSpace: 30,
+            dayRendering(opt, input) {
+                return {
+                    isHollyDay: opt.day == 1
+                }
+            }
+        });
+
+    </script>
+    <script>
+        let reversed = false;
+
+        $(document).ready(function () {
+            const errTable = $("#errorsTable");
+            const tr = $("#errorsTable tr");
+            $("#up").on("click", function () {
+                const icon = $("#up i");
+                icon.toggleClass("fa-arrow-up fa-arrow-down");
+                const rows = [...tr]
+                if (reversed) {
+                    errTable.append(rows)
+                } else {
+                    errTable.append(rows.reverse())
+                }
+                reversed = !reversed
+            });
+            $("#search").on("keyup input", function () {
+                let txt = $(this).val().toLowerCase()
+                tr.filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(txt) > -1)
+                })
+            })
+        });
+    </script>
+    <script>
+        function adjustTableFor20Rows() {
+            const tableContainer = document.querySelector('.table-container');
+            if (!tableContainer) return;
+            const table = tableContainer.querySelector('table');
+            const thead = table.querySelector('thead');
+            const tbody = table.querySelector('tbody');
+            let rowHeight = 0;
+            const firstRow = tbody.querySelector('tr');
+            if (firstRow) {
+                rowHeight = firstRow.clientHeight;
+            } else {
+                rowHeight = 30;
+            }
+            const headerHeight = thead ? thead.clientHeight : 0;
+            const desiredHeight = headerHeight + (20 * rowHeight);
+            tableContainer.style.height = desiredHeight + "px";
+        }
+        window.addEventListener("resize", adjustTableFor20Rows);
+        window.addEventListener("load", adjustTableFor20Rows);
+    </script>
+    <script>
+        function labelInField(input, label) {
+            const selectedDate = input.value;
+            if (selectedDate) {
+                input.value = `${label} ${selectedDate}`;
+            }
+        }
+    </script>
+    <script>
+        $(document).ready(function() {
+            $("#printbtn").on("click", function() {
+                printTable();
+            });
+
+        function printTable() {
+            const table = $("#table").clone();
+
+            let columnsToRemove = [];
+
+            table.find("tr").first().find("th, td").each(function(index, element) {
+                const columnText = $(element).text().trim();
+                if (columnText === "علت احتمالی" || columnText === "راه حل پیشنهادی") {
+                    columnsToRemove.push(index);
+                }
+            });
+
+                    table.find("tr").each(function() {
+                        columnsToRemove.forEach(function(index) {
+                            $(this).find("th, td").eq(index).remove();
+                        });
+                    });
+
+                    table.find("tr").each(function(rowIndex) {
+                        $(this).find("th, td").each(function(index, element) {
+                            if (![2, 3, 4, 5, 6].includes(index)) {
+                                $(element).remove();
+                            }
+                        });
+                    });
+
+                    table.find("td").each(function(index1) {
+                        const fullTitle = $(this).attr("title");
+                        if (fullTitle) {
+                            $(this).text(fullTitle);
+                        }
+                    });
+
+                    const printWindow = window.open('', '', 'height=1123,width=794');
+                    printWindow.document.write('<html><head>');
+                    printWindow.document.write('<style>');
+                    printWindow.document.write(`
+                        @page {
+                            size: A4;
+                            margin: 10mm;
+                        }
+                        body {
+                            width: 210mm;
+                            height: 297mm;
+                            margin: 0;
+                            padding: 0;
+                        }
+                        .header {
+                            text-align: center;
+                            margin-bottom: 20px;
+                            font-size: 14px;
+                            font-weight: bold;
+                        }
+                        table {
+                            width: 100%;
+                            margin: 0 auto;
+                        }
+                        th, td {
+                            border: 1px solid #000;
+                            padding: 10px;
+                            text-align: center;
+                        }
+                        @media print {
+                            body {
+                                width: 100%;
+                                height: 100%;
+                            }
+                        }
+                    `);
+                    printWindow.document.write('</style></head><body>');
+
+                    const today = new Date().toLocaleDateString('fa-IR');
+                    printWindow.document.write(`
+                        <div class="header">
+                            گزارش خطاها - تاریخ: ${today}
+                        </div>
+                    `);
+
+                    printWindow.document.write(table.wrap('<div>').parent().html());
+                    printWindow.document.write('</body></html>');
+                    printWindow.document.close();
+
+                    printWindow.document.title = "گزارش خطاها";
+
+                    printWindow.focus();
+                    printWindow.print();
+                    printWindow.close();
+                }
+            });
+
+    </script>
+    
+{% endblock %}

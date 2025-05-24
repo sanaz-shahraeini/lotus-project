@@ -1,0 +1,54 @@
+{% if messages %}
+    <div id="toast-container" class="fixed bottom-5 right-5 flex flex-col gap-2 z-50" dir="rtl">
+        {% for message in messages %}
+            <div id="toast" class="bg-white shadow-lg rounded-xl p-4 w-80 border border-gray-200 relative overflow-hidden animate-fadeIn transition-opacity duration-500"
+                 data-timeout="5000">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}circle-exclamation text-red-600{% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}circle-check text-green-600{% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}warning text-orange-600{% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}circle-info text-blue-600{% endif %}"></i>
+                    <div>
+                        <h3 class="font-semibold text-gray-900">{% if message.tags == "success" %}
+                            موفقیت{% elif message.tags == "error" %}خطا{% elif message.tags == "warning" %}هشدار{% else %}پیام{% endif %}</h3>
+                        <p class="text-sm text-gray-600">{{ message|linebreaksbr|safe }}</p>
+                    </div>
+                    <button onclick="hideToast(this)" class="mr-auto hover:text-gray-600">
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                             stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="absolute bottom-0 left-0 h-1 {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}bg-red-600{% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}bg-green-600{% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}bg-orange-600{% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}bg-blue-600{% endif %} animate-progress"></div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<style>
+    @keyframes progress {
+        from {
+            width: 100%;
+        }
+        to {
+            width: 0;
+        }
+    }
+
+    .animate-progress {
+        animation: progress 5s linear forwards;
+    }
+</style>
+
+<script>
+    function hideToast(button) {
+        const toast = button.closest("#toast");
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 500);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll("[data-timeout]").forEach(toast => {
+            setTimeout(() => hideToast(toast), toast.dataset.timeout);
+        });
+    });
+</script>
