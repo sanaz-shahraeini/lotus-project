@@ -5,8 +5,11 @@
 {% block head_extra %}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <!-- Consolidated CSS files -->
-<link rel="stylesheet" href="{% static 'css/dashboard.min.css' %}" />
-<link rel="stylesheet" href="{% static 'css/sidebar-content-fix.css' %}" />
+<link rel="stylesheet" href="{% static 'css/dashboard-fix.css' %}" />
+<link rel="stylesheet" href="{% static 'css/dashboard-width-fix.css' %}" />
+<link rel="stylesheet" href="{% static 'css/direct-layout-fix.css' %}" />
+<link rel="stylesheet" href="{% static 'css/header-optimize.css' %}" />
+<link rel="stylesheet" href="{% static 'css/consistent-headers.css' %}" />
 
 <!-- Modern dashboard styles -->
 <style>
@@ -327,7 +330,7 @@
     <main class="container mx-auto px-4 py-6">
         <!-- Navbar -->
         <header class="bg-white shadow-sm sticky top-0 z-50 mb-8 rounded-xl">
-            <div class="px-4 py-4 sm:px-6 flex items-center justify-between">
+            <div class="px-4 py-8 sm:px-6 flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     <h1 class="text-xl font-bold text-slate-800"> لوتوس</h1>
                 </div>

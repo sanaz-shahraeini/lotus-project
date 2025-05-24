@@ -8,30 +8,27 @@
     z-index: 40 !important;
 }
 
-/* Apply consistent spacing between sidebar links */
-#sidebar nav.mt-5.space-y-2 {
-    margin-top: 1rem !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 0 !important;
-}
-
-#sidebar nav.mt-5.space-y-2 > * {
-    margin: 5px 0 !important;
-}
-
-/* Remove default spacing */
-#sidebar nav.space-y-2 > :not([hidden]) ~ :not([hidden]) {
-    --tw-space-y-reverse: 0 !important;
-    margin-top: 5px !important;
-    margin-bottom: 5px !important;
-}
-
 /* Position main content beside sidebar */
 .main-content {
     margin-right: 160px !important;
     width: calc(100% - 160px) !important;
     transition: margin-right 0.3s ease !important;
+    padding: 0 !important;
+}
+
+/* Fix min-h-screen container */
+.min-h-screen {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Fix container padding */
+.container.mx-auto {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    max-width: none !important;
 }
 
 /* Fix sidebar link alignment */
@@ -39,7 +36,7 @@
     display: flex !important;
     align-items: center !important;
     justify-content: flex-start !important;
-    padding: 0.35rem 1rem !important;
+    padding: 0.75rem 1rem !important;
     text-align: right !important;
     width: 100% !important;
     margin: 0 !important;
@@ -50,9 +47,9 @@
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: 18px !important;
-    margin-left: 6px !important;
-    font-size: 0.9rem !important;
+    width: 20px !important;
+    margin-left: 10px !important;
+    font-size: 1.1rem !important;
 }
 
 /* Mobile adjustments */
@@ -66,29 +63,11 @@
         width: 160px !important;
     }
     
-    /* Apply consistent spacing for mobile sidebar links */
-    #mobile-sidebar nav.mt-5.space-y-2 {
-        margin-top: 1rem !important;
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 0 !important;
-    }
-    
-    #mobile-sidebar nav.mt-5.space-y-2 > * {
-        margin: 5px 0 !important;
-    }
-    
-    #mobile-sidebar nav.space-y-2 > :not([hidden]) ~ :not([hidden]) {
-        --tw-space-y-reverse: 0 !important;
-        margin-top: 5px !important;
-        margin-bottom: 5px !important;
-    }
-    
     #mobile-sidebar a, #mobile-sidebar button {
         display: flex !important;
         align-items: center !important;
         justify-content: flex-start !important;
-        padding: 0.35rem 1rem !important;
+        padding: 0.75rem 1rem !important;
         text-align: right !important;
         width: 100% !important;
         margin: 0 !important;
@@ -98,9 +77,9 @@
         display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
-        width: 18px !important;
-        margin-left: 6px !important;
-        font-size: 0.9rem !important;
+        width: 20px !important;
+        margin-left: 10px !important;
+        font-size: 1.1rem !important;
     }
 }
 
