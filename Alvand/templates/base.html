@@ -19,6 +19,7 @@
     <link href="{% static 'css/theme.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/mobile-responsive-fix.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/dashboard-fix.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/mobile-menu-fix.css' %}" rel="stylesheet" type="text/css">
     {% block head_extra %}{% endblock %}
 </head>
 
@@ -90,7 +91,7 @@
     </aside>
 
     <button id="toggle-menu"
-            class="fixed top-4 right-4 text-white p-2 rounded-md z-50 lg:hidden transition-all transform duration-300 ease-in-out">
+            class="fixed top-4 right-4 text-white p-2 rounded-md z-50 lg:hidden transition-all transform duration-300 ease-in-out bg-transparent">
         <i id="menu-icon" class="fas fa-bars"></i>
     </button>
 
@@ -297,6 +298,7 @@
     });
 </script>
 <script src="{% static 'js/remove-theme-toggle.js' %}"></script>
+<script src="{% static 'js/hamburger-fix.js' %}"></script>
 {% block js_extra %}{% endblock %}
 </body>
 </html>

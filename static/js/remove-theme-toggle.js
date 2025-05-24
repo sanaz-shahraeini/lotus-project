@@ -24,6 +24,13 @@ document.addEventListener('DOMContentLoaded', function() {
             opacity: 0 !important;
             pointer-events: none !important;
         }
+        
+        /* Ensure hamburger menu is clickable */
+        #toggle-menu {
+            pointer-events: auto !important;
+            cursor: pointer !important;
+            z-index: 9999 !important;
+        }
     `;
     document.head.appendChild(style);
 }); 

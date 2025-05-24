@@ -33,7 +33,8 @@ main.flex-1.min-h-screen {
 }
 
 /* Make cards responsive */
-.grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4.gap-5.md\:gap-6.mb-8 {
+.grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4.gap-5.md\:gap-6.mb-8,
+#statsCards {
     display: grid !important;
     grid-template-columns: repeat(1, 1fr) !important;
     gap: 1rem !important;
@@ -41,16 +42,19 @@ main.flex-1.min-h-screen {
     max-width: 1300px !important;
     margin-left: auto !important;
     margin-right: auto !important;
+    margin-top: 2rem !important;
 }
 
 @media (min-width: 640px) {
-    .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4.gap-5.md\:gap-6.mb-8 {
+    .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4.gap-5.md\:gap-6.mb-8,
+    #statsCards {
         grid-template-columns: repeat(2, 1fr) !important;
     }
 }
 
 @media (min-width: 1024px) {
-    .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4.gap-5.md\:gap-6.mb-8 {
+    .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-4.gap-5.md\:gap-6.mb-8,
+    #statsCards {
         grid-template-columns: repeat(4, 1fr) !important;
     }
 }
@@ -106,10 +110,28 @@ form.bg-white.rounded-xl.shadow-sm.p-5.mb-6.rtl {
 header.bg-white.shadow-sm {
     width: 100% !important;
     max-width: 100% !important;
+    margin-bottom: 1.5rem !important;
+    z-index: 40 !important;
 }
 
 @media (min-width: 1024px) {
     header.bg-white.shadow-sm {
         max-width: calc(100% - 135px) !important;
+    }
+}
+
+/* Fix mobile spacing issues */
+@media (max-width: 640px) {
+    .dashboard-header {
+        margin-top: 1.5rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    #statsCards {
+        margin-top: 1.5rem !important;
+    }
+    
+    header.bg-white.shadow-sm {
+        position: relative !important;
     }
 } 
