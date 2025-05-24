@@ -13,6 +13,8 @@ main.container.mx-auto.px-4.py-6 {
     max-width: none !important;
     padding-right: 1rem !important;
     padding-left: 1rem !important;
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
 }
 
 /* Reset min-h-screen margin */

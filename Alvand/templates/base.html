@@ -16,10 +16,19 @@
     <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'fonts/css/iransans.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/dist/styles.css' %}" rel="stylesheet" type="text/css">
+    <!-- Theme CSS with variables matching login page -->
     <link href="{% static 'css/theme.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/mobile-responsive-fix.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/dashboard-fix.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/mobile-menu-fix.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/sidebar-dark-mode.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/dark-mode-fix.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/theme-icon-fix.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/sidebar-desktop-fix.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/navbar-fix.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/mobile-sidebar-fix.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/mobile-links-fix.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/sidebar-padding-fix.css' %}" rel="stylesheet" type="text/css">
     {% block head_extra %}{% endblock %}
 </head>
 
@@ -43,15 +52,15 @@
         </div>
         <nav class="mt-5 space-y-2">
             <a href="{% url 'dashboard' %}"
-               class="py-2 text-center text-xs sm:text-sm flex items-center justify-center">
+               class="py-3 text-xs sm:text-sm flex items-center justify-start">
                 <i class="fas fa-tachometer-alt"></i> <span class="ml-2 sidebar-text sm:inline">داشبورد</span>
             </a>
             <a href="{% url 'smdr-dashboard' %}"
-               class="py-2 text-center text-xs sm:text-sm flex items-center justify-center">
+               class="py-3 text-xs sm:text-sm flex items-center justify-start">
                 <i class="fas fa-phone"></i> <span class="ml-2 sidebar-text sm:inline">داشبورد SMDR</span>
             </a>
             <a href="{% url 'profile' %}"
-               class="py-2 text-center text-xs sm:text-sm flex items-center justify-center">
+               class="py-3 text-xs sm:text-sm flex items-center justify-start">
                 <i class="fas fa-user"></i> <span class="ml-2 sidebar-text sm:inline">پروفایل کاربری</span>
             </a>
             {% if request.session.user|getBaseInfo:"groupname" != "member" %}
@@ -107,15 +116,15 @@
         </div>
         <nav class="mt-5 space-y-2">
             <a href="{% url 'dashboard' %}"
-               class="py-2 text-center text-xs sm:text-sm flex items-center justify-center">
+               class="py-3 text-xs sm:text-sm flex items-center justify-start">
                 <i class="fas fa-tachometer-alt"></i> <span class="ml-2 sidebar-text sm:inline">داشبورد</span>
             </a>
             <a href="{% url 'smdr-dashboard' %}"
-               class="py-2 text-center text-xs sm:text-sm flex items-center justify-center">
+               class="py-3 text-xs sm:text-sm flex items-center justify-start">
                 <i class="fas fa-phone"></i> <span class="ml-2 sidebar-text sm:inline">داشبورد SMDR</span>
             </a>
             <a href="{% url 'profile' %}"
-               class="py-2 text-center text-xs sm:text-sm flex items-center justify-center">
+               class="py-3 text-xs sm:text-sm flex items-center justify-start">
                 <i class="fas fa-user"></i> <span class="ml-2 sidebar-text sm:inline">پروفایل کاربری</span>
             </a>
             {% if request.session.user|getBaseInfo:"groupname" != "member" %}
@@ -299,6 +308,7 @@
 </script>
 <script src="{% static 'js/remove-theme-toggle.js' %}"></script>
 <script src="{% static 'js/hamburger-fix.js' %}"></script>
+<script src="{% static 'js/mobile-sidebar-fix.js' %}"></script>
 {% block js_extra %}{% endblock %}
 </body>
 </html>

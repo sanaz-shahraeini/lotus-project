@@ -1,0 +1,50 @@
+/* Fix for theme toggle button in login page */
+
+/* Ensure the theme toggle is clickable */
+.theme-toggle {
+    position: fixed !important;
+    top: 1rem !important;
+    left: 1rem !important;
+    background: none !important;
+    border: none !important;
+    color: var(--text-color) !important;
+    font-size: 1.25rem !important;
+    cursor: pointer !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: background-color 0.3s, color 0.3s !important;
+    z-index: 9999 !important; /* Very high z-index to ensure it's above everything */
+    pointer-events: auto !important; /* Explicitly enable pointer events */
+}
+
+/* Improve hover state */
+.theme-toggle:hover {
+    background-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Fix icon colors */
+.fa-sun {
+    color: #f59e0b !important; /* Amber color for sun icon */
+}
+
+.fa-moon {
+    color: #3b82f6 !important; /* Blue color for moon icon */
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+    .theme-toggle {
+        top: 1.5rem !important;
+        left: 1.5rem !important;
+    }
+}
+
+/* Fix for any overlapping elements */
+.login-container {
+    position: relative !important;
+    overflow: visible !important; /* Change from overflow: hidden to visible */
+}

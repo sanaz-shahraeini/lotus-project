@@ -11,12 +11,15 @@
     <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/dist/styles.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/theme.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/theme-toggle-login-fix.css' %}" rel="stylesheet" type="text/css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700&display=swap');
         
         :root {
-            --primary-color: #6366f1;
-            --primary-hover: #4f46e5;
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --primary-light: #818cf8;
             --secondary-color: #f3f4f6;
             --text-color: #1f2937;
             --light-text: #6b7280;
@@ -216,11 +219,12 @@
 <body>
 {% include "messages.html" %}
 
+<button class="theme-toggle" id="theme-toggle" aria-label="تغییر حالت نمایش" type="button">
+    <i class="fa-solid fa-sun theme-toggle-icon"></i>
+    <i class="fa-solid fa-moon theme-toggle-icon"></i>
+</button>
+
 <div class="login-container">
-    <button class="theme-toggle" id="theme-toggle" aria-label="تغییر حالت نمایش">
-        <i class="fa-solid fa-sun theme-toggle-icon"></i>
-        <i class="fa-solid fa-moon theme-toggle-icon"></i>
-    </button>
     
     <div class="logo-container">
         <img src="{% static 'pic/logo.png' %}" alt="Lotus Logo" class="logo">
@@ -250,28 +254,8 @@
     </form>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Get the theme toggle button
-        const themeToggle = document.getElementById('theme-toggle');
-        
-        // Check for saved theme preference or use default
-        const currentTheme = localStorage.getItem('theme') || 'light';
-        document.documentElement.className = currentTheme;
-        
-        // Listen for clicks on the theme toggle
-        themeToggle.addEventListener('click', function() {
-            // If current theme is light, switch to dark, and vice versa
-            if (document.documentElement.classList.contains('light')) {
-                document.documentElement.classList.replace('light', 'dark');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                document.documentElement.classList.replace('dark', 'light');
-                localStorage.setItem('theme', 'light');
-            }
-        });
-    });
-</script>
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'js/theme-toggle.js' %}"></script>
 
 </body>
 </html>

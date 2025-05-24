@@ -1,0 +1,37 @@
+/* Theme Toggle Icon Fix */
+
+/* Ensure sun icon is visible in dark mode */
+html.dark .fa-sun,
+html.dark #themeToggle .fa-sun {
+    color: #f59e0b !important;
+}
+
+/* Ensure moon icon is visible in light mode with a more appropriate color */
+html.light .fa-moon,
+html.light #themeToggle .fa-moon {
+    color: #3b82f6 !important; /* Blue color for moon */
+}
+
+/* Style for moon icon in dashboard */
+.fa-moon {
+    color: #3b82f6 !important;
+}
+
+/* Fix theme toggle button styling */
+#themeToggle {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+}
+
+#themeToggle:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+html.dark #themeToggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}

@@ -14,7 +14,19 @@
 <!-- Modern dashboard styles -->
 <style>
     :root {
-        --primary: #4f46e5;
+        /* Match login page variables */
+        --primary-color: #6366f1;
+        --primary-hover: #4f46e5;
+        --secondary-color: #f3f4f6;
+        --text-color: #1f2937;
+        --light-text: #6b7280;
+        --border-color: #e5e7eb;
+        --bg-color: #f9fafb;
+        --card-bg: white;
+        --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        
+        /* Keep dashboard-specific variables */
+        --primary: var(--primary-color);
         --primary-dark: #4338ca;
         --primary-light: #818cf8;
         --secondary: #10b981;
@@ -27,26 +39,49 @@
         --transition: all 0.3s ease;
     }
     
+    /* Dark mode variables to match login page */
+    html.dark {
+        --primary-color: #818cf8;
+        --primary-hover: #6366f1;
+        --secondary-color: #374151;
+        --text-color: #f3f4f6;
+        --light-text: #9ca3af;
+        --border-color: #4b5563;
+        --bg-color: #111827;
+        --card-bg: #1f2937;
+        --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        
+        /* Update dashboard-specific dark mode variables */
+        --primary: var(--primary-color);
+        --primary-dark: var(--primary-hover);
+        --light: var(--text-color);
+        --dark: var(--bg-color);
+        --gray: var(--light-text);
+        --gray-light: var(--border-color);
+    }
+    
     /* Base RTL Layout */
     body {
         direction: rtl;
         text-align: right;
         font-family: 'Vazir', system-ui, -apple-system, sans-serif;
-        color: var(--dark);
-        background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+        color: var(--text-color);
+        background-color: var(--bg-color);
         min-height: 100vh;
         line-height: 1.6;
+        transition: background-color 0.3s, color 0.3s;
     }
     
     /* Modern Card Design */
     .card {
-        background-color: white;
+        background-color: var(--card-bg);
         border-radius: 0.75rem;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+        box-shadow: var(--card-shadow);
         transition: var(--transition);
-        border: 1px solid rgba(226, 232, 240, 0.8);
+        border: 1px solid var(--border-color);
         overflow: hidden;
         margin-bottom: 1.5rem;
+        color: var(--text-color);
     }
     
     .card:hover {
@@ -56,10 +91,15 @@
     
     /* Dashboard Header */
     .dashboard-header {
-        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
         position: relative;
         overflow: hidden;
         border-radius: 1rem;
+        transition: background 0.3s;
+    }
+    
+    html.dark .dashboard-header {
+        background: linear-gradient(135deg, #1f2937, #111827);
     }
     
     .dashboard-header::before {
@@ -325,22 +365,22 @@
 {% endblock head_extra %}
 
 {% block main %}
-<div class="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 relative">
+<div class="min-h-screen relative" style="background-color: var(--bg-color); transition: background-color 0.3s;">
     <!-- Main Content Area -->
     <main class="container mx-auto px-4 py-6">
         <!-- Navbar -->
-        <header class="bg-white shadow-sm sticky top-0 z-50 mb-8 rounded-xl">
+        <header class="bg-card-bg shadow-sm sticky top-0 z-50 mb-8 rounded-xl transition-colors duration-300">
             <div class="px-4 py-8 sm:px-6 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <h1 class="text-xl font-bold text-slate-800"> لوتوس</h1>
+                    <h1 class="text-xl font-bold text-text-color transition-colors duration-300"> لوتوس</h1>
                 </div>
                 <div class="flex items-center gap-3">
-                    <button type="button" id="printbtn" class="px-4 py-2 bg-white hover:bg-slate-50 text-indigo-600 rounded-lg text-sm font-medium transition-colors border border-slate-200 shadow-sm flex items-center">
+                    <button type="button" id="printbtn" class="px-4 py-2 bg-card-bg hover:bg-secondary-color text-primary-color rounded-lg text-sm font-medium transition-colors border border-border-color shadow-sm flex items-center">
                         <i class="fa-solid fa-print ml-2"></i> چاپ
                     </button>
                     <div class="relative">
-                        <button id="themeToggle" class="p-2 rounded-lg text-slate-500 hover:bg-slate-100 focus:outline-none">
-                            <i class="fa-solid fa-sun text-yellow-500"></i>
+                        <button id="themeToggle" class="p-2 rounded-lg text-light-text hover:bg-secondary-color focus:outline-none transition-colors duration-300">
+                            <i class="fa-solid fa-sun text-yellow-500" style="color: #f59e0b !important;"></i>
                         </button>
                     </div>
                 </div>

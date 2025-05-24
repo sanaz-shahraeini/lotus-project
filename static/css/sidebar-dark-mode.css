@@ -1,0 +1,70 @@
+/* Sidebar Dark Mode Styling */
+
+/* Apply dark mode styling to sidebar */
+html.dark #sidebar,
+html.dark #mobile-sidebar {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-color) !important;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+/* Force sidebar background in dark mode */
+#sidebar, #mobile-sidebar {
+    background-color: #1f2937;
+}
+
+html.dark #sidebar, html.dark #mobile-sidebar {
+    background-color: #1f2937 !important;
+}
+
+/* Update sidebar links in dark mode */
+html.dark #sidebar a,
+html.dark #mobile-sidebar a,
+html.dark #sidebar button,
+html.dark #mobile-sidebar button {
+    color: var(--text-color) !important;
+}
+
+/* Update sidebar links hover state in dark mode */
+html.dark #sidebar a:hover,
+html.dark #mobile-sidebar a:hover,
+html.dark #sidebar button:hover,
+html.dark #mobile-sidebar button:hover {
+    background-color: var(--secondary-color) !important;
+}
+
+/* Update dropdown menu in dark mode */
+html.dark #dropdownmenu,
+html.dark #dropdownmenu-mb {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Update dropdown menu items in dark mode */
+html.dark #dropdownmenu li a,
+html.dark #dropdownmenu-mb li a {
+    color: var(--text-color) !important;
+}
+
+/* Update dropdown menu items hover state in dark mode */
+html.dark #dropdownmenu li a:hover,
+html.dark #dropdownmenu-mb li a:hover {
+    background-color: var(--secondary-color) !important;
+}
+
+/* Fix main content background in dark mode */
+html.dark .min-h-screen {
+    background: var(--bg-color) !important;
+}
+
+/* Update hamburger menu icon in dark mode */
+html.dark #menu-icon {
+    color: var(--text-color) !important;
+}
+
+/* Update toggle button background in dark mode */
+html.dark #toggle-menu {
+    background-color: transparent !important;
+}

@@ -6,7 +6,14 @@
     right: 0 !important;
     position: fixed !important;
     z-index: 40 !important;
-    background: linear-gradient(to bottom, #6366f1, #4f46e5) !important;
+    background: linear-gradient(to bottom, #6366f1, #4f46e5);
+    transition: background-color 0.3s;
+}
+
+/* Dark mode sidebar background */
+html.dark #sidebar {
+    background: #1f2937 !important;
+    background-image: none !important;
 }
 
 /* Fix main content positioning */

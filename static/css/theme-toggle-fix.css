@@ -11,7 +11,7 @@
 /* Force light theme */
 html, html.dark {
     background-color: var(--bg-color) !important;
-    color: var(--text-color) !important;
+
 }
 
 /* Override any theme-related transitions */

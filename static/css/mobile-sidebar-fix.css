@@ -1,0 +1,52 @@
+/* Fix for mobile sidebar visibility */
+
+/* Ensure desktop sidebar is hidden on mobile - more aggressive approach */
+@media (max-width: 1023px) {
+    #sidebar {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        position: absolute !important;
+        pointer-events: none !important;
+    }
+    
+    /* Override any display properties that might be set elsewhere */
+    #sidebar.lg\:block {
+        display: none !important;
+    }
+}
+
+/* Ensure mobile sidebar is properly styled */
+#mobile-sidebar {
+    right: 0 !important;
+    width: 160px !important;
+    background-color: #4f46e5;
+    z-index: 40 !important;
+    transition: transform 0.3s ease-in-out !important;
+}
+
+/* Fix mobile sidebar in dark mode */
+html.dark #mobile-sidebar {
+    background-color: #1f2937 !important;
+}
+
+/* Only show mobile sidebar when it has the active class */
+#mobile-sidebar.active {
+    transform: translateX(0) !important;
+}
+
+/* Fix hamburger menu position */
+#toggle-menu {
+    z-index: 50 !important;
+    top: 1rem !important;
+    right: 1rem !important;
+    background-color: transparent !important;
+}
+
+/* Fix hamburger menu icon color in dark mode */
+html.dark #menu-icon {
+    color: var(--text-color) !important;
+}

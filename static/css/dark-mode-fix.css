@@ -1,0 +1,175 @@
+/* Comprehensive Dark Mode Fix for Lotus Dashboard */
+
+/* Force dark mode background colors */
+html.dark body {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+}
+
+html.dark .min-h-screen {
+    background: var(--bg-color) !important;
+    background-image: none !important;
+}
+
+/* Fix header styling in dark mode */
+html.dark header {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+html.dark header h1,
+html.dark header p,
+html.dark header span {
+    color: var(--text-color) !important;
+}
+
+/* Fix dashboard header in dark mode */
+html.dark .dashboard-header {
+    background: linear-gradient(135deg, #1f2937, #111827) !important;
+}
+
+html.dark .dashboard-header h2,
+html.dark .dashboard-header p {
+    color: #f3f4f6 !important;
+}
+
+/* Fix sidebar in dark mode */
+#sidebar,
+#mobile-sidebar {
+    background-color: #4f46e5;
+}
+
+/* Force dark background for desktop sidebar */
+html.dark #sidebar.lg\:block {
+    background-color: #1f2937 !important;
+}
+
+html.dark #sidebar,
+html.dark #mobile-sidebar {
+    background-color: #1f2937 !important;
+    border-color: var(--border-color) !important;
+}
+
+html.dark #sidebar a,
+html.dark #sidebar button,
+html.dark #mobile-sidebar a,
+html.dark #mobile-sidebar button {
+    color: var(--text-color) !important;
+}
+
+html.dark #sidebar a:hover,
+html.dark #sidebar button:hover,
+html.dark #mobile-sidebar a:hover,
+html.dark #mobile-sidebar button:hover {
+    background-color: var(--secondary-color) !important;
+}
+
+/* Fix buttons in dark mode */
+html.dark button {
+    border-color: var(--border-color) !important;
+}
+
+html.dark .form-button,
+html.dark .login-button {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+}
+
+html.dark .form-button:hover,
+html.dark .login-button:hover {
+    background-color: var(--primary-hover) !important;
+}
+
+/* Fix card styling in dark mode */
+html.dark .card,
+html.dark .stat-card {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-color) !important;
+}
+
+html.dark .card h2,
+html.dark .card h3,
+html.dark .card p,
+html.dark .stat-card h2,
+html.dark .stat-card h3,
+html.dark .stat-card p {
+    color: var(--text-color) !important;
+}
+
+/* Fix table styling in dark mode */
+html.dark table {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+}
+
+html.dark th {
+    background-color: var(--secondary-color) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+html.dark td {
+    border-color: var(--border-color) !important;
+    color: var(--text-color) !important;
+}
+
+html.dark tr:hover {
+    background-color: var(--secondary-color) !important;
+}
+
+/* Fix search and input styling in dark mode */
+html.dark input[type="text"],
+html.dark input[type="search"],
+html.dark input[type="password"],
+html.dark select,
+html.dark textarea {
+    background-color: var(--secondary-color) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+html.dark input::placeholder {
+    color: var(--light-text) !important;
+}
+
+/* Fix icons in dark mode */
+html.dark .fa-solid,
+html.dark .fas {
+    color: inherit !important;
+}
+
+/* Fix dropdown menus in dark mode */
+html.dark #dropdownmenu,
+html.dark #dropdownmenu-mb {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+html.dark #dropdownmenu li a,
+html.dark #dropdownmenu-mb li a {
+    color: var(--text-color) !important;
+}
+
+html.dark #dropdownmenu li a:hover,
+html.dark #dropdownmenu-mb li a:hover {
+    background-color: var(--secondary-color) !important;
+}
+
+/* Fix hamburger menu in dark mode */
+html.dark #toggle-menu {
+    color: var(--text-color) !important;
+    background-color: transparent !important;
+}
+
+/* Fix theme toggle button in dark mode */
+html.dark .theme-toggle,
+html.dark #themeToggle {
+    color: var(--text-color) !important;
+}
+
+html.dark .theme-toggle:hover,
+html.dark #themeToggle:hover {
+    background-color: var(--secondary-color) !important;
+}

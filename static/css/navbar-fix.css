@@ -1,0 +1,30 @@
+/* Match border radius with header section and adjust padding/margin */
+header.rounded-xl {
+    border-radius: 1rem !important;
+    padding: 0 1rem !important;
+    margin-left: 1rem !important;
+    margin-right: 1rem !important;
+    margin-top: 0.5rem !important;
+}
+
+/* Ensure consistent styling in both light and dark modes */
+html.light header, html.dark header {
+    border-radius: 1rem !important;
+}
+
+/* Adjust inner padding of header content */
+header .px-4 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+/* Reduce vertical padding to make header more compact */
+header .py-8 {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+}
+
+/* Remove any margin/padding that might be creating space */
+header.sticky {
+    margin-bottom: 1rem !important;
+}

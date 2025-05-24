@@ -1,0 +1,68 @@
+/* Theme CSS for Lotus Application */
+/* Based on login page dark mode styling */
+
+:root {
+    --primary-color: #6366f1;
+    --primary-hover: #4f46e5;
+    --secondary-color: #f3f4f6;
+    --text-color: #1f2937;
+    --light-text: #6b7280;
+    --border-color: #e5e7eb;
+    --bg-color: #f9fafb;
+    --card-bg: white;
+    --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+html.dark {
+    --primary-color: #818cf8;
+    --primary-hover: #6366f1;
+    --secondary-color: #374151;
+    --text-color: #f3f4f6;
+    --light-text: #9ca3af;
+    --border-color: #4b5563;
+    --bg-color: #111827;
+    --card-bg: #1f2937;
+    --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    
+    /* Additional dark mode variables */
+    --sidebar-bg: #1f2937;
+    --header-bg: #1f2937;
+    --header-gradient: linear-gradient(135deg, #1f2937, #111827);
+}
+
+/* Theme toggle styles */
+.theme-toggle {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.25rem;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, color 0.3s;
+    z-index: 10;
+}
+
+.theme-toggle:hover {
+    background-color: var(--secondary-color);
+}
+
+.theme-toggle-icon {
+    transition: transform 0.5s;
+}
+
+html.dark .theme-toggle .fa-moon {
+    display: none;
+    color:#4f46e5;
+}
+
+html.light .theme-toggle .fa-sun {
+    display: none;
+}
