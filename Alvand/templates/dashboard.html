@@ -862,7 +862,15 @@
                                         </td>
                                         <td class="text-center">{% if rec.beepsnumber %}{{ rec.beepsnumber }}{% else %}0{% endif %}</td>
                                         <td class="text-center">{% if rec.transferring %}<span class="inline-flex px-2 py-1 text-xs font-semibold leading-none text-green-800 bg-green-100 rounded-full">بله</span>{% else %}<span class="inline-flex px-2 py-1 text-xs font-semibold leading-none text-red-800 bg-red-100 rounded-full">خیر</span>{% endif %}</td>
-                                        <td class="cost text-center"><span class="font-medium">{% if rec.durationtime %}{{ rec.durationtime|calculateOnePrice:rec.contactnumber }}{% else %}0{% endif %}</span><span class="text-xs text-slate-400 mr-1">تومان</span></td>
+                                        <td class="cost text-center">
+                                            {% with price=rec.durationtime|calculateOnePrice:rec.contactnumber %}
+                                                {% if price == 'ندارد' %}
+                                                    <span class="font-medium">ندارد</span>
+                                                {% else %}
+                                                    <span class="font-medium">{{ price }}</span><span class="text-xs text-slate-400 mr-1">تومان</span>
+                                                {% endif %}
+                                            {% endwith %}
+                                        </td>
                                     </tr>
                                 {% endfor %}
                             {% else %}
