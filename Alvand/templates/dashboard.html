@@ -848,8 +848,8 @@
                                 {% for rec in dashPage.object_list %}
                                     <tr>
                                         <td class="text-center"><span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 text-slate-700">{{ forloop.counter0|add:dashPage.start_index }}</span></td>
-                                        <td class="text-center"><span class="font-medium">{{ rec.date }}</span></td>
-                                        <td class="text-center"><span class="font-medium">{{ rec.hour }}</span></td>
+                                        <td class="text-center" dir="ltr"><span class="font-medium">{{ rec.date|date:"Y-m-d" }}</span></td>
+                                        <td class="text-center" dir="ltr"><span class="font-medium">{{ rec.hour }}</span></td>
                                         <td class="text-center"><span class="font-medium">{% if rec.contactnumber %}{{ rec.contactnumber }}{% else %}<span class="text-slate-400">-</span>{% endif %}</span></td>
                                         <td class="text-center"><span class="font-medium">{% if rec.extension|stringformat:'s'|slice:'0:1' == '9' %}{{ rec.extension|stringformat:'s'|slice:'1:4' }}{% else %}{{ rec.extension }}{% endif %}</span></td>
                                         <td class="text-center">{% if rec.urbanline %}{{ rec.urbanline }}{% else %}<span class="text-slate-400">-</span>{% endif %}</td>
