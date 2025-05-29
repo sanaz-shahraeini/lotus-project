@@ -851,7 +851,7 @@
                                         <td class="text-center"><span class="font-medium">{{ rec.date }}</span></td>
                                         <td class="text-center"><span class="font-medium">{{ rec.hour }}</span></td>
                                         <td class="text-center"><span class="font-medium">{% if rec.contactnumber %}{{ rec.contactnumber }}{% else %}<span class="text-slate-400">-</span>{% endif %}</span></td>
-                                        <td class="text-center"><span class="font-medium">{{ rec.extension }}</span></td>
+                                        <td class="text-center"><span class="font-medium">{% if rec.extension|stringformat:'s'|slice:'0:1' == '9' %}{{ rec.extension|stringformat:'s'|slice:'1:4' }}{% else %}{{ rec.extension }}{% endif %}</span></td>
                                         <td class="text-center">{% if rec.urbanline %}{{ rec.urbanline }}{% else %}<span class="text-slate-400">-</span>{% endif %}</td>
                                         <td class="text-center"><span class="font-medium">{% if rec.durationtime %}{{ rec.durationtime }}{% else %}0{% endif %}</span><span class="text-xs text-slate-400 mr-1">ثانیه</span></td>
                                         <td class="text-center img-print-cell">
