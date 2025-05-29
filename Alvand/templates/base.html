@@ -23,22 +23,22 @@
     <link href="{% static 'css/mobile-menu-fix.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/sidebar-dark-mode.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/dark-mode-fix.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'css/theme-icon-fix.css' %}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/high-contrast-light.css' %}">
+    <link rel="stylesheet" href="{% static 'css/high-contrast-dark.css' %}">
+    <link rel="stylesheet" href="{% static 'css/theme-icon-fix.css' %}">
     <link href="{% static 'css/sidebar-desktop-fix.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/navbar-fix.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/mobile-sidebar-fix.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/mobile-links-fix.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/sidebar-padding-fix.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/search-filters-redesign.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/mobile-sidebar-toggle-fix.css' %}" rel="stylesheet" type="text/css">
     {% block head_extra %}{% endblock %}
 </head>
 
 <body>
 <div class="relative">
-    <!-- Theme Toggle Button -->
-    <button class="theme-toggle" id="theme-toggle" aria-label="تغییر حالت نمایش">
-        <i class="fa-solid fa-sun theme-toggle-icon"></i>
-        <i class="fa-solid fa-moon theme-toggle-icon"></i>
-    </button>
+    <!-- Theme Toggle functionality preserved in JavaScript only -->
 
     <aside id="sidebar"
            class="w-[135px] overflow-y-auto h-screen text-white z-40 fixed top-0 right-0 transform transition-all duration-300 ease-in-out sm:w-[135px] hidden lg:block">
@@ -208,19 +208,29 @@
         const themeToggle = $("#theme-toggle");
         
         // Check for saved theme preference or use default
-        const currentTheme = localStorage.getItem('theme') || 'light';
-        document.documentElement.className = currentTheme;
+        const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.className = savedTheme;
+        
+        // Apply all theme-related styles based on the current theme
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.remove('light');
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.documentElement.classList.add('light');
+            }
+            localStorage.setItem('theme', theme);
+        }
+        
+        // Apply saved theme on page load
+        applyTheme(savedTheme);
         
         // Listen for clicks on the theme toggle
         themeToggle.on('click', function() {
             // If current theme is light, switch to dark, and vice versa
-            if (document.documentElement.classList.contains('light')) {
-                document.documentElement.classList.replace('light', 'dark');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                document.documentElement.classList.replace('dark', 'light');
-                localStorage.setItem('theme', 'light');
-            }
+            const newTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+            applyTheme(newTheme);
         });
     });
 

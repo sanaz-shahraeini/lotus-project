@@ -1,0 +1,356 @@
+/* Dashboard Content Styles */
+
+/* Filter Section Specific Styles */
+.filter-header-title-area { /* Add this class to the div containing the filter title and icon */
+    /* Relies on existing Tailwind 'flex items-center' */
+    margin-bottom: 1.25rem; /* Tailwind's mb-5, increased space below title area */
+    transition: color 0.3s;
+}
+
+:root {
+    --primary-rgb: 99, 102, 241; /* RGB value of primary color */
+    --border-hover: #94a3b8;
+}
+
+html.dark {
+    --primary-rgb: 139, 92, 246; /* RGB value of primary color in dark mode */
+    --border-hover: #4c5563;
+}
+
+.filter-header-title-area div.text-blue-600 i.fa-sliders-h {
+    color: var(--primary-color) !important; /* Match icon color with title, ensure override */
+    font-size: 1.25rem; /* Tailwind's text-xl */
+}
+
+.filter-header-title-area h3 {
+    font-size: 1.25rem; /* Tailwind's text-xl */
+    font-weight: 600;   /* Tailwind's font-semibold */
+    color: var(--primary-color);
+    margin-right: 0.75rem; /* Tailwind's mr-3, space between icon and text */
+}
+
+/* Button Styling within Filters */
+.dashboard-filters .form-button,
+.dashboard-filters button[type="submit"],
+.dashboard-filters button[type="button"],
+.dashboard-filters button[type="reset"] {
+    padding: 0.6rem 1.2rem; 
+    border-radius: 0.5rem;    /* Tailwind's rounded-lg */
+    font-weight: 500;         /* Tailwind's font-medium */
+    transition: all 0.2s ease-in-out;
+    border: 1px solid transparent;
+    display: inline-flex; 
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05); 
+}
+
+.dashboard-filters .form-button:hover,
+.dashboard-filters button[type="submit"]:hover,
+.dashboard-filters button[type="button"]:hover,
+.dashboard-filters button[type="reset"]:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+}
+
+/* Primary "Apply Filters" Button */
+.dashboard-filters button#applyFilters, /* Top button by ID */
+.dashboard-filters form button[type="submit"].primary /* Bottom button by class */ {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.dashboard-filters button#applyFilters:hover,
+.dashboard-filters form button[type="submit"].primary:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+
+/* Secondary "Clear Filters" Button */
+/* Top button: id="toggleFilters" and class="text-slate-600" (line 541 in HTML) */
+/* Bottom button: type="reset" (line 617 in HTML) */
+.dashboard-filters button#toggleFilters.text-slate-600, 
+.dashboard-filters form button[type="reset"] {
+    background-color: #f3f4f6; /* Tailwind's gray-100 */
+    color: #374151;           /* Tailwind's gray-700 */
+    border: 1px solid #d1d5db; /* Tailwind's gray-300 */
+}
+
+.dashboard-filters button#toggleFilters.text-slate-600:hover, 
+.dashboard-filters form button[type="reset"]:hover {
+    background-color: #e5e7eb; /* Tailwind's gray-200 */
+    border-color: #9ca3af;     /* Tailwind's gray-400 */
+}
+
+/* Icon spacing within buttons - general override for ml-1 in RTL context */
+/* This targets icons that have an existing 'ml-1' class from Tailwind */
+.dashboard-filters button i.ml-1 {
+    margin-left: 0 !important;    /* Remove Tailwind's left margin */
+    margin-right: 0.35rem;        /* Add right margin for RTL (space between icon and text) */
+}
+
+/* === Filter Section Specific Styles === */
+
+/* Ensure consistent spacing for items within the filter grid */
+#filterSection > div > div { /* Targets each cell in the grid */
+    display: flex;
+    flex-direction: column; /* Stack label and input/button vertically */
+    justify-content: flex-end; /* Align items to the bottom if heights vary */
+}
+
+/* Ensure consistent height and vertical alignment for form elements in filters */
+#filterSection .form-input {
+    min-height: 42px; /* Adjust as needed */
+    padding-top: 0.65rem;
+    padding-bottom: 0.65rem;
+    width: 100%;
+    border: 1px solid var(--border-color, #cbd5e1); /* Use CSS variable with fallback */
+    border-radius: 0.375rem; /* Tailwind's rounded-md */
+    background-color: var(--card-bg, white);
+    color: var(--text-color, #1f2937);
+    box-sizing: border-box;
+    transition: all 0.15s ease-in-out;
+}
+
+#filterSection .form-input:focus {
+    border-color: var(--primary-color, #2563eb); /* Use CSS variable with fallback */
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-rgb, 37, 99, 235), 0.25); /* Focus ring using CSS variable */
+}
+
+html.dark #filterSection .form-input {
+    background-color: var(--input-bg, #1e293b);
+    border-color: var(--input-border, #334155);
+    color: var(--text-color, #f8fafc);
+}
+
+html.dark #filterSection .form-input:focus {
+    border-color: var(--primary-color, #8b5cf6);
+    box-shadow: 0 0 0 0.2rem rgba(139, 92, 246, 0.25);
+}
+
+#filterSection .form-select {
+    min-height: 42px; /* Adjust as needed */
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border: 1px solid var(--border-color, #cbd5e1); /* Use CSS variable with fallback */
+    border-radius: 0.375rem; /* Tailwind's rounded-md */
+    background-color: var(--card-bg, white); /* Use CSS variable with fallback */
+    color: var(--text-color, #1f2937);
+    transition: all 0.15s ease-in-out;
+}
+
+html.dark #filterSection .form-select {
+    background-color: var(--input-bg, #1e293b);
+    border-color: var(--input-border, #334155);
+    color: var(--text-color, #f8fafc);
+}
+
+#filterSection .form-select:hover {
+    border-color: var(--border-hover, #94a3b8); /* Use CSS variable with fallback */
+}
+
+html.dark #filterSection .form-select:hover {
+    border-color: var(--primary-color, #8b5cf6);
+}
+
+#filterSection .form-select:focus-within, /* For when button itself or internal element gets focus */
+#filterSection .form-select:focus {
+    border-color: var(--primary-color, #2563eb); /* Use CSS variable with fallback */
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-rgb, 37, 99, 235), 0.25);
+}
+
+html.dark #filterSection .form-select:focus-within,
+html.dark #filterSection .form-select:focus {
+    border-color: var(--primary-color, #8b5cf6);
+    box-shadow: 0 0 0 0.2rem rgba(139, 92, 246, 0.25);
+}
+
+/* Ensure labels are consistently spaced */
+#filterSection .form-label {
+    margin-bottom: 0.5rem; /* Tailwind's mb-2 */
+}
+
+/* Icon alignment fixes */
+.relative {
+    position: relative;
+}
+
+.relative .form-input {
+    width: 100%;
+    /* Removed padding-left to prevent text from being hidden */
+}
+
+.relative .fa-search,
+.relative .fa-calendar {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--light-text, #94a3b8);
+    transition: color 0.3s;
+}
+
+html.dark .relative .fa-search,
+html.dark .relative .fa-calendar {
+    color: var(--light-text, #a1a1aa);
+}
+
+/* Ensure consistent spacing */
+.pl-10 {
+    padding-left: 2.5rem !important;
+}
+
+/* Specific style for search input */
+#searchBox {
+    padding-right: 2.5rem !important;
+    padding-left: 1rem !important;
+}
+
+/* Position the search icon */
+#searchBox + span {
+    right: 0.75rem !important;
+    left: auto !important;
+}
+
+/* Bottom Action Buttons in Filter Section */
+/* This targets the container of the bottom-most buttons */
+#filterSection .filter-action-buttons {
+    padding-top: 1rem; /* Add some space above the buttons */
+    border-top: 1px solid var(--border-color, #e2e8f0); /* Use CSS variable with fallback */
+    margin-top: 1rem;
+    flex-direction: row-reverse; /* Reverse button order */
+    transition: border-color 0.3s;
+}
+
+#filterSection .filter-action-buttons .form-button {
+    flex-grow: 0 !important; /* Prevent buttons from growing */
+    flex-shrink: 0 !important; /* Prevent buttons from shrinking excessively */
+    width: auto; /* Allow content to determine width */
+    /* Adjust padding if they are too wide */
+    /* padding-left: 1rem; 
+    padding-right: 1rem; */
+}
+
+/* Style for the toggle icon in the filter header */
+#filterSectionToggleIcon {
+    transition: transform 0.3s ease;
+}
+
+.filter-header-title-area:hover #filterSectionToggleIcon {
+    color: var(--primary-color); /* Optional: highlight on hover */
+}
+
+/* Ensure the chevron icon in the filter header is aligned with the title */
+.filter-header-title-area {
+    display: flex;
+    align-items: center;
+}
+
+/* Fix date range inputs */
+#dateFrom, #dateTo {
+    background-color: var(--card-bg, white);
+    color: var(--text-color, #1f2937);
+    border: 1px solid var(--border-color, #cbd5e1);
+    transition: all 0.15s ease-in-out;
+}
+
+html.dark #dateFrom,
+html.dark #dateTo {
+    background-color: var(--input-bg, #1e293b);
+    border-color: var(--input-border, #334155);
+    color: var(--text-color, #f8fafc);
+}
+
+html.dark #dateFrom:focus,
+html.dark #dateTo:focus {
+    border-color: var(--primary-color, #8b5cf6);
+    box-shadow: 0 0 0 0.2rem rgba(139, 92, 246, 0.25);
+}
+
+.filter-header-title-area h3 {
+    margin-bottom: 0; /* Remove any bottom margin if it exists */
+}
+
+#filterSectionToggleIcon {
+    margin-right: 0.5rem; /* Adjust spacing for RTL, assuming this icon is to the left of text */
+    /* If icon is to the right (LTR style), use margin-left */
+}
+
+/* Ensure labels have some bottom margin */
+#filterSection label {
+    margin-bottom: 0.5rem; /* Tailwind's mb-2 */
+}
+
+#filterSection [data-dropdown-toggle] {
+    text-align: right; /* Ensure text within dropdown buttons is RTL */
+}
+
+#filterSection [data-dropdown-toggle] .fa-chevron-down {
+    margin-right: auto; /* Push chevron to the left for RTL */
+    margin-left: 0.5rem;
+}
+
+/* Z-index fix for filter dropdowns */
+#filterSection {
+    position: relative; /* Ensure filter section can have its own z-index if needed, relative to siblings */
+    z-index: 20;        /* Above other direct children of the form card, if any were positioned */
+}
+
+#filterSection .relative {
+    position: relative; /* Ensure this is explicitly relative for z-index to apply correctly against siblings */
+    z-index: 30; /* Ensure the container for the dropdown has a higher z-index than other filter items */
+}
+
+#filterSection .relative [id$='DropDown'] {
+    /* Targets elements like callTypeBodyDropDown, dropdownInternal, dropdownUrban */
+    z-index: 1000; /* Higher than its parent and other elements */
+}
+
+/* Dark mode styles for dropdowns */
+html.dark #filterSection [id$='DropDown'],
+html.dark #dropdownInternal,
+html.dark #dropdownUrban,
+html.dark #callTypeBodyDropDown {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+html.dark #filterSection [id$='DropDown'] li div,
+html.dark #dropdownInternal li div,
+html.dark #dropdownUrban li div,
+html.dark #callTypeBodyDropDown li div {
+    color: var(--text-color);
+}
+
+html.dark #filterSection [id$='DropDown'] li div:hover,
+html.dark #dropdownInternal li div:hover,
+html.dark #dropdownUrban li div:hover,
+html.dark #callTypeBodyDropDown li div:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+}
+
+html.dark #filterSection [id$='DropDown'] input,
+html.dark #dropdownInternal input,
+html.dark #dropdownUrban input,
+html.dark #callTypeBodyDropDown input {
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+}
+
+html.dark .fa-chevron-down {
+    color: var(--light-text) !important;
+}
+
+/* Adjust padding/margin for the overall filter card if needed */
+.dashboard-filters.card {
+    padding: 1.5rem; /* Tailwind's p-6 */
+    position: relative; /* Establish stacking context for the form */
+    z-index: 1000;        /* Base z-index for the filter card */
+}

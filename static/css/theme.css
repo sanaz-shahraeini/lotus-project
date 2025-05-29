@@ -14,31 +14,61 @@
 }
 
 html.dark {
-    --primary-color: #818cf8;
-    --primary-hover: #6366f1;
-    --secondary-color: #374151;
-    --text-color: #f3f4f6;
-    --light-text: #9ca3af;
-    --border-color: #4b5563;
-    --bg-color: #111827;
-    --card-bg: #1f2937;
-    --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    /* Primary colors - using brighter, more vibrant colors for better visibility */
+    --primary-color: #a855f7;  /* Brighter violet for better visibility and contrast */
+    --primary-hover: #9333ea;  /* Slightly darker on hover but still vibrant */
     
-    /* Additional dark mode variables */
-    --sidebar-bg: #1f2937;
-    --header-bg: #1f2937;
-    --header-gradient: linear-gradient(135deg, #1f2937, #111827);
+    /* Text and background colors - using higher contrast colors */
+    --text-color: #ffffff;     /* Pure white text for maximum contrast */
+    --light-text: #cbd5e1;     /* Much brighter secondary text for better readability */
+    --bg-color: #111827;       /* Slightly lighter navy for better contrast with elements */
+    
+    /* Card and surface colors - using more distinguishable background */
+    --card-bg: #1e293b;        /* Slightly lighter card background for better visibility */
+    --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    
+    /* UI elements - increasing contrast with background */
+    --secondary-color: #475569;  /* Lighter secondary color for better contrast */
+    --border-color: #475569;     /* More visible borders */
+    
+    /* Additional dark mode variables - ensuring consistent design */
+    --sidebar-bg: #1e293b;       /* Matching card background */
+    --header-bg: #1e293b;        /* Consistent with sidebar */
+    --header-gradient: linear-gradient(135deg, #1e293b, #111827);
+    
+    /* Stats cards colors - making them more vibrant */
+    --stat-total-bg: #818cf8;    /* Bright indigo for total stats */
+    --stat-incoming-bg: #10b981; /* Bright emerald for incoming stats */
+    --stat-outgoing-bg: #f59e0b; /* Bright amber for outgoing stats */
+    --stat-missed-bg: #ef4444;   /* Bright red for missed stats */
+    
+    /* Table specific - improving table contrast */
+    --table-header-bg: #1e293b;
+    --table-row-hover: rgba(255, 255, 255, 0.08); /* More visible hover state */
+    --table-border: #334155;
+    
+    /* Form elements - higher contrast for form elements */
+    --input-bg: #1e293b;
+    --input-border: #475569;
+    --input-focus: #a855f7;
+    
+    /* Button colors */
+    --button-primary-bg: #a855f7;
+    --button-primary-text: #ffffff;
+    --button-secondary-bg: #334155;
+    --button-secondary-text: #ffffff;
 }
 
 /* Theme toggle styles */
+/* Theme toggle button */
 .theme-toggle {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-    background: none;
-    border: none;
+    position: fixed;
+    top: 1.25rem;
+    left: 1.25rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
     color: var(--text-color);
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     cursor: pointer;
     width: 40px;
     height: 40px;
@@ -46,23 +76,88 @@ html.dark {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.3s, color 0.3s;
-    z-index: 10;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .theme-toggle:hover {
-    background-color: var(--secondary-color);
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.theme-toggle:active {
+    transform: translateY(0);
 }
 
 .theme-toggle-icon {
-    transition: transform 0.5s;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Dark mode specific toggle styles */
+html.dark .theme-toggle {
+    background: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+html.dark .theme-toggle:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* Theme toggle icons */
+.theme-toggle .fa-moon,
+.theme-toggle .fa-sun {
+    color: #f59e0b;  /* Yellow color for both icons */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* In dark mode, show sun and hide moon */
+html.dark .theme-toggle .fa-sun {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(0deg);
 }
 
 html.dark .theme-toggle .fa-moon {
-    display: none;
-    color:#4f46e5;
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(90deg);
 }
 
-html.light .theme-toggle .fa-sun {
-    display: none;
+/* In light mode, show moon and hide sun */
+html:not(.dark) .theme-toggle .fa-moon {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(0deg);
+}
+
+html:not(.dark) .theme-toggle .fa-sun {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(-90deg);
+}
+
+/* Dark mode scrollbar */
+html.dark ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+html.dark ::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 5px;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+    background: var(--light-text);
 }

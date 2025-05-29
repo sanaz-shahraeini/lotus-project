@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="{% static 'css/direct-layout-fix.css' %}" />
 <link rel="stylesheet" href="{% static 'css/header-optimize.css' %}" />
 <link rel="stylesheet" href="{% static 'css/consistent-headers.css' %}" />
+<link rel="stylesheet" href="{% static 'css/dashboard-content.css' %}" />
 
 <!-- Modern dashboard styles -->
 <style>
@@ -131,10 +132,46 @@
         border-radius: 0 0.75rem 0.75rem 0;
     }
     
-    .stat-card.total::after { background-color: var(--primary); }
-    .stat-card.incoming::after { background-color: var(--secondary); }
-    .stat-card.outgoing::after { background-color: var(--warning); }
-    .stat-card.missed::after { background-color: var(--danger); }
+    .stat-card.total::after { background-color: var(--stat-total-bg, var(--primary)); }
+    .stat-card.incoming::after { background-color: var(--stat-incoming-bg, var(--secondary)); }
+    .stat-card.outgoing::after { background-color: var(--stat-outgoing-bg, var(--warning)); }
+    .stat-card.missed::after { background-color: var(--stat-missed-bg, var(--danger)); }
+    
+    /* Improved dark mode card styles */
+    html.dark .stat-card {
+        background-color: #1e293b;
+        border: 1px solid #334155;
+    }
+    
+    html.dark .stat-card .w-14 {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        color: var(--text-color) !important;
+    }
+    
+    html.dark .stat-card.total .w-14 {
+        color: var(--stat-total-bg) !important;
+    }
+    
+    html.dark .stat-card.incoming .w-14 {
+        color: var(--stat-incoming-bg) !important;
+    }
+    
+    html.dark .stat-card.outgoing .w-14 {
+        color: var(--stat-outgoing-bg) !important;
+    }
+    
+    html.dark .stat-card.missed .w-14 {
+        color: var(--stat-missed-bg) !important;
+    }
+    
+    html.dark .stat-card h3,
+    html.dark .stat-card .font-bold {
+        color: #ffffff !important;
+    }
+    
+    html.dark .stat-card p {
+        color: var(--light-text) !important;
+    }
     
     .stat-icon {
         transition: var(--transition);
@@ -145,13 +182,73 @@
     }
     
     /* Modern Table Design */
+    
+    /* Center-align all table cells in both light and dark modes */
+    th, td {
+        text-align: center !important;
+    }
+    
+    /* Call type icon styling for better visibility */
+    .call-type-icon-container {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        position: relative;
+    }
+    
+    .call-type-icon {
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
+    }
+    
+    /* Hide any text next to icons and only show on hover */
+    .tooltip-text {
+        opacity: 0;
+        visibility: hidden;
+        position: absolute;
+        z-index: 50;
+        transition: opacity 0.3s ease;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 150%; /* Position well above the icon */
+        min-width: 80px;
+        text-align: center;
+    }
+    
+    /* Add arrow to tooltip */
+    .tooltip-text::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #1f2937 transparent transparent transparent;
+    }
+    
+    .call-type-icon-container:hover .tooltip-text {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    html.dark .call-type-icon {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 4px;
+        padding: 2px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    }
+    
     .table-container {
         overflow-x: auto;
         border-radius: 0.75rem;
-        background: white;
+        background: var(--card-bg, white);
         -webkit-overflow-scrolling: touch;
         scrollbar-width: thin;
-        scrollbar-color: #cbd5e1 #f1f5f9;
+        scrollbar-color: var(--border-color, #cbd5e1) var(--bg-color, #f1f5f9);
+        transition: background-color 0.3s;
     }
     
     .table-container::-webkit-scrollbar {
@@ -159,12 +256,12 @@
     }
     
     .table-container::-webkit-scrollbar-track {
-        background: #f1f5f9;
+        background: var(--bg-color, #f1f5f9);
         border-radius: 4px;
     }
     
     .table-container::-webkit-scrollbar-thumb {
-        background-color: #cbd5e1;
+        background-color: var(--border-color, #cbd5e1);
         border-radius: 4px;
     }
     
@@ -175,28 +272,34 @@
     }
     
     th {
-        background-color: #f8fafc;
+        background-color: var(--table-header-bg, #f8fafc);
         font-weight: 600;
         text-transform: uppercase;
         font-size: 0.6875rem;
         letter-spacing: 0.05em;
-        color: #64748b;
+        color: var(--light-text, #64748b);
         padding: 0.875rem 1rem;
         text-align: right;
         position: sticky;
         top: 0;
         z-index: 10;
-        border-bottom: 2px solid #e2e8f0;
+        border-bottom: 2px solid var(--border-color, #e2e8f0);
+        transition: background-color 0.3s, color 0.3s, border-color 0.3s;
     }
     
     td {
         padding: 0.875rem 1rem;
-        border-bottom: 1px solid #f1f5f9;
+        border-bottom: 1px solid var(--border-color, #f1f5f9);
         text-align: right;
         vertical-align: middle;
         font-size: 0.9375rem;
-        color: #334155;
+        color: var(--text-color, #334155);
         white-space: nowrap;
+        transition: color 0.3s, border-color 0.3s;
+    }
+    
+    tr:hover td {
+        background-color: var(--table-row-hover, rgba(0, 0, 0, 0.02));
     }
     
     tbody tr {
@@ -361,6 +464,35 @@
             display: none;
         }
     }
+    
+    /* Filter Bar */
+    .dashboard-filters {
+        transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, background-color 0.3s, color 0.3s, border-color 0.3s;
+    }
+    
+    /* Filter section dark mode optimizations */
+    html.dark .filter-header-title-area i {
+        color: var(--light-text);
+    }
+    
+    html.dark .filter-header-title h3 {
+        color: var(--text-color);
+    }
+    
+    html.dark input[type="text"],
+    html.dark input[type="search"],
+    html.dark input[type="date"] {
+        background-color: var(--input-bg);
+        border-color: var(--input-border);
+        color: var(--text-color);
+    }
+    
+    html.dark input[type="text"]:focus,
+    html.dark input[type="search"]:focus,
+    html.dark input[type="date"]:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+    }
 </style>
 {% endblock head_extra %}
 
@@ -379,8 +511,9 @@
                         <i class="fa-solid fa-print ml-2"></i> چاپ
                     </button>
                     <div class="relative">
-                        <button id="themeToggle" class="p-2 rounded-lg text-light-text hover:bg-secondary-color focus:outline-none transition-colors duration-300">
-                            <i class="fa-solid fa-sun text-yellow-500" style="color: #f59e0b !important;"></i>
+                        <button id="themeToggle" class="p-2 rounded-lg text-light-text hover:bg-secondary-color dark:hover:bg-gray-700 focus:outline-none transition-colors relative" aria-label="Toggle dark mode">
+                            <i class="fa-solid fa-sun"></i>
+                            <i class="fa-solid fa-moon"></i>
                         </button>
                     </div>
                 </div>
@@ -527,97 +660,158 @@
                 </div>
             </div>
             
-            <!-- Filter Bar -->
-            <form method="get" class="card p-6">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-                    <div class="flex items-center">
-                        <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-50 text-blue-600">
-                            <i class="fa-solid fa-sliders-h text-lg"></i>
-                        </div>
-                        <h3 class="text-lg font-medium text-slate-800 mr-3">
-                            فیلترهای جستجو
-                        </h3>
+            <!-- Filter Bar - Redesigned -->
+            <form method="get" class="search-filters-container">
+                <div class="search-filters-header">
+                    <div class="search-filters-title">
+                        <i class="fas fa-filter"></i>
+                        <h3>فیلترهای جستجو</h3>
+                        <span class="hidden sm:inline-block">برای دیدن گزینه‌های بیشتر، روی این بخش کلیک کنید</span>
                     </div>
-                    <div class="flex items-center gap-3 w-full sm:w-auto">
-                        <button type="button" id="toggleFilters" class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors flex items-center">
-                            <i class="fa-solid fa-eraser ml-1"></i>
-                            پاکسازی فیلترها
-                        </button>
-                        <button type="submit" id="applyFilters" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center">
-                            <i class="fa-solid fa-filter-circle-check ml-1"></i>
-                            اعمال فیلتر
-                        </button>
-                    </div>
+                    <button type="button" id="filterSectionToggleIcon" class="search-filters-toggle">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
                 </div>
                 
-                <div id="filterSection" class="hidden space-y-4">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">نوع تماس</label>
+                <div id="filterSection" class="search-filters-body hidden">
+                    <div class="search-filters-grid">
+                        <!-- Call Type Filter -->
+                        <div class="filter-group">
+                            <label class="filter-label">نوع تماس</label>
                             <div class="relative">
-                                <button type="button" id="callTypeDropDown" data-dropdown-toggle="callTypeBodyDropDown" class="w-full form-select flex items-center justify-between gap-2 bg-white border border-slate-200 hover:border-slate-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-lg transition-colors">
-                                    <span class="text-slate-700">همه انواع تماس</span>
-                                    <i class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform"></i>
+                                <button type="button" id="callTypeDropDown" data-dropdown-toggle="callTypeBodyDropDown" class="filter-dropdown-button">
+                                    <span>همه انواع تماس</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
                                 </button>
-                                <div id="callTypeBodyDropDown" class="hidden z-20 w-full mt-1 bg-white rounded-lg shadow-lg border border-slate-200 p-2 absolute">
-                                    <ul class="space-y-1 text-sm text-slate-700">
-                                        <li><div class="flex items-center py-2 px-3 rounded hover:bg-slate-50"><input id="call-type-1" name="calls" type="checkbox" value="همه تماس ها" class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 cursor-pointer"><label for="call-type-1" class="mr-2 text-sm text-slate-700 cursor-pointer">همه تماس ها</label></div></li>
-                                        <li><div class="flex items-center py-2 px-3 rounded hover:bg-slate-50"><input id="call-type-2" name="calls" type="checkbox" value="تماس های پاسخ داده نشده" class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 cursor-pointer"><label for="call-type-2" class="mr-2 text-sm text-slate-700 cursor-pointer">تماس های پاسخ نداده شده</label></div></li>
-                                        <li><div class="flex items-center py-2 px-3 rounded hover:bg-slate-50"><input id="call-type-3" name="calls" type="checkbox" value="تماس های ورودی" class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 cursor-pointer"><label for="call-type-3" class="mr-2 text-sm text-slate-700 cursor-pointer">تماس ‌های ورودی</label></div></li>
-                                        <li><div class="flex items-center py-2 px-3 rounded hover:bg-slate-50"><input id="call-type-4" name="calls" type="checkbox" value="تماس های خروجی" class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 cursor-pointer"><label for="call-type-4" class="mr-2 text-sm text-slate-700 cursor-pointer">تماس ‌های خروجی</label></div></li>
-                                        <li><div class="flex items-center py-2 px-3 rounded hover:bg-slate-50"><input id="call-type-5" name="calls" type="checkbox" value="تماس های داخلی" class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 cursor-pointer"><label for="call-type-5" class="mr-2 text-sm text-slate-700 cursor-pointer">تماس ‌های داخلی</label></div></li>
+                                <div id="callTypeBodyDropDown" class="filter-dropdown-menu hidden">
+                                    <ul>
+                                        <li>
+                                            <div class="filter-dropdown-item">
+                                                <input id="call-type-1" name="calls" type="checkbox" value="همه تماس ها">
+                                                <label for="call-type-1">همه تماس ها</label>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="filter-dropdown-item">
+                                                <input id="call-type-2" name="calls" type="checkbox" value="تماس های پاسخ داده نشده">
+                                                <label for="call-type-2">تماس های پاسخ نداده شده</label>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="filter-dropdown-item">
+                                                <input id="call-type-3" name="calls" type="checkbox" value="تماس های ورودی">
+                                                <label for="call-type-3">تماس ‌های ورودی</label>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="filter-dropdown-item">
+                                                <input id="call-type-4" name="calls" type="checkbox" value="تماس های خروجی">
+                                                <label for="call-type-4">تماس ‌های خروجی</label>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="filter-dropdown-item">
+                                                <input id="call-type-5" name="calls" type="checkbox" value="تماس های داخلی">
+                                                <label for="call-type-5">تماس ‌های داخلی</label>
+                                            </div>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">خط داخلی</label>
+                        
+                        <!-- Internal Line Filter -->
+                        <div class="filter-group">
+                            <label class="filter-label">خط داخلی</label>
                             <div class="relative">
-                                <button type="button" id="dropdownInternalLineBtn" data-dropdown-toggle="dropdownInternal" class="w-full form-select flex items-center justify-between gap-2 bg-white border border-slate-200 hover:border-slate-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-lg transition-colors">
-                                    <span class="text-slate-700">همه خطوط داخلی</span>
-                                    <i class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform"></i>
+                                <button type="button" id="dropdownInternalLineBtn" data-dropdown-toggle="dropdownInternal" class="filter-dropdown-button">
+                                    <span>همه خطوط داخلی</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
                                 </button>
-                                <div id="dropdownInternal" class="hidden z-20 w-full mt-1 bg-white rounded-lg shadow-lg border border-slate-200 p-2 absolute">
-                                    <div class="relative mb-2"><input type="text" id="searchInternal" placeholder="جستجو..." class="form-input pl-8"><div class="absolute left-0 inset-y-0 flex items-center pl-3 pointer-events-none"><i class="fa-solid fa-search text-slate-400"></i></div></div>
-                                    <ul class="space-y-1 text-sm text-slate-700 max-h-60 overflow-y-auto">
-                                        {% for extline in extlines %}<li class="internal-line-item"><div class="flex items-center py-2 px-3 rounded hover:bg-slate-50"><input id="internal-line-{{ forloop.counter }}" type="checkbox" name="extline" value="{{ extline }}" class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 cursor-pointer"><label for="internal-line-{{ forloop.counter }}" class="mr-2 text-sm text-slate-700 cursor-pointer">{{ extline }}</label></div></li>{% endfor %}
+                                <div id="dropdownInternal" class="filter-dropdown-menu hidden">
+                                    <div class="filter-dropdown-search">
+                                        <input type="text" id="searchInternal" placeholder="جستجو...">
+                                        <i class="fa-solid fa-search"></i>
+                                    </div>
+                                    <ul>
+                                        {% for extline in extlines %}
+                                        <li class="internal-line-item">
+                                            <div class="filter-dropdown-item">
+                                                <input id="internal-line-{{ forloop.counter }}" type="checkbox" name="extline" value="{{ extline }}">
+                                                <label for="internal-line-{{ forloop.counter }}">{{ extline }}</label>
+                                            </div>
+                                        </li>
+                                        {% endfor %}
                                     </ul>
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">خط شهری</label>
+                        
+                        <!-- Urban Line Filter -->
+                        <div class="filter-group">
+                            <label class="filter-label">خط شهری</label>
                             <div class="relative">
-                                <button type="button" id="dropdownUrbanLineBtn" data-dropdown-toggle="dropdownUrban" class="w-full form-select flex items-center justify-between gap-2 bg-white border border-slate-200 hover:border-slate-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-lg transition-colors">
-                                    <span class="text-slate-700">همه خطوط شهری</span>
-                                    <i class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform"></i>
+                                <button type="button" id="dropdownUrbanLineBtn" data-dropdown-toggle="dropdownUrban" class="filter-dropdown-button">
+                                    <span>همه خطوط شهری</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
                                 </button>
-                                <div id="dropdownUrban" class="hidden z-20 w-full mt-1 bg-white rounded-lg shadow-lg border border-slate-200 p-2 absolute">
-                                    <div class="relative mb-2"><input type="text" id="searchUrban" placeholder="جستجو..." class="form-input pl-8"><div class="absolute left-0 inset-y-0 flex items-center pl-3 pointer-events-none"><i class="fa-solid fa-search text-slate-400"></i></div></div>
-                                    <ul class="space-y-1 text-sm text-slate-700 max-h-60 overflow-y-auto">
-                                        {% for urbanline in urbanlines %}<li class="urban-line-item"><div class="flex items-center py-2 px-3 rounded hover:bg-slate-50"><input id="urban-line-{{ forloop.counter }}" name="urbanline" type="checkbox" value="{{ urbanline }}" class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 cursor-pointer"><label for="urban-line-{{ forloop.counter }}" class="mr-2 text-sm text-slate-700 cursor-pointer">{{ urbanline }}</label></div></li>{% endfor %}
+                                <div id="dropdownUrban" class="filter-dropdown-menu hidden">
+                                    <div class="filter-dropdown-search">
+                                        <input type="text" id="searchUrban" placeholder="جستجو...">
+                                        <i class="fa-solid fa-search"></i>
+                                    </div>
+                                    <ul>
+                                        {% for urbanline in urbanlines %}
+                                        <li class="urban-line-item">
+                                            <div class="filter-dropdown-item">
+                                                <input id="urban-line-{{ forloop.counter }}" name="urbanline" type="checkbox" value="{{ urbanline }}">
+                                                <label for="urban-line-{{ forloop.counter }}">{{ urbanline }}</label>
+                                            </div>
+                                        </li>
+                                        {% endfor %}
                                     </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+                    
+                    <div class="search-filters-grid">
+                        <!-- Date Range -->
                         <div class="col-span-1 lg:col-span-2">
-                            <label class="block text-sm font-medium text-slate-700 mb-2">بازه زمانی</label>
-                            <div class="flex flex-wrap gap-3">
-                                <div class="relative flex-1"><input data-jdp placeholder="از تاریخ" id="dateFrom" name="dateFrom" class="form-input pl-10" /><span class="absolute left-0 inset-y-0 flex items-center pl-3 pointer-events-none"><i class="fa-regular fa-calendar text-slate-400 text-lg"></i></span></div>
-                                <div class="relative flex-1"><input data-jdp placeholder="تا تاریخ" id="dateTo" name="dateTo" class="form-input pl-10" /><span class="absolute left-0 inset-y-0 flex items-center pl-3 pointer-events-none"><i class="fa-regular fa-calendar text-slate-400 text-lg"></i></span></div>
+                            <label class="filter-label">بازه زمانی</label>
+                            <div class="date-range-container">
+                                <div class="date-input-wrapper">
+                                    <input data-jdp placeholder="از تاریخ" id="dateFrom" name="dateFrom">
+                                    <i class="fa-regular fa-calendar"></i>
+                                </div>
+                                <div class="date-input-wrapper">
+                                    <input data-jdp placeholder="تا تاریخ" id="dateTo" name="dateTo">
+                                    <i class="fa-regular fa-calendar"></i>
+                                </div>
                             </div>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">جستجو</label>
-                            <div class="relative w-full"><input type="search" id="searchBox" name="q" value="{{ request.GET.q|default_if_none:'' }}" placeholder="جستجو شماره یا نام" class="form-input pl-10" /><span class="absolute left-0 inset-y-0 flex items-center pl-3 pointer-events-none"><i class="fa-solid fa-search text-slate-400 text-lg"></i></span></div>
+                        
+                        <!-- Search Box -->
+                        <div class="filter-group">
+                            <label class="filter-label">جستجو</label>
+                            <div class="search-input-wrapper">
+                                <input type="search" id="searchBox" name="q" value="{{ request.GET.q|default_if_none:'' }}" placeholder="جستجو شماره یا نام">
+                                <i class="fa-solid fa-search"></i>
+                            </div>
                         </div>
                     </div>
-                    <div class="flex flex-wrap justify-end gap-3 mt-6 border-t border-slate-200 pt-4">
-                        <button type="reset" class="form-button px-4 py-2.5 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg"><i class="fa-solid fa-rotate-left ml-1"></i> پاک کردن فیلترها</button>
-                        <button type="button" id="reverse_up" class="form-button px-4 py-2.5 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg"><i class="fa-solid fa-arrow-up ml-1"></i> مرتب‌سازی</button>
-                        <button type="submit" class="form-button primary px-6 py-2.5"><i class="fa-solid fa-filter ml-1"></i> اعمال فیلتر</button>
+                    
+                    <!-- Action Buttons -->
+                    <div class="filter-actions">
+                        <button type="reset" class="filter-button filter-button-reset">
+                            <i class="fa-solid fa-rotate-left"></i> پاک کردن فیلترها
+                        </button>
+                        <button type="button" id="reverse_up" class="filter-button filter-button-sort">
+                            <i class="fa-solid fa-arrow-up"></i> مرتب‌سازی
+                        </button>
+                        <button type="submit" class="filter-button filter-button-apply">
+                            <i class="fa-solid fa-filter"></i> اعمال فیلتر
+                        </button>
                     </div>
                 </div>
             </form>
@@ -634,42 +828,41 @@
                 
                 <div class="desktop-table table-container shadow-sm border border-slate-100 rounded-lg">
                     <table class="w-full min-w-full divide-y divide-slate-200" id="table" dir="rtl">
-                        <thead class="bg-slate-50">
+                        <thead class="bg-slate-50 dark:bg-transparent" style="background-color: var(--table-header-bg);">
                             <tr>
-                                <th class="w-16"><div class="flex items-center justify-end"><span class="text-xs font-medium text-slate-500">ردیف</span><button class="mr-1 text-slate-300 hover:text-slate-400 transition-colors"><i class="fa-solid fa-sort text-xs"></i></button></div></th>
-                                <th class="min-w-[120px]"><div class="flex items-center justify-end"><span class="text-xs font-medium text-slate-500">تاریخ و زمان</span><button class="mr-1 text-slate-300 hover:text-slate-400 transition-colors"><i class="fa-solid fa-sort text-xs"></i></button></div></th>
-                                <th class="group"><div class="flex items-center justify-end"><span>ساعت</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
-                                <th class="group"><div class="flex items-center justify-end"><span>شماره مخاطب</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
-                                <th class="group"><div class="flex items-center justify-end"><span>شماره داخلی</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
-                                <th class="group"><div class="flex items-center justify-end"><span>خط شهری</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
-                                <th class="group"><div class="flex items-center justify-end"><span>مدت تماس</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
-                                <th class="group"><div class="flex items-center justify-end"><span>نوع تماس</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
+                                <th class="w-16"><div class="flex items-center justify-center"><span class="text-xs font-medium" style="color: var(--light-text);">ردیف</span><button class="mr-1 text-slate-300 hover:text-slate-400 transition-colors"><i class="fa-solid fa-sort text-xs"></i></button></div></th>
+                                <th class="min-w-[120px]"><div class="flex items-center justify-center"><span class="text-xs font-medium" style="color: var(--light-text);">تاریخ و زمان</span><button class="mr-1 text-slate-300 hover:text-slate-400 transition-colors"><i class="fa-solid fa-sort text-xs"></i></button></div></th>
+                                <th class="group"><div class="flex items-center justify-center"><span>ساعت</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
+                                <th class="group"><div class="flex items-center justify-center"><span>شماره مخاطب</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
+                                <th class="group"><div class="flex items-center justify-center"><span>شماره داخلی</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
+                                <th class="group"><div class="flex items-center justify-center"><span>خط شهری</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
+                                <th class="group"><div class="flex items-center justify-center"><span>مدت تماس</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
                                 <th class="group"><div class="flex items-center justify-center"><span>نوع تماس</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
-                                <th class="group"><div class="flex items-center justify-end"><span>زمان برق</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
-                                <th class="group"><div class="flex items-center justify-end"><span>انتقال</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
-                                <th class="group"><div class="flex items-center justify-end"><span>هزینه</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
+                                <th class="group"><div class="flex items-center justify-center"><span>زمان برق</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
+                                <th class="group"><div class="flex items-center justify-center"><span>انتقال</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
+                                <th class="group"><div class="flex items-center justify-center"><span>هزینه</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
                             </tr>
                         </thead>
                         <tbody id="tbody">
                             {% if dashPage %}
                                 {% for rec in dashPage.object_list %}
                                     <tr>
-                                        <td><span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 text-slate-700">{{ forloop.counter0|add:dashPage.start_index }}</span></td>
-                                        <td><span class="font-medium">{{ rec.date }}</span></td>
-                                        <td><span class="font-medium">{{ rec.hour }}</span></td>
-                                        <td><span class="font-medium">{% if rec.contactnumber %}{{ rec.contactnumber }}{% else %}<span class="text-slate-400">-</span>{% endif %}</span></td>
-                                        <td><span class="font-medium">{{ rec.extension }}</span></td>
-                                        <td>{% if rec.urbanline %}{{ rec.urbanline }}{% else %}<span class="text-slate-400">-</span>{% endif %}</td>
-                                        <td><span class="font-medium">{% if rec.durationtime %}{{ rec.durationtime }}{% else %}0{% endif %}</span><span class="text-xs text-slate-400 mr-1">ثانیه</span></td>
+                                        <td class="text-center"><span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 text-slate-700">{{ forloop.counter0|add:dashPage.start_index }}</span></td>
+                                        <td class="text-center"><span class="font-medium">{{ rec.date }}</span></td>
+                                        <td class="text-center"><span class="font-medium">{{ rec.hour }}</span></td>
+                                        <td class="text-center"><span class="font-medium">{% if rec.contactnumber %}{{ rec.contactnumber }}{% else %}<span class="text-slate-400">-</span>{% endif %}</span></td>
+                                        <td class="text-center"><span class="font-medium">{{ rec.extension }}</span></td>
+                                        <td class="text-center">{% if rec.urbanline %}{{ rec.urbanline }}{% else %}<span class="text-slate-400">-</span>{% endif %}</td>
+                                        <td class="text-center"><span class="font-medium">{% if rec.durationtime %}{{ rec.durationtime }}{% else %}0{% endif %}</span><span class="text-xs text-slate-400 mr-1">ثانیه</span></td>
                                         <td class="text-center img-print-cell">
-                                            <div class="inline-flex flex-col items-center group relative">
-                                                <img src="{% static 'pic/' %}{{ rec.calltype|getCallTypeIcon }}" class="w-6 h-6" title="{{ rec.calltype|getRealCallType }}">
-                                                <span class="opacity-0 group-hover:opacity-100 absolute bottom-full mb-2 bg-slate-800 text-white text-xs rounded py-1 px-2 pointer-events-none transition-opacity whitespace-nowrap">{{ rec.calltype|getRealCallType }}</span>
+                                            <div class="call-type-icon-container">
+                                                <img src="{% static 'pic/' %}{{ rec.calltype|getCallTypeIcon }}" class="w-6 h-6 call-type-icon" title="{{ rec.calltype|getRealCallType }}" alt="{{ rec.calltype|getRealCallType }}">
+                                                <div class="tooltip-text bg-slate-800 text-white text-xs rounded py-1 px-3 pointer-events-none whitespace-nowrap z-10">{{ rec.calltype|getRealCallType }}</div>
                                             </div>
                                         </td>
-                                        <td>{% if rec.beepsnumber %}{{ rec.beepsnumber }}{% else %}0{% endif %}</td>
-                                        <td>{% if rec.transferring %}<span class="inline-flex px-2 py-1 text-xs font-semibold leading-none text-green-800 bg-green-100 rounded-full">بله</span>{% else %}<span class="inline-flex px-2 py-1 text-xs font-semibold leading-none text-red-800 bg-red-100 rounded-full">خیر</span>{% endif %}</td>
-                                        <td class="cost"><span class="font-medium">{% if rec.durationtime %}{{ rec.durationtime|calculateOnePrice:rec.contactnumber }}{% else %}0{% endif %}</span><span class="text-xs text-slate-400 mr-1">تومان</span></td>
+                                        <td class="text-center">{% if rec.beepsnumber %}{{ rec.beepsnumber }}{% else %}0{% endif %}</td>
+                                        <td class="text-center">{% if rec.transferring %}<span class="inline-flex px-2 py-1 text-xs font-semibold leading-none text-green-800 bg-green-100 rounded-full">بله</span>{% else %}<span class="inline-flex px-2 py-1 text-xs font-semibold leading-none text-red-800 bg-red-100 rounded-full">خیر</span>{% endif %}</td>
+                                        <td class="cost text-center"><span class="font-medium">{% if rec.durationtime %}{{ rec.durationtime|calculateOnePrice:rec.contactnumber }}{% else %}0{% endif %}</span><span class="text-xs text-slate-400 mr-1">تومان</span></td>
                                     </tr>
                                 {% endfor %}
                             {% else %}
@@ -680,7 +873,7 @@
                 </div>
                 
                 <div class="mobile-table border-t border-slate-200">
-                    <div class="px-4 py-3 bg-slate-50 text-xs font-medium text-slate-500 uppercase">تماس‌های اخیر</div>
+                    <div class="px-4 py-3 text-xs font-medium uppercase" style="background-color: var(--table-header-bg); color: var(--light-text);">تماس‌های اخیر</div>
                     <ul class="divide-y divide-slate-200">
                         {% if dashPage %}
                             {% for rec in dashPage.object_list %}
@@ -764,11 +957,35 @@
 
         function applyTheme(theme) {
             if (theme === 'dark') {
-                htmlElement.addClass('dark');
-                themeToggle.find('i').removeClass('fa-sun text-yellow-500').addClass('fa-moon text-indigo-300');
+                document.documentElement.classList.add('dark');
+                
+                // Fix filter dropdowns and other elements for dark mode
+                $('.form-input, .form-select').css({
+                    'background-color': getComputedStyle(document.documentElement).getPropertyValue('--input-bg'),
+                    'border-color': getComputedStyle(document.documentElement).getPropertyValue('--input-border'),
+                    'color': getComputedStyle(document.documentElement).getPropertyValue('--text-color')
+                });
+                
+                // Fix dropdown backgrounds
+                $('[id$="DropDown"], #dropdownInternal, #dropdownUrban, #callTypeBodyDropDown').css({
+                    'background-color': getComputedStyle(document.documentElement).getPropertyValue('--card-bg'),
+                    'border-color': getComputedStyle(document.documentElement).getPropertyValue('--border-color')
+                });
             } else {
-                htmlElement.removeClass('dark');
-                themeToggle.find('i').removeClass('fa-moon text-indigo-300').addClass('fa-sun text-yellow-500');
+                document.documentElement.classList.remove('dark');
+                
+                // Reset filter dropdowns and other elements for light mode
+                $('.form-input, .form-select').css({
+                    'background-color': '',
+                    'border-color': '',
+                    'color': ''
+                });
+                
+                // Reset dropdown backgrounds
+                $('[id$="DropDown"], #dropdownInternal, #dropdownUrban, #callTypeBodyDropDown').css({
+                    'background-color': '',
+                    'border-color': ''
+                });
             }
             localStorage.setItem('theme', theme);
         }
@@ -782,17 +999,40 @@
         });
 
         $("#toggleFilters").on('click', function() {
+            $(this).closest('form').get(0).reset();
+            // If you want to clear URL parameters and reload for a full clear, you might add:
+            // window.location.href = window.location.pathname;
+        });
+
+        // Toggle filter section visibility when clicking the header
+        $(".search-filters-header").on('click', function(e) {
+            // Don't trigger if the click was directly on the toggle button
+            // as that has its own handler
+            if (!$(e.target).closest('#filterSectionToggleIcon').length) {
+                toggleFilterSection();
+            }
+        });
+        
+        // Separate handler for the toggle button to prevent double-triggering
+        $("#filterSectionToggleIcon").on('click', function(e) {
+            e.stopPropagation(); // Prevent the header click from also firing
+            toggleFilterSection();
+        });
+        
+        // Centralized function to toggle the filter section
+        function toggleFilterSection() {
             $("#filterSection").slideToggle(300, function() {
-                const $icon = $("#filterIcon");
+                const $icon = $("#filterSectionToggleIcon i");
                 if ($(this).is(':visible')) {
-                    $("#filterText").text("پنهان کردن فیلترها");
                     $icon.removeClass("fa-chevron-down").addClass("fa-chevron-up");
                 } else {
-                    $("#filterText").text("نمایش فیلترها");
                     $icon.removeClass("fa-chevron-up").addClass("fa-chevron-down");
                 }
             });
-        });
+        }
+        
+        // Make sure the entire header area is clickable
+        $(".search-filters-title").css('cursor', 'pointer');
         
         function adjustTableResponsiveness() {
             if (window.innerWidth < 768) {
@@ -915,7 +1155,6 @@
             printWindow.document.write(table.wrap('<div>').parent().html());
             printWindow.document.write(`<div class="print-footer"><p>این گزارش توسط سیستم لوتوس تولید شده است. &copy; ${new Date().getFullYear()}</p></div>`);
             printWindow.document.write('</body></html>');
-            printWindow.document.close();
             setTimeout(function() { printWindow.focus(); printWindow.print(); printWindow.close(); }, 500);
         });
         
@@ -928,9 +1167,12 @@
             const dateTo = urlParams.get("dateTo");
             const searchQuery = urlParams.get("q");
 
-            if (calls.length > 0 || exts.length > 0 || urbanlines.length > 0 || dateFrom || dateTo || searchQuery) {
+            const paramsExist = calls.length > 0 || exts.length > 0 || urbanlines.length > 0 || dateFrom || dateTo || searchQuery;
+
+            if (paramsExist) {
                 if (!$("#filterSection").is(':visible')) {
-                     $("#toggleFilters").click(); // Open filters if they are closed but params exist
+                     $("#filterSection").show();
+                     $("#filterSectionToggleIcon i").removeClass("fa-chevron-down").addClass("fa-chevron-up");
                 }
                 
                 calls.forEach(call => $(`input[name="calls"][value="${call}"]`).prop('checked', true));
@@ -948,6 +1190,26 @@
             }
         }
         loadSavedFilters();
+
+        // همه تماس ها checkbox functionality - check all other checkboxes when selected
+        $('#call-type-1').on('change', function() {
+            // If همه تماس ها is checked, check all other call type checkboxes
+            const isChecked = $(this).prop('checked');
+            $('input[name="calls"]').not(this).prop('checked', isChecked);
+        });
+
+        // When any other checkbox changes, uncheck همه تماس ها if it's unchecked
+        $('input[name="calls"]').not('#call-type-1').on('change', function() {
+            if (!$(this).prop('checked')) {
+                $('#call-type-1').prop('checked', false);
+            } else {
+                // Check if all other checkboxes are checked
+                const allOthersChecked = $('input[name="calls"]').not('#call-type-1').toArray().every(cb => $(cb).prop('checked'));
+                if (allOthersChecked) {
+                    $('#call-type-1').prop('checked', true);
+                }
+            }
+        });
 
         // Reset button functionality
         $('form').on('reset', function(e) {

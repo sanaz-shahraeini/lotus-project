@@ -1,0 +1,45 @@
+/* 
+ * Mobile Sidebar Toggle Button Fix
+ * Removes background and adds proper styling for the toggle button
+ */
+
+#toggle-menu,
+#toggle-sidebar-mobile {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+#toggle-menu:hover,
+#toggle-sidebar-mobile:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+#toggle-menu:focus,
+#toggle-sidebar-mobile:focus {
+    outline: none !important;
+}
+
+#toggle-menu i,
+#toggle-sidebar-mobile i {
+    color: var(--text-color) !important;
+    font-size: 1.25rem !important;
+}
+
+/* Dark mode adjustments */
+html.dark #toggle-menu i,
+html.dark #toggle-sidebar-mobile i {
+    color: var(--text-color) !important;
+}
+
+/* Make sure the button is easily clickable but doesn't have a visible background */
+#toggle-menu,
+#toggle-sidebar-mobile {
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    transition: background-color 0.2s ease !important;
+}

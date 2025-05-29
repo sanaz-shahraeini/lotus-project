@@ -24,6 +24,8 @@ html.dark #mobile-sidebar a,
 html.dark #sidebar button,
 html.dark #mobile-sidebar button {
     color: var(--text-color) !important;
+    background-color: transparent !important;
+    border:0 !important;
 }
 
 /* Update sidebar links hover state in dark mode */

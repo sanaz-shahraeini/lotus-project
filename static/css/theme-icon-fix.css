@@ -1,15 +1,64 @@
-/* Theme Toggle Icon Fix */
+/* Theme icon fixes */
 
-/* Ensure sun icon is visible in dark mode */
-html.dark .fa-sun,
-html.dark #themeToggle .fa-sun {
-    color: #f59e0b !important;
+/* Theme toggle icon styling */
+#themeToggle {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    position: relative; /* For absolute positioning of icons */
+    width: 2.5rem; /* Adjust size as needed, matches p-2 and icon size */
+    height: 2.5rem; /* Adjust size as needed */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+    /* padding: 0.5rem; /* p-2 from HTML */
+    /* border-radius: 0.5rem; /* rounded-lg from HTML */
 }
 
-/* Ensure moon icon is visible in light mode with a more appropriate color */
-html.light .fa-moon,
-html.light #themeToggle .fa-moon {
-    color: #3b82f6 !important; /* Blue color for moon */
+/* Hover states are already handled by Tailwind classes in dashboard.html */
+/* #themeToggle:hover {
+    background-color: rgba(0, 0, 0, 0.1); 
+}
+
+html.dark #themeToggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+} */
+
+#themeToggle .fa-sun,
+#themeToggle .fa-moon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s ease, transform 0.3s ease, color 0.3s ease;
+    font-size: 1.25rem; /* Adjust icon size if needed */
+}
+
+/* Light mode: Sun visible (yellow), Moon hidden */
+html:not(.dark) #themeToggle .fa-sun {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(0deg);
+    color: #f59e0b !important; /* Yellow for sun */
+}
+
+html:not(.dark) #themeToggle .fa-moon {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(-90deg);
+    color: #818cf8 !important; /* Light Indigo/Blue for moon - set color even when hidden for transition */
+}
+
+/* Dark mode: Moon visible (light indigo/blue), Sun hidden */
+html.dark #themeToggle .fa-moon {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(0deg);
+    color: #818cf8 !important; /* Light Indigo/Blue for moon in dark mode */
+}
+
+html.dark #themeToggle .fa-sun {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(90deg);
+    color: #f59e0b !important; /* Yellow for sun - set color even when hidden for transition */
 }
 
 /* Style for moon icon in dashboard */
@@ -17,21 +66,25 @@ html.light #themeToggle .fa-moon {
     color: #3b82f6 !important;
 }
 
-/* Fix theme toggle button styling */
-#themeToggle {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s;
+/* Specific fixes for incoming and outgoing stat card icons in dark mode */
+html.dark .stat-card.incoming .w-14.stat-icon {
+    background-color: rgba(255, 255, 255, 0.12) !important; /* Test background, slightly different from high-contrast-dark */
 }
 
-#themeToggle:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+html.dark .stat-card.incoming .w-14.stat-icon i.fa-phone-arrow-down-left {
+    color: #34d399 !important; /* Bright emerald */
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: inline-block !important;
 }
 
-html.dark #themeToggle:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+html.dark .stat-card.outgoing .w-14.stat-icon {
+    background-color: rgba(255, 255, 255, 0.12) !important; /* Test background */
+}
+
+html.dark .stat-card.outgoing .w-14.stat-icon i.fa-phone-arrow-up-right {
+    color: #fbbf24 !important; /* Bright amber */
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: inline-block !important;
 }
