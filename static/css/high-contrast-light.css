@@ -1,0 +1,107 @@
+/* High Contrast Light Theme */
+:root.high-contrast-light {
+    --primary-color: #0056b3;
+    --primary-hover: #003d82;
+    --secondary-color: #f0f0f0;
+    --text-color: #000000;
+    --light-text: #333333;
+    --border-color: #666666;
+    --bg-color: #ffffff;
+    --card-bg: #f8f8f8;
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    
+    /* Dashboard-specific variables */
+    --primary: var(--primary-color);
+    --primary-dark: #003d82;
+    --primary-light: #4d94ff;
+    --secondary: #008a5e;
+    --warning: #cc7700;
+    --danger: #cc0000;
+    --light: #ffffff;
+    --dark: #000000;
+    --gray: #444444;
+    --gray-light: #dddddd;
+    
+    /* Stats card colors */
+    --stat-total-bg: #0056b3;
+    --stat-incoming-bg: #008a5e;
+    --stat-outgoing-bg: #cc7700;
+    --stat-missed-bg: #cc0000;
+    
+    /* Table specific colors */
+    --table-header-bg: #e6e6e6;
+    --table-row-hover: rgba(0, 0, 0, 0.05);
+    
+    /* Form elements */
+    --input-bg: #ffffff;
+    --input-border: #666666;
+    --input-focus-border: #0056b3;
+    --input-focus-shadow: rgba(0, 86, 179, 0.25);
+}
+
+/* Improved contrast for text */
+:root.high-contrast-light body {
+    color: var(--text-color);
+}
+
+/* Stronger borders for better definition */
+:root.high-contrast-light .card,
+:root.high-contrast-light input,
+:root.high-contrast-light select,
+:root.high-contrast-light button,
+:root.high-contrast-light .table-container {
+    border: 1px solid var(--border-color);
+}
+
+/* Enhanced focus states */
+:root.high-contrast-light button:focus,
+:root.high-contrast-light input:focus,
+:root.high-contrast-light select:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Improved table readability */
+:root.high-contrast-light th {
+    background-color: var(--table-header-bg);
+    color: var(--dark);
+    font-weight: 700;
+}
+
+:root.high-contrast-light td {
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Better link contrast */
+:root.high-contrast-light a {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+:root.high-contrast-light a:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
+
+/* Enhanced button visibility */
+:root.high-contrast-light .form-button.primary {
+    background-color: var(--primary-color);
+    color: white;
+    border: 2px solid var(--primary-dark);
+}
+
+/* Improved card contrast */
+:root.high-contrast-light .stat-card {
+    background-color: var(--card-bg);
+    border: 2px solid var(--border-color);
+}
+
+/* Better icon visibility */
+:root.high-contrast-light .call-type-icon {
+    border: 1px solid var(--border-color);
+}
+
+/* Enhanced status badges */
+:root.high-contrast-light .status-badge {
+    border: 1px solid currentColor;
+}
