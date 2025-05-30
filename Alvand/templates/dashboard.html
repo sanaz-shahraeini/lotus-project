@@ -912,22 +912,44 @@
             <div class="card p-5">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div class="flex flex-wrap items-center gap-3">
-                        <div class="px-4 py-2.5 bg-blue-50 rounded-lg"><div class="flex items-center gap-2"><i class="fa-solid fa-list text-blue-500"></i><div><span class="text-sm font-medium text-slate-700">تعداد کل:</span><span class="text-sm text-blue-600 font-semibold">{{ dashPage.paginator.count }}</span></div></div></div>
-                        <div class="px-4 py-2.5 bg-green-50 rounded-lg"><div class="flex items-center gap-2"><i class="fa-solid fa-sack-dollar text-green-500"></i><div><span class="text-sm font-medium text-slate-700">مجموع هزینه:</span><span class="text-sm text-green-600 font-semibold"><span id="totalCosts">0</span><span class="text-slate-600"> تومان</span></span></div></div></div>
+                        <div class="px-6 py-2.5 bg-blue-50 rounded-lg"><div class="flex items-center gap-2"><i class="fa-solid fa-list text-blue-500"></i><div><span class="text-sm font-medium text-slate-700">تعداد کل:</span><span class="text-sm text-blue-600 font-semibold">{{ dashPage.paginator.count }}</span></div></div></div>
+                        <div class="px-6 py-2.5 bg-green-50 rounded-lg"><div class="flex items-center gap-2"><i class="fa-solid fa-sack-dollar text-green-500"></i><div><span class="text-sm font-medium text-slate-700">مجموع هزینه:</span><span class="text-sm text-green-600 font-semibold"><span id="totalCosts">0</span><span class="text-slate-600"> تومان</span></span></div></div></div>
                     </div>
                     {% if dashPage.has_other_pages %}
-                        <div class="flex items-center w-full sm:w-auto justify-between sm:justify-end gap-2">
-                            <a href="?p={% if dashPage.has_previous %}{{ dashPage.previous_page_number }}{% else %}1{% endif %}{% for key, value_list in request.GET.lists %}{% for value in value_list %}{% if key != 'p' %}&amp;{{ key }}={{ value }}{% endif %}{% endfor %}{% endfor %}" class="form-button px-3 py-2 text-sm {% if not dashPage.has_previous %}opacity-50 cursor-not-allowed{% endif %}"><i class="fa-solid fa-chevron-right ml-1"></i> قبلی</a>
-                            <div class="hidden sm:flex rounded-lg border border-slate-200 overflow-hidden">
-                                {% for i in dashPage.paginator.page_range %}
-                                    {% if i == dashPage.number %}<span class="px-3 py-2 text-sm font-medium text-white bg-blue-600">{{ i }}</span>
-                                    {% elif i > dashPage.number|add:"-3" and i < dashPage.number|add:"3" %}<a href="?p={{ i }}{% for key, value_list in request.GET.lists %}{% for value in value_list %}{% if key != 'p' %}&amp;{{ key }}={{ value }}{% endif %}{% endfor %}{% endfor %}" class="px-3 py-2 text-sm font-medium text-slate-700 bg-white hover:bg-slate-50">{{ i }}</a>
-                                    {% elif i == dashPage.number|add:"-3" or i == dashPage.number|add:"3" %}<span class="px-3 py-2 text-sm">...</span>
-                                    {% endif %}
-                                {% endfor %}
+                        <div class="flex flex-col sm:flex-row items-center justify-between w-full gap-4">
+                            <div class="flex items-center gap-2 text-sm text-slate-600">
+                                <span>صفحه {{ dashPage.number }} از {{ dashPage.paginator.num_pages }}</span>
                             </div>
-                            <span class="sm:hidden inline-flex px-3 py-2 text-sm text-slate-600 bg-white border border-slate-200 rounded-lg">{{ dashPage.number }} / {{ dashPage.paginator.num_pages }}</span>
-                            <a href="?p={% if dashPage.has_next %}{{ dashPage.next_page_number }}{% else %}{{ dashPage.paginator.num_pages }}{% endif %}{% for key, value_list in request.GET.lists %}{% for value in value_list %}{% if key != 'p' %}&amp;{{ key }}={{ value }}{% endif %}{% endfor %}{% endfor %}" class="form-button px-3 py-2 text-sm {% if not dashPage.has_next %}opacity-50 cursor-not-allowed{% endif %}">بعدی <i class="fa-solid fa-chevron-left mr-1"></i></a>
+                            <div class="flex items-center justify-center gap-2 w-full sm:w-auto">
+                                <a href="?p={% if dashPage.has_next %}{{ dashPage.next_page_number }}{% else %}{{ dashPage.paginator.num_pages }}{% endif %}{% for key, value_list in request.GET.lists %}{% for value in value_list %}{% if key != 'p' %}&amp;{{ key }}={{ value }}{% endif %}{% endfor %}{% endfor %}" 
+                                   class="flex items-center justify-center px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 font-medium rounded-lg border border-slate-200 transition-colors {% if not dashPage.has_next %}opacity-50 cursor-not-allowed{% endif %}">
+                                   <i class="fa-solid fa-chevron-right ml-2"></i>
+                                   <span>بعدی</span>
+                                </a>
+                                
+                                <div class="hidden sm:flex rounded-lg overflow-hidden shadow-sm">
+                                    {% for i in dashPage.paginator.page_range %}
+                                        {% if i == dashPage.number %}
+                                            <span class="inline-flex items-center justify-center w-10 h-10 text-sm font-medium text-white bg-indigo-600 border border-indigo-600">{{ i }}</span>
+                                        {% elif i > dashPage.number|add:"-3" and i < dashPage.number|add:"3" %}
+                                            <a href="?p={{ i }}{% for key, value_list in request.GET.lists %}{% for value in value_list %}{% if key != 'p' %}&amp;{{ key }}={{ value }}{% endif %}{% endfor %}{% endfor %}" 
+                                               class="inline-flex items-center justify-center w-10 h-10 text-sm font-medium text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition-colors">{{ i }}</a>
+                                        {% elif i == dashPage.number|add:"-3" or i == dashPage.number|add:"3" %}
+                                            <span class="inline-flex items-center justify-center w-10 h-10 text-sm font-medium text-slate-400 bg-white border border-slate-200">...</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                
+                                <span class="sm:hidden inline-flex items-center justify-center px-14 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-lg">
+                                    {{ dashPage.paginator.num_pages }} / {{ dashPage.number }}
+                                </span>
+                                
+                                <a href="?p={% if dashPage.has_previous %}{{ dashPage.previous_page_number }}{% else %}1{% endif %}{% for key, value_list in request.GET.lists %}{% for value in value_list %}{% if key != 'p' %}&amp;{{ key }}={{ value }}{% endif %}{% endfor %}{% endfor %}" 
+                                   class="flex items-center justify-center px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 font-medium rounded-lg border border-slate-200 transition-colors {% if not dashPage.has_previous %}opacity-50 cursor-not-allowed{% endif %}">
+                                   <span>قبلی</span>
+                                   <i class="fa-solid fa-chevron-left mr-2"></i>
+                                </a>
+                            </div>
                         </div>
                     {% endif %}
                 </div>
