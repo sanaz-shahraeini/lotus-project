@@ -23,17 +23,14 @@
     <link href="{% static 'css/mobile-menu-fix.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/sidebar-dark-mode.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/dark-mode-fix.css' %}" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="{% static 'css/high-contrast-light.css' %}">
     <link rel="stylesheet" href="{% static 'css/high-contrast-dark.css' %}">
-    <link rel="stylesheet" href="{% static 'css/theme-icon-fix.css' %}">
     <link href="{% static 'css/sidebar-desktop-fix.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'css/navbar-fix.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/mobile-sidebar-fix.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/mobile-links-fix.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/sidebar-padding-fix.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/search-filters-redesign.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'css/mobile-sidebar-toggle-fix.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'css/desktop-menu-fix.css' %}" rel="stylesheet" type="text/css">
+  
+  
     {% block head_extra %}{% endblock %}
 </head>
 
@@ -41,164 +38,15 @@
 <div class="relative">
     <!-- Theme Toggle functionality preserved in JavaScript only -->
 
-    <aside id="sidebar"
-           class="w-[135px] overflow-y-auto h-screen text-white z-40 fixed top-0 right-0 transform transition-all duration-300 ease-in-out sm:w-[135px] hidden lg:block">
-        <div class="text-center border-b-[1px] m-1 mt-6">
-            <img src="{% if 'user' in request.session %}{% if request.session.user|getBaseInfo:'picurl'|lower == 'avatar.png' %}{% static 'pic/' %}{% else %}{% static 'upload/' %}{% endif %}{{ request.session.user|getBaseInfo:'picurl' }}{% endif %}"
-                 alt="Profile" class="w-16 mx-auto border-white rounded-full border-2 object-cover">
-            <p class="mt-3 text-xs sm:text-sm">
-                {% if 'user' in request.session %}{{ request.session.user|capfirst }}{% endif %}</p>
-            <p class="text-xs sm:text-sm mt-3">
-                {% if 'user' in request.session %}{{ request.session.user|getBaseInfo:'extension' }}{% endif %}</p>
+    {% include 'includes/sidebar.html' %}
+    
+    <div class="main-content ml-0 lg:ml-[135px]">
+        {% include 'includes/navbar.html' %}
+        
+        <div class="content-wrapper px-4 py-6">
+            {% block main %}{% endblock %}
         </div>
-        <nav class="mt-5 space-y-2">
-            <a href="{% url 'dashboard' %}"
-               class="py-3 text-xs sm:text-sm flex items-center justify-start">
-                <i class="fas fa-tachometer-alt"></i> <span class="ml-2 sidebar-text sm:inline">داشبورد</span>
-            </a>
-            <a href="{% url 'smdr-dashboard' %}"
-               class="py-3 text-xs sm:text-sm flex items-center justify-start">
-                <i class="fas fa-phone"></i> <span class="ml-2 sidebar-text sm:inline">داشبورد SMDR</span>
-            </a>
-            <a href="{% url 'profile' %}"
-               class="py-3 text-xs sm:text-sm flex items-center justify-start">
-                <i class="fas fa-user"></i> <span class="ml-2 sidebar-text sm:inline">پروفایل کاربری</span>
-            </a>
-            {% if request.session.user|getBaseInfo:"groupname" != "member" %}
-            <div class="relative w-full">
-                <button id="show-settings"
-                        class="w-full text-center no-underline text-xs sm:text-sm p-2 flex items-center justify-center">
-                    <i class="fas fa-cog"></i> <span class="ml-2 sidebar-text sm:inline">تنظیمات</span>
-                </button>
-                <div id="dropdownmenu"
-                     class="hidden z-50 divide-y w-full transform transition-all duration-300 ease-in-out">
-                    <ul class="py-2">
-                        <li><a href="{% url 'user' %}"
-                               class="block text-center text-xs sm:text-sm py-2">
-                            <i class="fas fa-user-gear"></i> <span class="ml-2 sidebar-text hidden sm:inline">تنظیمات کاربری</span>
-                        </a></li>
-                        <li><a href="{% url 'settings' %}"
-                               class="block text-center text-xs sm:text-sm py-2">
-                            <i class="fas fa-server"></i> <span class="ml-2 sidebar-text hidden sm:inline">تنظیمات سیستمی</span>
-                        </a></li>
-                    </ul>
-                </div>
-            </div>
-            {% endif %}
-            <a href="{% url 'errors' %}"
-               class="py-2 text-center text-xs sm:text-sm flex items-center justify-center">
-                <i class="fas fa-exclamation-circle"></i> <span class="ml-2 sidebar-text sm:inline">گزارش خطا</span>
-            </a>
-            <a href="{% url 'support' %}"
-               class="py-2 text-center text-xs sm:text-sm flex items-center justify-center">
-                <i class="fas fa-headset"></i> <span class="ml-2 sidebar-text sm:inline">پشتیبانی</span>
-            </a>
-            <button type="button" id="exit"
-               class="w-full text-center no-underline text-xs sm:text-sm p-2 flex items-center justify-center">
-                <i class="fas fa-sign-out-alt"></i> <span class="ml-2 sidebar-text sm:inline">خروج</span>
-            </button>
-        </nav>
-    </aside>
-
-    <button id="toggle-menu"
-            class="fixed top-4 right-4 text-white p-2 rounded-md z-50 lg:hidden transition-all transform duration-300 ease-in-out bg-transparent">
-        <i id="menu-icon" class="fas fa-bars"></i>
-    </button>
-
-    <div id="mobile-sidebar"
-         class="fixed overflow-y-auto top-0 right-0 w-[135px] h-screen text-white z-40 transform translate-x-full transition-transform duration-300 ease-in-out">
-        <div class="text-center border-b-[1px] m-1 mt-6">
-            <img src="{% if 'user' in request.session %}{% if request.session.user|getBaseInfo:'picurl'|lower == 'avatar.png' %}{% static 'pic/' %}{% else %}{% static 'upload/' %}{% endif %}{{ request.session.user|getBaseInfo:'picurl' }}{% endif %}"
-                 alt="Profile" class="w-16 mx-auto border-white rounded-full border-2 object-cover">
-            <p class="mt-3 text-xs sm:text-sm">
-                {% if 'user' in request.session %}{{ request.session.user|capfirst }}{% endif %}</p>
-            <p class="text-xs sm:text-sm mt-3">
-                {% if 'user' in request.session %}{{ request.session.user|getBaseInfo:'extension' }}{% endif %}</p>
-        </div>
-        <nav class="mt-5 space-y-2">
-            <a href="{% url 'dashboard' %}"
-               class="py-3 text-xs sm:text-sm flex items-center justify-start">
-                <i class="fas fa-tachometer-alt"></i> <span class="ml-2 sidebar-text sm:inline">داشبورد</span>
-            </a>
-            <a href="{% url 'smdr-dashboard' %}"
-               class="py-3 text-xs sm:text-sm flex items-center justify-start">
-                <i class="fas fa-phone"></i> <span class="ml-2 sidebar-text sm:inline">داشبورد SMDR</span>
-            </a>
-            <a href="{% url 'profile' %}"
-               class="py-3 text-xs sm:text-sm flex items-center justify-start">
-                <i class="fas fa-user"></i> <span class="ml-2 sidebar-text sm:inline">پروفایل کاربری</span>
-            </a>
-            {% if request.session.user|getBaseInfo:"groupname" != "member" %}
-            <div class="relative w-full">
-                <button type="button" id="show-settings-mb"
-                        class="w-full text-center no-underline text-xs sm:text-sm p-2 flex items-center justify-center">
-                    <i class="fas fa-cog"></i> <span class="ml-2 sidebar-text sm:inline">تنظیمات</span>
-                </button>
-                <div id="dropdownmenu-mb" class="hidden z-50 divide-y w-full">
-                    <ul class="py-2">
-                        <li><a href="{% url 'user' %}"
-                               class="block text-center text-xs sm:text-sm py-2">
-                            <i class="fas fa-user-gear"></i> <span
-                                class="ml-2 sidebar-text sm:inline">تنظیمات کاربری</span>
-                        </a></li>
-                        <li><a href="{% url 'settings' %}"
-                               class="block text-center text-xs sm:text-sm py-2">
-                            <i class="fas fa-server"></i> <span
-                                class="ml-2 sidebar-text sm:inline">تنظیمات سیستمی</span>
-                        </a></li>
-                    </ul>
-                </div>
-            </div>
-            {% endif %}
-            <a href="{% url 'errors' %}"
-               class="py-2 text-center text-xs sm:text-sm flex items-center justify-center">
-                <i class="fas fa-exclamation-circle"></i> <span class="ml-2 sidebar-text sm:inline">گزارش خطا</span>
-            </a>
-            <a href="{% url 'support' %}"
-               class="py-2 text-center text-xs sm:text-sm flex items-center justify-center">
-                <i class="fas fa-headset"></i> <span class="ml-2 sidebar-text sm:inline">پشتیبانی</span>
-            </a>
-            <button type="button" id="exit-mb"
-               class="w-full text-center no-underline text-xs sm:text-sm p-2 flex items-center justify-center">
-                <i class="fas fa-sign-out-alt"></i> <span class="ml-2 sidebar-text sm:inline">خروج</span>
-            </button>
-        </nav>
     </div>
-</div>
-
-<div id="exitmodal-mb" class="fixed inset-0 flex items-center justify-center bg-opacity-75 z-50 hidden modal">
-    <div class="modal bg-white rounded-lg shadow-lg max-w-md w-full">
-      <div class="p-6 text-center">
-        <div class="flex items-center justify-center w-12 h-12 mx-auto rounded-full">
-          <i class="fa-solid fa-triangle-exclamation text-4xl text-red-600"></i>
-        </div>
-        <h3 class="text-lg font-semibold mt-4">هشدار خروج</h3>
-        <p class="text-sm mt-2">آیا اطمینان دارید که می خواهید از سایت خارج شوید؟</p>
-      </div>
-      <div class="px-6 py-2 modal-footer flex justify-end gap-2">
-        <button id="close-mb" class="btn btn-secondary px-4 py-2 rounded-md">لغو</button>
-        <a href="{% url 'logout' %}" class="btn btn-danger px-4 py-2 rounded-md text-white">تایید</a>
-      </div>
-    </div>
-  </div>
-<div id="exitmodal" class="fixed inset-0 flex items-center justify-center bg-opacity-75 z-50 hidden modal">
-    <div class="modal bg-white rounded-lg shadow-lg max-w-md w-full">
-      <div class="p-6 text-center">
-        <div class="flex items-center justify-center w-12 h-12 mx-auto rounded-full">
-          <i class="fa-solid fa-triangle-exclamation text-4xl text-red-600"></i>
-        </div>
-        <h3 class="text-lg font-semibold mt-4">هشدار خروج</h3>
-        <p class="text-sm mt-2">آیا اطمینان دارید که می خواهید از سایت خارج شوید؟</p>
-      </div>
-      <div class="px-6 py-2 modal-footer flex justify-end gap-2">
-        <button id="close" class="btn btn-secondary px-4 py-2 rounded-md">لغو</button>
-        <a href="{% url 'logout' %}" class="btn btn-danger px-4 py-2 rounded-md text-white">تایید</a>
-      </div>
-    </div>
-  </div>
-
-<div class="main-content">
-    {% block main %}{% endblock %}
 </div>
 
 <script src="{% static 'js/jquery.js' %}"></script>

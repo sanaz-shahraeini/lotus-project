@@ -7,7 +7,7 @@
     color: #4f46e5 !important; /* Change text color to be visible against white background */
     pointer-events: auto !important; /* Ensure it's clickable */
     cursor: pointer !important;
-    z-index: 1000 !important; /* Very high z-index to ensure it's above everything */
+    z-index: 10000 !important; /* Very high z-index to ensure it's above everything */
 }
 
 /* Fix icon color */

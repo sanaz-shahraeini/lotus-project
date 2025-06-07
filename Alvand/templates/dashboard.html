@@ -8,8 +8,6 @@
 <link rel="stylesheet" href="{% static 'css/dashboard-fix.css' %}" />
 <link rel="stylesheet" href="{% static 'css/dashboard-width-fix.css' %}" />
 <link rel="stylesheet" href="{% static 'css/direct-layout-fix.css' %}" />
-<link rel="stylesheet" href="{% static 'css/header-optimize.css' %}" />
-<link rel="stylesheet" href="{% static 'css/consistent-headers.css' %}" />
 <link rel="stylesheet" href="{% static 'css/dashboard-content.css' %}" />
 
 <!-- Modern dashboard styles -->
@@ -500,25 +498,6 @@
 <div class="min-h-screen relative" style="background-color: var(--bg-color); transition: background-color 0.3s;">
     <!-- Main Content Area -->
     <main class="container mx-auto px-4 py-6">
-        <!-- Navbar -->
-        <header class="bg-card-bg shadow-sm sticky top-0 z-50 mb-8 rounded-xl transition-colors duration-300">
-            <div class="px-4 py-8 sm:px-6 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <h1 class="text-xl font-bold text-text-color transition-colors duration-300"> لوتوس</h1>
-                </div>
-                <div class="flex items-center gap-3">
-                    <button type="button" id="printbtn" class="px-4 py-2 bg-card-bg hover:bg-secondary-color text-primary-color rounded-lg text-sm font-medium transition-colors border border-border-color shadow-sm flex items-center">
-                        <i class="fa-solid fa-print ml-2"></i> چاپ
-                    </button>
-                    <div class="relative">
-                        <button id="themeToggle" class="p-2 rounded-lg text-light-text hover:bg-secondary-color dark:hover:bg-gray-700 focus:outline-none transition-colors relative" aria-label="Toggle dark mode">
-                            <i class="fa-solid fa-sun"></i>
-                            <i class="fa-solid fa-moon"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </header>
 
         <!-- Dashboard Content -->
         <div class="space-y-6">

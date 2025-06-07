@@ -1,9 +1,55 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load errortags %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="{% static 'css/dashboard-fix.css' %}">
+<link rel="stylesheet" href="{% static 'css/dashboard-width-fix.css' %}">
+<link rel="stylesheet" href="{% static 'css/direct-layout-fix.css' %}">
+<link rel="stylesheet" href="{% static 'css/dashboard-content.css' %}">
+
+<style>
+    :root {
+        --sidebar-width: 135px;
+        --main-padding: 1rem;
+        --text-color: #000;
+        --bg-color: #fff;
+        --border-color: #e2e8f0;
+    }
+    
+    html.dark {
+        --text-color: #fff !important;
+        --bg-color: #1a202c !important;
+        --border-color: #4a5568 !important;
+    }
+    
+    .main-content {
+        margin-right: var(--sidebar-width);
+        margin-left: 0;
+        width: calc(100% - var(--sidebar-width));
+        padding: var(--main-padding);
+    }
+    
+    /* RTL Support */
+    html[dir="ltr"] .main-content {
+        margin-right: 0;
+        margin-left: var(--sidebar-width);
+    }
+    
+    @media (max-width: 768px) {
+        .main-content {
+            margin-right: 0;
+            margin-left: 0;
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block main %}
-    <div class="my-0">
-        <div class=" w-full max-w-[1350px] h-auto mt-1 mx-auto pr-[40px] 2xl:pr-[138px] xl:pr-[138px] lg:pr-[138px] mr-1 flex flex-col rtl">
+    <div class="main-content">
+    <div class="my-0 w-full">
+        <div class="w-full h-auto mt-1 mx-auto flex flex-col rtl">
             <div class="flex flex-wrap gap-2 justify-items-center items-center px-4 ">
                 <div class="flex items-center gap-2 mr-2">
                     <!-- button for filter -->
@@ -69,7 +115,7 @@
             </div>
         </div>
         <!-- table for errors -->
-        <div class="border-2 border-solid border-gray-500 overflow-x-auto mr-[20px] 2xl:mr-[138] xl:mr-[138] lg:mr-[138] m-4 mt-0 flex-grow">
+        <div class="border-2 border-solid border-gray-500 overflow-x-auto m-4 mt-0 flex-grow">
             <table id='table' class="w-full min-w-full border-2 border-solid border-gray-600 text-sm">
                 <thead class="bg-gray-200">
                 <tr>
@@ -107,6 +153,7 @@
                 </tbody>
             </table>
         </div>
+    </div>
     </div>
 
     <script src="{% static 'js/jquery.js' %}"></script>

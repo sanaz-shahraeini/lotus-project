@@ -42,6 +42,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Make sure it's visible and clickable
         newToggleMenu.style.pointerEvents = 'auto';
         newToggleMenu.style.cursor = 'pointer';
-        newToggleMenu.style.zIndex = '9999';
+        newToggleMenu.style.zIndex = '1000000';
     }
 });

@@ -1,13 +1,97 @@
 {% extends "base.html" %}
 {% load static settingsTags %}
+{% block head_extra %}
+<!-- Dashboard CSS files for sidebar integration -->
+
+<link rel="stylesheet" href="{% static 'css/dashboard-fix.css' %}" />
+<link rel="stylesheet" href="{% static 'css/dashboard-width-fix.css' %}" />
+<link rel="stylesheet" href="{% static 'css/direct-layout-fix.css' %}" />
+<link rel="stylesheet" href="{% static 'css/header-optimize.css' %}" />
+<link rel="stylesheet" href="{% static 'css/dashboard-content.css' %}" />
+<style>
+    /* Root variables for consistent styling */
+    :root {
+        --primary-color: #6366f1;
+        --primary-hover: #4f46e5;
+        --secondary-color: #f3f4f6;
+        --text-color: #1f2937;
+        --border-color: #e5e7eb;
+        --sidebar-width: 135px;
+        --content-padding: 1.5rem;
+        --bg-color: #f9fafb;
+        --card-bg: white;
+    }
+    
+    /* Dark mode variables */
+    .dark {
+        --bg-color: #111827;
+        --card-bg: #1f2937;
+        --text-color: #f9fafb;
+        --border-color: #374151;
+        --secondary-color: #374151;
+    }
+    
+    body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        transition: background-color 0.3s, color 0.3s;
+    }
+    
+    /* Main content layout with sidebar integration */
+    .main-content {
+        margin-right: 0 !important;
+        padding: 1rem;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+    
+    @media (min-width: 1024px) {
+        .main-content {
+            margin-right: 135px !important;
+            padding: 1.5rem;
+            width: calc(100% - 135px) !important;
+        }
+    }
+    
+    /* Fix for RTL layout with sidebar */
+    body[dir="rtl"] .main-content {
+        margin-right: 135px !important;
+        margin-left: 0 !important;
+    }
+    
+    body[dir="rtl"] .settings-container {
+        padding-right: 1rem !important;
+    }
+    
+    /* Settings specific styling */
+    .settings-card {
+        background-color: var(--card-bg);
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid var(--border-color);
+        transition: background-color 0.3s, border-color 0.3s;
+    }
+</style>
+{% endblock %}
+
 {% block main %}
+<div class="min-h-screen relative" style="background-color: var(--bg-color); transition: background-color 0.3s;">
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container mx-auto px-4 sm:px-6 settings-container">
+            <form method="post">
+                {% csrf_token %}
+                <div class="w-full h-auto mt-3 float-right 2xl:w-1/2 xl:w-1/2 lg:w-1/2 2xl:mt-10 md:w-full sm:w-full">
 
-<div class="w-full h-full my-auto 2xl:pr-20 xl:pr-20 lg:pr-24">
-    <form method="post">
-        {% csrf_token %}
-        <div class="w-full h-auto mt-3 float-right 2xl:w-1/2 xl:w-1/2 lg:w-1/2 2xl:mt-10 md:w-full sm:w-full">
+                    <fieldset
+                            class="w-5/6 h-auto text-right float-left 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mt-2 mx-8 2xl:mr-5 mb-1 border border-solid md:mx-8 sm:mx-7 border-gray-400">
+                        <legend class="text-center py-0 px-2 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs">تنظیمات دستگاه</legend>
 
-            <fieldset
+                        <div id="models" class="w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto float-right flex flex-col gap-2 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mr-3">
+                            <label class="mt-3 rtl">مدل دستگاه: </label>
+                            {{ deviceform.device }}
                     class="w-5/6 h-auto text-right float-left 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mt-2 mx-8 2xl:mr-5 mb-1 border border-solid md:mx-8 sm:mx-7 border-gray-400">
                 <legend class="text-center py-0 px-2 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs">تنظیمات دستگاه</legend>
 
@@ -215,111 +299,101 @@
                 class="w-1/6 h-[30px] bg-green-600 text-white 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs border-none rounded-md py-1 text-center cursor-pointer ml-[22px]
                         2xl:w-1/12 xl:w-1/12 lg:w-1/12 md:w-1/6 sm:w-1/6">
                 اعمال
-            </label>
-            <input type="reset" id="btn2" value="لغو"
-                class="w-1/6 h-[30px] bg-red-600 text-white 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs border-none rounded-md cursor-pointer ml-[20px] 
-                        2xl:w-1/12 xl:w-1/12 lg:w-1/12 md:w-1/6 sm:w-1/6">
-        </div>
-    </form>
 </div>
 
-    <script src="{% static 'js/jquery.js' %}"></script>
+{% block extrascripts %}
+<script src="{% static 'js/jquery.js' %}"></script>
 
-    <script>
-
-        $(document).ready(function () {
-            const show = $('#dropdownDefaultCheckbox2')
-            $('#dropdownCheckboxButton2').on('click', function () {
-                $('#dropdownDefaultCheckbox2').toggleClass('hidden')
-            });
-
-            $(document).on('click', function (e) {
-                if (!show.hasClass('hidden') && !$(e.target).closest('#dropdownCheckboxButton2, #dropdownDefaultCheckbox2').length) {
-                    show.addClass('hidden');
-                }
-            });
+<script>
+    $(document).ready(function () {
+        // Dropdown handlers for checkboxes
+        const dropdownCheckboxShow = $('#dropdownDefaultCheckbox2');
+        $('#dropdownCheckboxButton2').on('click', function () {
+            $('#dropdownDefaultCheckbox2').toggleClass('hidden');
         });
 
-    </script>
-
-    <script>
-        $(document).ready(function() {
-            $("#models_for_binalud").hide();
-            $('#id_cabel_types, #Cable_label').hide();
-            $('#id_device').change(function() {
-                var validValues = ['KX-TDE100', 'KX-TDE200', 'KX-TDE600'];
-                var validValuesRs = ["KX-TDA30", "KX-TDA100", "KX-TDA100D", "KX-TDA100DBA", "KX-TDA200", "KX-TDA600",'KX-TEM824', 'KX-TES824', 'KX-TA308']
-
-                if (validValues.includes($(this).val())) {
-                    $('#id_cabel_types').show();
-                    $('#Cable_label').show();
-                }
-                else{
-                    $('#id_cabel_types').hide();
-                    $('#Cable_label').hide();
-
-                }
-                if (validValuesRs.includes($(this).val())){
-                    $('#models_for_alvand').show()
-                    $('#models_for_binalud').hide()
-                }
-                else{
-                    $('#models_for_alvand').hide()
-                    $('#models_for_binalud').show()
-                }
-            })
-
-            $("#id_cabel_types").change(function() {
-                if ($(this).val() === "rs-232c") {
-                    $("#models_for_binalud").hide();
-                    $("#models_for_alvand").show();
-                }
-                else if($(this).val() === "ethernet") {
-                    $("#models_for_binalud").show();
-                    $("#models_for_alvand").hide();
-
-                }
-            });
+        $(document).on('click', function (e) {
+            if (!dropdownCheckboxShow.hasClass('hidden') && !$(e.target).closest('#dropdownCheckboxButton2, #dropdownDefaultCheckbox2').length) {
+                dropdownCheckboxShow.addClass('hidden');
+            }
         });
-    </script>
+        
+        // Device model handling
+        $("#models_for_binalud").hide();
+        $('#id_cabel_types, #Cable_label').hide();
+        
+        $('#id_device').change(function() {
+            var validValues = ['KX-TDE100', 'KX-TDE200', 'KX-TDE600'];
+            var validValuesRs = ["KX-TDA30", "KX-TDA100", "KX-TDA100D", "KX-TDA100DBA", "KX-TDA200", "KX-TDA600",'KX-TEM824', 'KX-TES824', 'KX-TA308'];
 
-    <script>
-        const numberInputs = document.querySelectorAll('input[type="number"]');
-
-        numberInputs.forEach(input => {
-            input.addEventListener('change', function (event) {
-                let value = this.value
-                value = this.value.replace(/[^0-9.]/g, '');
-
-            });
-        });
-    </script>
-    <script>
-        $(document).ready(function () {
-            const show = $('#errorsDropdownItems')
-            $('#errorsDropdownBtn').on('click', function () {
-                $('#errorsDropdownItems').toggleClass('hidden')
-            });
-
-            $(document).on('click', function (e) {
-                if (!show.hasClass('hidden') && !$(e.target).closest('#errorsDropdownBtn, #errorsDropdownItems').length) {
-                    show.addClass('hidden');
-                }
-            });
+            if (validValues.includes($(this).val())) {
+                $('#id_cabel_types').show();
+                $('#Cable_label').show();
+            } else {
+                $('#id_cabel_types').hide();
+                $('#Cable_label').hide();
+            }
+            
+            if (validValuesRs.includes($(this).val())) {
+                $('#models_for_alvand').show();
+                $('#models_for_binalud').hide();
+            } else {
+                $('#models_for_alvand').hide();
+                $('#models_for_binalud').show();
+            }
         });
 
-    </script>
-    <script>
-        $(document).ready(function () {
-            function updateData(){
-                $('#id_label').replaceWith(`
-                    <select id="id_label" name="label" class="w-full h-5  text-gray-600 text-xs appearance-none py-[2px]">
-                        <option value='none'> ------ </option>
+        $("#id_cabel_types").change(function() {
+            if ($(this).val() === "rs-232c") {
+                $("#models_for_binalud").hide();
+                $("#models_for_alvand").show();
+            } else if($(this).val() === "ethernet") {
+                $("#models_for_binalud").show();
+                $("#models_for_alvand").hide();
+            }
+        });
+        
+        // Errors dropdown handler
+        const errorsShow = $('#errorsDropdownItems');
+        $('#errorsDropdownBtn').on('click', function () {
+            $('#errorsDropdownItems').toggleClass('hidden');
+        });
+
+        $(document).on('click', function (e) {
+            if (!errorsShow.hasClass('hidden') && !$(e.target).closest('#errorsDropdownBtn, #errorsDropdownItems').length) {
+                errorsShow.addClass('hidden');
+            }
+        });
+        
+        // Page reload function
+        function updateData(){
+            $('#id_label').replaceWith(`
+                <select id="id_label" name="label" class="w-full h-5  text-gray-600 text-xs appearance-none py-[2px]">
+                    <option value='none'> ------ </option>
+                    {% for ext in groupname %}
+                        <option value='{{ext.label}}'> {{ext.label}} </option>
+                    {% endfor %}
+                </select>`)
+            $('#id_label').change(function () {
+                    if($(this).val().toLowerCase() == "none") {
+                        $("#dropdownDefaultCheckbox2 ul li input").each(function(){
+                            $(this).prop('checked', false)
+                        })
+                    }
+                    {% with found=True %}
+
                         {% for ext in groupname %}
-                            <option value='{{ext.label}}'> {{ext.label}} </option>
-                        {% endfor %}
-                    </select>`)
-                $('#id_label').change(function () {
+                            {% if found %}
+                                if ($(this).val().toLowerCase() === "{{ ext.label|lower }}") {
+                                    let exts = {{ ext.label|getExtsFromExtGroups|safe }};
+                                    exts = exts.map(String)
+                                    if(exts.length > 0){
+                                        $("#dropdownDefaultCheckbox2 ul li input").each(function(){
+                                            if(exts.includes($(this).val()))
+                                                $(this).prop('checked', true)
+                                            else
+                                                $(this).prop('checked', false)
+                                        })
                         if($(this).val().toLowerCase() == "none") {
                             $("#dropdownDefaultCheckbox2 ul li input").each(function(){
                                 $(this).prop('checked', false)

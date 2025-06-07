@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block head_extra %}
-<link rel="stylesheet" href="{% static 'css/base-template-fix.css' %}" />
+<!-- <link rel="stylesheet" href="{% static 'css/base-template-fix.css' %}" />
 <link rel="stylesheet" href="{% static 'css/rtl-fixes.css' %}" />
 <link rel="stylesheet" href="{% static 'css/dashboard-header-fix.css' %}" />
 <link rel="stylesheet" href="{% static 'css/search-input-fix.css' %}" />
@@ -16,12 +16,47 @@
 <link rel="stylesheet" href="{% static 'css/header-width-fix.css' %}" />
 <link rel="stylesheet" href="{% static 'css/dashboard-spacing-fix.css' %}" />
 <link rel="stylesheet" href="{% static 'css/theme-toggle-fix.css' %}" />
-<link rel="stylesheet" href="{% static 'css/dashboard-center-fix.css' %}" />
+<link rel="stylesheet" href="{% static 'css/dashboard-center-fix.css' %}" /> -->
 <style>
     /* Override any existing styles with RTL-specific styles */
     body {
         direction: rtl;
         text-align: right;
+    }
+    
+    :root {
+        --sidebar-width: 135px;
+        --main-padding: 1rem;
+        --text-color: #000;
+        --bg-color: #fff;
+        --border-color: #e2e8f0;
+    }
+    
+    html.dark {
+        --text-color: #fff !important;
+        --bg-color: #1a202c !important;
+        --border-color: #4a5568 !important;
+    }
+    
+    .main-content {
+        margin-right: var(--sidebar-width);
+        margin-left: 0;
+        width: calc(100% - var(--sidebar-width));
+        padding: var(--main-padding);
+    }
+    
+    /* RTL Support */
+    html[dir="ltr"] .main-content {
+        margin-right: 0;
+        margin-left: var(--sidebar-width);
+    }
+    
+    @media (max-width: 768px) {
+        .main-content {
+            margin-right: 0;
+            margin-left: 0;
+            width: 100%;
+        }
     }
     
     .table-container {

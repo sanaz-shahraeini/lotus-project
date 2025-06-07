@@ -135,10 +135,10 @@ html.dark input::placeholder {
 }
 
 /* Fix icons in dark mode */
-html.dark .fa-solid,
+/* html.dark .fa-solid,
 html.dark .fas {
     color: inherit !important;
-}
+} */
 
 /* Fix dropdown menus in dark mode */
 html.dark #dropdownmenu,
@@ -164,7 +164,7 @@ html.dark #toggle-menu {
 }
 
 /* Fix theme toggle button in dark mode */
-html.dark .theme-toggle,
+/* html.dark .theme-toggle,
 html.dark #themeToggle {
     color: var(--text-color) !important;
 }
@@ -172,4 +172,4 @@ html.dark #themeToggle {
 html.dark .theme-toggle:hover,
 html.dark #themeToggle:hover {
     background-color: var(--secondary-color) !important;
-}
+} */

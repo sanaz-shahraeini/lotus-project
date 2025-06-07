@@ -1,0 +1,64 @@
+/* 
+ * Dropdown Background Fix for Dark Mode
+ * Ensures consistent background colors for dropdowns and filter buttons in dark mode
+ * This file is loaded AFTER high-contrast-dark.css to override its styles
+ */
+
+/* Fix background color for dropdown buttons in dark mode with higher specificity */
+html.dark button.filter-dropdown-button,
+html.dark button[id="callTypeDropDown"],
+html.dark button[id="dropdownInternalLineBtn"],
+html.dark button[id="dropdownUrbanLineBtn"] {
+    background-color: #1e293b !important;
+    border-color: #475569 !important;
+    color: #f3f4f6 !important;
+}
+
+/* Fix background color for the "Clear Filters" button in dark mode with higher specificity */
+html.dark button.filter-button.filter-button-reset,
+html.dark button[type="reset"].filter-button {
+    background-color: #1e293b !important;
+    border-color: #475569 !important;
+    color: #f3f4f6 !important;
+}
+
+/* Fix hover states for better visual feedback with higher specificity */
+html.dark button.filter-dropdown-button:hover,
+html.dark button.filter-button.filter-button-reset:hover,
+html.dark button[type="reset"].filter-button:hover {
+    background-color: #334155 !important;
+}
+
+/* Ensure consistent styling for all filter buttons in dark mode with higher specificity */
+html.dark button.filter-button,
+html.dark .filter-actions button {
+    background-color: #1e293b !important;
+    border-color: #475569 !important;
+    color: #f3f4f6 !important;
+}
+
+html.dark button.filter-button:hover,
+html.dark .filter-actions button:hover {
+    background-color: #334155 !important;
+}
+
+/* Preserve the primary button styling for the apply filter button with higher specificity */
+html.dark button.filter-button.filter-button-apply,
+html.dark button[type="submit"].filter-button {
+    background-color: #6366f1 !important;
+    border-color: #4f46e5 !important;
+    color: #ffffff !important;
+}
+
+html.dark button.filter-button.filter-button-apply:hover,
+html.dark button[type="submit"].filter-button:hover {
+    background-color: #4f46e5 !important;
+}
+
+/* Override any other button styles that might be affecting these elements */
+html.dark button[id^="dropdown"],
+html.dark .filter-dropdown-button,
+html.dark button[data-dropdown-toggle] {
+    background-color: #1e293b !important;
+    border-color: #475569 !important;
+}

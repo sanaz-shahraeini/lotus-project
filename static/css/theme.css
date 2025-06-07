@@ -100,48 +100,17 @@ html.dark {
 }
 
 /* Dark mode specific toggle styles */
-html.dark .theme-toggle {
+/* html.dark .theme-toggle {
     background: var(--card-bg);
     border-color: var(--border-color);
-}
+} */
 
 html.dark .theme-toggle:hover {
     background: var(--primary-color);
     color: white;
 }
 
-/* Theme toggle icons */
-.theme-toggle .fa-moon,
-.theme-toggle .fa-sun {
-    color: #f59e0b;  /* Yellow color for both icons */
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
 
-/* In dark mode, show sun and hide moon */
-html.dark .theme-toggle .fa-sun {
-    opacity: 1;
-    transform: translate(-50%, -50%) rotate(0deg);
-}
-
-html.dark .theme-toggle .fa-moon {
-    opacity: 0;
-    transform: translate(-50%, -50%) rotate(90deg);
-}
-
-/* In light mode, show moon and hide sun */
-html:not(.dark) .theme-toggle .fa-moon {
-    opacity: 1;
-    transform: translate(-50%, -50%) rotate(0deg);
-}
-
-html:not(.dark) .theme-toggle .fa-sun {
-    opacity: 0;
-    transform: translate(-50%, -50%) rotate(-90deg);
-}
 
 /* Dark mode scrollbar */
 html.dark ::-webkit-scrollbar {

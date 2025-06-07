@@ -1,8 +1,153 @@
 {% extends 'base.html' %}
 {% load static profileTags %}
+
+{% block head_extra %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Dashboard CSS files for sidebar integration -->
+ 
+<link rel="stylesheet" href="{% static 'css/dashboard-fix.css' %}" />
+<link rel="stylesheet" href="{% static 'css/dashboard-width-fix.css' %}" />
+<link rel="stylesheet" href="{% static 'css/direct-layout-fix.css' %}" />
+<link rel="stylesheet" href="{% static 'css/header-optimize.css' %}" />
+<link rel="stylesheet" href="{% static 'css/dashboard-content.css' %}" />
+    <style>
+    /* Root variables for consistent styling */
+    :root {
+        --primary-color: #6366f1;
+        --primary-hover: #4f46e5;
+        --secondary-color: #f3f4f6;
+        --text-color: #1f2937;
+        --border-color: #e5e7eb;
+        --sidebar-width: 135px;
+        --content-padding: 1.5rem;
+        --bg-color: #f9fafb;
+        --card-bg: white;
+    }
+    
+    /* Dark mode variables */
+    .dark {
+        --bg-color: #111827;
+        --card-bg: #1f2937;
+        --text-color: #f9fafb;
+        --border-color: #374151;
+        --secondary-color: #374151;
+    }
+    
+    body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        transition: background-color 0.3s, color 0.3s;
+    }
+    
+    /* Main content layout with sidebar integration */
+    .main-content {
+        margin-right: 0 !important;
+        padding: 1rem;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+    
+    @media (min-width: 1024px) {
+        .main-content {
+            margin-right: 135px !important;
+            padding: 1.5rem;
+            width: calc(100% - 135px) !important;
+        }
+    }
+    
+    /* Profile specific styling */
+    .profile-card {
+        background-color: var(--card-bg);
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid var(--border-color);
+        transition: background-color 0.3s, border-color 0.3s;
+    }
+    
+    /* Form elements styling */
+    .form-input {
+        border: 1px solid var(--border-color);
+        border-radius: 0.375rem;
+        padding: 0.5rem 0.75rem;
+        width: 100%;
+        background-color: var(--card-bg);
+        color: var(--text-color);
+        transition: border-color 0.3s, background-color 0.3s, color 0.3s;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    }
+    
+    .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        transition: background-color 0.3s;
+    }
+    
+    .btn-primary:hover {
+        background-color: var(--primary-hover);
+    }
+    
+    /* Fix for RTL layout with sidebar */
+    body[dir="rtl"] .main-content {
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+    }
+    
+    @media (min-width: 1024px) {
+        body[dir="rtl"] .main-content {
+            margin-right: 135px !important;
+            margin-left: 0 !important;
+        }
+    }
+    
+    /* Fix sidebar positioning */
+    .sidebar {
+        position: fixed !important;
+        right: 0 !important;
+        left: auto !important;
+        width: 135px !important;
+        z-index: 40 !important;
+    }
+    
+    /* Profile container adjustments */
+    .profile-container {
+        padding-right: 0;
+        margin-right: 0;
+    }
+    
+    @media (min-width: 1024px) {
+        .profile-container {
+            padding-right: 0;
+            margin-right: 0;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block main %}
-    <div class="w-full h-full  my-0 float-left 2xl:pr-20 xl:pr-20 lg:pr-20 md:pr-20">
-        <div class=" w-11/12 mt-9 mr-40 mx-auto rtl">
+<div class="min-h-screen relative" style="background-color: var(--bg-color); transition: background-color 0.3s;">
+    <!-- Main Content with proper sidebar margin -->
+    <div class="main-content">
+        <!-- Profile Header -->
+        <div class="bg-gradient-to-r from-indigo-600 to-blue-500 p-6 mb-6 rounded-lg shadow-md">
+            <h1 class="text-2xl font-bold text-white mb-2">{{ user.name|capfirst }} {{ user.lastname|capfirst }}</h1>
+            <p class="text-blue-100">{{ user.group|getGroupnameById }}</p>
+        </div>
+        
+        <!-- Profile Content -->
+        <div class="container mx-auto px-4 sm:px-6 mb-8">
             <div class="items-center flex flex-wrap filter-bar w-full h-auto p-[10px] text-right float-right text-sm 2xl:w-1/2 xl:w-1/2 lg:w-1/2 md:w-full sm:w-full">
 
                 <div class="w-full 2xl:w-2/5 xl:w-2/5 lg:w-2/5 md:w-2/5 sm:w-2/5 h-[288px] my-0 mx-[20px] float-right  flex flex-col gap-1 rtl">
@@ -110,9 +255,12 @@
             </div>
             
 
+            </div>
         </div>
     </div>
-    {% if email %}
+</div>
+
+{% if email %}
         <div id="emailMod"
              class="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75 z-50 {% if not email %}hidden{% endif %}">
             <div class="bg-white rounded-lg shadow-lg max-w-md w-full">
@@ -140,14 +288,32 @@
             </div>
         </div>
     {% endif %}
+    {% if email %}
+    <!-- Email verification is available -->  
     <script>
-        $("#cancel").on('click', function () {
-            $("#emailMod").toggleClass("hidden")
-        })
-        {% if email %}
-            $("#verify").on('click', function () {
-                $("#emailMod").toggleClass("hidden")
-            })
-        {% endif %}
+        // Wait for document to be ready
+        $(document).ready(function() {
+            // Handle cancel button click
+            $("#cancel").on('click', function() {
+                $("#emailMod").toggleClass("hidden");
+            });
+            
+            // Handle verify button click
+            $("#verify").on('click', function() {
+                $("#emailMod").toggleClass("hidden");
+            });
+        });
     </script>
+    {% else %}
+    <!-- No email verification needed -->  
+    <script>
+        // Wait for document to be ready
+        $(document).ready(function() {
+            // Handle cancel button click
+            $("#cancel").on('click', function() {
+                $("#emailMod").toggleClass("hidden");
+            });
+        });
+    </script>
+    {% endif %}
 {% endblock %}

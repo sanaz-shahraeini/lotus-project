@@ -3,7 +3,7 @@
 /* Common styles for both headers */
 .dashboard-header {
     border-radius: 0.75rem !important;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     margin-bottom: 1rem !important;
     overflow: hidden !important;
 }
@@ -75,7 +75,7 @@ header.bg-white.shadow-sm #printbtn:hover {
 }
 
 header.bg-white.shadow-sm #themeToggle {
-    background-color: #f8fafc !important;
+    background-color: #f8fafc;
     border: 1px solid #e2e8f0 !important;
 }
 

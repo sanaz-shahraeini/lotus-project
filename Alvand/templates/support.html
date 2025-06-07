@@ -1,48 +1,613 @@
 {% extends "base.html" %}
-{% load static baseTags %}
+{% load static %}
 {% block main %}
 
-<div class="w-full flex flex-col lg:flex-row my-0 justify-center items-center mx-auto ">
-    <!-- introduction -->
-    <div class="w-11/12 lg:w-1/2 2xl:w-1/2 2xl:mr-[80px] xl:mr-[90px] lg:mr-[100px] md:w-4/5 sm:w-4/5 lg:order-2 leading-10 rtl">
-        <p class="text-sm sm:text-base md:text-lg lg:text-base xl:text-xl 2xl:text-2xl text-center text-blue-800 mt-12 px-10 leading-relaxed">
-            ما در شناسنامه «گروه توسعه فناوری نیلوفرآبی» هستیم، ولی شما می‌توانید <span class="font-bold">«لوتوس»</span> هم صدایمان کنید.
-        </p>
+<link rel="stylesheet" href="{% static 'css/dashboard-fix.css' %}" />
+<link rel="stylesheet" href="{% static 'css/dashboard-width-fix.css' %}" />
+<link rel="stylesheet" href="{% static 'css/direct-layout-fix.css' %}" />
+<link rel="stylesheet" href="{% static 'css/dashboard-content.css' %}" />
 
-        <p class="px-10 mt-4 font-normal leading-loose text-xs sm:text-sm md:text-base lg:text-sm xl:text-base 2xl:text-lg">
-            داستان<span class="font-bold"> لوتوس</span> از آذرماه 1397 شروع شد. از تیم کوچکی که جانش برای یاد گرفتن فناوری و توسعه دادن هوشمندسازی در می‌رفت. اصولاً خاصیت هر گروه جوان و خلاقی این است که ایده‌های بزرگ داشته باشد و برای رسیدن به چیزی که می‌خواهد، نهایت تلاشش را بکند. ایده تیم <span class="font-bold">لوتوس</span> خلق و توسعه نرم‌افزاری در حوزه مخابرات و مراکز تلفن (سانترال) بود. برنامه‌ای که با استفاده از داده‌های ورودی از مرکز تلفن قادر به ساخت گزارشات مفید و کاربردی باشد.
-        </p>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-        <p class="text-sm sm:text-base md:text-lg lg:text-base xl:text-xl 2xl:text-2xl text-yellow-600 font-IranSansB mt-4 px-10 leading-relaxed">
-            لوتوس به کاربران خود کمک می‌کند تا از ارتباطات تلفنی تجربه‌ای فراموش‌نشدنی را لمس کنند........
-        </p>
+    :root {
+        /* Light mode colors - Bright and clean */
+        --primary-500: #3B82F6;
+        --primary-600: #2563EB;
+        --primary-700: #1D4ED8;
+        --purple-600: #8B5CF6;
+        --purple-700: #7C3AED;
+        
+        /* Light backgrounds */
+        --bg-primary: #FFFFFF;
+        --bg-secondary: #F8FAFC;
+        --bg-tertiary: #F1F5F9;
+        --bg-accent: #EBF8FF;
+        
+        /* Light text colors */
+        --text-primary: #000000;
+        --text-secondary: #4B5563;
+        --text-tertiary: #6B7280;
+        --text-muted: #9CA3AF;
+        
+        /* Light borders */
+        --border-light: #E5E7EB;
+        --border-medium: #D1D5DB;
+        --border-focus: var(--primary-500);
+        
+        /* Light shadows */
+        --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        --shadow-colored: 0 10px 15px -3px rgba(59, 130, 246, 0.2);
+    }
 
-        <p class="px-10 mt-4 font-normal leading-loose text-xs sm:text-sm md:text-base lg:text-sm xl:text-base 2xl:text-lg">
-            حالا می‌توانیم ادعا کنیم که دستیار هوشمند ارتباطات کاربرانی هستیم که به دنبال اطلاعات دقیق و به‌روز از مشتریان و مخاطبین خود هستند. با انرژی حاصل از تولد اولین محصول، تصمیم گرفتیم تا با الهام از نماد گروه، یعنی گل نیلوفر آبی که داری پنج گلبرگ می‌باشد، اقدام به تولید 4 محصول مشابه و هم‌تراز نماییم تا پنج گلبرگ گروه ظهور کند.
-        </p>
+    @media (prefers-color-scheme: dark) {
+        :root {
+            /* Dark mode colors */
+            --primary-500: #6366F1;
+            --primary-600: #5B21B6;
+            --primary-700: #4C1D95;
+            --purple-600: #8B5CF6;
+            --purple-700: #7C3AED;
+            
+            /* Dark backgrounds */
+            --bg-primary: #111827;
+            --bg-secondary: #1F2937;
+            --bg-tertiary: #374151;
+            --bg-accent: #1E3A8A;
+            
+            /* Dark text colors */
+            --text-primary: #F9FAFB;
+            --text-secondary: #D1D5DB;
+            --text-tertiary: #9CA3AF;
+            --text-muted: #6B7280;
+            
+            /* Dark borders */
+            --border-light: #374151;
+            --border-medium: #4B5563;
+            --border-focus: var(--primary-500);
+            
+            /* Dark shadows */
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+            --shadow-colored: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+        }
+    }
 
-        <p class="text-2xl lg:text-2xl xl:text-3xl 2xl:text-4xl text-center mt-9 font-extrabold font-IranNastaliq">
-            به زودی ما را به نام «گروه نرم‌افزاری دانش‌بنیان نیلوفرآبی» می‌شناسید.
-        </p>
-    </div>
-    <!-- image -->
-    <div class="w-full h-auto sm:w-4/5 md:w-1/2 lg:w-2/5 xl:w-2/5 2xl:w-2/5  mt-16 lg:mt-0 lg:order-1">
-        <div class="w-full h-[240px] sm:h-[300px] md:h-[300px] lg:h-[300px] xl:h-[330px] 2xl:h-[410px] bg-cover sm:bg-center md:bg-center lg:bg-center xl:bg-center 2xl:bg-center" style="background-image: url({% static 'pic/support.jpg' %});">
-            <div class="w-[180px] sm:w-[190px] md:w-[250px] lg:w-[200px] xl:w-[260px] 2xl:w-[280px] h-auto text-xs sm:text-xs md:text-sm lg:text-sm xl:text-sm 2xl:text-lg mt-[50px] sm:mt-[80px] md:mt-[60px] lg:mt-[55px] xl:mt-[80px] 2xl:mt-24 xl:mr-[75px] mr-[38px] lg:mr-[52px] 2xl:mr-[40px] md:mr-[40px] float-right text-white rtl p-4">
-                <p>شماره تماس</p>
-                <a href="tel:09030435699" class="block mt-1">09030435699</a>
-                <br>
-                <p>ایمیل</p>
-                <a href="mailto:erfanhosseyni54@gmail.com" class="block">erfanhosseyni54@gmail.com</a>
-                <br>
-                <p>کانال تلگرامی</p>
-                <a href="#" class="block">برای مشاهده کانال کلیک کنید</a>
-                
-                <p class="text-center mt-3">لوتوس{% if getVersion %} - {{ getVersion }}{% endif %}</p>
+
+
+    .support-container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 1.5rem;
+    }
+
+    /* Hero Section */
+    .support-hero {
+        background: linear-gradient(135deg, var(--primary-500) 0%, var(--purple-600) 100%);
+        padding: 4rem 2rem;
+        position: relative;
+        overflow: hidden;
+        border-radius: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .support-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .support-hero-content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        color: white;
+    }
+
+    .support-hero-title {
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .support-hero-subtitle {
+        font-size: clamp(1rem, 2.5vw, 1.25rem);
+        opacity: 0.95;
+        margin-bottom: 2.5rem;
+        font-weight: 400;
+    }
+
+    .support-hero-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: rgba(255, 255, 255, 0.95);
+        color: var(--primary-600);
+        padding: 1rem 2.5rem;
+        border-radius: 9999px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow-lg);
+        text-decoration: none;
+        backdrop-filter: blur(10px);
+    }
+
+    .support-hero-button:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-xl);
+        background: white;
+    }
+
+    /* Card Styles */
+    .support-card {
+        background: var(--bg-primary);
+        border-radius: 1.5rem;
+        box-shadow: var(--shadow-md);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        border: 1px solid var(--border-light);
+    }
+
+    .support-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .support-card-content {
+        padding: 2rem;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid var(--border-light);
+    }
+
+    .section-icon-wrapper {
+        background: var(--bg-accent);
+        padding: 1rem;
+        border-radius: 1rem;
+        margin-left: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .section-icon {
+        color: var(--primary-500);
+        font-size: 1.5rem;
+    }
+
+    .section-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+
+    @media (min-width: 1024px) {
+        .grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    /* About Content */
+    .about-content p {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: var(--text-secondary);
+        margin-bottom: 1.5rem;
+    }
+
+    .highlight-text {
+        font-weight: 700;
+        color: var(--primary-600);
+    }
+
+    .quote-box {
+        background: var(--bg-accent);
+        padding: 2rem;
+        border-radius: 1rem;
+        border: 1px solid var(--border-light);
+        margin: 2rem 0;
+        position: relative;
+    }
+
+    .quote-box::before {
+        content: '"';
+        position: absolute;
+        top: -0.5rem;
+        right: 1rem;
+        font-size: 4rem;
+        color: var(--primary-500);
+        opacity: 0.3;
+    }
+
+    .quote-text {
+        color: var(--primary-700);
+        font-style: italic;
+        font-size: 1.2rem;
+        font-weight: 500;
+    }
+
+    .announcement-box {
+        text-align: center;
+        margin-top: 2.5rem;
+        background: linear-gradient(135deg, var(--bg-accent) 0%, var(--bg-tertiary) 100%);
+        padding: 2rem;
+        border-radius: 1rem;
+        border: 1px solid var(--border-light);
+    }
+
+    .announcement-text {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--primary-600);
+    }
+
+    /* Company Image - Lotus Design */
+    .company-image {
+        height: 12rem;
+        background: linear-gradient(135deg, var(--primary-600) 0%, var(--purple-600) 100%);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .company-image::before {
+        content: '';
+        width: 120px;
+        height: 120px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3ClinearGradient id='lotus-gradient' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23ffffff;stop-opacity:0.9'/%3E%3Cstop offset='100%25' style='stop-color:%23ffffff;stop-opacity:0.6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg transform='translate(100,100)'%3E%3Cpath d='M0,-60 Q-20,-40 -30,-20 Q-20,0 0,0 Q20,0 30,-20 Q20,-40 0,-60Z' fill='url(%23lotus-gradient)' transform='rotate(0)'/%3E%3Cpath d='M0,-60 Q-20,-40 -30,-20 Q-20,0 0,0 Q20,0 30,-20 Q20,-40 0,-60Z' fill='url(%23lotus-gradient)' transform='rotate(45)' opacity='0.8'/%3E%3Cpath d='M0,-60 Q-20,-40 -30,-20 Q-20,0 0,0 Q20,0 30,-20 Q20,-40 0,-60Z' fill='url(%23lotus-gradient)' transform='rotate(90)' opacity='0.9'/%3E%3Cpath d='M0,-60 Q-20,-40 -30,-20 Q-20,0 0,0 Q20,0 30,-20 Q20,-40 0,-60Z' fill='url(%23lotus-gradient)' transform='rotate(135)' opacity='0.7'/%3E%3Cpath d='M0,-60 Q-20,-40 -30,-20 Q-20,0 0,0 Q20,0 30,-20 Q20,-40 0,-60Z' fill='url(%23lotus-gradient)' transform='rotate(180)' opacity='0.8'/%3E%3Cpath d='M0,-60 Q-20,-40 -30,-20 Q-20,0 0,0 Q20,0 30,-20 Q20,-40 0,-60Z' fill='url(%23lotus-gradient)' transform='rotate(225)' opacity='0.9'/%3E%3Cpath d='M0,-60 Q-20,-40 -30,-20 Q-20,0 0,0 Q20,0 30,-20 Q20,-40 0,-60Z' fill='url(%23lotus-gradient)' transform='rotate(270)' opacity='0.8'/%3E%3Cpath d='M0,-60 Q-20,-40 -30,-20 Q-20,0 0,0 Q20,0 30,-20 Q20,-40 0,-60Z' fill='url(%23lotus-gradient)' transform='rotate(315)' opacity='0.7'/%3E%3Cpath d='M0,-40 Q-15,-25 -20,-10 Q-15,0 0,0 Q15,0 20,-10 Q15,-25 0,-40Z' fill='url(%23lotus-gradient)' transform='rotate(22.5)' opacity='0.9'/%3E%3Cpath d='M0,-40 Q-15,-25 -20,-10 Q-15,0 0,0 Q15,0 20,-10 Q15,-25 0,-40Z' fill='url(%23lotus-gradient)' transform='rotate(67.5)' opacity='0.8'/%3E%3Cpath d='M0,-40 Q-15,-25 -20,-10 Q-15,0 0,0 Q15,0 20,-10 Q15,-25 0,-40Z' fill='url(%23lotus-gradient)' transform='rotate(112.5)' opacity='0.9'/%3E%3Cpath d='M0,-40 Q-15,-25 -20,-10 Q-15,0 0,0 Q15,0 20,-10 Q15,-25 0,-40Z' fill='url(%23lotus-gradient)' transform='rotate(157.5)' opacity='0.8'/%3E%3Cpath d='M0,-40 Q-15,-25 -20,-10 Q-15,0 0,0 Q15,0 20,-10 Q15,-25 0,-40Z' fill='url(%23lotus-gradient)' transform='rotate(202.5)' opacity='0.9'/%3E%3Cpath d='M0,-40 Q-15,-25 -20,-10 Q-15,0 0,0 Q15,0 20,-10 Q15,-25 0,-40Z' fill='url(%23lotus-gradient)' transform='rotate(247.5)' opacity='0.8'/%3E%3Cpath d='M0,-40 Q-15,-25 -20,-10 Q-15,0 0,0 Q15,0 20,-10 Q15,-25 0,-40Z' fill='url(%23lotus-gradient)' transform='rotate(292.5)' opacity='0.9'/%3E%3Cpath d='M0,-40 Q-15,-25 -20,-10 Q-15,0 0,0 Q15,0 20,-10 Q15,-25 0,-40Z' fill='url(%23lotus-gradient)' transform='rotate(337.5)' opacity='0.8'/%3E%3Ccircle cx='0' cy='0' r='12' fill='%23ffffff' opacity='0.9'/%3E%3Ccircle cx='0' cy='0' r='8' fill='%23FDE047' opacity='0.8'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;
+        opacity: 0.9;
+        animation: lotus-glow 3s ease-in-out infinite alternate;
+    }
+
+    .company-image::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(45deg, 
+            rgba(255,255,255,0.1) 0%, 
+            transparent 50%, 
+            rgba(255,255,255,0.1) 100%);
+        animation: shimmer 4s ease-in-out infinite;
+    }
+
+    @keyframes lotus-glow {
+        0% { opacity: 0.8; transform: scale(0.95); }
+        100% { opacity: 1; transform: scale(1.05); }
+    }
+
+    @keyframes shimmer {
+        0%, 100% { transform: translateX(-100%); }
+        50% { transform: translateX(100%); }
+    }
+
+    /* Contact Items */
+    .contact-item {
+        background: var(--bg-tertiary);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        border: 1px solid var(--border-light);
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .contact-item:hover {
+        background: var(--bg-primary);
+        border-color: var(--primary-500);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .contact-icon-wrapper {
+        background: var(--bg-accent);
+        padding: 1rem;
+        border-radius: 0.75rem;
+        color: var(--primary-500);
+        margin-left: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .contact-details h4 {
+        font-size: 0.9rem;
+        color: var(--text-tertiary);
+        margin-bottom: 0.25rem;
+        font-weight: 500;
+    }
+
+    .contact-details a {
+        color: var(--primary-600);
+        font-weight: 600;
+        text-decoration: none;
+        font-size: 1.1rem;
+        transition: color 0.3s ease;
+    }
+
+    .contact-details a:hover {
+        color: var(--primary-700);
+    }
+
+    /* Form Styles */
+    .support-form {
+        margin-top: 2.5rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border-light);
+    }
+
+    .form-group {
+        margin-bottom: 2rem;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.75rem;
+    }
+
+    .form-input-wrapper {
+        position: relative;
+    }
+
+    .form-input, .form-textarea {
+        width: 100%;
+        padding: 1rem 1.25rem 1rem 3rem;
+        border: 2px solid var(--border-light);
+        border-radius: 0.75rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background-color: var(--bg-secondary);
+        color: var(--text-primary);
+        font-family: inherit;
+    }
+
+    .form-input:focus, .form-textarea:focus {
+        border-color: var(--primary-500);
+        background-color: var(--bg-primary);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        outline: none;
+    }
+
+    .form-textarea {
+        resize: vertical;
+        min-height: 8rem;
+    }
+
+    .form-icon {
+        position: absolute;
+        right: 1.25rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-tertiary);
+        transition: color 0.3s ease;
+        font-size: 1.1rem;
+    }
+
+    .form-input:focus + .form-icon,
+    .form-textarea:focus + .form-icon {
+        color: var(--primary-500);
+    }
+
+    .support-button {
+        background: linear-gradient(135deg, var(--primary-500) 0%, var(--purple-600) 100%);
+        color: white;
+        padding: 1.25rem 2rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        width: 100%;
+        box-shadow: var(--shadow-md);
+    }
+
+    .support-button:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-colored);
+    }
+
+    .support-button:active {
+        transform: translateY(0);
+    }
+
+    /* Focus styles for accessibility */
+    .support-hero-button:focus-visible,
+    .support-button:focus-visible,
+    .form-input:focus-visible,
+    .form-textarea:focus-visible {
+        outline: 2px solid var(--primary-500);
+        outline-offset: 2px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .support-container {
+            padding: 1rem;
+        }
+        
+        .support-hero {
+            padding: 3rem 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .support-card-content {
+            padding: 1.5rem;
+        }
+        
+        .section-header {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+        
+        .section-icon-wrapper {
+            margin: 0;
+        }
+        
+        .contact-item {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+        
+        .contact-icon-wrapper {
+            margin: 0;
+        }
+    }
+</style>
+
+<div class="support-container">
+    <!-- Hero Section -->
+    <div class="support-hero">
+        <div class="support-hero-content">
+            <h1 class="support-hero-title">پشتیبانی لوتوس</h1>
+            <p class="support-hero-subtitle">همراه شما در مسیر موفقیت</p>
+            <div class="support-hero-cta">
+                <a href="#contact" class="support-hero-button">
+                    <i class="fas fa-headset"></i>
+                    تماس با ما
+                </a>
             </div>
         </div>
     </div>
-    
+
+    <div class="grid">
+        <!-- About Us Card -->
+        <div class="support-card">
+            <div class="support-card-content">
+                <div class="section-header">
+                    <div class="section-icon-wrapper">
+                        <i class="fas fa-info-circle section-icon"></i>
+                    </div>
+                    <h2 class="section-title">درباره ما</h2>
+                </div>
+                
+                <div class="about-content">
+                    <p>
+                        ما در شناسنامه «گروه توسعه فناوری نیلوفرآبی» هستیم، ولی شما می‌توانید <span class="highlight-text">«لوتوس»</span> هم صدایمان کنید.
+                    </p>
+                    
+                    <p>
+                        داستان <span class="highlight-text">لوتوس</span> از آذرماه 1397 شروع شد. از تیم کوچکی که جانش برای یاد گرفتن فناوری و توسعه دادن هوشمندسازی در می‌ رفت.
+                    </p>
+                    
+                    <div class="quote-box">
+                        <p class="quote-text">
+                            لوتوس به کاربران خود کمک می‌کند تا از ارتباطات تلفنی تجربه‌ای فراموش‌نشدنی را لمس کنند
+                        </p>
+                    </div>
+                    
+                    <p>
+                        حالا می‌توانیم ادعا کنیم که دستیار هوشمند ارتباطات کاربرانی هستیم که به دنبال اطلاعات دقیق و به‌روز از مشتریان و مخاطبین خود هستند.
+                    </p>
+                    
+                    <div class="announcement-box">
+                        <p class="announcement-text">
+                            به زودی ما را به نام «گروه نرم‌افزاری دانش‌بنیان نیلوفرآبی» می‌شناسید
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contact Card -->
+        <div class="support-card" id="contact">
+            <div class="company-image"></div>
+            
+            <div class="support-card-content">
+                <div class="section-header">
+                    <div class="section-icon-wrapper">
+                        <i class="fas fa-headset section-icon"></i>
+                    </div>
+                    <h2 class="section-title">تماس با ما</h2>
+                </div>
+                
+                <div class="contact-methods">
+                    <div class="contact-item">
+                        <div class="contact-icon-wrapper">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h4>شماره تماس</h4>
+                            <a href="tel:09030435699">09030435699</a>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon-wrapper">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h4>ایمیل</h4>
+                            <a href="mailto:erfanhosseyni54@gmail.com">erfanhosseyni54@gmail.com</a>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon-wrapper">
+                            <i class="fab fa-telegram"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h4>کانال تلگرامی</h4>
+                            <a href="#">مشاهده کانال</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <form class="support-form">
+                    <div class="form-group">
+                        <label for="name" class="form-label">نام و نام خانوادگی</label>
+                        <div class="form-input-wrapper">
+                            <input type="text" id="name" class="form-input" placeholder="نام خود را وارد کنید">
+                            <i class="fas fa-user form-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message" class="form-label">پیام شما</label>
+                        <div class="form-input-wrapper">
+                            <textarea id="message" class="form-textarea" placeholder="پیام خود را بنویسید"></textarea>
+                            <i class="fas fa-comment form-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="support-button">
+                        <i class="fas fa-paper-plane"></i>
+                        ارسال پیام
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}

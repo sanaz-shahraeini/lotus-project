@@ -72,7 +72,7 @@ html.dark .form-input,
 html.dark .form-select {
     background-color: #0f172a !important; /* Darker than card bg */
     border: 1px solid #475569 !important;
-    color: #ffffff !important;
+    color: #ffffff;
 }
 
 html.dark input::placeholder,
