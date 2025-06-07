@@ -1,6 +1,6 @@
 from django.template import Library
 from Alvand.models import Users, lices, VERSIONS
-from Alvand.views import getTupleIndex
+from Alvand.user_utils import getTupleIndex
 
 register = Library()
 

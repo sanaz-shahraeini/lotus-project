@@ -92,452 +92,419 @@
                         <div id="models" class="w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto float-right flex flex-col gap-2 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mr-3">
                             <label class="mt-3 rtl">مدل دستگاه: </label>
                             {{ deviceform.device }}
-                    class="w-5/6 h-auto text-right float-left 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mt-2 mx-8 2xl:mr-5 mb-1 border border-solid md:mx-8 sm:mx-7 border-gray-400">
-                <legend class="text-center py-0 px-2 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs">تنظیمات دستگاه</legend>
 
-                <div id="models" class="w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto float-right flex flex-col gap-2 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mr-3">
-                    <label class="mt-3 rtl">مدل دستگاه: </label>
-                    {{ deviceform.device }}
+                            <label class="mt-9">تعداد خطوط شهری:</label>
+                            {{ deviceform.number_of_lines }}
 
-                    <label class="mt-9">تعداد خطوط شهری:</label>
-                    {{ deviceform.number_of_lines }}
-
-                    <label class="mt-3" id='Cable_label'> نوع کابل: </label>
-                    {{ deviceform.cable_type }}
-                </div>
-                <div id="models_for_alvand" class=" w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto float-left flex flex-col ltr 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs 2xl:ml-20 xl:ml-20 lg:ml-20 md:ml-20 sm:ml-16 ml-2 mb-2">
-                    <label class="mt-3 mr-48"> BuadRate</label>
-                    {{ deviceform.baudrate }}
-
-                    <label class=" mr-52"> Parity</label>
-                    {{ deviceform.parity }}
-
-                    <label class="mr-48">Databits</label>
-                    {{ deviceform.databits }}
-
-                    <label class="mr-48">Stopbits </label>
-                    {{ deviceform.stopbits }}
-
-                    <label class="mr-52">Flow</label>
-                    {{ deviceform.flow }}
-
-                </div>
-                <div id="models_for_binalud" class="mt-2 w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto float-left flex flex-col ltr 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs 2xl:ml-20 xl:ml-20 lg:ml-20 md:ml-20 sm:ml-16 ml-2 mb-2">
-                    <label class='mr-52'> Ip </label>
-                    {{ deviceform.smdrip }}
-                    <label class='mr-52'> Port </label>
-                    {{ deviceform.smdrport }}
-                    <label class='mr-52'> Password </label>
-                    {{ deviceform.smdrpassword}}
-
-                </div>
-            </fieldset>
-            <fieldset
-                class="w-10/12 h-auto text-right float-left 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mt-2 2xl:mr-5 mx-8 mb-1 border border-solid md:mx-8 sm:mx-7 border-gray-400">
-                <legend class="text-center py-0 px-2 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs">گروه بندی دسترسی ها</legend>
-
-
-                <div class=" w-full h-auto my-0 mx-0 float-right rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mt-2 flex justify-center">
-                    <input type="radio" id="edit" name="edit" value="ویرایش" class="ml-1">
-                    <label for="edit" class='ml-5'>ویرایش کردن</label>
-                    <input type="radio" id="delete" name="delete" value="حذف" class="ml-1">
-                    <label for="delete" class='ml-5'>حذف کردن</label>
-                    <input type="radio" id="add" name="add" value="اضافه کردن" class="ml-1">
-                    <label for="add">اضافه کردن</label>
-                </div>
-
-                <div id="models" class=" w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-[150px] mt-5 my-7 float-right flex flex-col gap-2 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mr-3">
-
-                    <label>نام گروه: </label>
-                    {{extGroup.label}}
-                    
-                    <label>نام کاربر: </label>
-                    {{ userAccessToErrorsPageForm.users }}
-                </div>
-                <div id="models" class=" w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-[150px] mt-5 float-left flex flex-col gap-3 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs 2xl:ml-20 xl:ml-20 lg:ml-20 md:ml-20 sm:ml-16 ml-2">
-
-                    <div class="relative inline-block w-full h-[45px] mt-1 ml-4 float-left gap-1">
-                        <div class="mb-[7px] w-full h-[18px] ">
-                            <label>داخلی ها: </label>
+                            <label class="mt-3" id='Cable_label'> نوع کابل: </label>
+                            {{ deviceform.cable_type }}
                         </div>
-                        <button id="dropdownCheckboxButton2" data-dropdown-toggle="dropdownDefaultCheckbox2"
-                                class=" w-full h-5 rtl border border-gray-500  rounded-sm 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs static block text-center items-center text-gray-700"
-                                type="button">
-                            <i class="fa-regular fa-chevron-down text-gray-700"></i>
-                        </button>
+                        <div id="models_for_alvand" class=" w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto float-left flex flex-col ltr 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs 2xl:ml-20 xl:ml-20 lg:ml-20 md:ml-20 sm:ml-16 ml-2 mb-2">
+                            <label class="mt-3 mr-48"> BuadRate</label>
+                            {{ deviceform.baudrate }}
 
+                            <label class=" mr-52"> Parity</label>
+                            {{ deviceform.parity }}
 
-                        <div id="dropdownDefaultCheckbox2"
-                                class="hidden z-10 w-full absolute bg-white divide-y divide-gray-100 rounded-sm shadow ltr">
-                            <ul class="p-3 space-y-3 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs text-gray-700 overflow-y-scroll h-[200px]" aria-labelledby="dropdownCheckboxButton2">
-                            {% for ext in extGroup.exts %}
-                                <li>
-                                    <div class="flex items-center">
-                                        {{ext}}
-                                    </div>
-                                </li>
-                            {% endfor %}
-                            </ul>
+                            <label class="mr-48">Databits</label>
+                            {{ deviceform.databits }}
+
+                            <label class="mr-48">Stopbits </label>
+                            {{ deviceform.stopbits }}
+
+                            <label class="mr-52">Flow</label>
+                            {{ deviceform.flow }}
+
                         </div>
-                    </div>
-                    <label>دسترسی گزارش خطاها:</label>
-                    <label for="{{ userAccessToErrorsPageForm.errorsreport.id_for_label }}"
-                            class="bg-gray-300 cursor-pointer relative w-20 h-9 rounded-full mr-5">
-                        {{ userAccessToErrorsPageForm.errorsreport }}
-                        <span class="w-2/5 h-4/5 bg-white absolute rounded-full left-1 top-1 peer-checked:bg-blue-600 peer-checked:left-11 transition-all duration-500">
-                    </span>
+                        <div id="models_for_binalud" class="mt-2 w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto float-left flex flex-col ltr 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs 2xl:ml-20 xl:ml-20 lg:ml-20 md:ml-20 sm:ml-16 ml-2 mb-2">
+                            <label class='mr-52'> Ip </label>
+                            {{ deviceform.smdrip }}
+                            <label class='mr-52'> Port </label>
+                            {{ deviceform.smdrport }}
+                            <label class='mr-52'> Password </label>
+                            {{ deviceform.smdrpassword}}
 
-                    </label>
+                        </div>
+                    </fieldset>
+                    <fieldset
+                        class="w-10/12 h-auto text-right float-left 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mt-2 2xl:mr-5 mx-8 mb-1 border border-solid md:mx-8 sm:mx-7 border-gray-400">
+                        <legend class="text-center py-0 px-2 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs">گروه بندی دسترسی ها</legend>
+
+
+                        <div class=" w-full h-auto my-0 mx-0 float-right rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mt-2 flex justify-center">
+                            <input type="radio" id="edit" name="edit" value="ویرایش" class="ml-1">
+                            <label for="edit" class='ml-5'>ویرایش کردن</label>
+                            <input type="radio" id="delete" name="delete" value="حذف" class="ml-1">
+                            <label for="delete" class='ml-5'>حذف کردن</label>
+                            <input type="radio" id="add" name="add" value="اضافه کردن" class="ml-1">
+                            <label for="add">اضافه کردن</label>
+                        </div>
+
+                        <div id="models" class=" w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-[150px] mt-5 my-7 float-right flex flex-col gap-2 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mr-3">
+
+                            <label>نام گروه: </label>
+                            {{extGroup.label}}
+                            
+                            <label>نام کاربر: </label>
+                            {{ userAccessToErrorsPageForm.users }}
+                        </div>
+                        <div id="models" class=" w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-[150px] mt-5 float-left flex flex-col gap-3 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs 2xl:ml-20 xl:ml-20 lg:ml-20 md:ml-20 sm:ml-16 ml-2">
+
+                            <div class="relative inline-block w-full h-[45px] mt-1 ml-4 float-left gap-1">
+                                <div class="mb-[7px] w-full h-[18px] ">
+                                    <label>داخلی ها: </label>
+                                </div>
+                                <button id="dropdownCheckboxButton2" data-dropdown-toggle="dropdownDefaultCheckbox2"
+                                        class=" w-full h-5 rtl border border-gray-500  rounded-sm 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs static block text-center items-center text-gray-700"
+                                        type="button">
+                                    <i class="fa-regular fa-chevron-down text-gray-700"></i>
+                                </button>
+
+
+                                <div id="dropdownDefaultCheckbox2"
+                                        class="hidden z-10 w-full absolute bg-white divide-y divide-gray-100 rounded-sm shadow ltr">
+                                    <ul class="p-3 space-y-3 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs text-gray-700 overflow-y-scroll h-[200px]" aria-labelledby="dropdownCheckboxButton2">
+                                    {% for ext in extGroup.exts %}
+                                        <li>
+                                            <div class="flex items-center">
+                                                {{ext}}
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                            <label>دسترسی گزارش خطاها:</label>
+                            <label for="{{ userAccessToErrorsPageForm.errorsreport.id_for_label }}"
+                                    class="bg-gray-300 cursor-pointer relative w-20 h-9 rounded-full mr-5">
+                                {{ userAccessToErrorsPageForm.errorsreport }}
+                                <span class="w-2/5 h-4/5 bg-white absolute rounded-full left-1 top-1 peer-checked:bg-blue-600 peer-checked:left-11 transition-all duration-500">
+                            </span>
+
+                            </label>
+                        </div>
+                    </fieldset>
+
                 </div>
-            </fieldset>
+                <div class="w-full h-auto mt-3  rtl float-right 2xl:mt-10 sm:w-full md:w-full 2xl:w-1/2 xl:w-1/2 lg:w-1/2">
 
+                    <fieldset
+                            class="w-5/6 2xl:11/12 xl:11/12 lg:w-11/12 h-auto p-[10px] text-right float-left 2xl:float-right xl:float-right lg:float-right mb-1 mt-2 border border-solid sm:mx-7 mx-8 sm:float-left md:mx-8 md:float-left 2xl:mx-0 xl:mx-0 lg:mx-0 border-gray-400">
+                        <legend class="text-center py-0 px-2 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs"> اطلاعات تماس</legend>
+
+                        <div id="models" class=" w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto mt-1 float-right flex flex-col gap-2 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mr-2">
+
+                            <label> استان: </label>
+                            {{ contactInfo.province }}
+
+                        </div>
+                        <div id="models" class=" w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto mt-1 float-left flex flex-col gap-2 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs  2xl:ml-20 xl:ml-20 lg:ml-20 md:ml-20 sm:ml-16 ml-4">
+
+                            <label> شماره همراه مدیر: </label>
+                            {{ contactInfo.phone_number }}
+                        </div>
+                    </fieldset>
+
+
+                    <fieldset
+                            class="w-5/6 2xl:11/12 xl:11/12 lg:w-11/12 mx-8 sm:float-left sm:mx-7 md:mx-8 md:float-left h-auto p-[10px] 
+                                text-right float-left 2xl:float-right xl:float-right lg:float-right mb-1 mt-2 border border-solid border-gray-400 2xl:mx-0 xl:mx-0 lg:mx-0">
+                        <legend class="text-center py-0 px-2 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs">هزینه های تماس</legend>
+
+                        <div id="models" class=" w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto float-right flex flex-col gap-1 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mr-2">
+
+                            <label class="mt-3"> داخل استانی:</label>
+                            {{ costForm.provincial }}
+                            <label>خارج استانی: </label>
+                            {{ costForm.outofprovincial }}
+                            <label> بین المللی:</label>
+                            {{ costForm.international }}
+
+                        </div>
+                        <div id="models" class=" w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto float-left flex flex-col gap-1 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs  2xl:ml-20 xl:ml-20 lg:ml-20 md:ml-20 sm:ml-16 ml-4">
+
+                            <label class="mt-3">ایرانسل: </label>
+                            {{ costForm.irancell }}
+                            <label>همراه اول: </label>
+                            {{ costForm.hamrahaval }}
+                            <label>رایتل: </label>
+                            {{ costForm.rightel }}
+
+                        </div>
+                    </fieldset>
+
+
+                    <fieldset
+                            class="w-5/6 2xl:11/12 xl:11/12 lg:w-11/12 mx-8 sm:mx-7 sm:float-left md:mx-8 md:float-left h-auto p-[10px] text-right mt-2 border border-solid
+                                float-left 2xl:float-right xl:float-right lg:float-right 2xl:mx-0 xl:mx-0 lg:mx-0 border-gray-400">
+                        <legend class="text-center py-0 px-2 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs">تنظیمات ایمیل</legend>
+
+
+                        <div id="models" class=" w-11/12 2xl:w-2/5 xl:w-2/5 lg:w-2/5 md:w-2/5 sm:w-2/5 h-auto float-right flex flex-col gap-2 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mr-2">
+
+
+                            <label class="mt-3"> ایمیل مبداٰ:</label>
+                            {{ emailSendingForm.collectionusername }}
+                            <label> ایمیل مقصد:</label>
+                            {{ emailSendingForm.emailtosend }}
+
+                        </div>
+                        <div id="models" class=" w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto float-left flex flex-col gap-2 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs 2xl:ml-20 xl:ml-20 lg:ml-20 md:ml-20 sm:ml-16 ml-4">
+
+
+                            <label class="mt-3">رمز ایمیل: </label>
+                            {{ emailSendingForm.collectionpassword }}
+
+                            <label>تعداد خطاها برای ارسال: </label>
+                            {{ emailSendingForm.lines }}
+
+                        </div>
+
+                        <div class=" w-10/12 h-auto float-right relative flex flex-col gap-1 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mr-6">
+                            <label> خطاها: </label>
+                            <button id="errorsDropdownBtn" data-dropdown-toggle="errorsDropdownBtn"
+                                    class=" w-11/12 h-5 float-left rtl border border-gray-500 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs static block"
+                                    type="button">
+                                <i class="fa-regular fa-chevron-down text-gray-700"></i>
+                            </button>
+
+
+                            <div id="errorsDropdownItems"
+                                    class="hidden z-10 w-11/12 absolute bg-white divide-y divide-gray-100 rounded-sm shadow ltr">
+                                <ul class="p-3 space-y-3 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs text-gray-700 overflow-y-scroll h-[150px]" aria-labelledby="errorsDropdownItems">
+                                    {% for error in emailSendingForm.errors %}
+                                        <li>
+                                            <div class="flex items-center">
+                                                {{ error }}
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </fieldset>
+
+
+                </div>
+           
+            </div>
+            <div class="w-full h-[50px] flex justify-center items-center mt-4 gap-5 2xl:mt-5">
+                <input type="submit" id="apply" class="hidden">
+                <label for="apply" id="btn"
+                    class="w-1/6 h-[30px] bg-green-600 text-white 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs border-none rounded-md py-1 text-center cursor-pointer ml-[22px]
+                            2xl:w-1/12 xl:w-1/12 lg:w-1/12 md:w-1/6 sm:w-1/6">
+                    اعمال
+            </div>
         </div>
-        <div class="w-full h-auto mt-3  rtl float-right 2xl:mt-10 sm:w-full md:w-full 2xl:w-1/2 xl:w-1/2 lg:w-1/2">
-
-            <fieldset
-                    class="w-5/6 2xl:11/12 xl:11/12 lg:w-11/12 h-auto p-[10px] text-right float-left 2xl:float-right xl:float-right lg:float-right mb-1 mt-2 border border-solid sm:mx-7 mx-8 sm:float-left md:mx-8 md:float-left 2xl:mx-0 xl:mx-0 lg:mx-0 border-gray-400">
-                <legend class="text-center py-0 px-2 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs"> اطلاعات تماس</legend>
-
-                <div id="models" class=" w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto mt-1 float-right flex flex-col gap-2 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mr-2">
-
-                    <label> استان: </label>
-                    {{ contactInfo.province }}
-
-                </div>
-                <div id="models" class=" w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto mt-1 float-left flex flex-col gap-2 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs  2xl:ml-20 xl:ml-20 lg:ml-20 md:ml-20 sm:ml-16 ml-4">
-
-                    <label> شماره همراه مدیر: </label>
-                    {{ contactInfo.phone_number }}
-                </div>
-            </fieldset>
-
-
-            <fieldset
-                    class="w-5/6 2xl:11/12 xl:11/12 lg:w-11/12 mx-8 sm:float-left sm:mx-7 md:mx-8 md:float-left h-auto p-[10px] 
-                        text-right float-left 2xl:float-right xl:float-right lg:float-right mb-1 mt-2 border border-solid border-gray-400 2xl:mx-0 xl:mx-0 lg:mx-0">
-                <legend class="text-center py-0 px-2 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs">هزینه های تماس</legend>
-
-                <div id="models" class=" w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto float-right flex flex-col gap-1 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mr-2">
-
-                    <label class="mt-3"> داخل استانی:</label>
-                    {{ costForm.provincial }}
-                    <label>خارج استانی: </label>
-                    {{ costForm.outofprovincial }}
-                    <label> بین المللی:</label>
-                    {{ costForm.international }}
-
-                </div>
-                <div id="models" class=" w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto float-left flex flex-col gap-1 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs  2xl:ml-20 xl:ml-20 lg:ml-20 md:ml-20 sm:ml-16 ml-4">
-
-                    <label class="mt-3">ایرانسل: </label>
-                    {{ costForm.irancell }}
-                    <label>همراه اول: </label>
-                    {{ costForm.hamrahaval }}
-                    <label>رایتل: </label>
-                    {{ costForm.rightel }}
-
-                </div>
-            </fieldset>
-
-
-            <fieldset
-                    class="w-5/6 2xl:11/12 xl:11/12 lg:w-11/12 mx-8 sm:mx-7 sm:float-left md:mx-8 md:float-left h-auto p-[10px] text-right mt-2 border border-solid
-                        float-left 2xl:float-right xl:float-right lg:float-right 2xl:mx-0 xl:mx-0 lg:mx-0 border-gray-400">
-                <legend class="text-center py-0 px-2 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs">تنظیمات ایمیل</legend>
-
-
-                <div id="models" class=" w-11/12 2xl:w-2/5 xl:w-2/5 lg:w-2/5 md:w-2/5 sm:w-2/5 h-auto float-right flex flex-col gap-2 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mr-2">
-
-
-                    <label class="mt-3"> ایمیل مبداٰ:</label>
-                    {{ emailSendingForm.collectionusername }}
-                    <label> ایمیل مقصد:</label>
-                    {{ emailSendingForm.emailtosend }}
-
-                </div>
-                <div id="models" class=" w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto float-left flex flex-col gap-2 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs 2xl:ml-20 xl:ml-20 lg:ml-20 md:ml-20 sm:ml-16 ml-4">
-
-
-                    <label class="mt-3">رمز ایمیل: </label>
-                    {{ emailSendingForm.collectionpassword }}
-
-                    <label>تعداد خطاها برای ارسال: </label>
-                    {{ emailSendingForm.lines }}
-
-                </div>
-
-                <div class=" w-10/12 h-auto float-right relative flex flex-col gap-1 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mr-6">
-                    <label> خطاها: </label>
-                    <button id="errorsDropdownBtn" data-dropdown-toggle="errorsDropdownBtn"
-                            class=" w-11/12 h-5 float-left rtl border border-gray-500 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs static block"
-                            type="button">
-                        <i class="fa-regular fa-chevron-down text-gray-700"></i>
-                    </button>
-
-
-                    <div id="errorsDropdownItems"
-                            class="hidden z-10 w-11/12 absolute bg-white divide-y divide-gray-100 rounded-sm shadow ltr">
-                        <ul class="p-3 space-y-3 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs text-gray-700 overflow-y-scroll h-[150px]" aria-labelledby="errorsDropdownItems">
-                            {% for error in emailSendingForm.errors %}
-                                <li>
-                                    <div class="flex items-center">
-                                        {{ error }}
-                                    </div>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-            </fieldset>
-
-
-        </div>
-   
-        <div class="w-full h-[50px] flex justify-center items-center mt-4 gap-5 2xl:mt-5">
-            <input type="submit" id="apply" class="hidden">
-            <label for="apply" id="btn"
-                class="w-1/6 h-[30px] bg-green-600 text-white 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs border-none rounded-md py-1 text-center cursor-pointer ml-[22px]
-                        2xl:w-1/12 xl:w-1/12 lg:w-1/12 md:w-1/6 sm:w-1/6">
-                اعمال
+    </div>
 </div>
 
-{% block extrascripts %}
 <script src="{% static 'js/jquery.js' %}"></script>
 
-<script>
-    $(document).ready(function () {
-        // Dropdown handlers for checkboxes
-        const dropdownCheckboxShow = $('#dropdownDefaultCheckbox2');
-        $('#dropdownCheckboxButton2').on('click', function () {
-            $('#dropdownDefaultCheckbox2').toggleClass('hidden');
-        });
+<script type="text/javascript">
+    const groupnameData = JSON.parse(document.getElementById('groupname_json').textContent);
+    const costsData = JSON.parse(document.getElementById('costs_json').textContent);
+    const devicesData = JSON.parse(document.getElementById('devices_json').textContent);
+    const emailsetData = JSON.parse(document.getElementById('emailset_json').textContent);
+    const usersData = JSON.parse(document.getElementById('users_json').textContent);
+    const contactInfosData = JSON.parse(document.getElementById('contactInfos_json').textContent);
 
-        $(document).on('click', function (e) {
-            if (!dropdownCheckboxShow.hasClass('hidden') && !$(e.target).closest('#dropdownCheckboxButton2, #dropdownDefaultCheckbox2').length) {
-                dropdownCheckboxShow.addClass('hidden');
+    jalaliDatepicker.startWatch({
+        minDate: "attr",
+        maxDate: "today",
+        hideAfterChange: true,
+        autoHide: true,
+        showTodayBtn: true,
+        showEmptyBtn: true,
+        persianDigits: true,
+        topSpace: 10,
+        bottomSpace: 30,
+        dayRendering(opt, input) {
+            return {
+                isHollyDay: opt.day == 1
             }
-        });
-        
-        // Device model handling
-        $("#models_for_binalud").hide();
-        $('#id_cabel_types, #Cable_label').hide();
-        
-        $('#id_device').change(function() {
-            var validValues = ['KX-TDE100', 'KX-TDE200', 'KX-TDE600'];
-            var validValuesRs = ["KX-TDA30", "KX-TDA100", "KX-TDA100D", "KX-TDA100DBA", "KX-TDA200", "KX-TDA600",'KX-TEM824', 'KX-TES824', 'KX-TA308'];
+        }
+    });
 
-            if (validValues.includes($(this).val())) {
-                $('#id_cabel_types').show();
-                $('#Cable_label').show();
+    $("#id_cabel_types").change(function() {
+        if ($(this).val() === "rs-232c") {
+            $("#models_for_binalud").hide();
+            $("#models_for_alvand").show();
+        } else if($(this).val() === "ethernet") {
+            $("#models_for_binalud").show();
+            $("#models_for_alvand").hide();
+        }
+    });
+    
+    // Errors dropdown handler
+    const errorsShow = $('#errorsDropdownItems');
+    $('#errorsDropdownBtn').on('click', function () {
+        $('#errorsDropdownItems').toggleClass('hidden');
+    });
+
+    $(document).on('click', function (e) {
+        if (!errorsShow.hasClass('hidden') && !$(e.target).closest('#errorsDropdownBtn, #errorsDropdownItems').length) {
+            errorsShow.addClass('hidden');
+        }
+    });
+    
+    // Page reload function
+    function updateData(){
+        let optionsHtml = '<option value="none"> ------ </option>';
+        groupnameData.forEach(function(ext) {
+            optionsHtml += `<option value="${ext.label}"> ${ext.label} </option>`;
+        });
+        $('#id_label').replaceWith(`
+            <select id="id_label" name="label" class="w-full h-5  text-gray-600 text-xs appearance-none py-[2px]">
+                ${optionsHtml}
+            </select>`);
+
+        $('#id_label').off('change').on('change', function () {
+            if($(this).val().toLowerCase() == "none") {
+                $("#dropdownDefaultCheckbox2 ul li input").each(function(){
+                    $(this).prop('checked', false)
+                })
             } else {
-                $('#id_cabel_types').hide();
-                $('#Cable_label').hide();
-            }
-            
-            if (validValuesRs.includes($(this).val())) {
-                $('#models_for_alvand').show();
-                $('#models_for_binalud').hide();
-            } else {
-                $('#models_for_alvand').hide();
-                $('#models_for_binalud').show();
-            }
-        });
-
-        $("#id_cabel_types").change(function() {
-            if ($(this).val() === "rs-232c") {
-                $("#models_for_binalud").hide();
-                $("#models_for_alvand").show();
-            } else if($(this).val() === "ethernet") {
-                $("#models_for_binalud").show();
-                $("#models_for_alvand").hide();
-            }
-        });
-        
-        // Errors dropdown handler
-        const errorsShow = $('#errorsDropdownItems');
-        $('#errorsDropdownBtn').on('click', function () {
-            $('#errorsDropdownItems').toggleClass('hidden');
-        });
-
-        $(document).on('click', function (e) {
-            if (!errorsShow.hasClass('hidden') && !$(e.target).closest('#errorsDropdownBtn, #errorsDropdownItems').length) {
-                errorsShow.addClass('hidden');
-            }
-        });
-        
-        // Page reload function
-        function updateData(){
-            $('#id_label').replaceWith(`
-                <select id="id_label" name="label" class="w-full h-5  text-gray-600 text-xs appearance-none py-[2px]">
-                    <option value='none'> ------ </option>
-                    {% for ext in groupname %}
-                        <option value='{{ext.label}}'> {{ext.label}} </option>
-                    {% endfor %}
-                </select>`)
-            $('#id_label').change(function () {
-                    if($(this).val().toLowerCase() == "none") {
-                        $("#dropdownDefaultCheckbox2 ul li input").each(function(){
-                            $(this).prop('checked', false)
-                        })
-                    }
-                    {% with found=True %}
-
-                        {% for ext in groupname %}
-                            {% if found %}
-                                if ($(this).val().toLowerCase() === "{{ ext.label|lower }}") {
-                                    let exts = {{ ext.label|getExtsFromExtGroups|safe }};
-                                    exts = exts.map(String)
-                                    if(exts.length > 0){
-                                        $("#dropdownDefaultCheckbox2 ul li input").each(function(){
-                                            if(exts.includes($(this).val()))
-                                                $(this).prop('checked', true)
-                                            else
-                                                $(this).prop('checked', false)
-                                        })
-                        if($(this).val().toLowerCase() == "none") {
-                            $("#dropdownDefaultCheckbox2 ul li input").each(function(){
-                                $(this).prop('checked', false)
-                            })
-                        }
-                        {% with found=True %}
-
-                            {% for ext in groupname %}
-                                {% if found %}
-                                    if ($(this).val().toLowerCase() === "{{ ext.label|lower }}") {
-                                        let exts = {{ ext.label|getExtsFromExtGroups|safe }};
-                                        exts = exts.map(String)
-                                        if(exts.length > 0){
-                                            $("#dropdownDefaultCheckbox2 ul li input").each(function(){
-                                                if(exts.includes($(this).val()))
-                                                    $(this).prop('checked', true)
-                                                else
-                                                    $(this).prop('checked', false)
-                                            })
-                                        }
-                                    }
-                                    {% with found=True %}{% endwith %}
-                                {% endif %}
-                            {% endfor %}
-                        {% endwith %}
-                    })
-            }
-            $('#edit').on('click',function () {
-                $('#add').prop('checked', false)
-                $('#delete').prop('checked', false)
-                updateData()
-            })
-            $('#delete').on('click', function(){
-                $("#edit").prop('checked', false)
-                $("#add").prop('checked', false)
-                updateData()
-            })
-            $('#add').on('click', function(){
-                $('#edit').prop('checked', false)
-                $('#id_label').replaceWith(`
-                    <input type="text" id="id_label" name='label' class="w-full h-5  text-gray-600 text-xs">`)
-            })
-            {% if costs %}
-                {% for cost in costs %}
-                    $('#id_provincial').val('{{cost.provincial}}')
-                    $('#id_outofprovincial').val('{{cost.outofprovincial}}')
-                    $('#id_international').val('{{cost.international}}')
-                    $('#id_irancell').val('{{cost.irancell}}')
-                    $('#id_hamrahaval').val('{{cost.hamrahaval}}')
-                    $('#id_rightel').val('{{cost.rightel}}')
-
-                {% endfor %}
-            {% endif %}
-            {% if devices %}
-                {% for device in devices %}
-
-                    $('#id_device').val('{{device.device}}')
-                    {% if device.device in "KX-TDA30, KX-TDA100, KX-TDA100D, KX-TDA100DBA, KX-TDA200, KX-TDA600, KX-TEM824, KX-TES824, KX-TA308" %}
-                        $('#id_flow').val('{{device.flow}}')
-                        $('#id_stopbits').val('{{device.stopbits}}')
-                        $('#id_baudrate').val('{{device.baudrate}}')
-                        $('#id_parity').val('{{device.parity}}')
-                        $('#id_databits').val('{{device.databits}}')
-                        $('#id_number_of_lines').val('{{device.number_of_lines}}')
-                        $('#id_cabel_types').val('{{device.cabel_types}}')
-                        $('#id_smdrip').val('192.163.1.10')
-                        $('#id_smdrport').val('2300')
-                        $('#id_smdrpassword').val('PCCSMDR')
-
-                    {% else %}
-                        $('#id_smdrip').val('{{device.smdrip}}')
-                        $('#id_smdrport').val('{{device.smdrport}}')
-                        $('#id_smdrpassword').val('{{device.smdrpassword}}')
-                        $('#id_flow').val('None')
-                        $('#id_stopbits').val('1')
-                        $('#id_baudrate').val('9600')
-                        $('#id_parity').val('None')
-                        $('#id_databits').val('8')
-
-                    {% endif %}
-
-                {% endfor %}
-            {% else %}
-                $('#id_smdrip').val('192.163.1.10')
-                $('#id_smdrport').val('2300')
-                $('#id_smdrpassword').val('PCCSMDR')
-                $('#id_flow').val('None')
-                $('#id_stopbits').val('1')
-                $('#id_baudrate').val('9600')
-                $('#id_parity').val('None')
-                $('#id_databits').val('8')
-            {% endif %}
-            {% if contactInfos %}
-                {% for contactInformation in contactInfos %}
-
-                    $('#id_province').val('{{contactInformation.province}}')
-                    $('#id_phone_number').val('{{contactInformation.phone_number}}')
-
-                {% endfor %}
-            {% endif %}
-
-            {% if emailset %}
-                {% for emset in emailset %}
-                    $('#id_emailtosend').val('{{emset.emailtosend}}')
-                    $('#id_collectionusername').val('{{emset.collectionusername}}')
-                    $('#id_collectionpassword').val('{{emset.collectionpassword}}')
-                    $('#id_lines').val('{{emset.lines}}')
-                    $('#id_errors').val('{{emset.errors}}')
-                {% endfor %}
-                {% if errors %}
-                    let errors = {{ errors|safe }}
-                    errors = errors.map(String)
-                    $("#errorsDropdownItems ul li input").each(function(){
-                        let value = $(this).val()
-                        if(errors.includes(value)){
-                            $(this).prop('checked', true)
-                        }
-                        else
-                            $(this).prop('checked', false)
-                    })
-                {% endif %}
-            {% endif %}
-            $("#id_users").change(function(){
-                if($(this).val().trim().toLowerCase() == 'none'){
-                    $("#id_errorsreport").prop('checked', false)
-                }
-                {% with found=True %}
-                    {% for user in users %}
-                        {% if found %}
-                            console.log($(this).val(), "{{ user.username }}")
-                            if ($(this).val().toLowerCase() === "{{ user.username|lower }}") {
-                                let perm = {{ user.username|getExtReportPerm|safe }};
-                                if(perm.hasOwnProperty("errorsreport"))
-                                    $("#id_errorsreport").prop('checked', perm.errorsreport)
-                                else
-                                    $("#id_errorsreport").prop('checked', false)
+                const selectedLabel = $(this).val().toLowerCase();
+                groupnameData.forEach(function(ext) {
+                    if (selectedLabel === ext.label.toLowerCase()) {
+                        let exts = ext.exts_from_groups; // Assuming getExtsFromExtGroups is exposed in JSON as 'exts_from_groups'
+                        if (exts) {
+                            exts = exts.map(String);
+                            if(exts.length > 0){
+                                $("#dropdownDefaultCheckbox2 ul li input").each(function(){
+                                    if(exts.includes($(this).val()))
+                                        $(this).prop('checked', true)
+                                    else
+                                        $(this).prop('checked', false)
+                                })
                             }
-                            {% with found=True %}{% endwith %}
-                        {% endif %}
-                    {% endfor %}
-                {% endwith %}
-            })
-            
-        })
-    </script>
+                        }
+                    }
+                });
+            }
+        });
+
+        if (costsData.length > 0) {
+            const cost = costsData[0]; // Assuming costs is an array and we take the first item
+            $('#id_provincial').val(cost.provincial);
+            $('#id_outofprovincial').val(cost.outofprovincial);
+            $('#id_international').val(cost.international);
+            $('#id_irancell').val(cost.irancell);
+            $('#id_hamrahaval').val(cost.hamrahaval);
+            $('#id_rightel').val(cost.rightel);
+        }
+
+        if (devicesData.length > 0) {
+            const device = devicesData[0]; // Assuming devices is an array and we take the first item
+            $('#id_device').val(device.device);
+
+            const panasonicDevices = ["KX-TDA30", "KX-TDA100", "KX-TDA100D", "KX-TDA100DBA", "KX-TDA200", "KX-TDA600", "KX-TEM824", "KX-TES824", "KX-TA308"];
+            if (panasonicDevices.includes(device.device)) {
+                $('#id_flow').val(device.flow);
+                $('#id_stopbits').val(device.stopbits);
+                $('#id_baudrate').val(device.baudrate);
+                $('#id_parity').val(device.parity);
+                $('#id_databits').val(device.databits);
+                $('#id_number_of_lines').val(device.number_of_lines);
+                $('#id_cabel_types').val(device.cabel_types);
+                $('#id_smdrip').val('192.163.1.10');
+                $('#id_smdrport').val('2300');
+                $('#id_smdrpassword').val('PCCSMDR');
+            } else {
+                $('#id_smdrip').val(device.smdrip);
+                $('#id_smdrport').val(device.smdrport);
+                $('#id_smdrpassword').val(device.smdrpassword);
+                $('#id_flow').val('None');
+                $('#id_stopbits').val('1');
+                $('#id_baudrate').val('9600');
+                $('#id_parity').val('None');
+                $('#id_databits').val('8');
+            }
+        } else {
+            $('#id_smdrip').val('192.163.1.10');
+            $('#id_smdrport').val('2300');
+            $('#id_smdrpassword').val('PCCSMDR');
+            $('#id_flow').val('None');
+            $('#id_stopbits').val('1');
+            $('#id_baudrate').val('9600');
+            $('#id_parity').val('None');
+            $('#id_databits').val('8');
+        }
+
+        if (contactInfosData.length > 0) {
+            const contactInformation = contactInfosData[0]; // Assuming contactInfos is an array
+            $('#id_province').val(contactInformation.province);
+            $('#id_phone_number').val(contactInformation.phone_number);
+        }
+
+        if (emailsetData.length > 0) {
+            const emset = emailsetData[0]; // Assuming emailset is an array
+            $('#id_emailtosend').val(emset.emailtosend);
+            $('#id_collectionusername').val(emset.collectionusername);
+            $('#id_collectionpassword').val(emset.collectionpassword);
+            $('#id_lines').val(emset.lines);
+            $('#id_errors').val(emset.errors);
+
+            if (emset.errors && emset.errors.length > 0) {
+                let errors = emset.errors.map(String);
+                $("#errorsDropdownItems ul li input").each(function(){
+                    let value = $(this).val();
+                    if(errors.includes(value)){
+                        $(this).prop('checked', true);
+                    } else {
+                        $(this).prop('checked', false);
+                    }
+                });
+            }
+        }
+
+        $("#id_users").off('change').on('change', function(){
+            if($(this).val().trim().toLowerCase() == 'none'){
+                $("#id_errorsreport").prop('checked', false);
+            } else {
+                const selectedUsername = $(this).val().toLowerCase();
+                usersData.forEach(function(user) {
+                    if (selectedUsername === user.username.toLowerCase()) {
+                        if(user.ext_report_perm && user.ext_report_perm.hasOwnProperty("errorsreport")){
+                            $("#id_errorsreport").prop('checked', user.ext_report_perm.errorsreport);
+                        } else {
+                            $("#id_errorsreport").prop('checked', false);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        updateData(); // Call updateData on initial load
+
+        $('#edit').on('click', function () {
+            $('#add').prop('checked', false);
+            $('#delete').prop('checked', false);
+            updateData();
+        });
+
+        $('#delete').on('click', function(){
+            $("#edit").prop('checked', false);
+            $("#add").prop('checked', false);
+            updateData();
+        });
+
+        $('#add').on('click', function(){
+            $('#edit').prop('checked', false);
+            $('#id_label').replaceWith(`
+                <input type="text" id="id_label" name='label' class="w-full h-5  text-gray-600 text-xs">`);
+        });
+    });
+</script>
+
+<script id="groupname_json" type="application/json">{{ groupname|json_script:"groupname_json" }}</script>
+<script id="costs_json" type="application/json">{{ costs|json_script:"costs_json" }}</script>
+<script id="devices_json" type="application/json">{{ devices|json_script:"devices_json" }}</script>
+<script id="emailset_json" type="application/json">{{ emailset|json_script:"emailset_json" }}</script>
+<script id="users_json" type="application/json">{{ users|json_script:"users_json" }}</script>
+<script id="contactInfos_json" type="application/json">{{ contactInfos|json_script:"contactInfos_json" }}</script>
 
 {% endblock %}

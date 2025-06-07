@@ -3,6 +3,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage, Invali
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from .user_utils import getUserinfoByUsername, getTupleIndex
 from django.views.generic import TemplateView, View, FormView
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password, make_password
@@ -13,6 +14,11 @@ from functools import wraps
 import math, jdatetime, wmi, pythoncom, random, os, sys
 from django.db.models import Q
 from django.utils import timezone
+from django.core.serializers.json import DjangoJSONEncoder
+import json
+from django.db import models
+from .models import Users
+from .templatetags.userProfileTags import getListOfExtsGroups, getUserCanPerm, getUserInfo, getObjectOfInfo
 
 upload = os.path.join("Alvand/static/upload")
 os.makedirs(upload, exist_ok=True)
@@ -313,24 +319,6 @@ def makePagination(objs, itemsPerPage, request):
     except EmptyPage:
         page_obj = paginator.page(paginator.num_pages)
     return page_obj.object_list, page_obj
-
-
-def getTupleIndex(key, value):
-    try:
-        dictionary = dict(key).get(value)
-        if dictionary:
-            return dictionary
-        return False
-    except:
-        return None
-
-
-def getUserinfoByUsername(username, value):
-    if not isinstance(username, str): return None
-    user = Users.objects.filter(username__iexact=username)
-    if not user.exists(): return None
-    if not value.lower() in [field.name for field in Users._meta.fields]: return None
-    return next(iter(user.values(value).first().values()))
 
 
 def getInfosOfUserByUsername(username, value):
@@ -1766,3 +1754,71 @@ class UserForm(FormView, View):
 
 def index(request):
     return redirect(reverse_lazy("dashboard"))
+
+class CustomJSONEncoder(DjangoJSONEncoder):
+    def default(self, obj):
+        # Handle QuerySets and other Django-specific objects if needed
+        if isinstance(obj, models.QuerySet):
+            return list(obj.values())
+        return super().default(obj)
+
+def userprofile_view(request):
+    users_queryset = Users.objects.all()
+    session_user_obj = request.session.get('user', None)
+
+    users_data = []
+    for user in users_queryset:
+        user_dict = {
+            'username': user.username,
+            'name': user.name,
+            'lastname': user.lastname,
+            'extension': user.extension,
+            'email': user.email,
+            'active': user.active,
+            'groupname': user.groupname,
+            'picurl': user.picurl if user.picurl else 'avatar.png',
+            'usersextension': list(user.usersextension.values_list('field_name', flat=True)),
+            'getListOfExtsGroups': getListOfExtsGroups(user.username),
+            'getUserCanPerm': getUserCanPerm(user.username),
+            'getObjectOfInfo': list(getObjectOfInfo(user.username).values())
+        }
+        users_data.append(user_dict)
+    
+    session_user_data = {}
+    if session_user_obj:
+        session_user_data = {
+            'username': session_user_obj.username,
+            'getUserInfo_groupname': getUserInfo(session_user_obj, "groupname")
+        }
+
+    all_contact_infos = []
+    for user_obj in users_queryset:
+        infos = getObjectOfInfo(user_obj.username)
+        for info in infos:
+            info_dict = {
+                'username': user_obj.username,
+                'nationalcode': info.nationalcode,
+                'birthdate': str(info.birthdate) if info.birthdate else None,
+                'telephone': info.telephone,
+                'phonenumber': info.phonenumber,
+                'gender': info.gender,
+                'maritalstatus': info.maritalstatus,
+                'military': info.military,
+                'educationfield': info.educationfield,
+                'educationdegree': info.educationdegree,
+                'province': info.province,
+                'city': info.city,
+                'accountnumbershaba': info.accountnumbershaba,
+                'cardnumber': info.cardnumber,
+                'accountnumber': info.accountnumber,
+                'address': info.address,
+            }
+            all_contact_infos.append(info_dict)
+
+    context = {
+        'users': json.dumps(users_data, cls=CustomJSONEncoder),
+        'session_user': json.dumps(session_user_data, cls=CustomJSONEncoder),
+        'contactInfos': json.dumps(all_contact_infos, cls=CustomJSONEncoder),
+    }
+    
+    return render(request, 'Alvand/templates/userprofile.html', context)

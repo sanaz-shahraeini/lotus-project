@@ -581,108 +581,38 @@
 {% endblock %}
 
 {% block extrascripts %}
+{{ users|json_script:"users-data" }}
+{{ session_user|json_script:"session-user-data" }}
+{{ contactInfos|json_script:"contact-infos-data" }}
+
 <script>
-    $(document).ready(function() {
-        // Access to Extensions dropdown toggle
-        $('#accessToExtsBtn').on('click', function() {
-            $('#accessToExtsDp').toggleClass('hidden');
-        });
-
-        // Access Level dropdown toggle
-        $('#accessLevelBtn').on('click', function() {
-            $('#accessLevelDp').toggleClass('hidden');
-        });
-
-        // Close dropdowns when clicking outside
-        $(document).on('click', function(e) {
-            if (!$(e.target).closest('#accessToExtsBtn, #accessToExtsDp').length) {
-                $('#accessToExtsDp').addClass('hidden');
-            }
-            if (!$(e.target).closest('#accessLevelBtn, #accessLevelDp').length) {
-                $('#accessLevelDp').addClass('hidden');
-            }
-        });
-
-        // Change password modal
-        $('#btnpass').on('click', function() {
-            $('#changepass').removeClass('hidden');
-        });
-
-        $('#closeChangePass').on('click', function() {
-            $('#changepass').addClass('hidden');
-        });
-
-        $('#confirmChangePass').on('click', function() {
-            confirmChangePass();
-        });
-
-        // Handle edit/add toggle
-        $('#id_editOrAdd').on('change', function() {
-            var mode = $(this).val();
-            if (mode === "edit") {
-                handleEditMode();
-            } else {
-                handleAddMode();
-            }
-        });
-
-        // Initialize form based on current mode
-        initializeForm();
-
-        // Gender change handler for military service field
-        $('#id_gender').on('change', function() {
-            var selectval = $(this).val();
-            if (selectval === '1') {
-                $('#id_military').hide();
-                $('#labelmilitary').hide();
-            } else {
-                $('#id_military').show();
-                $('#labelmilitary').show();
-            }
-        });
-
-        // Permissions handling
-        $('#allPerm').on('change', function() {
-            var isChecked = $(this).prop('checked');
-            $('.perm-checkbox').prop('checked', isChecked);
-        });
-
-        // Delete User Profile button
-        $('#delUserProfile').on('click', function() {
-            if(confirm('آیا از حذف پروفایل کاربر اطمینان دارید؟')) {
-                $('#form').append('<input type="hidden" name="delete" value="delete">');
-                $('#form').submit();
-            }
-        });
-    });
-
-    function handleEditMode() {
-        $('#id_username').prop('disabled', false);
-        $('#id_username').on('change', function() {
-            loadUserData($(this).val());
-        });
-
-        // User selection may already have a value, so trigger change to load data
-        loadUserData($('#id_username').val());
+    // Utility functions
+    function addOption(selectElement, value, text) {
+        if (selectElement.find("option[value='" + value + "']").length === 0) {
+            selectElement.append($('<option></option>').attr('value', value).text(text));
+        }
     }
 
-    function handleAddMode() {
-        $('#id_username').replaceWith(`
-            <input type="text" id="id_username" name='username' class="w-[140px] h-6 text-gray-600 text-xs">`);
-        clearFormFields();
+    function removeOption(selectElement, value) {
+        selectElement.find("option[value='" + value + "']").remove();
     }
 
-    function loadUserData(username) {
-        {% with users=users %}
-            {% for user in users %}
-                if("{{ user.username }}" === username) {
-                    populateUserData({{ user|safe }});
-                }
-            {% endfor %}
-        {% endwith %}
+    function clearFormFields() {
+        $('#form')[0].reset();
+        $("#id_active input").prop('checked', false);
+        $('#id_picurl').attr('src', "{% static 'pic/avatar.png' %}");
+        $("#accessToExtsDp ul li input").prop('checked', false);
+        $('.perm-checkbox').prop('checked', false);
+        $('#allPerm').prop('checked', false);
+        $('#id_military').show();
+        $('#labelmilitary').show();
+        // Clear all input fields except the username in add mode
+        $('form input:not(#id_username, [type=checkbox], [type=radio]), textarea').val('');
+        $('form select').val('');
+        $('form input[type=checkbox], form input[type=radio]').prop('checked', false);
     }
 
-    function populateUserData(user) {
+    function populateUserData(user, contactInfosData) {
         $('#id_name').val(user.name);
         $('#id_lastname').val(user.lastname);
         $('#id_extension').val(user.extension);
@@ -691,24 +621,24 @@
         $('#id_groupname').val(user.groupname);
         
         var picUrl = user.picurl === 'avatar.png' ? 
-            "{% static 'pic/' %}" + user.picurl : 
-            "{% static 'upload/' %}" + user.picurl;
+            "{% static 'pic/avatar.png' %}" : // This still uses static for initial load but not for dynamic updates
+            "{% static 'upload/' %}" + user.picurl; // This still uses static for initial load but not for dynamic updates
         $('#id_picurl').attr('src', picUrl);
         
         // Handle user extensions
-        var userExts = user.userextensions || [];
-        var userExtsTexts = user.userextensions_text || [];
+        var userexts = user.usersextension || [];
+        var userExtsTextes = user.getListOfExtsGroups || [];
         
-        if(userExts.length > 0 || userExtsTexts.length > 0) {
+        if(userexts.length > 0 || userExtsTextes.length > 0) {
             $("#accessToExtsDp ul li input").each(function() {
                 var extValue = $(this).val();
-                var isChecked = userExts.includes(extValue) || userExtsTexts.includes(extValue);
+                var isChecked = userexts.includes(extValue) || userExtsTextes.includes(extValue);
                 $(this).prop('checked', isChecked);
             });
         }
         
         // Handle permissions
-        var userPerm = user.permissions || {};
+        var userPerm = user.getUserCanPerm || {};
         var allTrue = true;
         var keys = Object.keys(userPerm);
         
@@ -720,70 +650,237 @@
                 $("#id_" + key).prop("checked", false);
             }
         });
-        
         $("#allPerm").prop("checked", allTrue);
         
         // Load user info
-        {% for info in user.username|getObjectOfInfo %}
-            $('#id_nationalcode').val("{{info.nationalcode}}");
-            $('#id_birthdate').val("{{info.birthdate}}");
-            $('#id_telephone').val("{{info.telephone}}");
-            $('#id_phonenumber').val("{{info.phonenumber}}");
-            $('#id_gender').val("{{info.gender}}");
-            $('#id_maritalstatus').val("{{info.maritalstatus}}");
-            $('#id_military').val("{{info.military}}");
-            $('#id_educationfield').val("{{info.educationfield}}");
-            $('#id_educationdegree').val("{{info.educationdegree}}");
-            $('#id_province').val("{{info.province}}");
-            $('#id_city').val("{{info.city}}");
-            $('#id_accountnumbershaba').val("{{info.accountnumbershaba}}");
-            $('#id_cardnumber').val("{{info.cardnumber}}");
-            $('#id_accountnumber').val("{{info.accountnumber}}");
-            $('#id_address').val("{{info.address}}");
-        {% endfor %}
-    }
-    
-    function clearFormFields() {
-        // Clear all input fields except the username
-        $('form input:not(#id_username, [type=checkbox], [type=radio]), textarea').val('');
-        $('form select').val('');
-        $('form input[type=checkbox], form input[type=radio]').prop('checked', false);
-        $('#id_picurl').attr('src', '');
-    }
-
-    function confirmChangePass() {
-        var newpassword = $('#newpass').val();
-        var username = $('#id_username').val();
-        
-        $.ajax({
-            url: "{% url 'confirm_change_password' %}",
-            type: "POST",
-            data: {
-                csrfmiddlewaretoken: '{{ csrf_token }}',
-                username: username,
-                newpassword: newpassword
-            },
-            success: function(response) {
-                if(response === 'ok') {
-                    alert('رمز عبور با موفقیت تغییر یافت.');
-                    $('#changepass').addClass('hidden');
-                } else {
-                    alert('خطا در تغییر رمز عبور.');
-                }
-            },
-            error: function() {
-                alert('خطا در تغییر رمز عبور.');
-            }
-        });
-    }
-
-    function initializeForm() {
-        var mode = $('#id_editOrAdd').val();
-        if (mode === "edit") {
-            handleEditMode();
-        } else {
-            handleAddMode();
+        const contactInfo = contactInfosData.find(info => info.username === user.username);
+        if (contactInfo) {
+            $('#id_nationalcode').val(contactInfo.nationalcode);
+            $('#id_birthdate').val(contactInfo.birthdate);
+            $('#id_telephone').val(contactInfo.telephone);
+            $('#id_phonenumber').val(contactInfo.phonenumber);
+            $('#id_gender').val(contactInfo.gender);
+            $('#id_maritalstatus').val(contactInfo.maritalstatus);
+            $('#id_military').val(contactInfo.military);
+            $('#id_educationfield').val(contactInfo.educationfield);
+            $('#id_educationdegree').val(contactInfo.educationdegree);
+            $('#id_province').val(contactInfo.province);
+            $('#id_city').val(contactInfo.city);
+            $('#id_accountnumbershaba').val(contactInfo.accountnumbershaba);
+            $('#id_cardnumber').val(contactInfo.cardnumber);
+            $('#id_accountnumber').val(contactInfo.accountnumber);
+            $('#id_address').val(contactInfo.address);
         }
     }
+
+    $(document).ready(function() {
+        // Parse JSON data from script tags
+        const usersData = JSON.parse(document.getElementById('users-data').textContent);
+        const sessionUserData = JSON.parse(document.getElementById('session-user-data').textContent);
+        const contactInfosData = JSON.parse(document.getElementById('contact-infos-data').textContent);
+
+        // Handle username change in edit mode select
+        function handleUsernameChange(selectedUsername) {
+            if (selectedUsername.toLowerCase() === "none") {
+                clearFormFields();
+            } else {
+                if (selectedUsername.toLowerCase() === sessionUserData.username.toLowerCase()) {
+                    $("#id_label_groupname, #id_groupname").hide();
+                } else {
+                    $("#id_label_groupname, #id_groupname").show();
+                }
+
+                const userperm = sessionUserData.getUserInfo_groupname;
+                if (userperm === "supporter") {
+                    addOption($("#id_groupname"), "superadmin", "ابر مدیر");
+                } else {
+                    removeOption($("#id_groupname"), "superadmin");
+                }
+
+                const user = usersData.find(u => u.username.toLowerCase() === selectedUsername.toLowerCase());
+                if (user) {
+                    populateUserData(user, contactInfosData);
+                }
+            }
+        }
+
+        // Handle edit/add toggle
+        $('#id_editOrAdd').change(function () {
+            var select_edit = $(this).val().toLowerCase();
+            if (select_edit == 'edit') {
+                const usernameSelectHtml = `
+                <select id="id_username" name="username" class="w-[140px] h-6  text-gray-600 text-xs appearance-none py-[2px]">
+                    <option value='none'> ------ </option>
+                    ${usersData.map(user => `<option value='${user.username}'> ${user.username} </option>`).join('')}
+                </select>`;
+                $('#id_username').replaceWith(usernameSelectHtml);
+                $('#id_username').on('change', function () {
+                    handleUsernameChange($(this).val());
+                });
+                // Trigger change immediately if a user is already selected (e.g., on page load)
+                if ($('#id_username').val() && $('#id_username').val() !== 'none') {
+                    handleUsernameChange($('#id_username').val());
+                }
+            } else {
+                $('#id_username').replaceWith(`
+                <input type="text" id="id_username" name='username' class="w-[140px] h-6  text-gray-600 text-xs">`);
+                clearFormFields();
+            }
+        });
+
+        // Initial call to handle the default state of id_editOrAdd on page load
+        $('#id_editOrAdd').trigger('change');
+
+        // Other existing document.ready handlers
+        let tec = $(".onChangeCheckBox");
+        let allPerm = $("#allPerm")
+        allPerm.on("change", function () {
+            tec.each(function () {
+                $(this).prop('checked', allPerm.prop('checked'))
+            })
+        })
+        tec.on('change', function () {
+            let allChecked = true;
+            tec.each(function () {
+                if (!$(this).prop('checked')) {
+                    allChecked = false;
+                    return false;
+                }
+            });
+            allPerm.prop('checked', allChecked);
+        })
+
+        const reset = $('#changebtnpass')
+        const modal = $('#changepass')
+        const modalBtn = $('#btnpass')
+        const confirmChPass = $('#confirmChangePass')
+
+        reset.on('click', function () {
+            modal.toggleClass('hidden')
+        })
+        $('#cancelChpass').on('click', function () {
+            if (!modal.hasClass('hidden')) {
+                modal.addClass('hidden')
+            }
+        })
+        modalBtn.on('click', function () {
+            modal.toggleClass('hidden')
+        })
+        confirmChPass.on('click', function () {
+            var form = $('#form').append('<input type="hidden" name="ChangePassword" value="submit">')
+            form.submit()
+            modal.toggleClass('hidden')
+        })
+
+        const delUserReset = $('#deleteuser')
+        const delUserModal = $('#deluser')
+        const delUserModalBtn = $('#delUserModalBtn')
+        const delUserConfirm = $('#confirm')
+        delUserReset.on('click', function () {
+            delUserModal.toggleClass('hidden')
+        })
+        $('#canceldelete').on('click', function () {
+            if (!delUserModal.hasClass('hidden')) {
+                delUserModal.addClass('hidden')
+            }
+        })
+        delUserModalBtn.on('click', function () {
+            delUserModal.toggleClass('hidden')
+        })
+        delUserConfirm.on('click', function () {
+            var form = $('#form').append('<input type="hidden" name="deleteUser" value="submit">')
+            form.submit()
+            delUserModal.toggleClass('hidden')
+        })
+
+        const delProReset = $('#deletepro')
+        const delProModal = $('#delpro')
+        const delProModalBtn = $('#delUserProfile')
+        const delProConfirm = $('#confirmDelPro')
+        delProReset.on('click', function () {
+            delProModal.toggleClass('hidden')
+        })
+        $('#cancelDelPro').on('click', function () {
+            if (!delProModal.hasClass('hidden')) {
+                delProModal.addClass('hidden')
+            }
+        })
+        delProModalBtn.on('click', function () {
+            delProModal.toggleClass('hidden')
+        })
+        delProConfirm.on('click', function () {
+            var form = $('#form').append('<input type="hidden" name="deleteProfile" value="submit">')
+            form.submit()
+            delProModal.toggleClass('hidden')
+        })
+
+        const accessToExtsDp = $('#accessToExtsDp')
+        $('#accessToExtsBtn').on('click', function () {
+            $('#accessToExtsDp').toggleClass('hidden')
+        });
+
+        $(document).on('click', function (e) {
+            if (!accessToExtsDp.hasClass('hidden') && !$(e.target).closest('#accessToExtsBtn, #accessToExtsDp').length) {
+                accessToExtsDp.addClass('hidden');
+            }
+        });
+
+        const accessLevelDp = $('#accessLevelDp')
+        $('#accessLevelBtn').on('click', function () {
+            $('#accessLevelDp').toggleClass('hidden')
+        });
+
+        $(document).on('click', function (e) {
+            if (!accessLevelDp.hasClass('hidden') && !$(e.target).closest('#accessLevelBtn, #accessLevelDp').length) {
+                accessLevelDp.addClass('hidden');
+            }
+        });
+
+        const numberInputs = document.querySelectorAll('input[type="number"]');
+
+        numberInputs.forEach(input => {
+            input.addEventListener('input', function (event) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+        });
+
+        $("#id_accountnumbershaba").on('input', function () {
+            let maxLength = 22;
+            let value = $(this).val();
+            if (value.length > maxLength) {
+                $(this).val(value.slice(0, maxLength));
+            }
+        });
+
+        $("#id_cardnumber").on('input', function () {
+            let maxLength = 16;
+            let value = $(this).val();
+            if (value.length > maxLength) {
+                $(this).val(value.slice(0, maxLength));
+            }
+        });
+
+        var spinner = `<style>
+                            input[type="number"]::-webkit-outer-spin-button,
+                            input[type="number"]::-webkit-inner-spin-button{
+                                -webkit-appearance: none;
+                            }
+                            input[type="number"]{
+                                -moz-appearance: textfield;
+                            }
+                        </style>`
+        $("head").append(spinner)
+
+        $('#id_gender').change(function () {
+            var selectval = $('#id_gender').val();
+            if (selectval === '1') {
+                $('#id_military').hide();
+                $('#labelmilitary').hide();
+            } else {
+                $('#id_military').show();
+                $('#labelmilitary').show();
+            }
+        })
+    });
 </script>
 {% endblock %}

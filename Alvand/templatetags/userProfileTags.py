@@ -1,6 +1,6 @@
 from django.template import Library
 from Alvand.models import Groups, Users, Infos, Permissions
-from Alvand.views import getUserinfoByUsername
+from Alvand.user_utils import getUserinfoByUsername
 import json
 register = Library()
 
