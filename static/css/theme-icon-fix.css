@@ -1,0 +1,54 @@
+/* 
+   Theme Toggle Icon Fix
+   Makes sure the moon icon is visible in light mode regardless of other styling
+*/
+
+/* Make moon icon blue and clearly visible in light mode */
+.lotus-theme-toggle .fa-moon,
+#theme-toggle .fa-moon,
+.theme-toggle .fa-moon {
+    color: #3b82f6 !important; /* Bright blue color */
+}
+
+html.dark .lotus-theme-toggle .fa-moon,
+html.dark #theme-toggle .fa-moon,
+html.dark .theme-toggle .fa-moon {
+    color: #e2e8f0 !important; /* Light color for dark mode */
+    opacity: 0 !important; /* Hidden in dark mode as sun should be visible */
+}
+
+/* Make sun icon yellow and clearly visible in dark mode */
+.lotus-theme-toggle .fa-sun,
+#theme-toggle .fa-sun,
+.theme-toggle .fa-sun {
+    color: #fbbf24 !important; /* Yellow color */
+}
+
+/* Fix any icon visibility issues caused by conflicting styles */
+.lotus-theme-toggle i,
+#theme-toggle i,
+.theme-toggle i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+/* Fix opacity issues */
+html.light .lotus-theme-toggle .fa-moon,
+html.light #theme-toggle .fa-moon,
+html.light .theme-toggle .fa-moon {
+    opacity: 1 !important;
+    transform: translate(-50%, -50%) rotate(0) !important;
+    visibility: visible !important;
+}
+
+html.light .lotus-theme-toggle .fa-sun,
+html.light #theme-toggle .fa-sun,
+html.light .theme-toggle .fa-sun {
+    opacity: 0 !important;
+    transform: translate(-50%, -50%) rotate(-180deg) !important;
+    visibility: hidden !important;
+} 

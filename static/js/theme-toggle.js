@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         sunIcon.style.display = 'none';
         moonIcon.style.display = 'block';
+        // Make sure moon icon is visible in light mode
+        if (moonIcon) moonIcon.style.color = '#3b82f6';
     }
     
     // Add click event listener
@@ -36,6 +38,8 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('theme', 'light');
             sunIcon.style.display = 'none';
             moonIcon.style.display = 'block';
+            // Make sure moon icon is visible in light mode
+            if (moonIcon) moonIcon.style.color = '#3b82f6';
             console.log('Switched to light mode');
         }
     });

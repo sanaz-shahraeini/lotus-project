@@ -1,30 +1,71 @@
 {% extends 'base.html' %}
 {% load static profileTags %}
-
+{% load static %}
 {% block head_extra %}
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- Dashboard CSS files for sidebar integration -->
- 
-<link rel="stylesheet" href="{% static 'css/dashboard-fix.css' %}" />
-<link rel="stylesheet" href="{% static 'css/dashboard-width-fix.css' %}" />
-<link rel="stylesheet" href="{% static 'css/direct-layout-fix.css' %}" />
-<link rel="stylesheet" href="{% static 'css/header-optimize.css' %}" />
-<link rel="stylesheet" href="{% static 'css/dashboard-content.css' %}" />
+    <!-- CSS files -->
+    <link rel="stylesheet" href="{% static 'css/dashboard-fix.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/dashboard-width-fix.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/direct-layout-fix.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/dashboard-content.css' %}" />
+    
     <style>
+    /* Fix for theme toggle icons in navbar */
+    .theme-toggle-btn i,
+    .dark-mode-toggle i,
+    .light-mode-toggle i,
+    [data-theme-toggle] i,
+    .theme-switch i,
+    .navbar .fa-moon,
+    .navbar .fa-sun,
+    header .fa-moon,
+    header .fa-sun,
+    .nav .fa-moon,
+    .nav .fa-sun,
+    .theme-toggle-icon {
+        color: #4f46e5 !important;
+        font-size: 1.25rem !important;
+        filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2)) !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transition: all 0.2s ease !important;
+    }
+    
+    .dark .theme-toggle-btn i,
+    .dark .dark-mode-toggle i,
+    .dark .light-mode-toggle i,
+    .dark [data-theme-toggle] i,
+    .dark .theme-switch i,
+    .dark .navbar .fa-moon,
+    .dark .navbar .fa-sun,
+    .dark header .fa-moon,
+    .dark header .fa-sun,
+    .dark .nav .fa-moon, 
+    .dark .nav .fa-sun,
+    .dark .theme-toggle-icon {
+        color: #c7d2fe !important;
+    }
+    
     /* Root variables for consistent styling */
     :root {
-        --primary-color: #6366f1;
-        --primary-hover: #4f46e5;
+        --primary-color: #4f46e5;
+        --primary-light: #6366f1;
+        --primary-dark: #4338ca;
         --secondary-color: #f3f4f6;
         --text-color: #1f2937;
+        --light-text: #6b7280;
         --border-color: #e5e7eb;
         --sidebar-width: 135px;
-        --content-padding: 1.5rem;
+        --content-padding: 1.25rem;
         --bg-color: #f9fafb;
         --card-bg: white;
+        --card-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --info-color: #3b82f6;
     }
     
     /* Dark mode variables */
@@ -32,84 +73,505 @@
         --bg-color: #111827;
         --card-bg: #1f2937;
         --text-color: #f9fafb;
+        --light-text: #9ca3af;
         --border-color: #374151;
         --secondary-color: #374151;
+        --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     }
     
     body {
         background-color: var(--bg-color);
+ 
+    }
+    
+    /* Main container */
+        .profile-container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 1rem;
+    }
+    
+    /* Profile header */
+    .profile-header {
+        position: relative;
+        margin-top: 1.5rem;
+        margin-bottom: 3rem;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        border-radius: 0.75rem;
+        overflow: hidden;
+    }
+    
+    .profile-cover {
+        height: 130px;
+        background: linear-gradient(to right, #4f46e5, #6366f1);
+        position: relative;
+    }
+    
+    .status-badges {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        display: flex;
+        gap: 0.5rem;
+        z-index: 5;
+    }
+    
+    .status-badge {
+        background-color: white;
         color: var(--text-color);
-        transition: background-color 0.3s, color 0.3s;
+        padding: 0.375rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
     
-    /* Main content layout with sidebar integration */
-    .main-content {
-        margin-right: 0 !important;
-        padding: 1rem;
-        transition: all 0.3s ease;
-        width: 100%;
+    .status-badge i {
+        color: var(--primary-color);
     }
     
-    @media (min-width: 1024px) {
-        .main-content {
-            margin-right: 135px !important;
-            padding: 1.5rem;
-            width: calc(100% - 135px) !important;
+    .profile-cover::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    
+    .profile-info {
+        background-color: var(--card-bg);
+        padding: 1.25rem 1.5rem 1.5rem;
+        border-radius: 0 0 0.75rem 0.75rem;
+        box-shadow: var(--card-shadow);
+        margin-top: -1rem;
+        border: 1px solid var(--border-color);
+        border-top: none;
+        position: relative;
+        z-index: 10;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .dark .profile-info {
+        background-color: #1f2937;
+        border-color: #374151;
+    }
+    
+    .profile-avatar-container {
+        position: relative;
+        margin-bottom: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 20;
+        margin-top: -3.5rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    @media (min-width: 640px) {
+        .profile-avatar-container {
+            position: relative;
+            top: auto;
+            left: auto;
+            margin-bottom: 0.75rem;
+        }
+        
+        .profile-user-info {
+            text-align: center;
+            align-items: center;
+            margin-left: 0;
         }
     }
     
-    /* Profile specific styling */
-    .profile-card {
-        background-color: var(--card-bg);
-        border-radius: 0.5rem;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
-        border: 1px solid var(--border-color);
-        transition: background-color 0.3s, border-color 0.3s;
+    .profile-avatar {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        background-color: var(--primary-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2.25rem;
+        border: 4px solid white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        position: relative;
     }
     
-    /* Form elements styling */
-    .form-input {
+    .camera-icon {
+        position: absolute;
+        bottom: -6px;
+        right: -6px;
+        background-color: white;
+        color: var(--primary-color);
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        font-size: 0.875rem;
+        border: 2px solid var(--primary-light);
+        transition: all 0.2s ease;
+        z-index: 25;
+    }
+    
+    .dark .camera-icon {
+        background-color: #1f2937;
+        border: 2px solid var(--primary-light);
+        color: var(--primary-light);
+    }
+    
+    .camera-icon:hover {
+        transform: scale(1.1);
+        background-color: var(--primary-light);
+        color: white;
+    }
+    
+    .dark .camera-icon:hover {
+        background-color: var(--primary-light);
+        color: white;
+    }
+    
+    .profile-user-info {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: transparent;
+    }
+    
+    @media (min-width: 640px) {
+        .profile-user-info {
+            text-align: center;
+            align-items: center;
+        }
+    }
+    
+    /* High visibility profile elements */
+    .profile-name-container {
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 0.5rem 1.5rem;
+        border-radius: 0.5rem;
+        margin-bottom: 0.75rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .dark .profile-name-container {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    .profile-name {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--text-color);
+        margin-bottom: 0;
+        text-align: center;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    .profile-username {
+        display: inline-block;
+        background-color: rgba(79, 70, 229, 0.2);
+        color: var(--primary-color);
+        padding: 0.5rem 1.25rem;
+        border-radius: 0.5rem;
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin: 0.75rem 0;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .dark .profile-username {
+        background-color: rgba(99, 102, 241, 0.3);
+        color: #c7d2fe;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .profile-detail {
+        color: var(--text-color);
+        font-size: 0.875rem;
+        margin-bottom: 1rem;
+        background-color: rgba(107, 114, 128, 0.2);
+        padding: 0.375rem 1rem;
+        border-radius: 0.375rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        font-weight: 500;
+    }
+    
+    .profile-detail i {
+        color: var(--primary-color);
+        font-size: 0.75rem;
+    }
+    
+    .dark .profile-detail {
+        background-color: rgba(75, 85, 99, 0.4);
+        color: #e5e7eb;
+    }
+    
+    .dark .profile-detail i {
+        color: #a5b4fc;
+    }
+    
+    .badges-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+        margin-bottom: 0.5rem;
+    }
+    
+    @media (min-width: 640px) {
+        .badges-container {
+            justify-content: flex-start;
+    }
+    }
+    
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.625rem;
+        border-radius: 1rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+    
+    .badge i {
+        margin-left: 0.375rem;
+        font-size: 0.625rem;
+    }
+    
+    .badge-success {
+        background-color: rgba(16, 185, 129, 0.1);
+        color: #10b981;
+    }
+    
+    .badge-warning {
+        background-color: rgba(245, 158, 11, 0.1);
+        color: #f59e0b;
+    }
+    
+    .badge-info {
+        background-color: rgba(59, 130, 246, 0.1);
+        color: #3b82f6;
+    }
+    
+    /* Cards */
+    .card-container {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    @media (min-width: 768px) {
+        .card-container {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    .info-card {
+        background-color: var(--card-bg);
+        border-radius: 0.75rem;
+        box-shadow: var(--card-shadow);
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+    }
+    
+    .card-header {
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .card-icon {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 0.5rem;
+        background-color: rgba(79, 70, 229, 0.1);
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .card-title {
+        flex: 1;
+    }
+    
+    .card-title h3 {
+        font-weight: 600;
+        font-size: 1rem;
+        color: var(--text-color);
+        margin: 0;
+    }
+    
+    .card-title p {
+        font-size: 0.75rem;
+        color: var(--light-text);
+        margin: 0;
+    }
+    
+    .card-body {
+        padding: 1.25rem;
+    }
+    
+    /* Form fields */
+    .field-container {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    @media (min-width: 640px) {
+        .field-container {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    .field-group {
+        margin-bottom: 0.75rem;
+    }
+    
+    .field-label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--light-text);
+        margin-bottom: 0.25rem;
+    }
+    
+    .dark .field-label {
+        color: #9ca3af;
+    }
+    
+    .field-value {
+        font-size: 0.875rem;
+        color: var(--text-color);
+        background-color: #f9fafb;
+        padding: 0.375rem 0.5rem;
         border: 1px solid var(--border-color);
         border-radius: 0.375rem;
-        padding: 0.5rem 0.75rem;
         width: 100%;
-        background-color: var(--card-bg);
-        color: var(--text-color);
-        transition: border-color 0.3s, background-color 0.3s, color 0.3s;
+        min-height: 2rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     
-    .form-input:focus {
-        outline: none;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    .dark .field-value {
+        background-color: #374151;
+        color: #e5e7eb;
+        border-color: #4b5563;
+    }
+    
+    .full-width {
+        grid-column: 1 / -1;
+    }
+    
+    .full-width .field-value {
+        white-space: normal;
+        min-height: 3rem;
+    }
+    
+    /* Button styles */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.375rem 0.75rem;
+        border-radius: 0.375rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.6875rem;
     }
     
     .btn-primary {
         background-color: var(--primary-color);
         color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 0.375rem;
-        font-weight: 500;
-        transition: background-color 0.3s;
+        border: none;
     }
     
     .btn-primary:hover {
-        background-color: var(--primary-hover);
+        background-color: var(--primary-dark);
     }
     
-    /* Fix for RTL layout with sidebar */
-    body[dir="rtl"] .main-content {
-        margin-right: 0 !important;
-        margin-left: 0 !important;
+    .btn-outline {
+        background-color: transparent;
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
     }
     
-    @media (min-width: 1024px) {
-        body[dir="rtl"] .main-content {
-            margin-right: 135px !important;
-            margin-left: 0 !important;
-        }
+    .btn-outline:hover {
+        background-color: var(--secondary-color);
+    }
+    
+    .btn i {
+        margin-left: 0.375rem;
+        font-size: 0.75rem;
+    }
+    
+    /* Modal styling */
+    .modal {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 50;
+        backdrop-filter: blur(4px);
+        transition: all 0.3s ease;
+    }
+    
+    .modal-content {
+        background-color: var(--card-bg);
+        border-radius: 0.75rem;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        width: 100%;
+        max-width: 400px;
+        transform: scale(0.95);
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+    
+    .modal.open .modal-content {
+        transform: scale(1);
+        opacity: 1;
+    }
+    
+    .hidden {
+        display: none !important;
+    }
+    
+    /* Verification Code input */
+    .verification-input {
+        letter-spacing: 0.25rem;
+        font-family: monospace;
     }
     
     /* Fix sidebar positioning */
@@ -121,199 +583,432 @@
         z-index: 40 !important;
     }
     
-    /* Profile container adjustments */
-    .profile-container {
-        padding-right: 0;
-        margin-right: 0;
+    /* Card styling for dark mode */
+    .dark .info-card {
+        border-color: #374151;
     }
     
-    @media (min-width: 1024px) {
-        .profile-container {
-            padding-right: 0;
-            margin-right: 0;
-        }
+    .dark .card-header {
+        border-color: #374151;
+        background-color: rgba(31, 41, 55, 0.8);
     }
-</style>
+    
+    .dark .card-icon {
+        background-color: rgba(99, 102, 241, 0.2);
+        color: #a5b4fc;
+    }
+    
+    /* Dark mode status badges */
+    .dark .status-badge {
+        background-color: #1f2937;
+        color: #e5e7eb;
+        border: 1px solid #374151;
+    }
+    
+    .dark .status-badge i {
+        color: #a5b4fc;
+    }
+    
+    /* Icon visibility fix - show moon in light mode, sun in dark mode */
+    .fa-sun,
+    .theme-toggle-btn .fa-sun,
+    .dark-mode-toggle .fa-sun,
+    [data-theme-toggle] .fa-sun,
+    .theme-switch .fa-sun,
+    .navbar .fa-sun,
+    header .fa-sun,
+    .nav .fa-sun,
+    .nav-item .fa-sun,
+    .navbar-nav .fa-sun,
+    .navbar-item .fa-sun {
+        display: none !important;
+    }
+
+    .fa-moon,
+    .theme-toggle-btn .fa-moon,
+    .dark-mode-toggle .fa-moon,
+    [data-theme-toggle] .fa-moon,
+    .theme-switch .fa-moon,
+    .navbar .fa-moon,
+    header .fa-moon,
+    .nav .fa-moon,
+    .nav-item .fa-moon,
+    .navbar-nav .fa-moon,
+    .navbar-item .fa-moon {
+        display: inline-block !important;
+        color: #4f46e5 !important;
+    }
+
+    /* Dark mode - show sun, hide moon */
+    .dark .fa-moon,
+    .dark .theme-toggle-btn .fa-moon,
+    .dark .dark-mode-toggle .fa-moon,
+    .dark [data-theme-toggle] .fa-moon,
+    .dark .theme-switch .fa-moon,
+    .dark .navbar .fa-moon,
+    .dark header .fa-moon,
+    .dark .nav .fa-moon,
+    .dark .nav-item .fa-moon,
+    .dark .navbar-nav .fa-moon,
+    .dark .navbar-item .fa-moon {
+        display: none !important;
+    }
+
+    .dark .fa-sun,
+    .dark .theme-toggle-btn .fa-sun,
+    .dark .dark-mode-toggle .fa-sun,
+    .dark [data-theme-toggle] .fa-sun,
+    .dark .theme-switch .fa-sun,
+    .dark .navbar .fa-sun,
+    .dark header .fa-sun,
+    .dark .nav .fa-sun,
+    .dark .nav-item .fa-sun,
+    .dark .navbar-nav .fa-sun,
+    .dark .navbar-item .fa-sun {
+        display: inline-block !important;
+        color: #fcd34d !important;
+    }
+    </style>
 {% endblock %}
 
 {% block main %}
-<div class="min-h-screen relative" style="background-color: var(--bg-color); transition: background-color 0.3s;">
-    <!-- Main Content with proper sidebar margin -->
-    <div class="main-content">
-        <!-- Profile Header -->
-        <div class="bg-gradient-to-r from-indigo-600 to-blue-500 p-6 mb-6 rounded-lg shadow-md">
-            <h1 class="text-2xl font-bold text-white mb-2">{{ user.name|capfirst }} {{ user.lastname|capfirst }}</h1>
-            <p class="text-blue-100">{{ user.group|getGroupnameById }}</p>
+<div class="profile-container">
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="profile-cover">
+            <div class="status-badges">
+                <div class="status-badge">
+                    <i class="fa-solid fa-user-tie"></i>
+                    {{ user.group|getGroupnameById }}
+                </div>
+                
+                {% if user.active %}
+                    <div class="status-badge">
+                        <i class="fa-solid fa-check-circle"></i>
+                        حساب فعال
+                    </div>
+                {% else %}
+                    <div class="status-badge">
+                        <i class="fa-solid fa-exclamation-circle"></i>
+                        حساب غیرفعال
+                    </div>
+                {% endif %}
+                
+                {% if user.email_verified_at %}
+                    <div class="status-badge">
+                        <i class="fa-solid fa-envelope-circle-check"></i>
+                        ایمیل تایید شده
+                    </div>
+                {% else %}
+                    <div class="status-badge">
+                        <i class="fa-solid fa-envelope"></i>
+                        ایمیل تایید نشده
+                    </div>
+                {% endif %}
+            </div>
         </div>
         
-        <!-- Profile Content -->
-        <div class="container mx-auto px-4 sm:px-6 mb-8">
-            <div class="items-center flex flex-wrap filter-bar w-full h-auto p-[10px] text-right float-right text-sm 2xl:w-1/2 xl:w-1/2 lg:w-1/2 md:w-full sm:w-full">
-
-                <div class="w-full 2xl:w-2/5 xl:w-2/5 lg:w-2/5 md:w-2/5 sm:w-2/5 h-[288px] my-0 mx-[20px] float-right  flex flex-col gap-1 rtl">
-                    <label>نام کاربری: </label>
-                    <input type="text" class="w-4/5 h-5 text-gray-500 text-xs" value="{{ user.username|capfirst }}" disabled
-                           readonly>
-                    <label> نام:</label>
-                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs" value="{{ user.name|capfirst }}" disabled
-                           readonly>
-                    <label>نام خانوادگی: </label>
-                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs" value="{{ user.lastname|capfirst }}"
-                           disabled readonly>
-                    <label> ایمیل:</label>
-                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs text-left "
-                           value="{{ user.email|capfirst }}" disabled readonly>
-                    <label>کد ملی: </label>
-                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
-                           value="{{ user.username|getFieldOfInfo:"nationalcode" }}" disabled readonly>
+        <div class="profile-avatar-container">
+            <div class="profile-avatar">
+                <i class="fa-solid fa-user"></i>
+                <div class="camera-icon">
+                    <i class="fa-solid fa-camera"></i>
                 </div>
-                <div class="w-full 2xl:w-2/5 xl:w-2/5 lg:w-2/5 md:w-2/5 sm:w-2/5 h-[280px] my-0 mx-[20px] float-right rtl flex flex-col gap-1">
-                    <label>نقش: </label>
-                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
-                           value="{{ user.group|getGroupnameById }}" disabled readonly>
-                    <label> داخلی:</label>
-                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs" value="{{ user.extension }}" disabled
-                           readonly>
-                    <label for="gender">جنسیت: </label>
-                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
-                           value="{{ user.username|getFieldOfInfo:"gender"|getValueOfIndexes:"gender" }}" disabled readonly>
-                    <label> تاریخ تولد:</label>
-                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs "
-                           value="{{ user.username|getFieldOfInfo:"birthdate" }}" disabled readonly>
-                    <label>وضعیت ایمیل: </label>
-                    {% if not user.email_verified_at %}
-                        <form method="post">
-                            {% csrf_token %}
-                            {% if not email %}
-                                <input type="submit"
-                                       class="w-3/5 h-[30px] bg-blue-400 text-white text-sm border-none rounded-md"
-                                       value="تایید ایمیل" name="verifyEmail">
-                            {% else %}
-                                <button type="button" id="verify"
-                                        class="w-3/5 h-[30px] bg-blue-400 text-white text-sm border-none rounded-md">
-                                    تایید ایمیل
+            </div>
+        </div>
+        
+        <div class="profile-info">
+            <div class="profile-user-info">
+                <div class="profile-name-container">
+                    <h1 class="profile-name">{{ user.name|capfirst }} {{ user.lastname|capfirst }}</h1>
+                </div>
+                <div class="profile-username">{{ user.username }}</div>
+                <p class="profile-detail">
+                    <i class="fa-solid fa-location-dot"></i>
+                    {{ user.username|getFieldOfInfo:"city" }}، {{ user.username|getFieldOfInfo:"province"|getValueOfIndexes:"province" }}
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Profile Content -->
+    <div class="card-container">
+            <!-- Personal Information -->
+        <div class="info-card">
+            <div class="card-header">
+                <div class="card-icon">
+                            <i class="fa-solid fa-user"></i>
+                    </div>
+                <div class="card-title">
+                    <h3>اطلاعات شخصی</h3>
+                    <p>اطلاعات اصلی کاربر</p>
+                    </div>
+                </div>
+                
+            <div class="card-body">
+                <div class="field-container">
+                    <div class="field-group">
+                        <label class="field-label">نام کاربری</label>
+                        <div class="field-value">{{ user.username|capfirst }}</div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label class="field-label">نام</label>
+                        <div class="field-value">{{ user.name|capfirst }}</div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label class="field-label">نام خانوادگی</label>
+                        <div class="field-value">{{ user.lastname|capfirst }}</div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label class="field-label">کد ملی</label>
+                        <div class="field-value">{{ user.username|getFieldOfInfo:"nationalcode" }}</div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label class="field-label">جنسیت</label>
+                        <div class="field-value">{{ user.username|getFieldOfInfo:"gender"|getValueOfIndexes:"gender" }}</div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label class="field-label">تاریخ تولد</label>
+                        <div class="field-value">{{ user.username|getFieldOfInfo:"birthdate" }}</div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label class="field-label">وضعیت تاهل</label>
+                        <div class="field-value">{{ user.username|getFieldOfInfo:"maritalstatus"|getValueOfIndexes:"marital" }}</div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label class="field-label">وضعیت سربازی</label>
+                        <div class="field-value">{{ user.username|getFieldOfInfo:"military"|getValueOfIndexes:"military" }}</div>
+                    </div>
+                </div>
+                    </div>
+                </div>
+
+            <!-- Contact Information -->
+        <div class="info-card">
+            <div class="card-header">
+                <div class="card-icon">
+                            <i class="fa-solid fa-address-book"></i>
+                    </div>
+                <div class="card-title">
+                    <h3>اطلاعات تماس</h3>
+                    <p>راه‌های ارتباطی با کاربر</p>
+                    </div>
+                </div>
+                
+            <div class="card-body">
+                <div class="field-container">
+                    <div class="field-group">
+                        <label class="field-label">ایمیل</label>
+                        <div class="field-value" dir="ltr" style="display: flex; justify-content: space-between; align-items: center">
+                            <span>{{ user.email|capfirst }}</span>
+                                {% if not user.email_verified_at %}
+                                    {% if not email %}
+                                    <form method="post" class="inline">
+                                        {% csrf_token %}
+                                    <button type="submit" name="verifyEmail" class="btn btn-primary btn-sm">
+                                        <i class="fa-solid fa-envelope-circle-check"></i>
+                                        تایید
+                                    </button>
+                                </form>
+                                {% else %}
+                                <button id="verify" class="btn btn-primary btn-sm">
+                                    <i class="fa-solid fa-envelope-circle-check"></i>
+                                    تایید
                                 </button>
+                                {% endif %}
                             {% endif %}
-                        </form>
-                    {% else %}
-                        <input type="text" class="w-4/5 h-5  text-gray-500 text-xs "
-                               value="فعال" disabled readonly>
-                    {% endif %}
-
-                </div>
-                <div class=" w-4/5 2xl:w-3/4 xl:w-3/4 lg:w-3/4 md:1/2 h-[100px] float-right rtl flex flex-col gap-1 text-sm mr-[22px]">
-                    <label>آدرس: </label>
-                    <textarea type="text" class="w-full h-[70px] text-gray-500 text-xs" disabled
-                              readonly>{{ user.username|getFieldOfInfo:"address" }}</textarea>
-                </div>
-
-            </div>
-
-            <div class="w-full h-[300px] p-[10px] flex flex-wrap float-right text-sm 2xl:w-1/2 xl:w-1/2 lg:w-1/2 md:w-full sm:w-full">
-
-                <div class="w-full 2xl:w-2/5 xl:w-2/5 lg:w-2/5 md:w-2/5 sm:w-2/5 h-[288px] my-0 mx-[20px] float-right  flex flex-col gap-1">
-                    <label>وضعیت سربازی: </label>
-                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
-                           value="{{ user.username|getFieldOfInfo:"military"|getValueOfIndexes:"military" }}" disabled readonly>
-                    <label> استان:</label>
-                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
-                           value="{{ user.username|getFieldOfInfo:"province"|getValueOfIndexes:"province" }}" disabled readonly>
-                    <label>شهر: </label>
-                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
-                           value="{{ user.username|getFieldOfInfo:"city" }}" disabled readonly>
-                    <label> مدرک:</label>
-                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
-                           value="{{ user.username|getFieldOfInfo:"educationdegree"|getValueOfIndexes:"degree" }}" disabled readonly>
-                    <label>شماره کارت: </label>
-                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
-                           value="{{ user.username|getFieldOfInfo:"cardnumber" }}" disabled readonly>
-                    <label>شماره حساب: </label>
-                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
-                           value="{{ user.username|getFieldOfInfo:"accountnumber" }}" disabled readonly>
-                </div>
-                <div class="w-full 2xl:w-2/5 xl:w-2/5 lg:w-2/5 md:w-2/5 sm:w-2/5 h-[288px] my-0 mx-[20px] float-right flex flex-col gap-1 ">
-                    <label>شماره شبا: </label>
-                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
-                           value="{{ user.username|getFieldOfInfo:"accountnumbershaba" }}" disabled readonly>
-                    <label> شماره همراه:</label>
-                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
-                           value="{{ user.username|getFieldOfInfo:"phonenumber" }}" disabled readonly>
-                    <label>زمینه مدرک:</label>
-                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
-                           value="{{ user.username|getFieldOfInfo:"educationfield" }}" disabled readonly>
-                    <label> تلفن:</label>
-                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
-                           value="{{ user.username|getFieldOfInfo:"telephone" }}" disabled readonly>
-                    <label>وضعیت تاهل: </label>
-                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs"
-                           value="{{ user.username|getFieldOfInfo:"maritalstatus"|getValueOfIndexes:"marital" }}" disabled readonly>
-
-                    <label>وضعیت حساب: </label>
-                    <input type="text" class="w-4/5 h-5  text-gray-500 text-xs "
-                           value="{% if user.active %}فعال{% else %}غیر فعال{% endif %}" disabled readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label class="field-label">شماره همراه</label>
+                        <div class="field-value">{{ user.username|getFieldOfInfo:"phonenumber" }}</div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label class="field-label">تلفن ثابت</label>
+                        <div class="field-value">{{ user.username|getFieldOfInfo:"telephone" }}</div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label class="field-label">داخلی</label>
+                        <div class="field-value">{{ user.extension }}</div>
+                    </div>
+                    
+                    <div class="field-group full-width">
+                        <label class="field-label">آدرس</label>
+                        <div class="field-value">{{ user.username|getFieldOfInfo:"address" }}</div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label class="field-label">استان</label>
+                        <div class="field-value">{{ user.username|getFieldOfInfo:"province"|getValueOfIndexes:"province" }}</div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label class="field-label">شهر</label>
+                        <div class="field-value">{{ user.username|getFieldOfInfo:"city" }}</div>
+                    </div>
+                    </div>
                 </div>
             </div>
+
+            <!-- Professional Information -->
+        <div class="info-card">
+            <div class="card-header">
+                <div class="card-icon">
+                            <i class="fa-solid fa-briefcase"></i>
+                    </div>
+                <div class="card-title">
+                    <h3>اطلاعات شغلی</h3>
+                    <p>جزئیات سازمانی و تخصصی کاربر</p>
+                    </div>
+                </div>
+                
+            <div class="card-body">
+                <div class="field-container">
+                    <div class="field-group">
+                        <label class="field-label">نقش سازمانی</label>
+                        <div class="field-value">{{ user.group|getGroupnameById }}</div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label class="field-label">مدرک تحصیلی</label>
+                        <div class="field-value">{{ user.username|getFieldOfInfo:"educationdegree"|getValueOfIndexes:"degree" }}</div>
+                    </div>
+                    
+                    <div class="field-group full-width">
+                        <label class="field-label">رشته تحصیلی</label>
+                        <div class="field-value">{{ user.username|getFieldOfInfo:"educationfield" }}</div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Banking Information -->
+        <div class="info-card">
+            <div class="card-header">
+                <div class="card-icon">
+                            <i class="fa-solid fa-credit-card"></i>
+                    </div>
+                <div class="card-title">
+                    <h3>اطلاعات بانکی</h3>
+                    <p>اطلاعات حساب و کارت بانکی</p>
+                    </div>
+                </div>
+                
+            <div class="card-body">
+                <div class="field-container">
+                    <div class="field-group">
+                        <label class="field-label">شماره کارت</label>
+                        <div class="field-value">{{ user.username|getFieldOfInfo:"cardnumber" }}</div>
+                    </div>
+                    
+                    <div class="field-group">
+                        <label class="field-label">شماره حساب</label>
+                        <div class="field-value">{{ user.username|getFieldOfInfo:"accountnumber" }}</div>
+                    </div>
+                    
+                    <div class="field-group full-width">
+                        <label class="field-label">شماره شبا</label>
+                        <div class="field-value">{{ user.username|getFieldOfInfo:"accountnumbershaba" }}</div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+{% if email %}
+<div id="emailMod" class="modal {% if not email %}hidden{% endif %}">
+    <div class="modal-content max-w-md w-full p-5">
+        <div class="text-center">
+            <div class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fa-solid fa-envelope text-2xl"></i>
+            </div>
+            <h3 class="text-lg font-bold mb-3">تایید آدرس ایمیل</h3>
+            <p class="mb-4 text-sm text-gray-600">لطفا کد ارسال شده به ایمیل خود را وارد کنید</p>
             
-
-            </div>
+            <form method="POST" class="space-y-3">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <input type="number" name="code" 
+                           class="verification-input w-full text-center text-xl py-2.5 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none transition duration-200"
+                           placeholder="- - - - - -" 
+                           maxlength="6">
+                </div>
+                
+                <div class="flex justify-between items-center text-xs mb-3">
+                    <span class="text-gray-500">کد را دریافت نکردید؟</span>
+                    <button type="submit" name="resend" class="text-indigo-600 hover:text-indigo-800 font-medium">
+                        ارسال مجدد
+                    </button>
+                </div>
+                
+                <div class="flex gap-2 mt-4">
+                    <button type="button" id="cancel" class="btn btn-outline flex-1 text-sm">
+                        انصراف
+                    </button>
+                    <button type="submit" name="verify" class="btn btn-primary flex-1 text-sm">
+                        تأیید
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
-{% if email %}
-        <div id="emailMod"
-             class="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75 z-50 {% if not email %}hidden{% endif %}">
-            <div class="bg-white rounded-lg shadow-lg max-w-md w-full">
-                <div class="p-6 text-center">
-                    <div class="flex items-center justify-center w-12 h-12 mx-auto rounded-full">
-                        <i class="fa-solid fa-envelope text-4xl"></i>
-                    </div>
-                    <p>لطفا کد ارسال شده را وارد کنید</p>
-                    <form method="POST" class="mt-1">
-                        {% csrf_token %}
-                        <input type="number" name="code" class="mt-2 rounded" placeholder="کد">
-                        <div class="px-6 pt-5 justify-end gap-2">
-                            <input type="submit" name="resend" value="ارسال مجدد کد" class="px-4 py-2 bg-blue-400 rounded-md text-white hover:bg-blue-500 text-sm">
-                        </div>
-                        <div class="px-6 pt-5 justify-end gap-2">
-                            <button type="button" id="cancel"
-                                    class="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 ">لغو
-                            </button>
-                            <input type="submit" id="confirm" class="hidden" name="verify">
-                            <label for="confirm"
-                                   class="px-4 py-2 bg-green-600 rounded-md text-white hover:bg-green-500">تایید</label>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    {% endif %}
-    {% if email %}
-    <!-- Email verification is available -->  
-    <script>
-        // Wait for document to be ready
-        $(document).ready(function() {
-            // Handle cancel button click
-            $("#cancel").on('click', function() {
-                $("#emailMod").toggleClass("hidden");
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const emailModal = document.getElementById('emailMod');
+        
+        if (emailModal) {
+            // Cancel button functionality
+            document.getElementById('cancel').addEventListener('click', function() {
+                emailModal.classList.remove('open');
+                setTimeout(() => {
+                emailModal.classList.add('hidden');
+                }, 200);
             });
             
-            // Handle verify button click
-            $("#verify").on('click', function() {
-                $("#emailMod").toggleClass("hidden");
+            // Verify button functionality (if exists)
+            const verifyBtn = document.getElementById('verify');
+            if (verifyBtn) {
+                verifyBtn.addEventListener('click', function() {
+                    emailModal.classList.remove('hidden');
+                    setTimeout(() => {
+                        emailModal.classList.add('open');
+                    }, 10);
+                });
+            }
+            
+            // Animation for modal
+            if (!emailModal.classList.contains('hidden')) {
+                setTimeout(() => {
+                    emailModal.classList.add('open');
+                }, 10);
+            }
+            
+            // Close when clicking outside
+            emailModal.addEventListener('click', function(e) {
+                if (e.target === emailModal) {
+                    emailModal.classList.remove('open');
+                    setTimeout(() => {
+                        emailModal.classList.add('hidden');
+                    }, 200);
+                }
             });
-        });
-    </script>
-    {% else %}
-    <!-- No email verification needed -->  
-    <script>
-        // Wait for document to be ready
-        $(document).ready(function() {
-            // Handle cancel button click
-            $("#cancel").on('click', function() {
-                $("#emailMod").toggleClass("hidden");
-            });
-        });
-    </script>
-    {% endif %}
+        }
+    });
+</script>
+{% endif %}
 {% endblock %}

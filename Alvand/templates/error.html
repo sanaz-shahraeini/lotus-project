@@ -3,6 +3,7 @@
 {% load errortags %}
 
 {% block head_extra %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="{% static 'css/dashboard-fix.css' %}">
 <link rel="stylesheet" href="{% static 'css/dashboard-width-fix.css' %}">
 <link rel="stylesheet" href="{% static 'css/direct-layout-fix.css' %}">
@@ -127,13 +128,14 @@
         background: white;
         border-radius: 0.75rem;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
+        overflow-x: auto;
     }
 
     .table-modern {
         width: 100%;
         border-collapse: separate;
         border-spacing: 0;
+        min-width: 650px;
     }
 
     .table-modern th {
@@ -202,6 +204,88 @@
             border: 1px solid #000;
         }
     }
+
+    /* Mobile responsive styles */
+    @media (max-width: 768px) {
+        .filter-section {
+            padding: 1rem 0.75rem;
+        }
+        
+        .flex.flex-wrap.gap-4 {
+            gap: 0.75rem !important;
+        }
+        
+        .flex.items-center.gap-3 {
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
+            gap: 0.5rem !important;
+        }
+        
+        form.flex.items-center.gap-3 {
+            flex-direction: column;
+            width: 100%;
+        }
+        
+        form .flex.items-center.gap-3 {
+            flex-direction: row;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+        
+        .input-field {
+            width: 100%;
+            max-width: 100%;
+        }
+        
+        input[type="search"].input-field.w-64 {
+            width: 100%;
+        }
+        
+        .pagination {
+            width: 100%;
+            justify-content: space-between;
+        }
+        
+        .btn {
+            width: 100%;
+            text-align: center;
+        }
+        
+        .table-modern th,
+        .table-modern td {
+            padding: 0.75rem 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        /* Make the most important columns visible by default */
+        .table-modern th:nth-child(n+5),
+        .table-modern td:nth-child(n+5) {
+            display: table-cell;
+        }
+        
+        .table-modern th:nth-child(-n+4),
+        .table-modern td:nth-child(-n+4) {
+            display: none;
+        }
+        
+        /* Show the row number column always */
+        .table-modern th:last-child,
+        .table-modern td:last-child {
+            display: table-cell;
+        }
+    }
+    
+    /* For even smaller screens */
+    @media (max-width: 480px) {
+        .filter-section {
+            padding: 0.75rem 0.5rem;
+        }
+        
+        .pagination span {
+            display: none;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -213,9 +297,6 @@
                     <div class="flex flex-wrap gap-4 justify-items-center items-center">
                         <div class="flex items-center gap-3">
                             <form method="get" class="flex items-center gap-3">
-                                <button class="btn btn-primary">
-                                    اعمال فیلتر
-                                </button>
                                 <div class="flex items-center gap-3">
                                     <input 
                                         id="dateFrom" 
@@ -234,6 +315,9 @@
                                         onchange="labelInField(this, 'تا')"
                                     />
                                 </div>
+                                <button class="btn btn-primary">
+                                    اعمال فیلتر
+                                </button>
                             </form>
                         </div>
 
@@ -250,16 +334,16 @@
 
                         {% if pages %}
                             <div class="pagination">
-                                <a href="{% if pages.has_next %}?p={{ pages.next_page_number }}{% else %}#{% endif %}"
-                                   class="pagination-btn btn-primary {% if not pages.has_next %}opacity-50 cursor-not-allowed{% endif %}">
-                                    بعدی
+                                <a href="{% if pages.has_previous %}?p={{ pages.previous_page_number }}{% else %}#{% endif %}"
+                                   class="pagination-btn btn-primary {% if not pages.has_previous %}opacity-50 cursor-not-allowed{% endif %}">
+                                    قبلی
                                 </a>
                                 <span class="text-sm whitespace-nowrap">
                                     صفحه {{ pages.number }}/{{ pages.paginator.num_pages }}
                                 </span>
-                                <a href="{% if pages.has_previous %}?p={{ pages.previous_page_number }}{% else %}#{% endif %}"
-                                   class="pagination-btn btn-primary {% if not pages.has_previous %}opacity-50 cursor-not-allowed{% endif %}">
-                                    قبلی
+                                <a href="{% if pages.has_next %}?p={{ pages.next_page_number }}{% else %}#{% endif %}"
+                                   class="pagination-btn btn-primary {% if not pages.has_next %}opacity-50 cursor-not-allowed{% endif %}">
+                                    بعدی
                                 </a>
                             </div>
                         {% endif %}
@@ -352,6 +436,18 @@
                     $(this).toggle($(this).text().toLowerCase().indexOf(txt) > -1)
                 })
             })
+            
+            // Add toggle functionality for mobile view to show/hide columns
+            if (window.innerWidth <= 768) {
+                const tableHeaders = $(".table-modern th");
+                tableHeaders.each(function(index) {
+                    $(this).click(function() {
+                        const columnIndex = index + 1;
+                        $(".table-modern td:nth-child(" + columnIndex + ")").toggle();
+                        $(this).toggleClass("active-column");
+                    });
+                });
+            }
         });
     </script>
     <script>
