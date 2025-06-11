@@ -58,6 +58,78 @@
         --gray-light: var(--border-color);
     }
     
+    /* Fix for theme toggle icons in navbar */
+    .theme-toggle-btn i,
+    .dark-mode-toggle i,
+    .light-mode-toggle i,
+    [data-theme-toggle] i,
+    .theme-switch i,
+    #themeToggle i,
+    .navbar .fa-moon,
+    .navbar .fa-sun,
+    header .fa-moon,
+    header .fa-sun,
+    .nav .fa-moon,
+    .nav .fa-sun,
+    .theme-toggle-icon {
+        color: #4f46e5 !important;
+        font-size: 1.25rem !important;
+        filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2)) !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transition: all 0.2s ease !important;
+    }
+    
+    .dark .theme-toggle-btn i,
+    .dark .dark-mode-toggle i,
+    .dark .light-mode-toggle i,
+    .dark [data-theme-toggle] i,
+    .dark .theme-switch i,
+    .dark #themeToggle i,
+    .dark .navbar .fa-moon,
+    .dark .navbar .fa-sun,
+    .dark header .fa-moon,
+    .dark header .fa-sun,
+    .dark .nav .fa-moon, 
+    .dark .nav .fa-sun,
+    .dark .theme-toggle-icon {
+        color: #c7d2fe !important;
+    }
+    
+    /* Specific styles for sun/moon icons to ensure visibility */
+    .fa-moon {
+        color: #4f46e5 !important;
+    }
+    
+    .dark .fa-moon {
+        color: #c7d2fe !important;
+    }
+    
+    .fa-sun {
+        color: #f59e0b !important;
+    }
+    
+    .dark .fa-sun {
+        color: #fcd34d !important;
+    }
+    
+    /* Show correct icon based on theme */
+    .fa-sun {
+        display: none !important;
+    }
+    
+    .fa-moon {
+        display: inline-block !important;
+    }
+    
+    .dark .fa-sun {
+        display: inline-block !important;
+    }
+    
+    .dark .fa-moon {
+        display: none !important;
+    }
+    
     /* Base RTL Layout */
     body {
         direction: rtl;
