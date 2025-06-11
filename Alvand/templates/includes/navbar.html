@@ -13,12 +13,12 @@
             <!-- Theme Toggle -->
             <button id="theme-toggle" class="lotus-theme-toggle" aria-label="Toggle dark mode">
                 <i class="fa-solid fa-sun"></i>
-                <i class="fa-solid fa-moon" style="color: #3b82f6 !important;"></i>
+                <i class="fa-solid fa-moon" style="color: #00BCD4 !important;"></i>
             </button>
             
             <!-- Print Button -->
             <button type="button" id="printbtn" class="lotus-nav-button">
-                <i class="fa-solid fa-print"></i> <span style="color: #4f46e5;">چاپ</span>
+                <i class="fa-solid fa-print"></i> <span style="color: #00BCD4;">چاپ</span>
             </button>
         </div>
     </div>
@@ -39,7 +39,7 @@
     }
     
     html.dark #lotus-navbar {
-        background: rgba(22, 27, 45, 0.95);
+        background: rgba(13, 27, 42, 0.95); /* Deep Indigo with opacity */
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
     
@@ -65,7 +65,7 @@
         left: 0;
         width: 0;
         height: 2px;
-        background: linear-gradient(135deg, #4287f5, #9364e8);
+        background: linear-gradient(135deg, #00BCD4, #29B6F6); /* Lotus Aqua to Sky Blue */
         transition: width 0.3s ease;
     }
     
@@ -77,7 +77,7 @@
         font-size: 1.6rem;
         font-weight: 700;
         margin: 0;
-        background: linear-gradient(135deg, #4287f5, #9364e8);
+        background: linear-gradient(135deg, #00BCD4, #536DFE); /* Lotus Aqua to Electric Violet */
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -86,7 +86,7 @@
     }
     
     html.dark #lotus-navbar .logo-text {
-        background: linear-gradient(135deg, #5e9cff, #a57bff);
+        background: linear-gradient(135deg, #00BCD4, #536DFE); /* Lotus Aqua to Electric Violet */
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -109,7 +109,7 @@
         margin-top: 10px;
         border: none;
         background: rgba(240, 242, 245, 0.8);
-        color: #3a4354;
+        color: #37474F; /* Dark Gray */
         font-size: 0.9rem;
         font-weight: 500;
         cursor: pointer;
@@ -119,18 +119,18 @@
     }
     
     html.dark .lotus-nav-button {
-        background: rgba(35, 42, 59, 0.8);
-        color: #edf2f7;
+        background: rgba(13, 27, 42, 0.8); /* Deep Indigo with opacity */
+        color: #F5F7FA; /* White Smoke */
     }
     
     .lotus-nav-button:hover {
-        background: #e2e8f0;
+        background: #CFD8DC; /* Light Gray */
         transform: translateY(-2px);
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
     
     html.dark .lotus-nav-button:hover {
-        background: #2d3748;
+        background: rgba(0, 188, 212, 0.2); /* Lotus Aqua with opacity */
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
     }
     
@@ -149,7 +149,7 @@
         transform: translateY(5px);
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         background: rgba(240, 242, 245, 0.9);
-        color: #4f46e5;
+        color: #00BCD4; /* Lotus Aqua */
         display: flex;
         align-items: center;
         justify-content: center;
@@ -159,7 +159,7 @@
     
     html.dark .lotus-theme-toggle {
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-        background: rgba(35, 42, 59, 0.9);
+        background: rgba(13, 27, 42, 0.9); /* Deep Indigo with opacity */
     }
     
     .lotus-theme-toggle i {
@@ -174,25 +174,25 @@
     .lotus-theme-toggle .fa-sun {
         opacity: 0;
         transform: translate(-50%, -50%) rotate(-180deg);
-        color: #ff9e0b;
+        color: #FF7043; /* Sunset Orange */
     }
     
     .lotus-theme-toggle .fa-moon {
         opacity: 1;
         transform: translate(-50%, -50%) rotate(0);
-        color: #3b82f6;
+        color: #00BCD4; /* Lotus Aqua */
     }
     
     html.dark .lotus-theme-toggle .fa-sun {
         opacity: 1;
         transform: translate(-50%, -50%) rotate(0);
-        color: #fbbf24;
+        color: #FF7043; /* Sunset Orange */
     }
     
     html.dark .lotus-theme-toggle .fa-moon {
         opacity: 0;
         transform: translate(-50%, -50%) rotate(180deg);
-        color: #e2e8f0;
+        color: #00BCD4; /* Lotus Aqua */
     }
     
     /* Responsive adjustments */

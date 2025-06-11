@@ -13,28 +13,28 @@
 <!-- Modern dashboard styles -->
 <style>
     :root {
-        /* Match login page variables */
-        --primary-color: #6366f1;
-        --primary-hover: #4f46e5;
-        --secondary-color: #f3f4f6;
-        --text-color: #1f2937;
-        --light-text: #6b7280;
-        --border-color: #e5e7eb;
-        --bg-color: #f9fafb;
+        /* Match theme.css variables */
+        --primary-color: #00BCD4;       /* Lotus Aqua */
+        --primary-hover: #29B6F6;       /* Sky Blue */
+        --secondary-color: #F5F7FA;     /* White Smoke */
+        --text-color: #37474F;          /* Dark Gray */
+        --light-text: #90A4AE;          /* Medium Gray */
+        --border-color: #CFD8DC;        /* Light Gray */
+        --bg-color: #F5F7FA;            /* White Smoke */
         --card-bg: white;
         --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
         
-        /* Keep dashboard-specific variables */
+        /* Dashboard-specific variables */
         --primary: var(--primary-color);
-        --primary-dark: #4338ca;
-        --primary-light: #818cf8;
-        --secondary: #10b981;
-        --warning: #f59e0b;
-        --danger: #ef4444;
-        --light: #f8fafc;
-        --dark: #1e293b;
-        --gray: #64748b;
-        --gray-light: #e2e8f0;
+        --primary-dark: #0097A7;        /* Darker Aqua */
+        --primary-light: #80DEEA;       /* Soft Mint */
+        --secondary: #26A69A;           /* Emerald Green */
+        --warning: #FF7043;             /* Sunset Orange */
+        --danger: #FF5252;              /* Bright Red */
+        --light: #F5F7FA;               /* White Smoke */
+        --dark: #0D1B2A;                /* Deep Indigo */
+        --gray: #90A4AE;                /* Medium Gray */
+        --gray-light: #CFD8DC;          /* Light Gray */
         --transition: all 0.3s ease;
     }
     
@@ -52,7 +52,7 @@
     .nav .fa-moon,
     .nav .fa-sun,
     .theme-toggle-icon {
-        color: #4f46e5 !important;
+        color: #00BCD4 !important;     /* Lotus Aqua */
         font-size: 1.25rem !important;
         filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2)) !important;
         opacity: 1 !important;
@@ -73,24 +73,24 @@
     .dark .nav .fa-moon, 
     .dark .nav .fa-sun,
     .dark .theme-toggle-icon {
-        color: #c7d2fe !important;
+        color: #80DEEA !important;    /* Soft Mint */
     }
     
     /* Specific styles for sun/moon icons to ensure visibility */
     .fa-moon {
-        color: #4f46e5 !important;
+        color: #00BCD4 !important;    /* Lotus Aqua */
     }
     
     .dark .fa-moon {
-        color: #c7d2fe !important;
+        color: #80DEEA !important;    /* Soft Mint */
     }
     
     .fa-sun {
-        color: #f59e0b !important;
+        color: #FF7043 !important;    /* Sunset Orange */
     }
     
     .dark .fa-sun {
-        color: #fcd34d !important;
+        color: #FF9E80 !important;    /* Lighter Sunset Orange */
     }
     
     /* Show correct icon based on theme */
@@ -110,16 +110,16 @@
         display: none !important;
     }
     
-    /* Dark mode variables to match login page */
+    /* Dark mode variables to match theme.css */
     html.dark {
-        --primary-color: #818cf8;
-        --primary-hover: #6366f1;
-        --secondary-color: #374151;
-        --text-color: #f3f4f6;
-        --light-text: #9ca3af;
-        --border-color: #4b5563;
-        --bg-color: #111827;
-        --card-bg: #1f2937;
+        --primary-color: #00BCD4;         /* Lotus Aqua */
+        --primary-hover: #29B6F6;         /* Sky Blue */
+        --secondary-color: #0D1B2A;       /* Deep Indigo */
+        --text-color: #F5F7FA;            /* White Smoke */
+        --light-text: #CFD8DC;            /* Light Gray */
+        --border-color: #37474F;          /* Dark Gray */
+        --bg-color: #121212;              /* Dark Navy */
+        --card-bg: #0D1B2A;               /* Deep Indigo */
         --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         
         /* Update dashboard-specific dark mode variables */
@@ -162,7 +162,7 @@
     
     /* Dashboard Header */
     .dashboard-header {
-        background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+        background: linear-gradient(135deg, #00BCD4, #536DFE); /* Lotus Aqua to Electric Violet */
         position: relative;
         overflow: hidden;
         border-radius: 1rem;
@@ -170,7 +170,7 @@
     }
     
     html.dark .dashboard-header {
-        background: linear-gradient(135deg, #1f2937, #111827);
+        background: linear-gradient(135deg, #00BCD4, #536DFE); /* Lotus Aqua to Electric Violet */
     }
     
     .dashboard-header::before {

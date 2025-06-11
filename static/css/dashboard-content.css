@@ -8,13 +8,13 @@
 }
 
 :root {
-    --primary-rgb: 99, 102, 241; /* RGB value of primary color */
-    --border-hover: #94a3b8;
+    --primary-rgb: 0, 188, 212; /* RGB value of Lotus Aqua */
+    --border-hover: #CFD8DC;    /* Light Gray */
 }
 
 html.dark {
-    --primary-rgb: 139, 92, 246; /* RGB value of primary color in dark mode */
-    --border-hover: #4c5563;
+    --primary-rgb: 0, 188, 212; /* RGB value of Lotus Aqua */
+    --border-hover: #37474F;    /* Dark Gray */
 }
 
 .filter-header-title-area div.text-blue-600 i.fa-sliders-h {
@@ -78,10 +78,23 @@ html.dark {
     border: 1px solid #d1d5db; /* Tailwind's gray-300 */
 }
 
+html.dark .dashboard-filters button#toggleFilters.text-slate-600, 
+html.dark .dashboard-filters form button[type="reset"] {
+    background-color: #0D1B2A; /* Deep Indigo */
+    color: #F5F7FA;           /* White Smoke */
+    border: 1px solid #37474F; /* Dark Gray */
+}
+
 .dashboard-filters button#toggleFilters.text-slate-600:hover, 
 .dashboard-filters form button[type="reset"]:hover {
     background-color: #e5e7eb; /* Tailwind's gray-200 */
     border-color: #9ca3af;     /* Tailwind's gray-400 */
+}
+
+html.dark .dashboard-filters button#toggleFilters.text-slate-600:hover, 
+html.dark .dashboard-filters form button[type="reset"]:hover {
+    background-color: rgba(0, 188, 212, 0.2); /* Lotus Aqua with opacity */
+    border-color: #00BCD4;                    /* Lotus Aqua */
 }
 
 /* Icon spacing within buttons - general override for ml-1 in RTL context */
@@ -106,29 +119,29 @@ html.dark {
     padding-top: 0.65rem;
     padding-bottom: 0.65rem;
     width: 100%;
-    border: 1px solid var(--border-color, #cbd5e1); /* Use CSS variable with fallback */
+    border: 1px solid var(--border-color, #CFD8DC); /* Light Gray */
     border-radius: 0.375rem; /* Tailwind's rounded-md */
     background-color: var(--card-bg, white);
-    color: var(--text-color, #1f2937);
+    color: var(--text-color, #37474F); /* Dark Gray */
     box-sizing: border-box;
     transition: all 0.15s ease-in-out;
 }
 
 #filterSection .form-input:focus {
-    border-color: var(--primary-color, #2563eb); /* Use CSS variable with fallback */
+    border-color: var(--primary-color, #00BCD4); /* Lotus Aqua */
     outline: 0;
-    box-shadow: 0 0 0 0.2rem rgba(var(--primary-rgb, 37, 99, 235), 0.25); /* Focus ring using CSS variable */
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-rgb, 0, 188, 212), 0.25); /* Focus ring using CSS variable */
 }
 
 html.dark #filterSection .form-input {
-    background-color: var(--input-bg, #1e293b);
-    border-color: var(--input-border, #334155);
-    color: var(--text-color, #f8fafc);
+    background-color: var(--input-bg, #0D1B2A); /* Deep Indigo */
+    border-color: var(--input-border, #37474F); /* Dark Gray */
+    color: var(--text-color, #F5F7FA); /* White Smoke */
 }
 
 html.dark #filterSection .form-input:focus {
-    border-color: var(--primary-color, #8b5cf6);
-    box-shadow: 0 0 0 0.2rem rgba(139, 92, 246, 0.25);
+    border-color: var(--primary-color, #00BCD4); /* Lotus Aqua */
+    box-shadow: 0 0 0 0.2rem rgba(0, 188, 212, 0.25);
 }
 
 #filterSection .form-select {
@@ -136,38 +149,38 @@ html.dark #filterSection .form-input:focus {
     display: flex;
     align-items: center;
     width: 100%;
-    border: 1px solid var(--border-color, #cbd5e1); /* Use CSS variable with fallback */
+    border: 1px solid var(--border-color, #CFD8DC); /* Light Gray */
     border-radius: 0.375rem; /* Tailwind's rounded-md */
     background-color: var(--card-bg, white); /* Use CSS variable with fallback */
-    color: var(--text-color, #1f2937);
+    color: var(--text-color, #37474F); /* Dark Gray */
     transition: all 0.15s ease-in-out;
 }
 
 html.dark #filterSection .form-select {
-    background-color: var(--input-bg, #1e293b);
-    border-color: var(--input-border, #334155);
-    color: var(--text-color, #f8fafc);
+    background-color: var(--input-bg, #0D1B2A); /* Deep Indigo */
+    border-color: var(--input-border, #37474F); /* Dark Gray */
+    color: var(--text-color, #F5F7FA); /* White Smoke */
 }
 
 #filterSection .form-select:hover {
-    border-color: var(--border-hover, #94a3b8); /* Use CSS variable with fallback */
+    border-color: var(--border-hover, #90A4AE); /* Medium Gray */
 }
 
 html.dark #filterSection .form-select:hover {
-    border-color: var(--primary-color, #8b5cf6);
+    border-color: var(--primary-color, #00BCD4); /* Lotus Aqua */
 }
 
 #filterSection .form-select:focus-within, /* For when button itself or internal element gets focus */
 #filterSection .form-select:focus {
-    border-color: var(--primary-color, #2563eb); /* Use CSS variable with fallback */
+    border-color: var(--primary-color, #00BCD4); /* Lotus Aqua */
     outline: 0;
-    box-shadow: 0 0 0 0.2rem rgba(var(--primary-rgb, 37, 99, 235), 0.25);
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-rgb, 0, 188, 212), 0.25);
 }
 
 html.dark #filterSection .form-select:focus-within,
 html.dark #filterSection .form-select:focus {
-    border-color: var(--primary-color, #8b5cf6);
-    box-shadow: 0 0 0 0.2rem rgba(139, 92, 246, 0.25);
+    border-color: var(--primary-color, #00BCD4); /* Lotus Aqua */
+    box-shadow: 0 0 0 0.2rem rgba(0, 188, 212, 0.25);
 }
 
 /* Ensure labels are consistently spaced */
@@ -192,13 +205,13 @@ html.dark #filterSection .form-select:focus {
     top: 50%;
     transform: translateY(-50%);
     pointer-events: none;
-    color: var(--light-text, #94a3b8);
+    color: var(--light-text, #90A4AE); /* Medium Gray */
     transition: color 0.3s;
 }
 
 html.dark .relative .fa-search,
 html.dark .relative .fa-calendar {
-    color: var(--light-text, #a1a1aa);
+    color: var(--light-text, #CFD8DC); /* Light Gray */
 }
 
 /* Ensure consistent spacing */
@@ -222,10 +235,14 @@ html.dark .relative .fa-calendar {
 /* This targets the container of the bottom-most buttons */
 #filterSection .filter-action-buttons {
     padding-top: 1rem; /* Add some space above the buttons */
-    border-top: 1px solid var(--border-color, #e2e8f0); /* Use CSS variable with fallback */
+    border-top: 1px solid var(--border-color, #CFD8DC); /* Light Gray */
     margin-top: 1rem;
     flex-direction: row-reverse; /* Reverse button order */
     transition: border-color 0.3s;
+}
+
+html.dark #filterSection .filter-action-buttons {
+    border-top: 1px solid var(--border-color, #37474F); /* Dark Gray */
 }
 
 #filterSection .filter-action-buttons .form-button {
@@ -250,107 +267,108 @@ html.dark .relative .fa-calendar {
 .filter-header-title-area {
     display: flex;
     align-items: center;
+    cursor: pointer;
 }
 
-/* Fix date range inputs */
+/* Date picker styling */
 #dateFrom, #dateTo {
+    padding-left: 2.5rem !important; /* Space for the calendar icon */
     background-color: var(--card-bg, white);
-    color: var(--text-color, #1f2937);
-    border: 1px solid var(--border-color, #cbd5e1);
-    transition: all 0.15s ease-in-out;
+    border: 1px solid var(--border-color, #CFD8DC); /* Light Gray */
+    color: var(--text-color, #37474F); /* Dark Gray */
 }
 
 html.dark #dateFrom,
 html.dark #dateTo {
-    background-color: var(--input-bg, #1e293b);
-    border-color: var(--input-border, #334155);
-    color: var(--text-color, #f8fafc);
+    background-color: var(--input-bg, #0D1B2A); /* Deep Indigo */
+    border-color: var(--input-border, #37474F); /* Dark Gray */
+    color: var(--text-color, #F5F7FA); /* White Smoke */
 }
 
 html.dark #dateFrom:focus,
 html.dark #dateTo:focus {
-    border-color: var(--primary-color, #8b5cf6);
-    box-shadow: 0 0 0 0.2rem rgba(139, 92, 246, 0.25);
+    border-color: var(--primary-color, #00BCD4); /* Lotus Aqua */
+    box-shadow: 0 0 0 0.2rem rgba(0, 188, 212, 0.25);
 }
 
+/* Filter header title styling */
 .filter-header-title-area h3 {
-    margin-bottom: 0; /* Remove any bottom margin if it exists */
+    color: var(--primary-color, #00BCD4); /* Lotus Aqua */
 }
 
+/* Filter toggle icon */
 #filterSectionToggleIcon {
-    margin-right: 0.5rem; /* Adjust spacing for RTL, assuming this icon is to the left of text */
-    /* If icon is to the right (LTR style), use margin-left */
+    color: var(--primary-color, #00BCD4); /* Lotus Aqua */
 }
 
-/* Ensure labels have some bottom margin */
+/* Filter labels */
 #filterSection label {
-    margin-bottom: 0.5rem; /* Tailwind's mb-2 */
+    color: var(--text-color, #37474F); /* Dark Gray */
 }
 
+/* Dropdown button styling */
 #filterSection [data-dropdown-toggle] {
-    text-align: right; /* Ensure text within dropdown buttons is RTL */
+    background-color: var(--card-bg, white);
 }
 
 #filterSection [data-dropdown-toggle] .fa-chevron-down {
-    margin-right: auto; /* Push chevron to the left for RTL */
-    margin-left: 0.5rem;
+    transition: transform 0.3s ease;
+    color: var(--light-text, #90A4AE); /* Medium Gray */
 }
 
-/* Z-index fix for filter dropdowns */
+/* Filter section background */
 #filterSection {
-    position: relative; /* Ensure filter section can have its own z-index if needed, relative to siblings */
-    z-index: 20;        /* Above other direct children of the form card, if any were positioned */
+    background-color: var(--card-bg, white);
+    border-radius: 0.5rem;
 }
 
+/* Position dropdowns correctly */
 #filterSection .relative {
-    position: relative; /* Ensure this is explicitly relative for z-index to apply correctly against siblings */
-    z-index: 30; /* Ensure the container for the dropdown has a higher z-index than other filter items */
+    position: relative;
 }
 
+/* Dropdown styling */
 #filterSection .relative [id$='DropDown'] {
-    /* Targets elements like callTypeBodyDropDown, dropdownInternal, dropdownUrban */
-    z-index: 1000; /* Higher than its parent and other elements */
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 10;
+    min-width: 100%;
 }
 
-/* Dark mode styles for dropdowns */
 html.dark #filterSection [id$='DropDown'],
-html.dark #dropdownInternal,
-html.dark #dropdownUrban,
-html.dark #callTypeBodyDropDown {
-    background-color: var(--card-bg) !important;
-    border-color: var(--border-color) !important;
+html.dark #filterSection .dropdown-menu {
+    background-color: var(--card-bg, #0D1B2A); /* Deep Indigo */
+    border-color: var(--border-color, #37474F); /* Dark Gray */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 html.dark #filterSection [id$='DropDown'] li div,
-html.dark #dropdownInternal li div,
-html.dark #dropdownUrban li div,
-html.dark #callTypeBodyDropDown li div {
-    color: var(--text-color);
+html.dark #filterSection .dropdown-item {
+    color: var(--text-color, #F5F7FA); /* White Smoke */
+    transition: background-color 0.2s;
 }
 
 html.dark #filterSection [id$='DropDown'] li div:hover,
-html.dark #dropdownInternal li div:hover,
-html.dark #dropdownUrban li div:hover,
-html.dark #callTypeBodyDropDown li div:hover {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-    color: #ffffff !important;
+html.dark #filterSection .dropdown-item:hover {
+    background-color: rgba(0, 188, 212, 0.1); /* Lotus Aqua with opacity */
 }
 
-html.dark #filterSection [id$='DropDown'] input,
-html.dark #dropdownInternal input,
-html.dark #dropdownUrban input,
-html.dark #callTypeBodyDropDown input {
-    background-color: var(--input-bg);
-    border-color: var(--input-border);
+/* Checkbox styling */
+html.dark #filterSection [id$='DropDown'] input[type="checkbox"],
+html.dark #filterSection .form-checkbox {
+    border-color: var(--border-color, #37474F); /* Dark Gray */
+    background-color: var(--input-bg, #0D1B2A); /* Deep Indigo */
 }
 
+/* Dark mode icon colors */
 html.dark .fa-chevron-down {
-    color: var(--light-text) !important;
+    color: var(--light-text, #CFD8DC); /* Light Gray */
 }
 
-/* Adjust padding/margin for the overall filter card if needed */
+/* Card styling */
 .dashboard-filters.card {
-    padding: 1.5rem; /* Tailwind's p-6 */
-    position: relative; /* Establish stacking context for the form */
-    z-index: 1000;        /* Base z-index for the filter card */
+    background-color: var(--card-bg, white);
+    border: 1px solid var(--border-color, #CFD8DC); /* Light Gray */
+    box-shadow: var(--card-shadow);
 }

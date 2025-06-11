@@ -1,62 +1,59 @@
 /* Theme CSS for Lotus Application */
-/* Based on login page dark mode styling */
+/* Based on Lotus logo featuring aqua to blue gradients on a dark background */
 
 :root {
-    --primary-color: #6366f1;
-    --primary-hover: #4f46e5;
-    --secondary-color: #f3f4f6;
-    --text-color: #1f2937;
-    --light-text: #6b7280;
-    --border-color: #e5e7eb;
-    --bg-color: #f9fafb;
+    /* Primary Palette (Core UI Elements) */
+    --primary-color: #00BCD4;       /* Lotus Aqua */
+    --primary-hover: #29B6F6;       /* Sky Blue */
+    --bg-color: #F5F7FA;            /* White Smoke */
+    --text-color: #37474F;          /* Dark Gray */
+    --light-text: #90A4AE;          /* Medium Gray */
+    --border-color: #CFD8DC;        /* Light Gray */
+    --secondary-color: #F5F7FA;     /* White Smoke */
     --card-bg: white;
     --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 }
 
 html.dark {
-    /* Primary colors - using brighter, more vibrant colors for better visibility */
-    --primary-color: #a855f7;  /* Brighter violet for better visibility and contrast */
-    --primary-hover: #9333ea;  /* Slightly darker on hover but still vibrant */
+    /* Primary Palette (Core UI Elements) */
+    --primary-color: #00BCD4;         /* Lotus Aqua */
+    --primary-hover: #29B6F6;         /* Sky Blue */
+    --bg-color: #121212;              /* Dark Navy */
+    --text-color: #F5F7FA;            /* White Smoke */
+    --light-text: #CFD8DC;            /* Light Gray */
     
-    /* Text and background colors - using higher contrast colors */
-    --text-color: #ffffff;     /* Pure white text for maximum contrast */
-    --light-text: #cbd5e1;     /* Much brighter secondary text for better readability */
-    --bg-color: #111827;       /* Slightly lighter navy for better contrast with elements */
-    
-    /* Card and surface colors - using more distinguishable background */
-    --card-bg: #1e293b;        /* Slightly lighter card background for better visibility */
+    /* UI elements */
+    --secondary-color: #0D1B2A;       /* Deep Indigo */
+    --card-bg: #0D1B2A;               /* Deep Indigo */
+    --border-color: #37474F;          /* Dark Gray */
     --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
     
-    /* UI elements - increasing contrast with background */
-    --secondary-color: #475569;  /* Lighter secondary color for better contrast */
-    --border-color: #475569;     /* More visible borders */
+    /* Additional dark mode variables */
+    --sidebar-bg: #0D1B2A;            /* Deep Indigo */
+    --header-bg: #0D1B2A;             /* Deep Indigo */
+    --header-gradient: linear-gradient(135deg, #00BCD4, #536DFE);
     
-    /* Additional dark mode variables - ensuring consistent design */
-    --sidebar-bg: #1e293b;       /* Matching card background */
-    --header-bg: #1e293b;        /* Consistent with sidebar */
-    --header-gradient: linear-gradient(135deg, #1e293b, #111827);
+    /* Stats cards colors - Supporting Palette */
+    --stat-total-bg: #536DFE;         /* Electric Violet */
+    --stat-incoming-bg: #26A69A;      /* Emerald Green */
+    --stat-outgoing-bg: #80DEEA;      /* Soft Mint */
+    --stat-missed-bg: #FF7043;        /* Sunset Orange */
     
-    /* Stats cards colors - making them more vibrant */
-    --stat-total-bg: #818cf8;    /* Bright indigo for total stats */
-    --stat-incoming-bg: #10b981; /* Bright emerald for incoming stats */
-    --stat-outgoing-bg: #f59e0b; /* Bright amber for outgoing stats */
-    --stat-missed-bg: #ef4444;   /* Bright red for missed stats */
+    /* Table specific */
+    --table-header-bg: #0D1B2A;       /* Deep Indigo */
+    --table-row-hover: rgba(255, 255, 255, 0.08);
+    --table-border: #37474F;          /* Dark Gray */
     
-    /* Table specific - improving table contrast */
-    --table-header-bg: #1e293b;
-    --table-row-hover: rgba(255, 255, 255, 0.08); /* More visible hover state */
-    --table-border: #334155;
-    
-    /* Form elements - higher contrast for form elements */
-    --input-bg: #1e293b;
-    --input-border: #475569;
-    --input-focus: #a855f7;
+    /* Form elements */
+    --input-bg: #0D1B2A;              /* Deep Indigo */
+    --input-border: #37474F;          /* Dark Gray */
+    --input-focus: #00BCD4;           /* Lotus Aqua */
     
     /* Button colors */
-    --button-primary-bg: #a855f7;
-    --button-primary-text: #ffffff;
-    --button-secondary-bg: #334155;
-    --button-secondary-text: #ffffff;
+    --button-primary-bg: #00BCD4;     /* Lotus Aqua */
+    --button-primary-text: #F5F7FA;   /* White Smoke */
+    --button-secondary-bg: #0D1B2A;   /* Deep Indigo */
+    --button-secondary-text: #F5F7FA; /* White Smoke */
 }
 
 /* Theme toggle styles */

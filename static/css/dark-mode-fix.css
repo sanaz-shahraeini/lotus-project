@@ -1,4 +1,4 @@
-/* Dark Mode High Contrast Enhancement */
+/* Dark Mode Enhancement for Lotus Theme */
 
 /* Force dark mode background colors */
 html.dark body {
@@ -26,28 +26,28 @@ html.dark header span {
 
 /* Fix dashboard header in dark mode */
 html.dark .dashboard-header {
-    background: linear-gradient(135deg, #1f2937, #111827) !important;
+    background: linear-gradient(135deg, #00BCD4, #536DFE) !important;
 }
 
 html.dark .dashboard-header h2,
 html.dark .dashboard-header p {
-    color: #f3f4f6 !important;
+    color: #F5F7FA !important;
 }
 
 /* Fix sidebar in dark mode */
 #sidebar,
 #mobile-sidebar {
-    background-color: #4f46e5;
+    background-color: #00BCD4;
 }
 
 /* Force dark background for desktop sidebar */
 html.dark #sidebar.lg\:block {
-    background-color: #1f2937 !important;
+    background-color: #0D1B2A !important;
 }
 
 html.dark #sidebar,
 html.dark #mobile-sidebar {
-    background-color: #1f2937 !important;
+    background-color: #0D1B2A !important;
     border-color: var(--border-color) !important;
 }
 
@@ -62,7 +62,7 @@ html.dark #sidebar a:hover,
 html.dark #sidebar button:hover,
 html.dark #mobile-sidebar a:hover,
 html.dark #mobile-sidebar button:hover {
-    background-color: var(--secondary-color) !important;
+    background-color: rgba(0, 188, 212, 0.2) !important;
 }
 
 /* Fix buttons in dark mode */
@@ -116,7 +116,7 @@ html.dark td {
 }
 
 html.dark tr:hover {
-    background-color: var(--secondary-color) !important;
+    background-color: rgba(0, 188, 212, 0.1) !important;
 }
 
 /* Fix search and input styling in dark mode */
@@ -125,7 +125,7 @@ html.dark input[type="search"],
 html.dark input[type="password"],
 html.dark select,
 html.dark textarea {
-    background-color: var(--secondary-color) !important;
+    background-color: var(--bg-color) !important;
     color: var(--text-color) !important;
     border-color: var(--border-color) !important;
 }
@@ -133,12 +133,6 @@ html.dark textarea {
 html.dark input::placeholder {
     color: var(--light-text) !important;
 }
-
-/* Fix icons in dark mode */
-/* html.dark .fa-solid,
-html.dark .fas {
-    color: inherit !important;
-} */
 
 /* Fix dropdown menus in dark mode */
 html.dark #dropdownmenu,
@@ -154,7 +148,7 @@ html.dark #dropdownmenu-mb li a {
 
 html.dark #dropdownmenu li a:hover,
 html.dark #dropdownmenu-mb li a:hover {
-    background-color: var(--secondary-color) !important;
+    background-color: rgba(0, 188, 212, 0.2) !important;
 }
 
 /* Fix hamburger menu in dark mode */
@@ -163,13 +157,21 @@ html.dark #toggle-menu {
     background-color: transparent !important;
 }
 
-/* Fix theme toggle button in dark mode */
-/* html.dark .theme-toggle,
-html.dark #themeToggle {
-    color: var(--text-color) !important;
+/* Gradient accents for visual elements */
+html.dark .accent-border {
+    border-left: 4px solid var(--primary-color) !important;
 }
 
-html.dark .theme-toggle:hover,
-html.dark #themeToggle:hover {
-    background-color: var(--secondary-color) !important;
-} */
+html.dark .gradient-accent {
+    background: linear-gradient(135deg, #00BCD4, #536DFE) !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+html.dark .accent-button {
+    background: linear-gradient(135deg, #00BCD4, #29B6F6) !important;
+    color: #F5F7FA !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
