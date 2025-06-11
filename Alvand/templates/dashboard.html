@@ -110,6 +110,20 @@
         display: none !important;
     }
     
+    /* Fix for checkbox visibility */
+    .checkbox-visible {
+        accent-color: #00BCD4 !important; /* Using Lotus Aqua color */
+    }
+    
+    .checkbox-visible:checked {
+        background-color: #00BCD4 !important;
+        border-color: #00BCD4 !important;
+        background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='%23fff' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+        background-size: 100% 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    
     /* Dark mode variables to match theme.css */
     html.dark {
         --primary-color: #00BCD4;         /* Lotus Aqua */
@@ -732,11 +746,11 @@
                 
                 <div id="filterSection" class="search-filters-body hidden">
                     <div class="search-filters-grid">
-                        <!-- Call Type Filter -->
-                        <div class="filter-group">
+                        <!-- Call Type Filter - First position -->
+                        <div class="filter-group" style="margin-top: 0px;">
                             <label class="filter-label">نوع تماس</label>
                             <div class="relative">
-                                <button type="button" id="callTypeDropDown" data-dropdown-toggle="callTypeBodyDropDown" class="filter-dropdown-button">
+                                <button type="button"  data-dropdown-toggle="callTypeBodyDropDown" class="filter-dropdown-button">
                                     <span>همه انواع تماس</span>
                                     <i class="fa-solid fa-chevron-down"></i>
                                 </button>
@@ -744,31 +758,31 @@
                                     <ul>
                                         <li>
                                             <div class="filter-dropdown-item">
-                                                <input id="call-type-1" name="calls" type="checkbox" value="همه تماس ها">
+                                                <input id="call-type-1" name="calls" type="checkbox" value="همه تماس ها" class="checkbox-visible">
                                                 <label for="call-type-1">همه تماس ها</label>
                                             </div>
                                         </li>
                                         <li>
                                             <div class="filter-dropdown-item">
-                                                <input id="call-type-2" name="calls" type="checkbox" value="تماس های پاسخ داده نشده">
+                                                <input id="call-type-2" name="calls" type="checkbox" value="تماس های پاسخ داده نشده" class="checkbox-visible">
                                                 <label for="call-type-2">تماس های پاسخ نداده شده</label>
                                             </div>
                                         </li>
                                         <li>
                                             <div class="filter-dropdown-item">
-                                                <input id="call-type-3" name="calls" type="checkbox" value="تماس های ورودی">
+                                                <input id="call-type-3" name="calls" type="checkbox" value="تماس های ورودی" class="checkbox-visible">
                                                 <label for="call-type-3">تماس ‌های ورودی</label>
                                             </div>
                                         </li>
                                         <li>
                                             <div class="filter-dropdown-item">
-                                                <input id="call-type-4" name="calls" type="checkbox" value="تماس های خروجی">
+                                                <input id="call-type-4" name="calls" type="checkbox" value="تماس های خروجی" class="checkbox-visible">
                                                 <label for="call-type-4">تماس ‌های خروجی</label>
                                             </div>
                                         </li>
                                         <li>
                                             <div class="filter-dropdown-item">
-                                                <input id="call-type-5" name="calls" type="checkbox" value="تماس های داخلی">
+                                                <input id="call-type-5" name="calls" type="checkbox" value="تماس های داخلی" class="checkbox-visible">
                                                 <label for="call-type-5">تماس ‌های داخلی</label>
                                             </div>
                                         </li>

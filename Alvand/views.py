@@ -1020,6 +1020,64 @@ class Profile(TemplateView, View):
         if not check_active(checkSession(request)):
             messages.error(request, messagesTypes.deAvtive)
             return redirect(reverse_lazy('logout' if checkSession(request) else 'login'))
+        
+        # Handle profile picture upload
+        if request.POST.get('action') == 'upload_profile_pic' and request.FILES.get('profile_picture'):
+            try:
+                import os
+                from django.conf import settings
+                import json
+                from django.http import JsonResponse
+                
+                user = Users.objects.filter(username__iexact=checkSession(request)).first()
+                if not user:
+                    return JsonResponse({'success': False, 'error': 'کاربر یافت نشد'})
+                
+                profile_pic = request.FILES['profile_picture']
+                
+                # Validate file type
+                valid_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp']
+                ext = os.path.splitext(profile_pic.name)[1].lower()
+                if ext not in valid_extensions:
+                    return JsonResponse({'success': False, 'error': 'فرمت فایل نامعتبر است. فقط jpg, jpeg, png, gif و webp مجاز هستند.'})
+                
+                # Validate file size (max 2MB)
+                if profile_pic.size > 2 * 1024 * 1024:
+                    return JsonResponse({'success': False, 'error': 'حجم فایل باید کمتر از 2 مگابایت باشد'})
+                
+                # Create directory if it doesn't exist
+                upload_dir = os.path.join(settings.MEDIA_ROOT, 'profile_pics')
+                if not os.path.exists(upload_dir):
+                    os.makedirs(upload_dir)
+                
+                # Generate filename based on username to avoid duplicates
+                filename = f"{user.username}{ext}"
+                filepath = os.path.join(upload_dir, filename)
+                
+                # Delete old profile picture if exists
+                if user.profile_picture and os.path.exists(os.path.join(settings.MEDIA_ROOT, user.profile_picture)):
+                    os.remove(os.path.join(settings.MEDIA_ROOT, user.profile_picture))
+                
+                # Save the new profile picture
+                with open(filepath, 'wb+') as destination:
+                    for chunk in profile_pic.chunks():
+                        destination.write(chunk)
+                
+                # Update user model
+                relative_path = os.path.join('profile_pics', filename)
+                user.profile_picture = relative_path
+                user.save()
+                
+                # Log the action
+                log(request, logErrCodes.userSettings, f"کاربر {user.username} تصویر پروفایل خود را بروزرسانی کرد", user.username)
+                
+                # Return success response with image URL
+                image_url = os.path.join(settings.MEDIA_URL, relative_path)
+                return JsonResponse({'success': True, 'image_url': image_url})
+                
+            except Exception as e:
+                return JsonResponse({'success': False, 'error': str(e)})
+        
         email = getUserinfoByUsername("email")
         user = Users.objects.filter(email__iexact=email)
         verEmail = request.POST.get("verifyEmail")

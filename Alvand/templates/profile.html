@@ -766,7 +766,11 @@
         
         <div class="profile-avatar-container">
             <div class="profile-avatar">
+                {% if user.profile_picture %}
+                <img src="{{ MEDIA_URL }}{{ user.profile_picture }}?t={{ user.updated_at|date:'U' }}" alt="{{ user.name }} {{ user.lastname }}" class="w-full h-full object-cover">
+                {% else %}
                 <i class="fa-solid fa-user"></i>
+                {% endif %}
                 <div class="camera-icon">
                     <i class="fa-solid fa-camera"></i>
                 </div>
@@ -1067,4 +1071,248 @@
     });
 </script>
 {% endif %}
+
+<!-- Profile Picture Upload Modal -->
+<div id="profilePicModal" class="modal hidden">
+    <div class="modal-content max-w-md w-full p-5">
+        <div class="text-center">
+            <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style="background: linear-gradient(135deg, rgba(0, 188, 212, 0.15), rgba(83, 109, 254, 0.15)); color: #00BCD4; box-shadow: 0 4px 12px rgba(0, 188, 212, 0.2);">
+                <i class="fa-solid fa-image text-2xl"></i>
+            </div>
+            <h3 class="text-lg font-bold mb-3">بارگذاری تصویر پروفایل</h3>
+            <p class="mb-4 text-sm text-gray-600">تصویر مورد نظر خود را انتخاب کنید</p>
+            
+            <form method="POST" enctype="multipart/form-data" class="space-y-3" id="profilePicForm">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <div class="relative border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-primary-500 transition-all" id="dropArea">
+                        <input type="file" name="profile_picture" id="profilePicInput" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept="image/*">
+                        <div class="space-y-2" id="uploadPrompt">
+                            <i class="fa-solid fa-cloud-arrow-up text-2xl" style="color: #00BCD4;"></i>
+                            <p class="text-sm">برای انتخاب تصویر کلیک کنید یا فایل را اینجا رها کنید</p>
+                            <p class="text-xs text-gray-500">حداکثر اندازه: 2MB</p>
+                        </div>
+                        <div class="hidden space-y-2" id="previewContainer">
+                            <img src="#" alt="پیش‌نمایش" class="max-h-48 mx-auto rounded-lg" id="imagePreview">
+                            <p class="text-sm" id="fileName"></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex gap-2 mt-4">
+                    <button type="button" id="cancelUpload" class="btn btn-outline flex-1 text-sm">
+                        انصراف
+                    </button>
+                    <button type="submit" name="uploadProfilePic" class="btn btn-primary flex-1 text-sm">
+                        ذخیره تصویر
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Profile Picture Modal
+        const profilePicModal = document.getElementById('profilePicModal');
+        const cameraIcon = document.querySelector('.camera-icon');
+        const cancelUploadBtn = document.getElementById('cancelUpload');
+        const profilePicInput = document.getElementById('profilePicInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const fileName = document.getElementById('fileName');
+        const uploadPrompt = document.getElementById('uploadPrompt');
+        const previewContainer = document.getElementById('previewContainer');
+        const profilePicForm = document.getElementById('profilePicForm');
+        
+        // Open modal when camera icon is clicked
+        if (cameraIcon) {
+            cameraIcon.addEventListener('click', function() {
+                profilePicModal.classList.remove('hidden');
+                setTimeout(() => {
+                    profilePicModal.classList.add('open');
+                }, 10);
+            });
+        }
+        
+        // Close modal when cancel button is clicked
+        if (cancelUploadBtn) {
+            cancelUploadBtn.addEventListener('click', function() {
+                profilePicModal.classList.remove('open');
+                setTimeout(() => {
+                    profilePicModal.classList.add('hidden');
+                    // Reset form
+                    profilePicForm.reset();
+                    uploadPrompt.classList.remove('hidden');
+                    previewContainer.classList.add('hidden');
+                }, 200);
+            });
+        }
+        
+        // Close when clicking outside
+        if (profilePicModal) {
+            profilePicModal.addEventListener('click', function(e) {
+                if (e.target === profilePicModal) {
+                    profilePicModal.classList.remove('open');
+                    setTimeout(() => {
+                        profilePicModal.classList.add('hidden');
+                        // Reset form
+                        profilePicForm.reset();
+                        uploadPrompt.classList.remove('hidden');
+                        previewContainer.classList.add('hidden');
+                    }, 200);
+                }
+            });
+        }
+        
+        // File input change handler
+        if (profilePicInput) {
+            profilePicInput.addEventListener('change', handleFileSelect);
+        }
+        
+        // Drag and drop handlers
+        if (dropArea) {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                dropArea.classList.add('border-primary-500');
+                dropArea.style.backgroundColor = 'rgba(0, 188, 212, 0.05)';
+            }
+            
+            function unhighlight() {
+                dropArea.classList.remove('border-primary-500');
+                dropArea.style.backgroundColor = '';
+            }
+            
+            dropArea.addEventListener('drop', handleDrop, false);
+        }
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length) {
+                profilePicInput.files = files;
+                handleFileSelect();
+            }
+        }
+        
+        function handleFileSelect() {
+            const file = profilePicInput.files[0];
+            
+            if (!file) return;
+            
+            // Validate file type
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            if (!validTypes.includes(file.type)) {
+                alert('لطفا یک فایل تصویری معتبر انتخاب کنید (JPG, PNG, GIF, WEBP)');
+                profilePicForm.reset();
+                return;
+            }
+            
+            // Validate file size (max 2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                alert('حجم فایل باید کمتر از 2 مگابایت باشد');
+                profilePicForm.reset();
+                return;
+            }
+            
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                fileName.textContent = file.name;
+                uploadPrompt.classList.add('hidden');
+                previewContainer.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // Form submission
+        if (profilePicForm) {
+            profilePicForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(profilePicForm);
+                formData.append('action', 'upload_profile_pic');
+                
+                // Show loading state
+                const submitBtn = profilePicForm.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> در حال بارگذاری...';
+                submitBtn.disabled = true;
+                
+                fetch(window.location.href, {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'same-origin'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update profile picture in UI
+                        const profileAvatar = document.querySelector('.profile-avatar');
+                        if (profileAvatar) {
+                            // Remove the icon if it exists
+                            const userIcon = profileAvatar.querySelector('.fa-user');
+                            if (userIcon) {
+                                userIcon.remove();
+                            }
+                            
+                            // Check if there's already an image
+                            let avatarImg = profileAvatar.querySelector('img');
+                            if (!avatarImg) {
+                                avatarImg = document.createElement('img');
+                                avatarImg.className = 'w-full h-full object-cover';
+                                profileAvatar.appendChild(avatarImg);
+                            }
+                            
+                            // Set the new image with a cache-busting parameter
+                            avatarImg.src = data.image_url + '?t=' + new Date().getTime();
+                        }
+                        
+                        // Close modal
+                        profilePicModal.classList.remove('open');
+                        setTimeout(() => {
+                            profilePicModal.classList.add('hidden');
+                            // Reset form
+                            profilePicForm.reset();
+                            uploadPrompt.classList.remove('hidden');
+                            previewContainer.classList.add('hidden');
+                            
+                            // Show success message
+                            alert('تصویر پروفایل با موفقیت بارگذاری شد');
+                        }, 200);
+                    } else {
+                        alert(data.error || 'خطا در بارگذاری تصویر');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('خطا در ارتباط با سرور');
+                })
+                .finally(() => {
+                    // Reset button state
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.disabled = false;
+                });
+            });
+        }
+    });
+</script>
 {% endblock %}

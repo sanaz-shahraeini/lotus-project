@@ -345,6 +345,7 @@ class Users(models.Model):
     group = models.ForeignKey(Groups, models.DO_NOTHING)
     groupname = models.CharField(max_length=191)
     picurl = models.CharField(max_length=191, default="avatar.png")
+    profile_picture = models.CharField(max_length=255, blank=True, null=True)
     email = models.CharField(max_length=191)
     email_verified_at = models.DateTimeField(blank=True, null=True)
     password = models.CharField(max_length=191)
