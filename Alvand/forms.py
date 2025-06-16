@@ -54,7 +54,7 @@ class InfosForm(forms.ModelForm):
         model = Infos
         fields = ('nationalcode', 'birthdate', 'telephone', 'phonenumber', 'gender', 'maritalstatus', 'military',
                   'educationfield', 'educationdegree', 'province', 'city', 'accountnumbershaba',
-                  'cardnumber',
+                  'cardnumber', 'groupname',
                   'accountnumber', 'address')
 
         widgets = {
@@ -82,7 +82,8 @@ class InfosForm(forms.ModelForm):
                 attrs={'class': 'w-[190px] h-6 text-gray-600 text-xs ltr', 'type': 'tel', 'inputmode': 'numeric'}),
             'address': forms.Textarea(
                 attrs={'class': 'w-[220px] h-[155px] text-gray-600 text-xs align-top text-start'}),
-
+            'groupname': forms.Select(
+                attrs={'class': 'w-[140px] h-6 text-gray-600 text-xs appearance-none py-[2px]'}),
         }
 
 

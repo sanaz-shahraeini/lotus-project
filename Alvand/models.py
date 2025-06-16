@@ -294,6 +294,7 @@ class Infos(models.Model):
     accountnumbershaba = models.CharField(max_length=191, blank=True, null=True, verbose_name='شماره حساب:')
     macaddress = models.CharField(max_length=191, blank=True, null=True, default=None, verbose_name='مک آدرس:')
     nationalcode = models.BigIntegerField(blank=True, null=True, verbose_name='کد ملی:')
+    groupname = models.CharField(max_length=191, blank=True, null=True, verbose_name='نقش:')
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(blank=True, null=True)
 
