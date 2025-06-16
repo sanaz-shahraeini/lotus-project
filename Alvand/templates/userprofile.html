@@ -9,42 +9,54 @@
 <link rel="stylesheet" href="{% static 'css/direct-layout-fix.css' %}" />
 <link rel="stylesheet" href="{% static 'css/dashboard-content.css' %}" />
 <style>
+    
     :root {
-        --sidebar-width: 135px;
-        --main-padding: 1.5rem;
-        --primary-color: #4F46E5;
-        --primary-hover: #4338CA;
-        --secondary-color: #10B981;
-        --secondary-hover: #059669;
-        --danger-color: #EF4444;
-        --danger-hover: #DC2626;
-        --warning-color: #F59E0B;
-        --warning-hover: #D97706;
-        --text-color: #1F2937;
-        --text-light: #6B7280;
-        --bg-color: #F9FAFB;
-        --card-bg: #FFFFFF;
-        --border-color: #E5E7EB;
-        --input-bg: #F3F4F6;
-        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        --radius-sm: 0.25rem;
-        --radius: 0.375rem;
-        --radius-lg: 0.5rem;
-        --transition: all 0.2s ease-in-out;
+        /* Match theme.css variables */
+        --primary-color: #00BCD4;       /* Lotus Aqua */
+        --primary-hover: #29B6F6;       /* Sky Blue */
+        --secondary-color: #F5F7FA;     /* White Smoke */
+        --text-color: #37474F;          /* Dark Gray */
+        --light-text: #90A4AE;          /* Medium Gray */
+        --border-color: #CFD8DC;        /* Light Gray */
+        --bg-color: #F5F7FA;            /* White Smoke */
+        --card-bg: white;
+        --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        
+        /* Dashboard-specific variables */
+        --primary: var(--primary-color);
+        --primary-dark: #0097A7;        /* Darker Aqua */
+        --primary-light: #80DEEA;       /* Soft Mint */
+        --secondary: #26A69A;           /* Emerald Green */
+        --warning: #FF7043;             /* Sunset Orange */
+        --danger: #FF5252;              /* Bright Red */
+        --light: #F5F7FA;               /* White Smoke */
+        --dark: #0D1B2A;                /* Deep Indigo */
+        --gray: #90A4AE;                /* Medium Gray */
+        --gray-light: #CFD8DC;          /* Light Gray */
+        --transition: all 0.3s ease;
     }
     
+    /* Dark mode variables to match theme.css */
     html.dark {
-        --primary-color: #6366F1;
-        --primary-hover: #4F46E5;
-        --text-color: #F9FAFB;
-        --text-light: #D1D5DB;
-        --bg-color: #111827;
-        --card-bg: #1F2937;
-        --border-color: #374151;
-        --input-bg: #374151;
+        --primary-color: #00BCD4;         /* Lotus Aqua */
+        --primary-hover: #29B6F6;         /* Sky Blue */
+        --secondary-color: #0D1B2A;       /* Deep Indigo */
+        --text-color: #F5F7FA;            /* White Smoke */
+        --light-text: #CFD8DC;            /* Light Gray */
+        --border-color: #37474F;          /* Dark Gray */
+        --bg-color: #121212;              /* Dark Navy */
+        --card-bg: #0D1B2A;               /* Deep Indigo */
+        --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        
+        /* Update dashboard-specific dark mode variables */
+        --primary: var(--primary-color);
+        --primary-dark: var(--primary-hover);
+        --light: var(--text-color);
+        --dark: var(--bg-color);
+        --gray: var(--light-text);
+        --gray-light: var(--border-color);
     }
+    
      /* Fix for theme toggle icons in navbar */
      .theme-toggle-btn i,
     .dark-mode-toggle i,
@@ -141,7 +153,16 @@
             width: 100%;
         }
     }
-
+    body {
+        direction: rtl;
+        text-align: right;
+        font-family: 'Vazir', system-ui, -apple-system, sans-serif;
+        color: var(--text-color);
+        background-color: var(--bg-color);
+        min-height: 100vh;
+        line-height: 1.6;
+        transition: background-color 0.3s, color 0.3s;
+    }
     /* Modern form styling */
     .user-card {
         background-color: var(--card-bg);
@@ -162,6 +183,7 @@
         color: white;
         margin-top: 10px;
         padding: 1.25rem 1.5rem;
+        border-radius: 1rem;
         font-weight: 600;
         display: flex;
         align-items: center;
@@ -402,22 +424,181 @@
         align-items: center;
         gap: 0.5rem;
     }
-
+    
+    .action-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.6rem 1rem;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        min-width: 120px;
+        margin: 0.25rem;
+        cursor: pointer;
+    }
+    
+    .action-button:hover {
+        transform: translateY(-2px);
+    }
+    
+    .action-button.save-user {
+        background: linear-gradient(135deg, #00BCD4, #29B6F6);
+        color: white;
+        box-shadow: 0 2px 6px rgba(0, 188, 212, 0.3);
+    }
+    
+    .action-button.save-user:hover {
+        background: linear-gradient(135deg, #0097A7, #0288D1);
+        box-shadow: 0 4px 8px rgba(0, 188, 212, 0.4);
+    }
+    
+    .action-button.password-reset {
+        background-color: #FF9800;
+        color: white;
+        box-shadow: 0 2px 6px rgba(255, 152, 0, 0.3);
+    }
+    
+    .action-button.password-reset:hover {
+        background-color: #F57C00;
+        box-shadow: 0 4px 8px rgba(255, 152, 0, 0.4);
+    }
+    
+    .action-button.delete-profile {
+        background-color: #FF7043;
+        color: white;
+        box-shadow: 0 2px 6px rgba(255, 112, 67, 0.3);
+    }
+    
+    .action-button.delete-profile:hover {
+        background-color: #E64A19;
+        box-shadow: 0 4px 8px rgba(255, 112, 67, 0.4);
+    }
+    
+    .action-button.delete-user {
+        background-color: #FF5252;
+        color: white;
+        box-shadow: 0 2px 6px rgba(255, 82, 82, 0.3);
+    }
+    
+    .action-button.delete-user:hover {
+        background-color: #D32F2F;
+        box-shadow: 0 4px 8px rgba(255, 82, 82, 0.4);
+    }
+    
+    /* Profile Image Styles */
+    .profile-image-container {
+        position: relative;
+        width: 150px;
+        height: 150px;
+        margin: 0 auto;
+        padding: 5px;
+        background: linear-gradient(135deg, #00BCD4, #536DFE);
+        border-radius: 50%;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+    
     .user-image {
-        width: 100px;
-        height: 100px;
+        width: 140px;
+        height: 140px;
         border-radius: 50%;
         object-fit: cover;
-        border: 3px solid var(--primary-color);
+        border: 4px solid white;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
     }
-
-    .action-panel {
+    
+    .profile-upload-button {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #00BCD4, #29B6F6);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+        transition: all 0.2s ease;
+        border: 2px solid white;
+        font-size: 1rem;
+    }
+    
+    .profile-upload-button:hover {
+        transform: scale(1.15);
+        background: linear-gradient(135deg, #0097A7, #0288D1);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+    
+    .dark .profile-image-container {
+        background: linear-gradient(135deg, #00ACC1, #5C6BC0);
+    }
+    
+    .dark .user-image {
+        border-color: #1F2937;
+    }
+    
+    .dark .profile-upload-button {
+        border-color: #1F2937;
+    }
+    
+    /* Profile header styles */
+    .profile-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 1.5rem auto 2rem;
+        text-align: center;
+    }
+    
+    .profile-name-display {
+        margin-top: 1rem;
+        text-align: center;
+    }
+    
+    .profile-name {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 0.25rem;
+        background: linear-gradient(135deg, #00BCD4, #536DFE);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    
+    .profile-username {
+        font-size: 0.875rem;
+        color: var(--text-light);
+        background-color: rgba(0, 188, 212, 0.1);
+        padding: 0.25rem 1rem;
+        border-radius: 1rem;
+        display: inline-block;
+        margin-top: 0.25rem;
+    }
+    
+    .dark .profile-name {
+        text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    
+    .dark .profile-username {
+        background-color: rgba(0, 188, 212, 0.2);
+        color: #B0BEC5;
+    }
+    
+    .action-buttons-container {
         display: flex;
         flex-wrap: wrap;
-        gap: 1rem;
+        gap: 0.75rem;
         justify-content: center;
         align-items: center;
-        padding: 1.5rem;
+        margin: 1rem auto 2rem;
+        max-width: 700px;
     }
 
     .modal {
@@ -606,13 +787,28 @@
 {% block main %}
 
 
-    <div class="user-card">
+    <div class="user-card;margin-top:10px">
         <div class="card-header">
             <h1>تنظیمات کاربری</h1>
         </div>
         
         <form method="post" id="form" enctype="multipart/form-data">
             {% csrf_token %}
+            
+            <!-- User Profile Image Section - Moved to top -->
+            <div class="profile-header">
+                <div class="profile-image-container">
+                    <img id="id_picurl" src="" class="user-image">
+                    <input type="file" id="upload" class="hidden" name="uploadPhoto">
+                    <label for="upload" class="profile-upload-button">
+                        <i class="fa-solid fa-camera"></i>
+                    </label>
+                </div>
+                <div class="profile-name-display">
+                    <div id="profileNameDisplay" class="profile-name">انتخاب کاربر</div>
+                    <div id="profileUsernameDisplay" class="profile-username">نام کاربری</div>
+                </div>
+            </div>
             
             <!-- Basic Information Section -->
             <div class="form-section">
@@ -801,41 +997,28 @@
                 </div>
             </div>
             
-            <!-- User Profile Image and Actions Section -->
-            <div class="action-panel">
-                <div class="flex flex-col items-center">
-                    <img id="id_picurl" src="" class="user-image mb-3">
-                    <input type="file" id="upload" class="hidden" name="uploadPhoto">
-                    <label for="upload" class="btn btn-secondary btn-icon">
-                        <i class="fa-solid fa-upload"></i>
-                        <span>بارگزاری عکس</span>
-                    </label>
-                </div>
+            <!-- Action Buttons Section -->
+            <div class="action-buttons-container">
+                <input type="submit" id="save" class="hidden" name="saveUser">
+                <label for="save" class="action-button save-user">
+                    <i class="fa-solid fa-save"></i>
+                    <span>ذخیره کاربر</span>
+                </label>
                 
-                <div class="flex flex-col gap-3">
-                    <input type="submit" id="save" class="hidden" name="saveUser">
-                    <label for="save" class="btn btn-primary btn-icon">
-                        <i class="fa-solid fa-save"></i>
-                        <span>ذخیره کاربر</span>
-                    </label>
-                    
-                    <button type="button" id="btnpass" class="btn btn-warning btn-icon">
-                        <i class="fa-solid fa-key"></i>
-                        <span>بازنگاری رمز عبور</span>
-                    </button>
-                </div>
+                <button type="button" id="btnpass" class="action-button password-reset">
+                    <i class="fa-solid fa-key"></i>
+                    <span>بازنگاری رمز عبور</span>
+                </button>
                 
-                <div class="flex flex-col gap-3">
-                    <button type="button" id="delUserModalBtn" class="btn btn-danger btn-icon">
-                        <i class="fa-solid fa-user-slash"></i>
-                        <span>حذف کاربر</span>
-                    </button>
-                    
-                    <button type="button" id="delUserProfile" class="btn btn-danger btn-icon">
-                        <i class="fa-solid fa-id-card"></i>
-                        <span>حذف پروفایل</span>
-                    </button>
-                </div>
+                <button type="button" id="delUserProfile" class="action-button delete-profile">
+                    <i class="fa-solid fa-id-card"></i>
+                    <span>حذف پروفایل</span>
+                </button>
+                
+                <button type="button" id="delUserModalBtn" class="action-button delete-user">
+                    <i class="fa-solid fa-user-slash"></i>
+                    <span>حذف کاربر</span>
+                </button>
             </div>
         </form>
     </div>
@@ -923,6 +1106,9 @@
         $('#allPerm').prop('checked', false);
         $('#id_military').closest('.form-group').show();
         $('#labelmilitary').show();
+        // Clear profile name display
+        $('#profileNameDisplay').text('انتخاب کاربر');
+        $('#profileUsernameDisplay').text('نام کاربری');
         // Clear all input fields except the username in add mode
         $('form input:not(#id_username, [type=checkbox], [type=radio]), textarea').val('');
         $('form select').val('');
@@ -937,10 +1123,15 @@
         $('#id_active').prop('checked', user.active);
         $('#id_groupname').val(user.groupname);
         
+        // Update profile image
         var picUrl = user.picurl === 'avatar.png' ? 
             "{% static 'pic/avatar.png' %}" : 
             "{% static 'upload/' %}" + user.picurl;
         $('#id_picurl').attr('src', picUrl);
+        
+        // Update profile name display
+        $('#profileNameDisplay').text(user.name + ' ' + user.lastname);
+        $('#profileUsernameDisplay').text(user.username);
         
         // Handle user extensions
         var userexts = user.usersextension || [];

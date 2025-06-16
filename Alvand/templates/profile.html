@@ -724,6 +724,120 @@
         display: inline-block !important;
         color: #80DEEA !important;
     }
+
+    /* New Action Panel Styles */
+    .profile-actions-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.25rem;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+    border-radius: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin: 1.5rem auto;
+    max-width: 90%;
+    width: 100%;
+    border: 1px solid rgba(0, 188, 212, 0.2);
+}
+
+@media (min-width: 768px) {
+    .profile-actions-panel {
+        max-width: 700px;
+        padding: 1.5rem;
+    }
+}
+
+    .dark .profile-actions-panel {
+        background: rgba(13, 27, 42, 0.7);
+        border-color: rgba(0, 188, 212, 0.3);
+    }
+
+    .action-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    min-width: 110px;
+    margin: 0.25rem;
+}
+
+@media (min-width: 768px) {
+    .action-button {
+        padding: 0.6rem 1rem;
+        min-width: 120px;
+    }
+}
+
+    .action-button i {
+        font-size: 1rem;
+    }
+
+    .action-button.delete-user {
+        background-color: #FF5252;
+        color: white;
+        box-shadow: 0 2px 6px rgba(255, 82, 82, 0.3);
+    }
+
+    .action-button.delete-user:hover {
+        background-color: #D32F2F;
+        box-shadow: 0 4px 8px rgba(255, 82, 82, 0.4);
+        transform: translateY(-2px);
+    }
+
+    .action-button.delete-profile {
+        background-color: #FF7043;
+        color: white;
+        box-shadow: 0 2px 6px rgba(255, 112, 67, 0.3);
+    }
+
+    .action-button.delete-profile:hover {
+        background-color: #E64A19;
+        box-shadow: 0 4px 8px rgba(255, 112, 67, 0.4);
+        transform: translateY(-2px);
+    }
+
+    .action-button.save-user {
+        background: linear-gradient(135deg, #00BCD4, #29B6F6);
+        color: white;
+        box-shadow: 0 2px 6px rgba(0, 188, 212, 0.3);
+    }
+
+    .action-button.save-user:hover {
+        background: linear-gradient(135deg, #0097A7, #0288D1);
+        box-shadow: 0 4px 8px rgba(0, 188, 212, 0.4);
+        transform: translateY(-2px);
+    }
+
+    .action-button.upload-photo {
+        background-color: #4CAF50;
+        color: white;
+        box-shadow: 0 2px 6px rgba(76, 175, 80, 0.3);
+    }
+
+    .action-button.upload-photo:hover {
+    background-color: #388E3C;
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.4);
+    transform: translateY(-2px);
+}
+
+.action-button.password-reset {
+    background-color: #FF9800;
+    color: white;
+    box-shadow: 0 2px 6px rgba(255, 152, 0, 0.3);
+}
+
+.action-button.password-reset:hover {
+    background-color: #F57C00;
+    box-shadow: 0 4px 8px rgba(255, 152, 0, 0.4);
+    transform: translateY(-2px);
+}
     </style>
 {% endblock %}
 
