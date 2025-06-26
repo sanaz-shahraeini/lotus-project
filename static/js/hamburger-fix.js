@@ -24,13 +24,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 const isOpen = sidebar.style.transform === 'translateX(0px)';
                 
                 if (isOpen) {
+                    // Sidebar is currently open, so we're closing it
                     sidebar.style.transform = 'translateX(100%)';
+                    // Change icon to hamburger when sidebar is closed
                     if (menuIcon) menuIcon.classList.replace('fa-times', 'fa-bars');
                     document.body.classList.remove('overflow-hidden');
                     newToggleMenu.classList.remove('right-32');
                     newToggleMenu.classList.add('right-4');
                 } else {
+                    // Sidebar is currently closed, so we're opening it
                     sidebar.style.transform = 'translateX(0)';
+                    // Change icon to close (X) when sidebar is open
                     if (menuIcon) menuIcon.classList.replace('fa-bars', 'fa-times');
                     document.body.classList.add('overflow-hidden');
                     newToggleMenu.classList.remove('right-4');
@@ -43,5 +47,12 @@ document.addEventListener('DOMContentLoaded', function() {
         newToggleMenu.style.pointerEvents = 'auto';
         newToggleMenu.style.cursor = 'pointer';
         newToggleMenu.style.zIndex = '1000000';
+        
+        // Initialize with correct icon (hamburger/bars when closed)
+        const menuIcon = document.getElementById('menu-icon');
+        if (menuIcon) {
+            menuIcon.classList.remove('fa-times');
+            menuIcon.classList.add('fa-bars');
+        }
     }
 });

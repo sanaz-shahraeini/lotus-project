@@ -77,8 +77,8 @@ html, body {
     #toggle-menu {
         position: fixed !important;
         top: 10px !important;
-        right: 10px !important;
-        z-index: 1000 !important;
+        right: 20px !important;
+        z-index: 10000 !important;
     }
 
     /* Fix font sizes for better readability on mobile */

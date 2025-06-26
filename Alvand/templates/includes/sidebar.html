@@ -10,7 +10,7 @@
         <p class="text-xs sm:text-sm mt-3">
             {% if 'user' in request.session %}{{ request.session.user|getBaseInfo:'extension' }}{% endif %}</p>
     </div>
-    <nav class="mt-5 space-y-2">
+    <nav class="mt-0 space-y-2">
         <a href="{% url 'dashboard' %}"
            class="py-3 text-xs sm:text-sm flex items-center justify-start">
             <i class="fas fa-tachometer-alt"></i> <span class="ml-2 sidebar-text sm:inline">داشبورد</span>
@@ -59,7 +59,7 @@
 
 <!-- Mobile Sidebar Toggle Button -->
 <button id="toggle-menu"
-        class="fixed top-4 right-4 text-white p-2 rounded-md z-50 lg:hidden transition-all transform duration-300 ease-in-out bg-transparent">
+        class="fixed top-4 right-4 text-white p-2 rounded-md z-50 hidden md:block lg:hidden transition-all transform duration-300 ease-in-out bg-transparent">
     <i id="menu-icon" class="fas fa-bars"></i>
 </button>
 
@@ -79,10 +79,7 @@
            class="py-3 text-xs sm:text-sm flex items-center justify-start">
             <i class="fas fa-tachometer-alt"></i> <span class="ml-2 sidebar-text sm:inline">داشبورد</span>
         </a>
-        <a href="{% url 'smdr-dashboard' %}"
-           class="py-3 text-xs sm:text-sm flex items-center justify-start">
-            <i class="fas fa-phone-alt"></i> <span class="ml-2 sidebar-text sm:inline">داشبورد SMDR</span>
-        </a>
+      
         <a href="{% url 'profile' %}"
            class="py-3 text-xs sm:text-sm flex items-center justify-start">
             <i class="fas fa-user"></i> <span class="ml-2 sidebar-text sm:inline">پروفایل کاربری</span>

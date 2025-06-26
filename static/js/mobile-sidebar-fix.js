@@ -27,19 +27,27 @@ document.addEventListener('DOMContentLoaded', function() {
     if (toggleButton && mobileSidebar && menuIcon) {
         let isSidebarOpen = false;
         
+        // Initialize with hamburger icon (sidebar closed by default)
+        menuIcon.classList.remove('fa-times');
+        menuIcon.classList.add('fa-bars');
+        
         toggleButton.addEventListener('click', function() {
             isSidebarOpen = !isSidebarOpen;
             
             if (isSidebarOpen) {
+                // Opening the sidebar
                 mobileSidebar.style.transform = 'translateX(0)';
                 document.body.classList.add('overflow-hidden');
+                // Show close icon when sidebar is open
                 menuIcon.classList.remove('fa-bars');
                 menuIcon.classList.add('fa-times');
                 toggleButton.classList.remove('right-4');
                 toggleButton.classList.add('right-32');
             } else {
+                // Closing the sidebar
                 mobileSidebar.style.transform = 'translateX(100%)';
                 document.body.classList.remove('overflow-hidden');
+                // Show hamburger icon when sidebar is closed
                 menuIcon.classList.remove('fa-times');
                 menuIcon.classList.add('fa-bars');
                 toggleButton.classList.remove('right-32');
@@ -53,6 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 isSidebarOpen = false;
                 mobileSidebar.style.transform = 'translateX(100%)';
                 document.body.classList.remove('overflow-hidden');
+                // Show hamburger icon when sidebar is closed
                 menuIcon.classList.remove('fa-times');
                 menuIcon.classList.add('fa-bars');
                 toggleButton.classList.remove('right-32');

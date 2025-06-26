@@ -19,6 +19,15 @@
     }
 }
 
+/* Hide toggle menu button on desktop */
+@media (min-width: 1024px) {
+    #toggle-menu {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+}
+
 /* Ensure mobile sidebar is properly styled */
 #mobile-sidebar {
     right: 0 !important;
@@ -40,13 +49,32 @@ html.dark #mobile-sidebar {
 
 /* Fix hamburger menu position */
 #toggle-menu {
-    z-index: 50 !important;
+    z-index: 9999 !important; /* Ensure it's above everything */
     top: 1rem !important;
     right: 1rem !important;
-    background-color: transparent !important;
+    background-color: rgba(255, 255, 255, 0.8) !important; /* Semi-transparent background */
+    position: fixed !important;
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
 }
 
 /* Fix hamburger menu icon color in dark mode */
 html.dark #menu-icon {
     color: var(--text-color) !important;
+}
+
+/* Fix for dark mode toggle button */
+html.dark #toggle-menu {
+    background-color: rgba(31, 41, 55, 0.8) !important;
+}
+
+/* Ensure the toggle button is always visible and clickable */
+#toggle-menu {
+    pointer-events: auto !important;
+    cursor: pointer !important;
 }
