@@ -632,6 +632,15 @@ class systemSettings(FormView, View):
             messages.error(request, messagesTypes.deAvtive)
             return redirect(reverse_lazy('logout' if checkSession(request) else 'login'))
         context = self.get_context_data()
+        
+        # Convert QuerySets to lists for JSON serialization
+        context['groupname'] = list(context['groupname'].values()) if context['groupname'] else None
+        context['users'] = list(context['users'].values()) if context['users'] else None
+        context['emailset'] = list(context['emailset'].values()) if context['emailset'] else None
+        context['contactInfos'] = list(context['contactInfos'].values()) if context['contactInfos'] else None
+        context['devices'] = list(context['devices'].values()) if context['devices'] else None
+        context['costs'] = list(context['costs'].values()) if context['costs'] else None
+        
         return render(request, self.template_name, context)
 
     def form_valid(self, form):

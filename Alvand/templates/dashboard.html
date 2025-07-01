@@ -1466,3 +1466,16 @@ $(document).ready(function() {
     }, 1000); // Wait 1 second to ensure everything else has loaded
 });
 </script> 
+
+<script>
+$(document).ready(function () {
+    $('#show-settings').off('click').on('click', function () {
+        $('#dropdownmenu').toggleClass('hidden');
+    });
+    $(document).on('click', function (e) {
+        if (!$('#dropdownmenu').hasClass('hidden') && !$(e.target).closest('#show-settings, #dropdownmenu').length) {
+            $('#dropdownmenu').addClass('hidden');
+        }
+    });
+});
+</script>

@@ -1,18 +1,19 @@
 {% extends "base.html" %}
 {% load static settingsTags %}
 {% block head_extra %}
-<!-- Dashboard CSS files for sidebar integration -->
-
+<!-- Modern UI CSS with better visual hierarchy and components -->
 <link rel="stylesheet" href="{% static 'css/dashboard-fix.css' %}" />
 <link rel="stylesheet" href="{% static 'css/dashboard-width-fix.css' %}" />
 <link rel="stylesheet" href="{% static 'css/direct-layout-fix.css' %}" />
 <link rel="stylesheet" href="{% static 'css/header-optimize.css' %}" />
 <link rel="stylesheet" href="{% static 'css/dashboard-content.css' %}" />
+<script src="{% static 'js/settings-page-forms-fix.js' %}"></script>
 <style>
-    /* Root variables for consistent styling */
+    /* Root variables to match global sidebar/navbar color scheme */
     :root {
-        --primary-color: #6366f1;
-        --primary-hover: #4f46e5;
+        --primary-color: #00BCD4;
+        --primary-hover: #0097A7;
+        --primary-light: #B2EBF2;
         --secondary-color: #f3f4f6;
         --text-color: #1f2937;
         --border-color: #e5e7eb;
@@ -20,35 +21,45 @@
         --content-padding: 1.5rem;
         --bg-color: #f9fafb;
         --card-bg: white;
+        --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --card-radius: 0.75rem;
+        --form-element-height: 38px;
+        --transition-speed: 0.3s;
     }
     
-    /* Dark mode variables */
+    /* Dark mode variables - matching sidebar dark theme */
     .dark {
-        --bg-color: #111827;
+        --bg-color: #0D1B2A;
         --card-bg: #1f2937;
-        --text-color: #f9fafb;
+        --text-color: #F5F7FA;
         --border-color: #374151;
         --secondary-color: #374151;
+        --primary-color: #00BCD4;
+        --primary-hover: #0097A7;
+        --primary-light: #006064;
+        --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.25), 0 2px 4px -1px rgba(0, 0, 0, 0.15);
     }
     
+    /* Global styles for better typography and spacing */
     body {
         background-color: var(--bg-color);
         color: var(--text-color);
-        transition: background-color 0.3s, color 0.3s;
+        transition: background-color var(--transition-speed), color var(--transition-speed);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
     
     /* Main content layout with sidebar integration */
     .main-content {
         margin-right: 0 !important;
         padding: 1rem;
-        transition: all 0.3s ease;
+        transition: all var(--transition-speed) ease;
         width: 100%;
     }
     
     @media (min-width: 1024px) {
         .main-content {
             margin-right: 135px !important;
-            padding: 1.5rem;
+            padding: 2rem;
             width: calc(100% - 135px) !important;
         }
     }
@@ -63,15 +74,271 @@
         padding-right: 1rem !important;
     }
     
-    /* Settings specific styling */
+    /* Settings page specific styling */
+    .settings-container {
+        max-width: 1280px;
+        margin: 0 auto;
+    }
+    
+    .page-header {
+        margin-bottom: 2rem;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 1rem;
+    }
+    
+    .page-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Modern card styling */
     .settings-card {
         background-color: var(--card-bg);
-        border-radius: 0.5rem;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        border-radius: var(--card-radius);
+        box-shadow: var(--card-shadow);
         padding: 1.5rem;
         margin-bottom: 1.5rem;
         border: 1px solid var(--border-color);
-        transition: background-color 0.3s, border-color 0.3s;
+        transition: box-shadow 0.2s, transform 0.2s;
+    }
+    
+    .settings-card:hover {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .card-header {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border-color);
+        color: var(--primary-color);
+    }
+    
+    /* Form elements styling */
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+    
+    select, input:not([type="checkbox"]):not([type="radio"]) {
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.375rem;
+        border: 1px solid var(--border-color);
+        background-color: var(--card-bg);
+        color: var(--text-color);
+        height: var(--form-element-height);
+        font-size: 0.9rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    
+    select:focus, input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px var(--primary-light);
+    }
+    
+    /* Switch toggle styling */
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 3.5rem;
+        height: 2rem;
+    }
+    
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--border-color);
+        transition: .4s;
+        border-radius: 2rem;
+    }
+    
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 1.5rem;
+        width: 1.5rem;
+        left: 0.25rem;
+        bottom: 0.25rem;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+        background-color: var(--primary-color);
+    }
+    
+    input:checked + .slider:before {
+        transform: translateX(1.5rem);
+    }
+    
+    /* Dropdown styling */
+    .dropdown {
+        position: relative;
+    }
+    
+    .dropdown-toggle {
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.375rem;
+        border: 1px solid var(--border-color);
+        background-color: var(--card-bg);
+        color: var(--text-color);
+        text-align: right;
+        position: relative;
+        cursor: pointer;
+    }
+    
+    .dropdown-toggle::after {
+        content: "";
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 5px solid var(--text-color);
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    .dropdown-menu {
+        position: absolute;
+        top: calc(100% + 5px);
+        left: 0;
+        right: 0;
+        background-color: var(--card-bg);
+        border-radius: 0.375rem;
+        border: 1px solid var(--border-color);
+        box-shadow: var(--card-shadow);
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 100;
+    }
+    
+    .dropdown-menu.hidden {
+        display: none;
+    }
+    
+    .dropdown-item {
+        padding: 0.5rem 1rem;
+    }
+    
+    .dropdown-item:hover {
+        background-color: var(--secondary-color);
+    }
+    
+    /* Button styling */
+    .btn {
+        padding: 0.6rem 1.5rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s, transform 0.1s;
+        text-align: center;
+        display: inline-block;
+        border: none;
+    }
+    
+    .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background-color: var(--primary-hover);
+        transform: translateY(-1px);
+    }
+    
+    .btn-primary:active {
+        transform: translateY(0);
+    }
+    
+    /* Radio button styling */
+    .radio-group {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+    }
+    
+    .radio-item {
+        display: flex;
+        align-items: center;
+    }
+    
+    .radio-item input[type="radio"] {
+        margin-right: 0.5rem;
+    }
+    
+    /* Two column layout for settings */
+    .settings-grid {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -1rem; /* Negative margin to offset card padding */
+    }
+    
+    .settings-column {
+        padding: 0 1rem;
+        width: 100%;
+    }
+    
+    @media (min-width: 1024px) {
+        .settings-column {
+            width: 50%;
+        }
+    }
+    
+    /* Fix for RTL layout */
+    body[dir="rtl"] .radio-item input[type="radio"] {
+        margin-right: 0;
+        margin-left: 0.5rem;
+    }
+    
+    body[dir="rtl"] .dropdown-toggle::after {
+        left: auto;
+        right: 15px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .settings-card {
+            padding: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+    }
+    
+    /* Fix for sidebar consistency */
+    .main-content {
+        margin-left: 0 !important;
+        margin-right: var(--sidebar-width) !important; 
+    }
+    
+    @media (max-width: 1023px) {
+        .main-content {
+            margin-right: 0 !important;
+        }
     }
 </style>
 {% endblock %}
@@ -79,222 +346,291 @@
 {% block main %}
 <div class="min-h-screen relative" style="background-color: var(--bg-color); transition: background-color 0.3s;">
     <!-- Main Content -->
-    <div class="main-content">
-        <div class="container mx-auto px-4 sm:px-6 settings-container">
+    <div class="content-wrapper px-4 py-6">
+        <div class="settings-container">
+            <div class="page-header">
+                <h1 class="page-title text-right">تنظیمات سیستمی</h1>
+            </div>
+            
             <form method="post">
                 {% csrf_token %}
-                <div class="w-full h-auto mt-3 float-right 2xl:w-1/2 xl:w-1/2 lg:w-1/2 2xl:mt-10 md:w-full sm:w-full">
-
-                    <fieldset
-                            class="w-5/6 h-auto text-right float-left 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mt-2 mx-8 2xl:mr-5 mb-1 border border-solid md:mx-8 sm:mx-7 border-gray-400">
-                        <legend class="text-center py-0 px-2 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs">تنظیمات دستگاه</legend>
-
-                        <div id="models" class="w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto float-right flex flex-col gap-2 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mr-3">
-                            <label class="mt-3 rtl">مدل دستگاه: </label>
-                            {{ deviceform.device }}
-
-                            <label class="mt-9">تعداد خطوط شهری:</label>
-                            {{ deviceform.number_of_lines }}
-
-                            <label class="mt-3" id='Cable_label'> نوع کابل: </label>
-                            {{ deviceform.cable_type }}
+                
+                <div class="settings-grid">
+                    <!-- Right Column -->
+                    <div class="settings-column">
+                        <!-- Device Settings Card -->
+                        <div class="settings-card">
+                            <h2 class="card-header text-right">تنظیمات دستگاه</h2>
+                            <div class="flex flex-wrap -mx-2">
+                                <!-- Right side of device settings -->
+                                <div class="w-full md:w-1/2 px-2">
+                                    <div class="form-group text-right">
+                                        <label class="form-label">مدل دستگاه:</label>
+                                        {{ deviceform.device }}
+                                    </div>
+                                    
+                                    <div class="form-group text-right">
+                                        <label class="form-label">تعداد خطوط شهری:</label>
+                                        {{ deviceform.number_of_lines }}
+                                    </div>
+                                    
+                                    <div class="form-group text-right">
+                                        <label class="form-label" id="Cable_label">نوع کابل:</label>
+                                        {{ deviceform.cable_type }}
+                                    </div>
+                                </div>
+                                
+                                <!-- Alvand model specific settings (left side) -->
+                                <div id="models_for_alvand" class="w-full md:w-1/2 px-2">
+                                    <div class="form-group">
+                                        <label class="form-label">BuadRate</label>
+                                        {{ deviceform.baudrate }}
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Parity</label>
+                                        {{ deviceform.parity }}
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Databits</label>
+                                        {{ deviceform.databits }}
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Stopbits</label>
+                                        {{ deviceform.stopbits }}
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Flow</label>
+                                        {{ deviceform.flow }}
+                                    </div>
+                                </div>
+                                
+                                <!-- Binalud model specific settings -->
+                                <div id="models_for_binalud" class="w-full md:w-1/2 px-2 hidden">
+                                    <div class="form-group">
+                                        <label class="form-label">Ip</label>
+                                        {{ deviceform.smdrip }}
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Port</label>
+                                        {{ deviceform.smdrport }}
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Password</label>
+                                        {{ deviceform.smdrpassword}}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div id="models_for_alvand" class=" w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto float-left flex flex-col ltr 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs 2xl:ml-20 xl:ml-20 lg:ml-20 md:ml-20 sm:ml-16 ml-2 mb-2">
-                            <label class="mt-3 mr-48"> BuadRate</label>
-                            {{ deviceform.baudrate }}
-
-                            <label class=" mr-52"> Parity</label>
-                            {{ deviceform.parity }}
-
-                            <label class="mr-48">Databits</label>
-                            {{ deviceform.databits }}
-
-                            <label class="mr-48">Stopbits </label>
-                            {{ deviceform.stopbits }}
-
-                            <label class="mr-52">Flow</label>
-                            {{ deviceform.flow }}
-
-                        </div>
-                        <div id="models_for_binalud" class="mt-2 w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto float-left flex flex-col ltr 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs 2xl:ml-20 xl:ml-20 lg:ml-20 md:ml-20 sm:ml-16 ml-2 mb-2">
-                            <label class='mr-52'> Ip </label>
-                            {{ deviceform.smdrip }}
-                            <label class='mr-52'> Port </label>
-                            {{ deviceform.smdrport }}
-                            <label class='mr-52'> Password </label>
-                            {{ deviceform.smdrpassword}}
-
-                        </div>
-                    </fieldset>
-                    <fieldset
-                        class="w-10/12 h-auto text-right float-left 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mt-2 2xl:mr-5 mx-8 mb-1 border border-solid md:mx-8 sm:mx-7 border-gray-400">
-                        <legend class="text-center py-0 px-2 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs">گروه بندی دسترسی ها</legend>
-
-
-                        <div class=" w-full h-auto my-0 mx-0 float-right rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mt-2 flex justify-center">
-                            <input type="radio" id="edit" name="edit" value="ویرایش" class="ml-1">
-                            <label for="edit" class='ml-5'>ویرایش کردن</label>
-                            <input type="radio" id="delete" name="delete" value="حذف" class="ml-1">
-                            <label for="delete" class='ml-5'>حذف کردن</label>
-                            <input type="radio" id="add" name="add" value="اضافه کردن" class="ml-1">
-                            <label for="add">اضافه کردن</label>
-                        </div>
-
-                        <div id="models" class=" w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-[150px] mt-5 my-7 float-right flex flex-col gap-2 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mr-3">
-
-                            <label>نام گروه: </label>
-                            {{extGroup.label}}
+                        
+                        <!-- Access Groups Card -->
+                        <div class="settings-card">
+                            <h2 class="card-header text-right">گروه بندی دسترسی ها</h2>
                             
-                            <label>نام کاربر: </label>
-                            {{ userAccessToErrorsPageForm.users }}
-                        </div>
-                        <div id="models" class=" w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-[150px] mt-5 float-left flex flex-col gap-3 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs 2xl:ml-20 xl:ml-20 lg:ml-20 md:ml-20 sm:ml-16 ml-2">
-
-                            <div class="relative inline-block w-full h-[45px] mt-1 ml-4 float-left gap-1">
-                                <div class="mb-[7px] w-full h-[18px] ">
-                                    <label>داخلی ها: </label>
-                                </div>
-                                <button id="dropdownCheckboxButton2" data-dropdown-toggle="dropdownDefaultCheckbox2"
-                                        class=" w-full h-5 rtl border border-gray-500  rounded-sm 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs static block text-center items-center text-gray-700"
-                                        type="button">
-                                    <i class="fa-regular fa-chevron-down text-gray-700"></i>
-                                </button>
-
-
-                                <div id="dropdownDefaultCheckbox2"
-                                        class="hidden z-10 w-full absolute bg-white divide-y divide-gray-100 rounded-sm shadow ltr">
-                                    <ul class="p-3 space-y-3 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs text-gray-700 overflow-y-scroll h-[200px]" aria-labelledby="dropdownCheckboxButton2">
-                                    {% for ext in extGroup.exts %}
-                                        <li>
-                                            <div class="flex items-center">
-                                                {{ext}}
-                                            </div>
-                                        </li>
-                                    {% endfor %}
-                                    </ul>
+                            <div class="form-group text-right">
+                                <div class="radio-group justify-center mb-4">
+                                    <div class="radio-item">
+                                        <input type="radio" id="edit" name="edit" value="ویرایش">
+                                        <label for="edit">ویرایش کردن</label>
+                                    </div>
+                                    <div class="radio-item">
+                                        <input type="radio" id="delete" name="delete" value="حذف">
+                                        <label for="delete">حذف کردن</label>
+                                    </div>
+                                    <div class="radio-item">
+                                        <input type="radio" id="add" name="add" value="اضافه کردن">
+                                        <label for="add">اضافه کردن</label>
+                                    </div>
                                 </div>
                             </div>
-                            <label>دسترسی گزارش خطاها:</label>
-                            <label for="{{ userAccessToErrorsPageForm.errorsreport.id_for_label }}"
-                                    class="bg-gray-300 cursor-pointer relative w-20 h-9 rounded-full mr-5">
-                                {{ userAccessToErrorsPageForm.errorsreport }}
-                                <span class="w-2/5 h-4/5 bg-white absolute rounded-full left-1 top-1 peer-checked:bg-blue-600 peer-checked:left-11 transition-all duration-500">
-                            </span>
-
-                            </label>
-                        </div>
-                    </fieldset>
-
-                </div>
-                <div class="w-full h-auto mt-3  rtl float-right 2xl:mt-10 sm:w-full md:w-full 2xl:w-1/2 xl:w-1/2 lg:w-1/2">
-
-                    <fieldset
-                            class="w-5/6 2xl:11/12 xl:11/12 lg:w-11/12 h-auto p-[10px] text-right float-left 2xl:float-right xl:float-right lg:float-right mb-1 mt-2 border border-solid sm:mx-7 mx-8 sm:float-left md:mx-8 md:float-left 2xl:mx-0 xl:mx-0 lg:mx-0 border-gray-400">
-                        <legend class="text-center py-0 px-2 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs"> اطلاعات تماس</legend>
-
-                        <div id="models" class=" w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto mt-1 float-right flex flex-col gap-2 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mr-2">
-
-                            <label> استان: </label>
-                            {{ contactInfo.province }}
-
-                        </div>
-                        <div id="models" class=" w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto mt-1 float-left flex flex-col gap-2 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs  2xl:ml-20 xl:ml-20 lg:ml-20 md:ml-20 sm:ml-16 ml-4">
-
-                            <label> شماره همراه مدیر: </label>
-                            {{ contactInfo.phone_number }}
-                        </div>
-                    </fieldset>
-
-
-                    <fieldset
-                            class="w-5/6 2xl:11/12 xl:11/12 lg:w-11/12 mx-8 sm:float-left sm:mx-7 md:mx-8 md:float-left h-auto p-[10px] 
-                                text-right float-left 2xl:float-right xl:float-right lg:float-right mb-1 mt-2 border border-solid border-gray-400 2xl:mx-0 xl:mx-0 lg:mx-0">
-                        <legend class="text-center py-0 px-2 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs">هزینه های تماس</legend>
-
-                        <div id="models" class=" w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto float-right flex flex-col gap-1 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mr-2">
-
-                            <label class="mt-3"> داخل استانی:</label>
-                            {{ costForm.provincial }}
-                            <label>خارج استانی: </label>
-                            {{ costForm.outofprovincial }}
-                            <label> بین المللی:</label>
-                            {{ costForm.international }}
-
-                        </div>
-                        <div id="models" class=" w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto float-left flex flex-col gap-1 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs  2xl:ml-20 xl:ml-20 lg:ml-20 md:ml-20 sm:ml-16 ml-4">
-
-                            <label class="mt-3">ایرانسل: </label>
-                            {{ costForm.irancell }}
-                            <label>همراه اول: </label>
-                            {{ costForm.hamrahaval }}
-                            <label>رایتل: </label>
-                            {{ costForm.rightel }}
-
-                        </div>
-                    </fieldset>
-
-
-                    <fieldset
-                            class="w-5/6 2xl:11/12 xl:11/12 lg:w-11/12 mx-8 sm:mx-7 sm:float-left md:mx-8 md:float-left h-auto p-[10px] text-right mt-2 border border-solid
-                                float-left 2xl:float-right xl:float-right lg:float-right 2xl:mx-0 xl:mx-0 lg:mx-0 border-gray-400">
-                        <legend class="text-center py-0 px-2 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs">تنظیمات ایمیل</legend>
-
-
-                        <div id="models" class=" w-11/12 2xl:w-2/5 xl:w-2/5 lg:w-2/5 md:w-2/5 sm:w-2/5 h-auto float-right flex flex-col gap-2 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mr-2">
-
-
-                            <label class="mt-3"> ایمیل مبداٰ:</label>
-                            {{ emailSendingForm.collectionusername }}
-                            <label> ایمیل مقصد:</label>
-                            {{ emailSendingForm.emailtosend }}
-
-                        </div>
-                        <div id="models" class=" w-11/12 2xl:w-1/3 xl:w-1/3 lg:w-1/3 md:w-1/3 sm:w-1/3 h-auto float-left flex flex-col gap-2 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs 2xl:ml-20 xl:ml-20 lg:ml-20 md:ml-20 sm:ml-16 ml-4">
-
-
-                            <label class="mt-3">رمز ایمیل: </label>
-                            {{ emailSendingForm.collectionpassword }}
-
-                            <label>تعداد خطاها برای ارسال: </label>
-                            {{ emailSendingForm.lines }}
-
-                        </div>
-
-                        <div class=" w-10/12 h-auto float-right relative flex flex-col gap-1 rtl 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs mr-6">
-                            <label> خطاها: </label>
-                            <button id="errorsDropdownBtn" data-dropdown-toggle="errorsDropdownBtn"
-                                    class=" w-11/12 h-5 float-left rtl border border-gray-500 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs static block"
-                                    type="button">
-                                <i class="fa-regular fa-chevron-down text-gray-700"></i>
-                            </button>
-
-
-                            <div id="errorsDropdownItems"
-                                    class="hidden z-10 w-11/12 absolute bg-white divide-y divide-gray-100 rounded-sm shadow ltr">
-                                <ul class="p-3 space-y-3 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs text-gray-700 overflow-y-scroll h-[150px]" aria-labelledby="errorsDropdownItems">
-                                    {% for error in emailSendingForm.errors %}
-                                        <li>
-                                            <div class="flex items-center">
-                                                {{ error }}
+                            
+                            <div class="flex flex-wrap -mx-2">
+                                <!-- Right side of access groups -->
+                                <div class="w-full md:w-1/2 px-2">
+                                    <div class="form-group text-right">
+                                        <label class="form-label">نام گروه:</label>
+                                        {{extGroup.label}}
+                                    </div>
+                                    
+                                    <div class="form-group text-right">
+                                        <label class="form-label">نام کاربر:</label>
+                                        {{ userAccessToErrorsPageForm.users }}
+                                    </div>
+                                </div>
+                                
+                                <!-- Left side of access groups -->
+                                <div class="w-full md:w-1/2 px-2">
+                                    <div class="form-group text-right">
+                                        <label class="form-label">داخلی ها:</label>
+                                        <div class="dropdown">
+                                            <button id="dropdownCheckboxButton2" data-dropdown-toggle="dropdownDefaultCheckbox2"
+                                                    class="dropdown-toggle" type="button">
+                                                انتخاب داخلی
+                                                <i class="fa-regular fa-chevron-down"></i>
+                                            </button>
+                                            
+                                            <div id="dropdownDefaultCheckbox2" class="dropdown-menu hidden">
+                                                <div class="p-3 space-y-3 text-gray-700 overflow-y-scroll h-[200px]">
+                                                    {% for ext in extGroup.exts %}
+                                                    <div class="flex items-center py-1">
+                                                        {{ext}}
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
                                             </div>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group text-right">
+                                        <label class="form-label">دسترسی گزارش خطاها:</label>
+                                        <label for="{{ userAccessToErrorsPageForm.errorsreport.id_for_label }}" class="toggle-switch">
+                                            {{ userAccessToErrorsPageForm.errorsreport }}
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </fieldset>
-
-
+                    </div>
+                    
+                    <!-- Left Column -->
+                    <div class="settings-column">
+                        <!-- Contact Info Card -->
+                        <div class="settings-card">
+                            <h2 class="card-header text-right">اطلاعات تماس</h2>
+                            
+                            <div class="flex flex-wrap -mx-2">
+                                <div class="w-full md:w-1/2 px-2">
+                                    <div class="form-group text-right">
+                                        <label class="form-label">استان:</label>
+                                        {{ contactInfo.province }}
+                                    </div>
+                                </div>
+                                
+                                <div class="w-full md:w-1/2 px-2">
+                                    <div class="form-group text-right">
+                                        <label class="form-label">شماره همراه مدیر:</label>
+                                        {{ contactInfo.phone_number }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Call Costs Card -->
+                        <div class="settings-card">
+                            <h2 class="card-header text-right">هزینه های تماس</h2>
+                            
+                            <div class="flex flex-wrap -mx-2">
+                                <!-- Right side of call costs -->
+                                <div class="w-full md:w-1/2 px-2">
+                                    <div class="form-group text-right">
+                                        <label class="form-label">داخل استانی:</label>
+                                        {{ costForm.provincial }}
+                                    </div>
+                                    
+                                    <div class="form-group text-right">
+                                        <label class="form-label">خارج استانی:</label>
+                                        {{ costForm.outofprovincial }}
+                                    </div>
+                                    
+                                    <div class="form-group text-right">
+                                        <label class="form-label">بین المللی:</label>
+                                        {{ costForm.international }}
+                                    </div>
+                                </div>
+                                
+                                <!-- Left side of call costs -->
+                                <div class="w-full md:w-1/2 px-2">
+                                    <div class="form-group text-right">
+                                        <label class="form-label">ایرانسل:</label>
+                                        {{ costForm.irancell }}
+                                    </div>
+                                    
+                                    <div class="form-group text-right">
+                                        <label class="form-label">همراه اول:</label>
+                                        {{ costForm.hamrahaval }}
+                                    </div>
+                                    
+                                    <div class="form-group text-right">
+                                        <label class="form-label">رایتل:</label>
+                                        {{ costForm.rightel }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Email Settings Card -->
+                        <div class="settings-card">
+                            <h2 class="card-header text-right">تنظیمات ایمیل</h2>
+                            
+                            <div class="flex flex-wrap -mx-2">
+                                <!-- Right side of email settings -->
+                                <div class="w-full md:w-1/2 px-2">
+                                    <div class="form-group text-right">
+                                        <label class="form-label">ایمیل مبداٰ:</label>
+                                        {{ emailSendingForm.collectionusername }}
+                                    </div>
+                                    
+                                    <div class="form-group text-right">
+                                        <label class="form-label">ایمیل مقصد:</label>
+                                        {{ emailSendingForm.emailtosend }}
+                                    </div>
+                                </div>
+                                
+                                <!-- Left side of email settings -->
+                                <div class="w-full md:w-1/2 px-2">
+                                    <div class="form-group text-right">
+                                        <label class="form-label">رمز ایمیل:</label>
+                                        {{ emailSendingForm.collectionpassword }}
+                                    </div>
+                                    
+                                    <div class="form-group text-right">
+                                        <label class="form-label">تعداد خطاها برای ارسال:</label>
+                                        {{ emailSendingForm.lines }}
+                                    </div>
+                                </div>
+                                
+                                <!-- Errors dropdown (full width) -->
+                                <div class="w-full px-2 mt-4">
+                                    <div class="form-group text-right">
+                                        <label class="form-label">خطاها:</label>
+                                        <div class="dropdown">
+                                            <button id="errorsDropdownBtn" data-dropdown-toggle="errorsDropdownItems"
+                                                    class="dropdown-toggle" type="button">
+                                                انتخاب خطاها
+                                                <i class="fa-regular fa-chevron-down"></i>
+                                            </button>
+                                            
+                                            <div id="errorsDropdownItems" class="dropdown-menu hidden">
+                                                <div class="p-3 space-y-3 text-gray-700 overflow-y-scroll h-[200px]">
+                                                    {% for error in emailSendingForm.errors %}
+                                                    <div class="flex items-center py-1">
+                                                        {{ error }}
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-           
-            </div>
-            <div class="w-full h-[50px] flex justify-center items-center mt-4 gap-5 2xl:mt-5">
-                <input type="submit" id="apply" class="hidden">
-                <label for="apply" id="btn"
-                    class="w-1/6 h-[30px] bg-green-600 text-white 2xl:text-sm xl:text-sm lg:text-sm md:text-sm sm:text-xs text-xs border-none rounded-md py-1 text-center cursor-pointer ml-[22px]
-                            2xl:w-1/12 xl:w-1/12 lg:w-1/12 md:w-1/6 sm:w-1/6">
-                    اعمال
-            </div>
+                
+                <!-- Submit Button -->
+                <div class="flex justify-center mt-8 mb-6">
+                    <input type="submit" id="apply" class="hidden">
+                    <label for="apply" id="btn" class="btn btn-primary">
+                        اعمال
+                    </label>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -309,6 +645,7 @@
     const usersData = JSON.parse(document.getElementById('users_json').textContent);
     const contactInfosData = JSON.parse(document.getElementById('contactInfos_json').textContent);
 
+    // Initialize datepicker
     jalaliDatepicker.startWatch({
         minDate: "attr",
         maxDate: "today",
@@ -326,6 +663,7 @@
         }
     });
 
+    // Cable type change handler
     $("#id_cabel_types").change(function() {
         if ($(this).val() === "rs-232c") {
             $("#models_for_binalud").hide();
@@ -336,26 +674,35 @@
         }
     });
     
-    // Errors dropdown handler
-    const errorsShow = $('#errorsDropdownItems');
-    $('#errorsDropdownBtn').on('click', function () {
-        $('#errorsDropdownItems').toggleClass('hidden');
-    });
-
-    $(document).on('click', function (e) {
-        if (!errorsShow.hasClass('hidden') && !$(e.target).closest('#errorsDropdownBtn, #errorsDropdownItems').length) {
-            errorsShow.addClass('hidden');
-        }
-    });
+    // Dropdown handlers
+    function setupDropdown(btnSelector, menuSelector) {
+        const button = $(btnSelector);
+        const menu = $(menuSelector);
+        
+        button.on('click', function(e) {
+            e.preventDefault();
+            menu.toggleClass('hidden');
+        });
+        
+        $(document).on('click', function(e) {
+            if (!menu.hasClass('hidden') && !$(e.target).closest(`${btnSelector}, ${menuSelector}`).length) {
+                menu.addClass('hidden');
+            }
+        });
+    }
     
-    // Page reload function
+    // Setup all dropdowns
+    setupDropdown('#errorsDropdownBtn', '#errorsDropdownItems');
+    setupDropdown('#dropdownCheckboxButton2', '#dropdownDefaultCheckbox2');
+    
+    // Form data update function
     function updateData(){
         let optionsHtml = '<option value="none"> ------ </option>';
         groupnameData.forEach(function(ext) {
             optionsHtml += `<option value="${ext.label}"> ${ext.label} </option>`;
         });
         $('#id_label').replaceWith(`
-            <select id="id_label" name="label" class="w-full h-5  text-gray-600 text-xs appearance-none py-[2px]">
+            <select id="id_label" name="label" class="w-full h-5 text-gray-600 text-xs appearance-none py-[2px]">
                 ${optionsHtml}
             </select>`);
 
@@ -411,6 +758,10 @@
                 $('#id_smdrip').val('192.163.1.10');
                 $('#id_smdrport').val('2300');
                 $('#id_smdrpassword').val('PCCSMDR');
+                
+                // Show/hide appropriate sections
+                $("#models_for_binalud").hide();
+                $("#models_for_alvand").show();
             } else {
                 $('#id_smdrip').val(device.smdrip);
                 $('#id_smdrport').val(device.smdrport);
@@ -420,6 +771,10 @@
                 $('#id_baudrate').val('9600');
                 $('#id_parity').val('None');
                 $('#id_databits').val('8');
+                
+                // Show/hide appropriate sections
+                $("#models_for_binalud").show();
+                $("#models_for_alvand").hide();
             }
         } else {
             $('#id_smdrip').val('192.163.1.10');
@@ -430,6 +785,10 @@
             $('#id_baudrate').val('9600');
             $('#id_parity').val('None');
             $('#id_databits').val('8');
+            
+            // Default visibility
+            $("#models_for_binalud").hide();
+            $("#models_for_alvand").show();
         }
 
         if (contactInfosData.length > 0) {
@@ -475,11 +834,15 @@
                 });
             }
         });
+        
+        // Apply styles to form elements
+        $('select, input[type="text"], input[type="password"], input[type="number"], input[type="email"]').addClass('form-control');
     }
 
     $(document).ready(function() {
         updateData(); // Call updateData on initial load
 
+        // Radio button event handlers
         $('#edit').on('click', function () {
             $('#add').prop('checked', false);
             $('#delete').prop('checked', false);
@@ -494,9 +857,16 @@
 
         $('#add').on('click', function(){
             $('#edit').prop('checked', false);
+            $('#delete').prop('checked', false);
             $('#id_label').replaceWith(`
-                <input type="text" id="id_label" name='label' class="w-full h-5  text-gray-600 text-xs">`);
+                <input type="text" id="id_label" name='label' class="w-full form-control">`);
         });
+        
+        // Initial styling
+        $('select, input[type="text"], input[type="password"], input[type="number"], input[type="email"]').addClass('form-control');
+        
+        // Fix spacing and alignment
+        $('.toggle-switch').parent().addClass('flex items-center justify-between');
     });
 </script>
 

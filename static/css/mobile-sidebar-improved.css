@@ -1,0 +1,166 @@
+/* Enhanced Mobile Sidebar Styling */
+
+/* Improve base styling of mobile sidebar */
+#mobile-sidebar {
+    background: linear-gradient(to bottom, #4f46e5, #3b82f6) !important;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2) !important;
+    width: 200px !important; /* Slightly wider for better content display */
+    padding: 0 !important;
+    overflow-y: auto !important;
+    z-index: 10000 !important;
+}
+
+/* Improve profile section in sidebar */
+#mobile-sidebar .text-center {
+    padding: 1rem !important;
+    background: rgba(0, 0, 0, 0.1) !important;
+    margin-bottom: 1rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Enhance profile image */
+#mobile-sidebar .text-center img {
+    width: 70px !important;
+    height: 70px !important;
+    object-fit: cover !important;
+    border: 3px solid white !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Improve profile text */
+#mobile-sidebar .text-center p {
+    margin: 0.5rem 0 !important;
+    color: white !important;
+    font-weight: 500 !important;
+    font-size: 0.9rem !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Style navigation section */
+#mobile-sidebar nav {
+    padding: 0.5rem !important;
+}
+
+/* Enhance all navigation links */
+#mobile-sidebar nav a,
+#mobile-sidebar nav button {
+    display: flex !important;
+    align-items: center !important;
+    padding: 0.75rem 1rem !important;
+    color: white !important;
+    text-decoration: none !important;
+    border-radius: 8px !important;
+    margin-bottom: 0.5rem !important;
+    transition: all 0.2s ease-in-out !important;
+    position: relative !important;
+    overflow: hidden !important;
+    font-size: 0.9rem !important;
+}
+
+/* Highlight active link */
+#mobile-sidebar nav a.active {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    font-weight: bold !important;
+}
+
+/* Create hover effect */
+#mobile-sidebar nav a:hover,
+#mobile-sidebar nav button:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Style icons */
+#mobile-sidebar nav a i,
+#mobile-sidebar nav button i {
+    margin-left: 0.75rem !important;
+    font-size: 1.1rem !important;
+    width: 24px !important;
+    text-align: center !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Special styling for settings links */
+#mobile-sidebar nav a:nth-child(4),
+#mobile-sidebar nav a:nth-child(5) {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-left: 3px solid #00BCD4 !important;
+}
+
+/* Style for logout button */
+#mobile-sidebar nav button#exit-mb {
+    border: none !important;
+    background-color: rgba(255, 87, 34, 0.2) !important;
+    color: white !important;
+    border-left: 3px solid #FF5722 !important;
+    width: 100% !important;
+    text-align: right !important;
+    cursor: pointer !important;
+}
+
+#mobile-sidebar nav button#exit-mb:hover {
+    background-color: rgba(255, 87, 34, 0.3) !important;
+}
+
+/* Improve hamburger menu positioning and styling */
+#toggle-menu {
+    background-color: #4f46e5 !important;
+    color: white !important;
+    border: none !important;
+    width: 45px !important;
+    height: 45px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+    z-index: 10001 !important;
+    transition: all 0.3s ease !important;
+}
+
+#toggle-menu:hover {
+    background-color: #3b82f6 !important;
+    transform: scale(1.05) !important;
+}
+
+/* Fix for RTL alignment */
+#mobile-sidebar nav a,
+#mobile-sidebar nav button {
+    text-align: right !important;
+    justify-content: flex-start !important;
+}
+
+/* Dark mode adjustments */
+html.dark #mobile-sidebar {
+    background: linear-gradient(to bottom, #1e293b, #0f172a) !important;
+}
+
+html.dark #toggle-menu {
+    background-color: #1e293b !important;
+}
+
+html.dark #toggle-menu:hover {
+    background-color: #0f172a !important;
+}
+
+/* Better animation for sidebar opening */
+@keyframes slideIn {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+@keyframes slideOut {
+    from { transform: translateX(0); }
+    to { transform: translateX(100%); }
+}
+
+#mobile-sidebar.slide-in {
+    animation: slideIn 0.3s forwards;
+}
+
+#mobile-sidebar.slide-out {
+    animation: slideOut 0.3s forwards;
+} 
