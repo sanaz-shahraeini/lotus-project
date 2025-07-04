@@ -189,7 +189,7 @@ class Connections(models.Model):
 #     relationship = models.CharField(max_length=191, blank=True, null=True)
 #     country = models.CharField(max_length=191, blank=True, null=True)
 #     province = models.CharField(max_length=191, blank=True, null=True)
-#     city = models.CharField(max_length=191, blank=True, null=True)
+#     city = models.CharField(max_length=191, blansuvk=True, null=True)
 #     address = models.CharField(max_length=191, blank=True, null=True)
 #     notes = models.CharField(max_length=500, blank=True, null=True)
 #     created_at = models.DateTimeField(blank=True, null=True)

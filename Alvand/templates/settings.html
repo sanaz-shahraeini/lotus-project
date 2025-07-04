@@ -7,69 +7,167 @@
 <link rel="stylesheet" href="{% static 'css/direct-layout-fix.css' %}" />
 <link rel="stylesheet" href="{% static 'css/header-optimize.css' %}" />
 <link rel="stylesheet" href="{% static 'css/dashboard-content.css' %}" />
+<!-- Access Groups Section Styling -->
+<link rel="stylesheet" href="{% static 'css/access-groups-fix.css' %}" />
+<link rel="stylesheet" href="{% static 'css/access-groups-mobile-fix.css' %}" />
+<link rel="stylesheet" href="{% static 'css/dropdown-layer-fix.css' %}" />
 <script src="{% static 'js/settings-page-forms-fix.js' %}"></script>
+<script src="{% static 'js/access-groups-fix.js' %}"></script>
 <style>
     /* Root variables to match global sidebar/navbar color scheme */
-    :root {
-        --primary-color: #00BCD4;
-        --primary-hover: #0097A7;
-        --primary-light: #B2EBF2;
-        --secondary-color: #f3f4f6;
-        --text-color: #1f2937;
-        --border-color: #e5e7eb;
-        --sidebar-width: 135px;
-        --content-padding: 1.5rem;
-        --bg-color: #f9fafb;
+      :root {
+        /* Match theme.css variables */
+        --primary-color: #00BCD4;       /* Lotus Aqua */
+        --primary-hover: #29B6F6;       /* Sky Blue */
+        --secondary-color: #F5F7FA;     /* White Smoke */
+        --text-color: #37474F;          /* Dark Gray */
+        --light-text: #90A4AE;          /* Medium Gray */
+        --border-color: #CFD8DC;        /* Light Gray */
+        --bg-color: #F5F7FA;            /* White Smoke */
         --card-bg: white;
-        --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        --card-radius: 0.75rem;
-        --form-element-height: 38px;
-        --transition-speed: 0.3s;
+        --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        
+        /* Dashboard-specific variables */
+        --primary: var(--primary-color);
+        --primary-dark: #0097A7;        /* Darker Aqua */
+        --primary-light: #80DEEA;       /* Soft Mint */
+        --secondary: #26A69A;           /* Emerald Green */
+        --warning: #FF7043;             /* Sunset Orange */
+        --danger: #FF5252;              /* Bright Red */
+        --light: #F5F7FA;               /* White Smoke */
+        --dark: #0D1B2A;                /* Deep Indigo */
+        --gray: #90A4AE;                /* Medium Gray */
+        --gray-light: #CFD8DC;          /* Light Gray */
+        --transition: all 0.3s ease;
     }
     
-    /* Dark mode variables - matching sidebar dark theme */
-    .dark {
-        --bg-color: #0D1B2A;
-        --card-bg: #1f2937;
-        --text-color: #F5F7FA;
-        --border-color: #374151;
-        --secondary-color: #374151;
-        --primary-color: #00BCD4;
-        --primary-hover: #0097A7;
-        --primary-light: #006064;
-        --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.25), 0 2px 4px -1px rgba(0, 0, 0, 0.15);
+    /* Dark mode variables to match theme.css */
+    html.dark {
+        --primary-color: #00BCD4;         /* Lotus Aqua */
+        --primary-hover: #29B6F6;         /* Sky Blue */
+        --secondary-color: #0D1B2A;       /* Deep Indigo */
+        --text-color: #F5F7FA;            /* White Smoke */
+        --light-text: #CFD8DC;            /* Light Gray */
+        --border-color: #37474F;          /* Dark Gray */
+        --bg-color: #121212;              /* Dark Navy */
+        --card-bg: #0D1B2A;               /* Deep Indigo */
+        --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        
+        /* Update dashboard-specific dark mode variables */
+        --primary: var(--primary-color);
+        --primary-dark: var(--primary-hover);
+        --light: var(--text-color);
+        --dark: var(--bg-color);
+        --gray: var(--light-text);
+        --gray-light: var(--border-color);
     }
     
-    /* Global styles for better typography and spacing */
-    body {
-        background-color: var(--bg-color);
-        color: var(--text-color);
-        transition: background-color var(--transition-speed), color var(--transition-speed);
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+     /* Fix for theme toggle icons in navbar */
+     .theme-toggle-btn i,
+    .dark-mode-toggle i,
+    .light-mode-toggle i,
+    [data-theme-toggle] i,
+    .theme-switch i,
+    #themeToggle i,
+    .navbar .fa-moon,
+    .navbar .fa-sun,
+    header .fa-moon,
+    header .fa-sun,
+    .nav .fa-moon,
+    .nav .fa-sun,
+    .theme-toggle-icon {
+        color: #00BCD4 !important;     /* Lotus Aqua */
+        font-size: 1.25rem !important;
+        filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2)) !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transition: all 0.2s ease !important;
     }
     
-    /* Main content layout with sidebar integration */
+    .dark .theme-toggle-btn i,
+    .dark .dark-mode-toggle i,
+    .dark .light-mode-toggle i,
+    .dark [data-theme-toggle] i,
+    .dark .theme-switch i,
+    .dark #themeToggle i,
+    .dark .navbar .fa-moon,
+    .dark .navbar .fa-sun,
+    .dark header .fa-moon,
+    .dark header .fa-sun,
+    .dark .nav .fa-moon, 
+    .dark .nav .fa-sun,
+    .dark .theme-toggle-icon {
+        color: #80DEEA !important;    /* Soft Mint */
+    }
+    
+    /* Specific styles for sun/moon icons to ensure visibility */
+    .fa-moon {
+        color: #00BCD4 !important;    /* Lotus Aqua */
+    }
+    
+    .dark .fa-moon {
+        color: #80DEEA !important;    /* Soft Mint */
+    }
+    
+    .fa-sun {
+        color: #FF7043 !important;    /* Sunset Orange */
+    }
+    
+    .dark .fa-sun {
+        color: #FF9E80 !important;    /* Lighter Sunset Orange */
+    }
+    
+    /* Show correct icon based on theme */
+    .fa-sun {
+        display: none !important;
+    }
+    
+    .fa-moon {
+        display: inline-block !important;
+    }
+    
+    .dark .fa-sun {
+        display: inline-block !important;
+    }
+    
+    .dark .fa-moon {
+        display: none !important;
+    }
+    
+    
     .main-content {
-        margin-right: 0 !important;
-        padding: 1rem;
-        transition: all var(--transition-speed) ease;
-        width: 100%;
+        margin-right: var(--sidebar-width);
+        margin-left: 0;
+        margin-top: 10px;
+        width: calc(100% - var(--sidebar-width));
+        padding: var(--main-padding);
+        background-color: var(--bg-color);
+        min-height: 100vh;
     }
     
-    @media (min-width: 1024px) {
+    /* RTL Support */
+    html[dir="ltr"] .main-content {
+        margin-right: 0;
+        margin-left: var(--sidebar-width);
+    }
+    
+    @media (max-width: 768px) {
         .main-content {
-            margin-right: 135px !important;
-            padding: 2rem;
-            width: calc(100% - 135px) !important;
+            margin-right: 0;
+            margin-left: 0;
+            width: 100%;
         }
     }
-    
-    /* Fix for RTL layout with sidebar */
-    body[dir="rtl"] .main-content {
-        margin-right: 135px !important;
-        margin-left: 0 !important;
+    body {
+        direction: rtl;
+        text-align: right;
+        font-family: 'Vazir', system-ui, -apple-system, sans-serif;
+        color: var(--text-color);
+        background-color: var(--bg-color);
+        min-height: 100vh;
+        line-height: 1.6;
+        transition: background-color 0.3s, color 0.3s;
     }
-    
     body[dir="rtl"] .settings-container {
         padding-right: 1rem !important;
     }
@@ -82,6 +180,7 @@
     
     .page-header {
         margin-bottom: 2rem;
+        margin-top: 2rem;
         border-bottom: 1px solid var(--border-color);
         padding-bottom: 1rem;
     }
@@ -191,6 +290,16 @@
     
     input:checked + .slider:before {
         transform: translateX(1.5rem);
+    }
+    
+    /* RTL support for toggle switch */
+    [dir="rtl"] .slider:before {
+        left: auto;
+        right: 0.25rem;
+    }
+    
+    [dir="rtl"] input:checked + .slider:before {
+        transform: translateX(-1.5rem);
     }
     
     /* Dropdown styling */
@@ -307,7 +416,7 @@
         }
     }
     
-    /* Fix for RTL layout */
+            /* Fix for RTL layout */
     body[dir="rtl"] .radio-item input[type="radio"] {
         margin-right: 0;
         margin-left: 0.5rem;
@@ -316,6 +425,12 @@
     body[dir="rtl"] .dropdown-toggle::after {
         left: auto;
         right: 15px;
+    }
+    
+    body[dir="rtl"] .toggle-switch {
+        margin-left: 0;
+        margin-right: auto;
+        display: block;
     }
 
     /* Responsive adjustments */
@@ -330,11 +445,11 @@
     }
     
     /* Fix for sidebar consistency */
-    .main-content {
+    /* .main-content {
         margin-left: 0 !important;
         margin-right: var(--sidebar-width) !important; 
     }
-    
+     */
     @media (max-width: 1023px) {
         .main-content {
             margin-right: 0 !important;
@@ -383,27 +498,27 @@
                                 <!-- Alvand model specific settings (left side) -->
                                 <div id="models_for_alvand" class="w-full md:w-1/2 px-2">
                                     <div class="form-group">
-                                        <label class="form-label">BuadRate</label>
+                                        <label class="form-label text-left">BuadRate</label>
                                         {{ deviceform.baudrate }}
                                     </div>
                                     
                                     <div class="form-group">
-                                        <label class="form-label">Parity</label>
+                                        <label class="form-label text-left">Parity</label>
                                         {{ deviceform.parity }}
                                     </div>
                                     
                                     <div class="form-group">
-                                        <label class="form-label">Databits</label>
+                                        <label class="form-label text-left">Databits</label>
                                         {{ deviceform.databits }}
                                     </div>
                                     
                                     <div class="form-group">
-                                        <label class="form-label">Stopbits</label>
+                                        <label class="form-label text-left">Stopbits</label>
                                         {{ deviceform.stopbits }}
                                     </div>
                                     
                                     <div class="form-group">
-                                        <label class="form-label">Flow</label>
+                                        <label class="form-label text-left">Flow</label>
                                         {{ deviceform.flow }}
                                     </div>
                                 </div>
@@ -429,29 +544,30 @@
                         </div>
                         
                         <!-- Access Groups Card -->
-                        <div class="settings-card">
+                        <div class="settings-card access-groups-section">
                             <h2 class="card-header text-right">گروه بندی دسترسی ها</h2>
                             
+                            <!-- Operation Selection -->
                             <div class="form-group text-right">
-                                <div class="radio-group justify-center mb-4">
-                                    <div class="radio-item">
-                                        <input type="radio" id="edit" name="edit" value="ویرایش">
-                                        <label for="edit">ویرایش کردن</label>
+                                <div class="radio-group" role="radiogroup" aria-label="عملیات گروه">
+                                    <div class="radio-item" role="radio" aria-checked="false">
+                                        <input type="radio" id="edit" name="operation" value="ویرایش">
+                                        <label for="edit">ویرایش</label>
                                     </div>
-                                    <div class="radio-item">
-                                        <input type="radio" id="delete" name="delete" value="حذف">
-                                        <label for="delete">حذف کردن</label>
+                                    <div class="radio-item" role="radio" aria-checked="false">
+                                        <input type="radio" id="delete" name="operation" value="حذف">
+                                        <label for="delete">حذف</label>
                                     </div>
-                                    <div class="radio-item">
-                                        <input type="radio" id="add" name="add" value="اضافه کردن">
-                                        <label for="add">اضافه کردن</label>
+                                    <div class="radio-item" role="radio" aria-checked="false">
+                                        <input type="radio" id="add" name="operation" value="اضافه">
+                                        <label for="add">اضافه</label>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="flex flex-wrap -mx-2">
+                            <div class="access-groups-container">
                                 <!-- Right side of access groups -->
-                                <div class="w-full md:w-1/2 px-2">
+                                <div class="access-groups-column">
                                     <div class="form-group text-right">
                                         <label class="form-label">نام گروه:</label>
                                         {{extGroup.label}}
@@ -464,21 +580,24 @@
                                 </div>
                                 
                                 <!-- Left side of access groups -->
-                                <div class="w-full md:w-1/2 px-2">
+                                <div class="access-groups-column">
                                     <div class="form-group text-right">
                                         <label class="form-label">داخلی ها:</label>
-                                        <div class="dropdown">
+                                        <div class="dropdown ext-dropdown">
                                             <button id="dropdownCheckboxButton2" data-dropdown-toggle="dropdownDefaultCheckbox2"
-                                                    class="dropdown-toggle" type="button">
+                                                    type="button">
                                                 انتخاب داخلی
                                                 <i class="fa-regular fa-chevron-down"></i>
                                             </button>
                                             
                                             <div id="dropdownDefaultCheckbox2" class="dropdown-menu hidden">
-                                                <div class="p-3 space-y-3 text-gray-700 overflow-y-scroll h-[200px]">
+                                                <div class="p-3 space-y-3 overflow-y-auto max-h-[200px]">
                                                     {% for ext in extGroup.exts %}
-                                                    <div class="flex items-center py-1">
-                                                        {{ext}}
+                                                    <div class="dropdown-item">
+                                                        <label class="flex items-center w-full cursor-pointer">
+                                                            <input type="checkbox" class="ext-checkbox mr-2" value="{{ext.value|default:ext}}" {% if ext.checked %}checked{% endif %}>
+                                                            <span>{{ext.label|default:ext}}</span>
+                                                        </label>
                                                     </div>
                                                     {% endfor %}
                                                 </div>
@@ -600,8 +719,7 @@
                                     <div class="form-group text-right">
                                         <label class="form-label">خطاها:</label>
                                         <div class="dropdown">
-                                            <button id="errorsDropdownBtn" data-dropdown-toggle="errorsDropdownItems"
-                                                    class="dropdown-toggle" type="button">
+                                            <button id="errorsDropdownBtn" data-dropdown-toggle="errorsDropdownItems" type="button">
                                                 انتخاب خطاها
                                                 <i class="fa-regular fa-chevron-down"></i>
                                             </button>
@@ -624,7 +742,7 @@
                 </div>
                 
                 <!-- Submit Button -->
-                <div class="flex justify-center mt-8 mb-6">
+                <div class="flex justify-center mt-4 mb-6">
                     <input type="submit" id="apply" class="hidden">
                     <label for="apply" id="btn" class="btn btn-primary">
                         اعمال
