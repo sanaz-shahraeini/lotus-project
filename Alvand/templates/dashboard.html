@@ -877,8 +877,8 @@
                         <button type="submit" class="filter-button filter-button-apply">
                             <i class="fa-solid fa-filter"></i> اعمال فیلتر
                         </button>
-                        <button type="button" id="reverse_up" class="filter-button filter-button-sort">
-                            <i class="fa-solid fa-arrow-up"></i> مرتب‌سازی
+                        <button type="button" class="filter-button filter-button-sort sort-btn" data-column="1" data-type="date">
+                            <i class="fa-solid fa-sort"></i> مرتب‌سازی
                         </button>
                         <button type="reset" class="filter-button filter-button-reset">
                             <i class="fa-solid fa-rotate-left"></i> پاک کردن فیلترها
@@ -902,16 +902,16 @@
                         <thead class="bg-slate-50 dark:bg-transparent" style="background-color: var(--table-header-bg);">
                             <tr>
                                 <th class="w-16"><div class="flex items-center justify-center"><span class="text-xs font-medium" style="color: var(--light-text);">ردیف</span><button class="mr-1 text-slate-300 hover:text-slate-400 transition-colors"><i class="fa-solid fa-sort text-xs"></i></button></div></th>
-                                <th class="min-w-[120px]"><div class="flex items-center justify-center"><span class="text-xs font-medium" style="color: var(--light-text);">تاریخ و زمان</span><button class="mr-1 text-slate-300 hover:text-slate-400 transition-colors"><i class="fa-solid fa-sort text-xs"></i></button></div></th>
-                                <th class="group"><div class="flex items-center justify-center"><span>ساعت</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
-                                <th class="group"><div class="flex items-center justify-center"><span>شماره مخاطب</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
-                                <th class="group"><div class="flex items-center justify-center"><span>شماره داخلی</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
-                                <th class="group"><div class="flex items-center justify-center"><span>خط شهری</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
-                                <th class="group"><div class="flex items-center justify-center"><span>مدت تماس</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
-                                <th class="group"><div class="flex items-center justify-center"><span>نوع تماس</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
-                                <th class="group"><div class="flex items-center justify-center"><span>زمان برق</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
-                                <th class="group"><div class="flex items-center justify-center"><span>انتقال</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
-                                <th class="group"><div class="flex items-center justify-center"><span>هزینه</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-sort"></i></button></div></th>
+                                <th class="min-w-[120px]"><div class="flex items-center justify-center"><span class="text-xs font-medium" style="color: var(--light-text);">تاریخ و زمان</span><button class="mr-1 text-primary hover:text-primary-dark transition-colors sort-btn" data-column="1" data-type="date"><i class="fa-solid fa-sort text-xs"></i></button></div></th>
+                                <th class="group"><div class="flex items-center justify-center"><span>ساعت</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"></button></div></th>
+                                <th class="group"><div class="flex items-center justify-center"><span>شماره مخاطب</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"></button></div></th>
+                                <th class="group"><div class="flex items-center justify-center"><span>شماره داخلی</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"></button></div></th>
+                                <th class="group"><div class="flex items-center justify-center"><span>خط شهری</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"></button></div></th>
+                                <th class="group"><div class="flex items-center justify-center"><span>مدت تماس</span><button class="mr-1 text-primary hover:text-primary-dark transition-colors sort-btn" data-column="6" data-type="number"><i class="fa-solid fa-sort text-xs"></i></button></div></th>
+                                <th class="group"><div class="flex items-center justify-center"><span>نوع تماس</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"></button></div></th>
+                                <th class="group"><div class="flex items-center justify-center"><span>زمان برق</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"></button></div></th>
+                                <th class="group"><div class="flex items-center justify-center"><span>انتقال</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"></button></div></th>
+                                <th class="group"><div class="flex items-center justify-center"><span>هزینه</span><button class="mr-1 text-primary hover:text-primary-dark transition-colors sort-btn" data-column="10" data-type="currency"><i class="fa-solid fa-sort text-xs"></i></button></div></th>
                             </tr>
                         </thead>
                         <tbody id="tbody">
@@ -1278,21 +1278,108 @@
         }
         calculateTotalCosts(); // Initial calculation
         
-        let sortState = {}; // To store sort state for each column if needed, for now just global reverse
+        let sortState = {}; // To store sort state for each column
 
-        $('#reverse_up').on('click', function() {
-            const $icon = $(this).find('i');
-            const isAsc = $icon.hasClass('fa-arrow-down'); // If it has arrow-down, next sort is asc
-            $icon.toggleClass('fa-arrow-up fa-arrow-down');
+        // Enhanced sorting function for table columns
+        $('.sort-btn').on('click', function() {
+            // Get column info from data attributes
+            const columnIndex = parseInt($(this).data('column'));
+            const dataType = $(this).data('type');
             
-            const rows = Array.from($('#tbody tr'));
-            rows.sort((a, b) => { // Basic sort by first column (row number) for now
-                const valA = parseInt($(a).find('td:first-child span').text()) || 0;
-                const valB = parseInt($(b).find('td:first-child span').text()) || 0;
-                return isAsc ? valA - valB : valB - valA;
+            // Get current sort direction from icon
+            const $icon = $(this).find('i');
+            let sortAsc = true; // Default to ascending
+            
+            // Determine current sort direction from icon state
+            if ($icon.hasClass('fa-sort-down')) {
+                sortAsc = false;
+            } else if ($icon.hasClass('fa-sort-up')) {
+                sortAsc = true;
+            } else {
+                // First click - default to ascending
+                sortAsc = true;
+            }
+            
+            // Toggle for next click
+            sortAsc = !sortAsc;
+            
+            // Reset all sort icons to default
+            $('.sort-btn i').attr('class', 'fa-solid fa-sort text-xs');
+            
+            // Update current column's icon
+            $icon.attr('class', 'fa-solid ' + (sortAsc ? 'fa-sort-up' : 'fa-sort-down') + ' text-xs');
+            
+            console.log(`Sorting column ${columnIndex}, type ${dataType}, ascending: ${sortAsc}`);
+            
+            // Get all visible table rows for sorting
+            const rows = $('#tbody tr:visible').get();
+            
+            // Sort the rows
+            rows.sort(function(a, b) {
+                let valA, valB;
+                
+                if (dataType === 'number') {
+                    // Duration column - first extract the text content of the cell
+                    const cellTextA = $(a).find('td').eq(columnIndex).text().trim();
+                    const cellTextB = $(b).find('td').eq(columnIndex).text().trim();
+                    
+                    // Extract just the numeric part
+                    valA = parseInt(cellTextA) || 0;
+                    valB = parseInt(cellTextB) || 0;
+                    
+                } else if (dataType === 'date') {
+                    // Date column - find the span with the date in it
+                    const cellA = $(a).find('td').eq(columnIndex);
+                    const cellB = $(b).find('td').eq(columnIndex);
+                    
+                    const dateTextA = cellA.find('span.font-medium').text().trim();
+                    const dateTextB = cellB.find('span.font-medium').text().trim();
+                    
+                    // Parse the date in YYYY-MM-DD format
+                    const parseDate = function(dateStr) {
+                        if (!dateStr) return 0;
+                        
+                        const parts = dateStr.split('-');
+                        if (parts.length === 3) {
+                            // Convert to numeric value for easy comparison
+                            return (parseInt(parts[0]) * 10000) + 
+                                  (parseInt(parts[1]) * 100) + 
+                                   parseInt(parts[2]);
+                        }
+                        return 0;
+                    };
+                    
+                    valA = parseDate(dateTextA);
+                    valB = parseDate(dateTextB);
+                    
+                } else if (dataType === 'currency') {
+                    // Price column - find span with price
+                    const cellA = $(a).find('td').eq(columnIndex);
+                    const cellB = $(b).find('td').eq(columnIndex);
+                    
+                    const priceTextA = cellA.find('span.font-medium').text().trim();
+                    const priceTextB = cellB.find('span.font-medium').text().trim();
+                    
+                    // Handle 'ندارد' case and extract numeric value
+                    valA = (priceTextA === 'ندارد') ? 0 : parseInt(priceTextA.replace(/[^\d]/g, '')) || 0;
+                    valB = (priceTextB === 'ندارد') ? 0 : parseInt(priceTextB.replace(/[^\d]/g, '')) || 0;
+                }
+                
+                // Sort based on the extracted values and sort direction
+                if (typeof valA === 'string') {
+                    return sortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                } else {
+                    return sortAsc ? valA - valB : valB - valA;
+                }
             });
-            $('#tbody').empty().append(rows);
-            calculateTotalCosts(); // Recalculate after sort
+            
+            // Append the sorted rows back to the tbody. This moves them to the end, ordered.
+            $.each(rows, function(index, row) {
+                $('#tbody').append(row);
+            });
+            
+            // Recalculate totals after sorting
+            calculateTotalCosts();
         });
         
         // Combined search for quickSearch (header) and searchBox (filter)

@@ -8,47 +8,72 @@
 <link rel="stylesheet" href="{% static 'css/dashboard-width-fix.css' %}">
 <link rel="stylesheet" href="{% static 'css/direct-layout-fix.css' %}">
 <link rel="stylesheet" href="{% static 'css/dashboard-content.css' %}">
+<link rel="stylesheet" href="{% static 'css/jalalidatepicker.min.css' %}">
 
 
 <style>
     :root {
         /* Match theme.css variables */
-        --primary-color: #00BCD4;       /* Lotus Aqua */
-        --primary-hover: #29B6F6;       /* Sky Blue */
-        --secondary-color: #F5F7FA;     /* White Smoke */
-        --text-color: #37474F;          /* Dark Gray */
-        --light-text: #90A4AE;          /* Medium Gray */
-        --border-color: #CFD8DC;        /* Light Gray */
-        --bg-color: #F5F7FA;            /* White Smoke */
+        --primary-color: #00BCD4;
+        /* Lotus Aqua */
+        --primary-hover: #29B6F6;
+        /* Sky Blue */
+        --secondary-color: #F5F7FA;
+        /* White Smoke */
+        --text-color: #37474F;
+        /* Dark Gray */
+        --light-text: #90A4AE;
+        /* Medium Gray */
+        --border-color: #CFD8DC;
+        /* Light Gray */
+        --bg-color: #F5F7FA;
+        /* White Smoke */
         --card-bg: white;
         --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-        
+
         /* Dashboard-specific variables */
         --primary: var(--primary-color);
-        --primary-dark: #0097A7;        /* Darker Aqua */
-        --primary-light: #80DEEA;       /* Soft Mint */
-        --secondary: #26A69A;           /* Emerald Green */
-        --warning: #FF7043;             /* Sunset Orange */
-        --danger: #FF5252;              /* Bright Red */
-        --light: #F5F7FA;               /* White Smoke */
-        --dark: #0D1B2A;                /* Deep Indigo */
-        --gray: #90A4AE;                /* Medium Gray */
-        --gray-light: #CFD8DC;          /* Light Gray */
+        --primary-dark: #0097A7;
+        /* Darker Aqua */
+        --primary-light: #80DEEA;
+        /* Soft Mint */
+        --secondary: #26A69A;
+        /* Emerald Green */
+        --warning: #FF7043;
+        /* Sunset Orange */
+        --danger: #FF5252;
+        /* Bright Red */
+        --light: #F5F7FA;
+        /* White Smoke */
+        --dark: #0D1B2A;
+        /* Deep Indigo */
+        --gray: #90A4AE;
+        /* Medium Gray */
+        --gray-light: #CFD8DC;
+        /* Light Gray */
         --transition: all 0.3s ease;
     }
-    
+
     /* Dark mode variables to match theme.css */
     html.dark {
-        --primary-color: #00BCD4;         /* Lotus Aqua */
-        --primary-hover: #29B6F6;         /* Sky Blue */
-        --secondary-color: #0D1B2A;       /* Deep Indigo */
-        --text-color: #F5F7FA;            /* White Smoke */
-        --light-text: #CFD8DC;            /* Light Gray */
-        --border-color: #37474F;          /* Dark Gray */
-        --bg-color: #121212;              /* Dark Navy */
-        --card-bg: #0D1B2A;               /* Deep Indigo */
+        --primary-color: #00BCD4;
+        /* Lotus Aqua */
+        --primary-hover: #29B6F6;
+        /* Sky Blue */
+        --secondary-color: #0D1B2A;
+        /* Deep Indigo */
+        --text-color: #F5F7FA;
+        /* White Smoke */
+        --light-text: #CFD8DC;
+        /* Light Gray */
+        --border-color: #37474F;
+        /* Dark Gray */
+        --bg-color: #121212;
+        /* Dark Navy */
+        --card-bg: #0D1B2A;
+        /* Deep Indigo */
         --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        
+
         /* Update dashboard-specific dark mode variables */
         --primary: var(--primary-color);
         --primary-dark: var(--primary-hover);
@@ -57,7 +82,7 @@
         --gray: var(--light-text);
         --gray-light: var(--border-color);
     }
-    
+
     /* Fix for theme toggle icons in navbar */
     .theme-toggle-btn i,
     .dark-mode-toggle i,
@@ -72,14 +97,15 @@
     .nav .fa-moon,
     .nav .fa-sun,
     .theme-toggle-icon {
-        color: #00BCD4 !important;     /* Lotus Aqua */
+        color: #00BCD4 !important;
+        /* Lotus Aqua */
         font-size: 1.25rem !important;
-        filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2)) !important;
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2)) !important;
         opacity: 1 !important;
         visibility: visible !important;
         transition: all 0.2s ease !important;
     }
-    
+
     .dark .theme-toggle-btn i,
     .dark .dark-mode-toggle i,
     .dark .light-mode-toggle i,
@@ -90,46 +116,51 @@
     .dark .navbar .fa-sun,
     .dark header .fa-moon,
     .dark header .fa-sun,
-    .dark .nav .fa-moon, 
+    .dark .nav .fa-moon,
     .dark .nav .fa-sun,
     .dark .theme-toggle-icon {
-        color: #80DEEA !important;    /* Soft Mint */
+        color: #80DEEA !important;
+        /* Soft Mint */
     }
-    
+
     /* Specific styles for sun/moon icons to ensure visibility */
     .fa-moon {
-        color: #00BCD4 !important;    /* Lotus Aqua */
+        color: #00BCD4 !important;
+        /* Lotus Aqua */
     }
-    
+
     .dark .fa-moon {
-        color: #80DEEA !important;    /* Soft Mint */
+        color: #80DEEA !important;
+        /* Soft Mint */
     }
-    
+
     .fa-sun {
-        color: #FF7043 !important;    /* Sunset Orange */
+        color: #FF7043 !important;
+        /* Sunset Orange */
     }
-    
+
     .dark .fa-sun {
-        color: #FF9E80 !important;    /* Lighter Sunset Orange */
+        color: #FF9E80 !important;
+        /* Lighter Sunset Orange */
     }
-    
+
     /* Show correct icon based on theme */
     .fa-sun {
         display: none !important;
     }
-    
+
     .fa-moon {
         display: inline-block !important;
     }
-    
+
     .dark .fa-sun {
         display: inline-block !important;
     }
-    
+
     .dark .fa-moon {
         display: none !important;
     }
-    
+
     /* Base RTL Layout */
     body {
         direction: rtl;
@@ -141,7 +172,7 @@
         line-height: 1.6;
         transition: background-color 0.3s, color 0.3s;
     }
-    
+
     @media (max-width: 768px) {
         .main-content {
             margin-right: 0;
@@ -192,7 +223,8 @@
 
     .input-field:focus {
         border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1); /* Lotus Aqua with opacity */
+        box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
+        /* Lotus Aqua with opacity */
         outline: none;
     }
 
@@ -260,6 +292,7 @@
     }
 
     @media print {
+
         .filter-section,
         .sort-btn,
         .pagination {
@@ -282,80 +315,322 @@
         .filter-section {
             padding: 1rem 0.75rem;
         }
-        
+
         .flex.flex-wrap.gap-4 {
             gap: 0.75rem !important;
         }
-        
+
         .flex.items-center.gap-3 {
             flex-direction: column;
             align-items: flex-start;
             width: 100%;
             gap: 0.5rem !important;
         }
-        
+
         form.flex.items-center.gap-3 {
             flex-direction: column;
             width: 100%;
         }
-        
+
         form .flex.items-center.gap-3 {
             flex-direction: row;
             flex-wrap: wrap;
             width: 100%;
         }
-        
+
         .input-field {
             width: 100%;
             max-width: 100%;
         }
-        
+
         input[type="search"].input-field.w-64 {
             width: 100%;
         }
-        
+
         .pagination {
             width: 100%;
             justify-content: space-between;
         }
-        
+
         .btn {
             width: 100%;
             text-align: center;
         }
-        
+
         .table-modern th,
         .table-modern td {
             padding: 0.75rem 0.5rem;
             font-size: 0.875rem;
         }
-        
+
         /* Make the most important columns visible by default */
         .table-modern th:nth-child(n+5),
         .table-modern td:nth-child(n+5) {
             display: table-cell;
         }
-        
+
         .table-modern th:nth-child(-n+4),
         .table-modern td:nth-child(-n+4) {
             display: none;
         }
-        
+
         /* Show the row number column always */
         .table-modern th:last-child,
         .table-modern td:last-child {
             display: table-cell;
         }
     }
-    
+
     /* For even smaller screens */
     @media (max-width: 480px) {
         .filter-section {
             padding: 0.75rem 0.5rem;
         }
-        
+
         .pagination span {
             display: none;
+        }
+    }
+
+    /* --- Jalali Datepicker Custom Fixes --- */
+    jdp-overlay {
+        z-index: 9998 !important;
+        position: fixed !important;
+    }
+    
+    jdp-container {
+        z-index: 9999 !important;
+        position: absolute !important;
+        display: block !important;
+        direction: rtl !important;
+        font-family: inherit !important;
+        min-width: 340px !important;
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+        border-radius: 16px !important;
+        box-shadow: 0 8px 32px rgba(0, 188, 212, 0.15), 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+        border: 2px solid rgba(0, 188, 212, 0.1) !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+    }
+    
+    /* Redesigned Header Section */
+    jdp-container .jdp-months,
+    jdp-container .jdp-years {
+        background: linear-gradient(135deg, #00BCD4 0%, #26A69A 100%) !important;
+        color: white !important;
+        font-size: 0.9rem !important;
+        font-weight: 600 !important;
+        margin: 0 !important;
+        padding: 12px 8px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        position: relative !important;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    jdp-container .jdp-months {
+        width: 50% !important;
+        border-left: 1px solid rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    jdp-container .jdp-years {
+        width: 50% !important;
+    }
+    
+    /* Navigation Buttons - Modern Design */
+    jdp-container .jdp-icon-minus,
+    jdp-container .jdp-icon-plus {
+        position: absolute !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        width: 32px !important;
+        height: 32px !important;
+        background: rgba(255, 255, 255, 0.9) !important;
+        border: none !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+        z-index: 10 !important;
+    }
+    
+    jdp-container .jdp-icon-minus {
+        right: 8px !important;
+    }
+    
+    jdp-container .jdp-icon-plus {
+        left: 8px !important;
+    }
+    
+    jdp-container .jdp-icon-minus:hover,
+    jdp-container .jdp-icon-plus:hover {
+        background: white !important;
+        transform: translateY(-50%) scale(1.1) !important;
+        box-shadow: 0 4px 16px rgba(0, 188, 212, 0.3) !important;
+    }
+    
+    jdp-container .jdp-icon-minus svg,
+    jdp-container .jdp-icon-plus svg {
+        width: 16px !important;
+        height: 16px !important;
+        fill: #011619 !important;
+        transition: fill 0.2s !important;
+    }
+    
+    jdp-container .jdp-icon-minus:hover svg,
+    jdp-container .jdp-icon-plus:hover svg {
+        fill: #011416 !important;
+    }
+    
+    /* Month and Year Selectors */
+    jdp-container .jdp-month,
+    jdp-container .jdp-month input,
+    jdp-container .jdp-month select,
+    jdp-container .jdp-year,
+    jdp-container .jdp-year input,
+    jdp-container .jdp-year select {
+        background: transparent !important;
+        border: none !important;
+        color: white !important;
+        font-size: 0.9rem !important;
+        font-weight: 600 !important;
+        text-align: center !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        outline: none !important;
+        cursor: pointer !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    jdp-container .jdp-month select,
+    jdp-container .jdp-year select {
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e") !important;
+        background-repeat: no-repeat !important;
+        background-position: left 8px center !important;
+        background-size: 12px !important;
+        padding-left: 24px !important;
+    }
+    
+    /* Dropdown Options */
+    jdp-container .jdp-month input option,
+    jdp-container .jdp-month option,
+    jdp-container .jdp-month select option,
+    jdp-container .jdp-year input option,
+    jdp-container .jdp-year option,
+    jdp-container .jdp-year select option {
+        background: white !important;
+        color: #37474F !important;
+        font-size: 0.85rem !important;
+        padding: 8px 12px !important;
+        border: none !important;
+    }
+    
+    jdp-container .jdp-month select option:hover,
+    jdp-container .jdp-year select option:hover {
+        background: #E0F7FA !important;
+        color: #00BCD4 !important;
+    }
+    
+    /* Calendar Body Styling */
+    jdp-container > *:not(.jdp-months):not(.jdp-years):not(.jdp-icon-minus):not(.jdp-icon-plus) {
+        padding: 16px !important;
+    }
+
+    /* Additional styling for datepicker days and footer */
+    jdp-container .jdp-days {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: space-around !important;
+        padding: 0.5rem 0 0 !important;
+        width: 100% !important;
+    }
+
+    jdp-container .jdp-day,
+    jdp-container .jdp-day-name {
+        background: none !important;
+        border: 1px solid transparent !important;
+        color: rgba(0, 0, 0, 0.9) !important;
+        display: inline-block !important;
+        flex-basis: 14.2857143% !important;
+        font-weight: 400 !important;
+        height: 31px !important;
+        justify-content: center !important;
+        line-height: 31px !important;
+        margin: 2px 0 !important;
+        position: relative !important;
+        text-align: center !important;
+        width: 14.2857143% !important;
+    }
+
+    jdp-container .jdp-day.selected {
+        background-color: var(--primary-color, #00BCD4) !important;
+        color: #fff !important;
+        opacity: 1 !important;
+    }
+
+    jdp-container .jdp-day.today {
+        border-color: rgba(0, 0, 0, 0.3) !important;
+    }
+
+    jdp-container .jdp-day:not(.disabled-day) {
+        border-radius: 4px !important;
+        cursor: pointer !important;
+        transition: 0.1s linear !important;
+    }
+
+    jdp-container .jdp-day:not(.disabled-day):hover {
+        background: rgba(0, 0, 0, 0.1) !important;
+        transform: scale(1.15) !important;
+        z-index: 1 !important;
+    }
+
+    jdp-container .jdp-footer {
+        display: flex !important;
+        justify-content: space-between !important;
+        padding: 0.5rem 0.5rem 0 !important;
+        width: 100% !important;
+    }
+
+    jdp-container .jdp-btn-close,
+    jdp-container .jdp-btn-empty,
+    jdp-container .jdp-btn-today {
+        background: var(--primary-color, #00BCD4) !important;
+        border-radius: 5px !important;
+        color: #fff !important;
+        cursor: pointer !important;
+        display: inline-block !important;
+        font-size: 90% !important;
+        font-weight: 400 !important;
+        padding: 0.3em 0.6em !important;
+        text-align: center !important;
+    }
+
+    jdp-container .jdp-btn-close:hover,
+    jdp-container .jdp-btn-empty:hover,
+    jdp-container .jdp-btn-today:hover {
+        background: var(--primary-hover, #29B6F6) !important;
+    }
+
+    /* Mobile responsive for datepicker */
+    @media (max-width: 480px) {
+        jdp-container {
+            min-width: 280px !important;
+            font-size: 0.95rem !important;
+        }
+        
+        jdp-container .jdp-btn-close,
+        jdp-container .jdp-btn-empty,
+        jdp-container .jdp-btn-today {
+            font-size: 100% !important;
+            padding: 0.5em 0.8em !important;
         }
     }
 </style>
@@ -363,215 +638,236 @@
 
 {% block main %}
 
-        <div class="my-0 w-full">
-            <div class="w-full h-auto mt-1 mx-auto flex flex-col rtl">
-                <div class="filter-section">
-                    <div class="flex flex-wrap gap-4 justify-items-center items-center">
+<div class="my-0 w-full">
+    <div class="w-full h-auto mt-1 mx-auto flex flex-col rtl">
+        <div class="filter-section">
+            <div class="flex flex-wrap gap-4 justify-items-center items-center">
+                <div class="flex items-center gap-3">
+                    <form method="get" class="flex items-center gap-3">
                         <div class="flex items-center gap-3">
-                            <form method="get" class="flex items-center gap-3">
-                                <div class="flex items-center gap-3">
-                                    <input 
-                                        id="dateFrom" 
-                                        data-jdp 
-                                        placeholder="از تاریخ" 
-                                        name="dateFrom" 
-                                        class="input-field"
-                                        onchange="labelInField(this, 'از')"
-                                    />
-                                    <input 
-                                        id="dateTo" 
-                                        data-jdp 
-                                        placeholder="تا تاریخ" 
-                                        name="dateTo" 
-                                        class="input-field"
-                                        onchange="labelInField(this, 'تا')"
-                                    />
-                                </div>
-                                <button class="btn btn-primary">
-                                    اعمال فیلتر
-                                </button>
-                            </form>
+                            <input id="dateFrom" data-jdp placeholder="از تاریخ" name="dateFrom" class="input-field"
+                                value="{{ request.GET.dateFrom|default:'' }}" />
+                            <input id="dateTo" data-jdp placeholder="تا تاریخ" name="dateTo" class="input-field"
+                                value="{{ request.GET.dateTo|default:'' }}" />
                         </div>
+                        <button type="submit" class="btn btn-primary">
+                            اعمال فیلتر
+                        </button>
+                    </form>
+                </div>
 
-                        <div class="flex items-center gap-3">
-                            <button id="up" class="sort-btn">
-                                <i class="fa-regular fa-arrow-up text-gray-700 text-lg"></i>
-                            </button>
-                            <input type="search" 
-                                   id="search" 
-                                   name="search-box" 
-                                   placeholder="جستجو خطا"
-                                   class="input-field w-64"/>
-                        </div>
+                <div class="flex items-center gap-3">
+                    <button id="up" class="sort-btn">
+                        <i class="fa-regular fa-arrow-up text-gray-700 text-lg"></i>
+                    </button>
+                    <input type="search" id="search" name="search-box" placeholder="جستجو خطا"
+                        class="input-field w-64" />
+                </div>
 
-                        {% if pages %}
-                            <div class="pagination">
-                                <a href="{% if pages.has_previous %}?p={{ pages.previous_page_number }}{% else %}#{% endif %}"
-                                   class="pagination-btn btn-primary {% if not pages.has_previous %}opacity-50 cursor-not-allowed{% endif %}">
-                                    قبلی
-                                </a>
-                                <span class="text-sm whitespace-nowrap">
-                                    صفحه {{ pages.number }}/{{ pages.paginator.num_pages }}
-                                </span>
-                                <a href="{% if pages.has_next %}?p={{ pages.next_page_number }}{% else %}#{% endif %}"
-                                   class="pagination-btn btn-primary {% if not pages.has_next %}opacity-50 cursor-not-allowed{% endif %}">
-                                    بعدی
-                                </a>
-                            </div>
-                        {% endif %}
+                {% if pages %}
+                <div class="pagination">
+                    <a href="{% if pages.has_previous %}?p={{ pages.previous_page_number }}{% if request.GET.dateFrom %}&dateFrom={{ request.GET.dateFrom }}{% endif %}{% if request.GET.dateTo %}&dateTo={{ request.GET.dateTo }}{% endif %}{% else %}#{% endif %}"
+                        class="pagination-btn btn-primary {% if not pages.has_previous %}opacity-50 cursor-not-allowed{% endif %}">
+                        قبلی
+                    </a>
+                    <span class="text-sm whitespace-nowrap">
+                        صفحه {{ pages.number }}/{{ pages.paginator.num_pages }}
+                    </span>
+                    <a href="{% if pages.has_next %}?p={{ pages.next_page_number }}{% if request.GET.dateFrom %}&dateFrom={{ request.GET.dateFrom }}{% endif %}{% if request.GET.dateTo %}&dateTo={{ request.GET.dateTo }}{% endif %}{% else %}#{% endif %}"
+                        class="pagination-btn btn-primary {% if not pages.has_next %}opacity-50 cursor-not-allowed{% endif %}">
+                        بعدی
+                    </a>
+                </div>
+                {% endif %}
 
-                        <!-- <button id='printbtn' class="btn btn-secondary">
+                <!-- <button id='printbtn' class="btn btn-secondary">
                             چاپ
                         </button> -->
-                    </div>
-                </div>
-
-                <div class="table-container">
-                    <table id='table' class="table-modern">
-                        <thead>
-                            <tr>
-                                <th>راه حل پیشنهادی</th>
-                                <th>علت احتمالی</th>
-                                <th>عنوان خطا</th>
-                                <th>شماره خطا</th>
-                                <th>ساعت</th>
-                                <th>تاریخ</th>
-                                <th>ردیف</th>
-                            </tr>
-                        </thead>
-                        <tbody id="errorsTable">
-                            {% if pages %}
-                                {% for fault in pages.object_list %}
-                                    <tr>
-                                        <td title="{{ fault.errorcode|getDataOfFields:"solution" }}">
-                                            {{ fault.errorcode|getDataOfFields:"solution"|truncatewords:5 }}
-                                        </td>
-                                        <td title="{{ fault.errorcode|getDataOfFields:"probablecause" }}">
-                                            {{ fault.errorcode|getDataOfFields:"probablecause"|truncatewords:5 }}
-                                        </td>
-                                        <td title="{{ fault.errorcode|getDataOfFields:"errormessage" }}">
-                                            {{ fault.errorcode|getDataOfFields:"errormessage"|truncatewords:3 }}
-                                        </td>
-                                        <td>{{ fault.errorcode }}</td>
-                                        <td>{{ fault.created_at|date:'H:i' }}</td>
-                                        <td>{{ fault.created_at|date:'Y-m-d'|convertDatesToHijri }}</td>
-                                        <td>{{ forloop.counter0|add:pages.start_index }}</td>
-                                    </tr>
-                                {% endfor %}
-                            {% endif %}
-                        </tbody>
-                    </table>
-                </div>
             </div>
         </div>
-  
 
-    <script src="{% static 'js/jquery.js' %}"></script>
-    <script>
-        jalaliDatepicker.startWatch({
-            minDate: "attr",
-            maxDate: "today",
-            hideAfterChange: true,
-            autoHide: true,
-            showTodayBtn: true,
-            showEmptyBtn: true,
-            persianDigits: true,
-            topSpace: 10,
-            bottomSpace: 30,
-            dayRendering(opt, input) {
-                return {
-                    isHollyDay: opt.day == 1
-                }
-            }
-        });
-    </script>
-    <script>
-        let reversed = false;
+        <div class="table-container">
+            <table id='table' class="table-modern">
+                <thead>
+                    <tr>
+                        <th>راه حل پیشنهادی</th>
+                        <th>علت احتمالی</th>
+                        <th>عنوان خطا</th>
+                        <th>شماره خطا</th>
+                        <th>ساعت</th>
+                        <th>تاریخ</th>
+                        <th>ردیف</th>
+                    </tr>
+                </thead>
+                <tbody id="errorsTable">
+                    {% if pages %}
+                    {% for fault in pages.object_list %}
+                    <tr>
+                        <td title="{{ fault.errorcode|getDataOfFields:" solution"|default:"راه حل پیشنهادی موجود نیست"
+                            }}">
+                            {{ fault.errorcode|getDataOfFields:"solution"|truncatewords:5|default:"موجود نیست" }}
+                        </td>
+                        <td title="{{ fault.errorcode|getDataOfFields:" probablecause"|default:"علت احتمالی مشخص نیست"
+                            }}">
+                            {{ fault.errorcode|getDataOfFields:"probablecause"|truncatewords:5|default:"مشخص نیست" }}
+                        </td>
+                        <td title="{{ fault.errorcode|getDataOfFields:" errormessage"|default:"عنوان خطا مشخص نیست" }}">
+                            {{ fault.errorcode|getDataOfFields:"errormessage"|truncatewords:3|default:"مشخص نیست" }}
+                        </td>
+                        <td>{{ fault.errorcode }}</td>
+                        <td>{% if fault.date_time %}{{ fault.date_time|date:'H:i' }}{% else %}{{
+                            fault.created_at|date:'H:i' }}{% endif %}</td>
+                        <td>{% if fault.date_time %}{{ fault.date_time|date:'Y-m-d'|convertDatesToHijri }}{% else %}{{
+                            fault.created_at|date:'Y-m-d'|convertDatesToHijri }}{% endif %}</td>
+                        <td>{{ forloop.counter0|add:pages.start_index }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
-        $(document).ready(function () {
-            const errTable = $("#errorsTable");
-            const tr = $("#errorsTable tr");
-            $("#up").on("click", function () {
-                const icon = $("#up i");
-                icon.toggleClass("fa-arrow-up fa-arrow-down");
-                const rows = [...tr]
-                if (reversed) {
-                    errTable.append(rows)
-                } else {
-                    errTable.append(rows.reverse())
-                }
-                reversed = !reversed
-            });
-            $("#search").on("keyup input", function () {
-                let txt = $(this).val().toLowerCase()
-                tr.filter(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(txt) > -1)
-                })
-            })
+
+<script src="{% static 'js/jquery.js' %}"></script>
+<script>
+    $(document).ready(function() {
+        // Check if jalaliDatepicker is available (it should be loaded from base.html)
+        if (typeof jalaliDatepicker !== 'undefined') {
+            console.log('Jalali Datepicker library loaded successfully');
             
-            // Add toggle functionality for mobile view to show/hide columns
-            if (window.innerWidth <= 768) {
-                const tableHeaders = $(".table-modern th");
-                tableHeaders.each(function(index) {
-                    $(this).click(function() {
-                        const columnIndex = index + 1;
-                        $(".table-modern td:nth-child(" + columnIndex + ")").toggle();
-                        $(this).toggleClass("active-column");
-                    });
+            // Initialize Jalali Datepicker
+            try {
+                jalaliDatepicker.startWatch({
+                    minDate: "attr",
+                    maxDate: "today",
+                    hideAfterChange: true,
+                    autoHide: true,
+                    showTodayBtn: true,
+                    showEmptyBtn: true,
+                    persianDigits: true,
+                    topSpace: 10,
+                    bottomSpace: 30,
+                    dayRendering(opt, input) {
+                        return {
+                            isHollyDay: opt.day == 1
+                        }
+                    }
                 });
+                console.log('Jalali Datepicker initialized successfully');
+            } catch (error) {
+                console.error('Error initializing Jalali Datepicker:', error);
             }
-        });
-    </script>
-    <script>
-        function labelInField(input, label) {
-            const selectedDate = input.value;
-            if (selectedDate) {
-                input.value = `${label} ${selectedDate}`;
-            }
+        } else {
+            console.error('Jalali Datepicker library not found - it should be loaded from base.html');
+            
+            // Try to load it manually if not available
+            const script = document.createElement('script');
+            script.src = "{% static 'dist/jalalidatepicker.js' %}";
+            script.onload = function() {
+                console.log('Jalali Datepicker loaded manually');
+                jalaliDatepicker.startWatch({
+                    minDate: "attr",
+                    maxDate: "today",
+                    hideAfterChange: true,
+                    autoHide: true,
+                    showTodayBtn: true,
+                    showEmptyBtn: true,
+                    persianDigits: true,
+                    topSpace: 10,
+                    bottomSpace: 30,
+                    dayRendering(opt, input) {
+                        return {
+                            isHollyDay: opt.day == 1
+                        }
+                    }
+                });
+            };
+            document.head.appendChild(script);
         }
-    </script>
-    <script>
-        $(document).ready(function() {
-            $("#printbtn").on("click", function() {
-                printTable();
+    });
+</script>
+<script>
+    let reversed = false;
+
+    $(document).ready(function () {
+        const errTable = $("#errorsTable");
+        const tr = $("#errorsTable tr");
+        $("#up").on("click", function () {
+            const icon = $("#up i");
+            icon.toggleClass("fa-arrow-up fa-arrow-down");
+            const rows = [...tr]
+            if (reversed) {
+                errTable.append(rows)
+            } else {
+                errTable.append(rows.reverse())
+            }
+            reversed = !reversed
+        });
+        $("#search").on("keyup input", function () {
+            let txt = $(this).val().toLowerCase()
+            tr.filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(txt) > -1)
+            })
+        })
+
+        // Add toggle functionality for mobile view to show/hide columns
+        if (window.innerWidth <= 768) {
+            const tableHeaders = $(".table-modern th");
+            tableHeaders.each(function (index) {
+                $(this).click(function () {
+                    const columnIndex = index + 1;
+                    $(".table-modern td:nth-child(" + columnIndex + ")").toggle();
+                    $(this).toggleClass("active-column");
+                });
+            });
+        }
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#printbtn").on("click", function () {
+            printTable();
+        });
+
+        function printTable() {
+            const table = $("#table").clone();
+            let columnsToRemove = [];
+
+            table.find("tr").first().find("th, td").each(function (index, element) {
+                const columnText = $(element).text().trim();
+                if (columnText === "علت احتمالی" || columnText === "راه حل پیشنهادی") {
+                    columnsToRemove.push(index);
+                }
             });
 
-            function printTable() {
-                const table = $("#table").clone();
-                let columnsToRemove = [];
+            table.find("tr").each(function () {
+                columnsToRemove.forEach(function (index) {
+                    $(this).find("th, td").eq(index).remove();
+                });
+            });
 
-                table.find("tr").first().find("th, td").each(function(index, element) {
-                    const columnText = $(element).text().trim();
-                    if (columnText === "علت احتمالی" || columnText === "راه حل پیشنهادی") {
-                        columnsToRemove.push(index);
+            table.find("tr").each(function (rowIndex) {
+                $(this).find("th, td").each(function (index, element) {
+                    if (![2, 3, 4, 5, 6].includes(index)) {
+                        $(element).remove();
                     }
                 });
+            });
 
-                table.find("tr").each(function() {
-                    columnsToRemove.forEach(function(index) {
-                        $(this).find("th, td").eq(index).remove();
-                    });
-                });
+            table.find("td").each(function (index1) {
+                const fullTitle = $(this).attr("title");
+                if (fullTitle) {
+                    $(this).text(fullTitle);
+                }
+            });
 
-                table.find("tr").each(function(rowIndex) {
-                    $(this).find("th, td").each(function(index, element) {
-                        if (![2, 3, 4, 5, 6].includes(index)) {
-                            $(element).remove();
-                        }
-                    });
-                });
-
-                table.find("td").each(function(index1) {
-                    const fullTitle = $(this).attr("title");
-                    if (fullTitle) {
-                        $(this).text(fullTitle);
-                    }
-                });
-
-                const printWindow = window.open('', '', 'height=1123,width=794');
-                printWindow.document.write('<html><head>');
-                printWindow.document.write('<style>');
-                printWindow.document.write(`
+            const printWindow = window.open('', '', 'height=1123,width=794');
+            printWindow.document.write('<html><head>');
+            printWindow.document.write('<style>');
+            printWindow.document.write(`
                     @page {
                         size: A4;
                         margin: 10mm;
@@ -611,25 +907,25 @@
                         }
                     }
                 `);
-                printWindow.document.write('</style></head><body>');
+            printWindow.document.write('</style></head><body>');
 
-                const today = new Date().toLocaleDateString('fa-IR');
-                printWindow.document.write(`
+            const today = new Date().toLocaleDateString('fa-IR');
+            printWindow.document.write(`
                     <div class="header">
                         گزارش خطاها - تاریخ: ${today}
                     </div>
                 `);
 
-                printWindow.document.write(table.wrap('<div>').parent().html());
-                printWindow.document.write('</body></html>');
-                printWindow.document.close();
+            printWindow.document.write(table.wrap('<div>').parent().html());
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
 
-                printWindow.document.title = "گزارش خطاها";
+            printWindow.document.title = "گزارش خطاها";
 
-                printWindow.focus();
-                printWindow.print();
-                printWindow.close();
-            }
-        });
-    </script>
+            printWindow.focus();
+            printWindow.print();
+            printWindow.close();
+        }
+    });
+</script>
 {% endblock %}

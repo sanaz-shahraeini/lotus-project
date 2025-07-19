@@ -1217,7 +1217,9 @@ class errorsPage(TemplateView, View):
             user=Users.objects.filter(username__iexact=checkSession(request)).first()).first().errorsreport:
             messages.error(request, messagesTypes.permissionsNotFound)
             return redirect(reverse_lazy("profile"))
-        context = self.get_context_data()
+        
+        # Handle date filtering
+        qs = Faults.objects.all()
         if request.GET:
             dateFrom = request.GET.get('dateFrom')
             dateTo = request.GET.get('dateTo')
@@ -1225,19 +1227,37 @@ class errorsPage(TemplateView, View):
                 try:
                     convFrom = jdatetime.datetime.strptime(dateFrom.replace("/", "-").replace('از', '').strip(), "%Y-%m-%d").togregorian()
                     convTo = jdatetime.datetime.strptime(dateTo.replace("/", "-").replace('تا','').strip(), "%Y-%m-%d").togregorian()
-                except:
+                    
+                    if convTo < convFrom:
+                        messages.warning(request, "تاریخ اول نباید بزرگ تر از تاریخ دوم باشد.")
+                        return redirect(request.path)
+                    
+                    # Filter by date_time if available, otherwise by created_at
+                    qs = qs.filter(
+                        models.Q(date_time__date__range=(convFrom.date(), convTo.date())) |
+                        models.Q(date_time__isnull=True, created_at__date__range=(convFrom.date(), convTo.date()))
+                    )
+                    
+                    if not qs.exists():
+                        messages.error(request, f"در بین تاریخ های {dateFrom} و {dateTo} گزارش خطایی پیدا نشد.")
+                        
+                except Exception as e:
                     messages.error(request, "فرمت تاریخ ها اشتباه است.")
                     return redirect(request.path)
-                if convTo < convFrom:
-                    messages.warning(request, "تاریخ اول نباید بزرگ تر از تاریخ دوم باشد.")
-                    return redirect(request.path)
-                qs = Faults.objects.filter(created_at__range=(convFrom, convTo))
-                if not qs.exists():
-                    messages.error(request, f"در بین تاریخ های {dateFrom} و {dateTo} گزارش خطایی پیدا نشد.")
-                    return redirect(request.path)
-                faults, page_obj = makePagination(qs.order_by('-created_at'), 20, self.request)
-                context['pages'] = page_obj
-        return render(request, self.template_name, context=self.get_context_data())
+        
+        # Pagination
+        page_number = request.GET.get('p', 1)
+        paginator = Paginator(qs.order_by('-created_at'), 20)
+        try:
+            page_obj = paginator.page(page_number)
+        except PageNotAnInteger:
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            page_obj = paginator.page(paginator.num_pages)
+        
+        context = self.get_context_data()
+        context['pages'] = page_obj
+        return render(request, self.template_name, context=context)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
