@@ -11,6 +11,15 @@ class userProfileForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(userProfileForm, self).__init__(*args, **kwargs)
+        
+        # Set required fields to match frontend validation (red stars)
+        self.fields['name'].required = False
+        self.fields['lastname'].required = False
+        self.fields['extension'].required = False
+        self.fields['email'].required = False
+        self.fields['username'].required = True  # نام کاربری - required
+        # Note: groupname and usersextension are set as required in their field definitions below
+        
         user_choices = [(user.extension, user.extension) for user in Users.objects.all()]
         extgps = [(extgp.label, extgp.label) for extgp in Extensionsgroups.objects.all()]
         recs = [(int(rec.extension), int(rec.extension)) for rec in Records.objects.all()]
@@ -18,19 +27,20 @@ class userProfileForm(forms.ModelForm):
 
         exts = sorted(exts, key=lambda x: x[0])
         CHOICES = extgps + exts
-        self.fields['usersextension'] = forms.MultipleChoiceField(choices=CHOICES, required=False,
+        self.fields['usersextension'] = forms.MultipleChoiceField(choices=CHOICES, required=True,  # دسترسی به دفاتر - required (red star)
                                                 widget=forms.CheckboxSelectMultiple(attrs={
                                                     'class': 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500'}))
         
         self.fields['groupname'] = forms.ChoiceField(
             choices=[("none", "------")] + [(group.enname, group.pename) for group in Groups.objects.exclude(enname__in=["superadmin", "supporter"])],
+            required=True,  # نقش - required (red star)
             widget=forms.Select(
                 attrs={'class': 'w-[140px] h-6 text-gray-600 text-xs py-[2px] appearance-none'}))
 
     usersextension = forms.MultipleChoiceField(choices=[], required=False)
     editOrAdd = forms.ChoiceField(choices=EDIT_OR_ADD, required=True, widget=forms.Select(
         attrs={'required': True, 'class': 'w-[140px] h-6  text-gray-600 py-[2px] text-xs appearance-none'}))
-    groupname = forms.ChoiceField(choices=[("none", "------")], widget=forms.Select(
+    groupname = forms.ChoiceField(choices=[("", "------")], required=False, widget=forms.Select(
             attrs={'class': 'w-[140px] h-6 text-gray-600 text-xs py-[2px] appearance-none'}))
 
     class Meta:

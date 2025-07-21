@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_extra %}
+<style>
+    .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .form-control {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+    .btn {
+        padding: 10px 20px;
+        background-color: #00BCD4;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    .btn:hover {
+        background-color: #0097A7;
+    }
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+    }
+    .alert-success {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+    }
+    .alert-danger {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+    }
+    .result-box {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        padding: 15px;
+        border-radius: 4px;
+        margin-top: 20px;
+        white-space: pre-wrap;
+        font-family: monospace;
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="container">
+    <h1>Simple User Creation Test</h1>
+    
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    {% if result %}
+    <div class="result-box">
+        {{ result|safe }}
+    </div>
+    {% endif %}
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" class="form-control">
+        </div>
+        
+        <div class="form-group">
+            <label for="lastname">Last Name:</label>
+            <input type="text" id="lastname" name="lastname" class="form-control">
+        </div>
+        
+        <div class="form-group">
+            <label for="extension">Extension:</label>
+            <input type="number" id="extension" name="extension" class="form-control" value="1000">
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" class="form-control">
+        </div>
+        
+        <div class="form-group">
+            <label for="group_id">Group ID:</label>
+            <select id="group_id" name="group_id" class="form-control">
+                {% for group in groups %}
+                <option value="{{ group.id }}">{{ group.id }} - {{ group.pename }} ({{ group.enname }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <button type="submit" class="btn">Create User</button>
+    </form>
+</div>
+{% endblock %} 

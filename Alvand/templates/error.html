@@ -363,20 +363,20 @@
             font-size: 0.875rem;
         }
 
-        /* Make the most important columns visible by default */
-        .table-modern th:nth-child(n+5),
-        .table-modern td:nth-child(n+5) {
+        /* Make the most important columns visible by default - RTL order */
+        .table-modern th:nth-last-child(-n+4),
+        .table-modern td:nth-last-child(-n+4) {
             display: table-cell;
         }
 
-        .table-modern th:nth-child(-n+4),
-        .table-modern td:nth-child(-n+4) {
+        .table-modern th:nth-last-child(n+5),
+        .table-modern td:nth-last-child(n+5) {
             display: none;
         }
 
         /* Show the row number column always */
-        .table-modern th:last-child,
-        .table-modern td:last-child {
+        .table-modern th:first-child,
+        .table-modern td:first-child {
             display: table-cell;
         }
     }
@@ -397,7 +397,7 @@
         z-index: 9998 !important;
         position: fixed !important;
     }
-    
+
     jdp-container {
         z-index: 9999 !important;
         position: absolute !important;
@@ -412,7 +412,7 @@
         padding: 0 !important;
         overflow: hidden !important;
     }
-    
+
     /* Redesigned Header Section */
     jdp-container .jdp-months,
     jdp-container .jdp-years {
@@ -428,16 +428,16 @@
         position: relative !important;
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
     }
-    
+
     jdp-container .jdp-months {
         width: 50% !important;
         border-left: 1px solid rgba(255, 255, 255, 0.2) !important;
     }
-    
+
     jdp-container .jdp-years {
         width: 50% !important;
     }
-    
+
     /* Navigation Buttons - Modern Design */
     jdp-container .jdp-icon-minus,
     jdp-container .jdp-icon-plus {
@@ -457,22 +457,22 @@
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
         z-index: 10 !important;
     }
-    
+
     jdp-container .jdp-icon-minus {
         right: 8px !important;
     }
-    
+
     jdp-container .jdp-icon-plus {
         left: 8px !important;
     }
-    
+
     jdp-container .jdp-icon-minus:hover,
     jdp-container .jdp-icon-plus:hover {
         background: white !important;
         transform: translateY(-50%) scale(1.1) !important;
         box-shadow: 0 4px 16px rgba(0, 188, 212, 0.3) !important;
     }
-    
+
     jdp-container .jdp-icon-minus svg,
     jdp-container .jdp-icon-plus svg {
         width: 16px !important;
@@ -480,12 +480,12 @@
         fill: #011619 !important;
         transition: fill 0.2s !important;
     }
-    
+
     jdp-container .jdp-icon-minus:hover svg,
     jdp-container .jdp-icon-plus:hover svg {
         fill: #011416 !important;
     }
-    
+
     /* Month and Year Selectors */
     jdp-container .jdp-month,
     jdp-container .jdp-month input,
@@ -506,7 +506,7 @@
         cursor: pointer !important;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
     }
-    
+
     jdp-container .jdp-month select,
     jdp-container .jdp-year select {
         -webkit-appearance: none !important;
@@ -518,7 +518,7 @@
         background-size: 12px !important;
         padding-left: 24px !important;
     }
-    
+
     /* Dropdown Options */
     jdp-container .jdp-month input option,
     jdp-container .jdp-month option,
@@ -532,15 +532,15 @@
         padding: 8px 12px !important;
         border: none !important;
     }
-    
+
     jdp-container .jdp-month select option:hover,
     jdp-container .jdp-year select option:hover {
         background: #E0F7FA !important;
         color: #00BCD4 !important;
     }
-    
+
     /* Calendar Body Styling */
-    jdp-container > *:not(.jdp-months):not(.jdp-years):not(.jdp-icon-minus):not(.jdp-icon-plus) {
+    jdp-container>*:not(.jdp-months):not(.jdp-years):not(.jdp-icon-minus):not(.jdp-icon-plus) {
         padding: 16px !important;
     }
 
@@ -625,7 +625,7 @@
             min-width: 280px !important;
             font-size: 0.95rem !important;
         }
-        
+
         jdp-container .jdp-btn-close,
         jdp-container .jdp-btn-empty,
         jdp-container .jdp-btn-today {
@@ -732,11 +732,11 @@
 
 <script src="{% static 'js/jquery.js' %}"></script>
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Check if jalaliDatepicker is available (it should be loaded from base.html)
         if (typeof jalaliDatepicker !== 'undefined') {
             console.log('Jalali Datepicker library loaded successfully');
-            
+
             // Initialize Jalali Datepicker
             try {
                 jalaliDatepicker.startWatch({
@@ -761,11 +761,11 @@
             }
         } else {
             console.error('Jalali Datepicker library not found - it should be loaded from base.html');
-            
+
             // Try to load it manually if not available
             const script = document.createElement('script');
             script.src = "{% static 'dist/jalalidatepicker.js' %}";
-            script.onload = function() {
+            script.onload = function () {
                 console.log('Jalali Datepicker loaded manually');
                 jalaliDatepicker.startWatch({
                     minDate: "attr",

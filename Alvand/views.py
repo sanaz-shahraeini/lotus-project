@@ -1194,6 +1194,9 @@ class userLogin(View):
                 log(request, logErrCodes.logInOut, logMessages.loggedIn.format(user.first().username.capitalize(), ),
                     user.first().username)
                 messages.success(request, messagesTypes.login.format(user.first().username.capitalize(), ))
+                user_obj = Users.objects.get(username=username)
+                if user_obj.needs_password_change:
+                    return redirect('change_password')
                 return redirect(reverse_lazy('dashboard'))
             messages.error(request, messagesTypes.invalidUsernameOrPassword)
             return redirect(request.path)
@@ -1289,534 +1292,528 @@ class UserForm(FormView, View):
         data['infosform'] = InfosForm()
         data['permform'] = PermissionsForm()
         getUser = getUserinfoByUsername(checkSession(self.request), "groupname")
+        
+        # Get the QuerySet based on user role
         if str(getUser).lower() in ["superadmin", "supporter"]:
-            data['users'] = Users.objects.exclude(groupname="supporter")
+            users_queryset = Users.objects.exclude(groupname="supporter")
         else:
-            data['users'] = Users.objects.exclude(groupname__in=['superadmin', 'supporter'])
+            users_queryset = Users.objects.exclude(groupname__in=['superadmin', 'supporter'])
+        
+        # Convert QuerySet to list of dictionaries for JSON serialization
+        users_data = []
+        for user in users_queryset:
+            user_dict = {
+                'id': user.id,
+                'active': user.active,
+                'extension': user.extension,
+                'name': user.name,
+                'username': user.username,
+                'lastname': user.lastname,
+                'groupname': user.groupname,
+                'picurl': user.picurl,
+                'email': user.email
+            }
+            if user.usersextension:
+                user_dict['usersextension'] = list(user.usersextension)
+            users_data.append(user_dict)
+        
+        data['users'] = users_data
+        
+        # Add session user data
+        session_username = checkSession(self.request)
+        if session_username:
+            session_user = Users.objects.filter(username=session_username).first()
+            if session_user:
+                session_user_data = {
+                    'id': session_user.id,
+                    'username': session_user.username,
+                    'name': session_user.name,
+                    'lastname': session_user.lastname,
+                    'groupname': session_user.groupname,
+                    'extension': session_user.extension
+                }
+                data['session_user'] = session_user_data
+        
+        # Add contact info data
+        contact_infos = []
+        for user in users_queryset:
+            info = Infos.objects.filter(user__username=user.username).first()
+            if info:
+                contact_info = {
+                    'username': user.username,
+                    'nationalcode': info.nationalcode,
+                    'birthdate': str(info.birthdate) if info.birthdate else None,
+                    'telephone': info.telephone,
+                    'phonenumber': info.phonenumber,
+                    'gender': info.gender,
+                    'maritalstatus': info.maritalstatus,
+                    'military': info.military,
+                    'educationfield': info.educationfield,
+                    'educationdegree': info.educationdegree,
+                    'province': info.province,
+                    'city': info.city,
+                    'accountnumbershaba': info.accountnumbershaba,
+                    'cardnumber': info.cardnumber,
+                    'accountnumber': info.accountnumber,
+                    'address': info.address
+                }
+                contact_infos.append(contact_info)
+        
+        data['contactInfos'] = contact_infos
         return data
 
     def form_valid(self, form):
-        if not checkSession(self.request):
+        """Handle form submission for user creation and editing."""
+        print("=" * 50)
+        print("Form is valid, processing...")
+        
+        # Debug form data
+        print("Form cleaned data:")
+        for key, value in form.cleaned_data.items():
+            print(f"  {key}: {value}")
+        
+        # Debug POST data specifically for save action
+        print("POST data for critical fields:")
+        print(f"  saveUser: {self.request.POST.get('saveUser')}")
+        print(f"  editOrAdd: {self.request.POST.get('editOrAdd')}")
+        print(f"  username: {self.request.POST.get('username')}")
+        
+        # Get the logged in user session
+        session_username = checkSession(self.request)
+        if not session_username:
             messages.error(self.request, messagesTypes.notlogin)
             return redirect(self.success_url)
-        if not check_active(checkSession(self.request)):
+            
+        if not check_active(session_username):
             messages.error(self.request, messagesTypes.deAvtive)
-            return redirect(reverse_lazy('logout' if checkSession(self.request) else 'login'))
+            return redirect(reverse_lazy('logout' if session_username else 'login'))
+        
+        # Check access permission    
         if isinstance(check := hasAccess("view", "settings", self.request), HttpResponseRedirect):
             return check
+        
+        # Get form data
         field = form.cleaned_data
-        username = field.get('username')
-        userReq = Users.objects.filter(username__iexact=checkSession(self.request))
-        userChecker =  Users.objects.filter(username__iexact=username)
-        getUserChecker = userChecker.first().groupname.lower()
-        getUserReq = userReq.first().groupname.lower()
-        hasAccessOrNot = False
-        if not userReq.exists():
-            messages.error(self.request, messagesTypes.userInfoNotFound)
-            return redirect(reverse_lazy('login'))
-        if not userChecker.exists():
-            messages.error(self.request, '')
-            return redirect(reverse_lazy('user'))
-        if getUserReq == 'supporter':
-            hasAccessOrNot = getUserChecker in ['superadmin', 'admin', 'user']
-        elif getUserReq == 'superadmin':
-            hasAccessOrNot = getUserChecker in ['admin', 'user']
-        elif getUserReq == 'admin':
-            hasAccessOrNot = getUserChecker == 'user'
-        elif getUserReq == 'user':
-            hasAccessOrNot = False
-        if not hasAccessOrNot:
-            messages.error(self.request, messagesTypes.permissionsNotFound)
-            return redirect(reverse_lazy('user'))
-
-        email = field.get('email')
-        extension = field.get('extension')
         fieldReq = self.request.POST
+        
+        # Extract basic fields
+        username = field.get('username')
+        editOrAdd = field.get('editOrAdd') if field.get('editOrAdd') else fieldReq.get("editOrAdd", "").lower()
+        extension = field.get('extension')
+        name = field.get('name', '')
+        lastname = field.get('lastname', '')
+        email = field.get('email', '')
+        active = field.get('active', True)
+        
+        # Check which action to perform - check direct POST values first, then fallback to form data
         deleteUser = fieldReq.get('deleteUser')
         saveUser = fieldReq.get('saveUser')
         deleteProfile = fieldReq.get('deleteProfile')
         uploadPhoto = self.request.FILES.get('uploadPhoto')
-        ChangePassword = fieldReq.get('ChangePassword')
-        nationalcode = fieldReq.get('nationalcode')
-        phonenumber = fieldReq.get('phonenumber')
-        accountnumbershaba = fieldReq.get('accountnumbershaba')
-        cardnumber = fieldReq.get('cardnumber')
-        accountnumber = fieldReq.get('accountnumber')
-        military = fieldReq.get('military')
-        gender = fieldReq.get('gender')
-        maritalstatus = fieldReq.get('maritalstatus')
-        educationdegree = fieldReq.get('educationdegree')
-        province = fieldReq.get('province')
-        editOrAdd = field.get('editOrAdd') if field.get('editOrAdd') else fieldReq.get("editOrAdd").lower()
-        infosFields = set(InfosForm().fields.keys())
-        if username.lower() == checkSession(self.request) and str(getUserinfoByUsername(username, "groupname")) in ['superadmin', 'supporter']:
-            infosFields.discard("groupname")
-        if fieldReq.get('gender') and fieldReq.get('gender') == "1":
-            infosFields = [x for x in infosFields if x != "military"]
-        if any(not fieldReq.get(x) for x in infosFields):
-            messages.error(self.request, messagesTypes.fillAllFields)
-            return redirect(reverse_lazy("user"))
-        if editOrAdd == "none":
-            messages.error(self.request, messagesTypes.fillAllFields)
-            return redirect(reverse_lazy("user"))
+        changePassword = fieldReq.get('ChangePassword')
+        
+        print(f"Action: editOrAdd={editOrAdd}, saveUser={saveUser}, deleteUser={deleteUser}, deleteProfile={deleteProfile}, changePassword={changePassword}")
+        
+        # Get info fields - convert empty strings to None for nullable fields
+        nationalcode = fieldReq.get('nationalcode') or None
+        phonenumber = fieldReq.get('phonenumber') or None
+        accountnumbershaba = fieldReq.get('accountnumbershaba') or None
+        cardnumber = fieldReq.get('cardnumber') or None
+        accountnumber = fieldReq.get('accountnumber') or None
+        military = fieldReq.get('military') or None
+        gender = fieldReq.get('gender') or None
+        maritalstatus = fieldReq.get('maritalstatus') or None
+        educationdegree = fieldReq.get('educationdegree') or None
+        province = fieldReq.get('province') or None
+        city = fieldReq.get('city') or None
+        address = fieldReq.get('address') or None
+        birthdate = fieldReq.get('birthdate') or None
+        telephone = fieldReq.get('telephone') or None
+        educationfield = fieldReq.get('educationfield') or None
+        
+        # Process usersextension field
+        listOfExts = fieldReq.getlist('usersextension')
+        nonLabels = []
+        labels = []
+        
+        if listOfExts:
+            for item in listOfExts:
+                item = item.strip()
+                if Extensionsgroups.objects.filter(label=str(item)).exists():
+                    labels.append(item)
+                else:
+                    nonLabels.append(str(item))
+        
+        # Handle the different actions
         if saveUser:
             if editOrAdd == 'add':
+                # Check write permission for adding users
                 if isinstance(check := hasAccess("write", "user", self.request), HttpResponseRedirect):
                     return check
-                if len(nationalcode) > 10:
-                    messages.error(self.request, 'کدملی نامعتبر است.')
+                
+                # Validate required fields for adding a user
+                if not username:
+                    messages.error(self.request, "نام کاربری الزامی است.")
                     return redirect(self.success_url)
-
-                if len(phonenumber) != 11:
-                    messages.error(self.request, 'شماره همراه نامعتبر است.')
-                    return redirect(self.success_url)
-
-                if len(accountnumbershaba) != 22:
-                    messages.error(self.request, 'شماره شبا نامعتبر است.')
-                    return redirect(self.success_url)
-
-                if len(cardnumber) < 16 and len(cardnumber) > 19:
-                    messages.error(self.request, 'شماره کارت نامعتبر است.')
-                    return redirect(self.success_url)
-
-                if not gender.isdigit():
-                    messages.error(self.request, 'جنسیت نامعتبر است.')
-                    return redirect(self.success_url)
-
-                if "groupname" in form.cleaned_data and not form.cleaned_data['groupname'].lower() in ['superadmin', 'admin', 'member'] and not Groups.objects.filter(enname__iexact=form.cleaned_data['groupname']).exists():
-                    messages.error(self.request, "نقش نامعتبر است.")
-                    return redirect(self.success_url)
-
-                if fieldReq.get('gender') not in ['0', '1', '2']:
-                    messages.error(self.request, 'جنسیت نامعتبر است.')
-                    return redirect(self.success_url)
-
-                if field.get('gender') == '1':
-                    military = None
-                else:
-                    military = fieldReq.get('military')
-
-                if fieldReq.get('gender') and fieldReq.get('gender') != "1" and fieldReq.get('military') not in ['0',
-                                                                                                                 '1',
-                                                                                                                 '2',
-                                                                                                                 '3',
-                                                                                                                 '4']:
-                    messages.error(self.request, 'وضعیت سربازی نامعتبر است.')
-                    return redirect(self.success_url)
-
-                if not maritalstatus.isdigit():
-                    messages.error(self.request, 'وضعیت تاهل نامعتبر است.')
-                    return redirect(self.success_url)
-
-                if fieldReq.get('maritalstatus') not in ['0', '1']:
-                    messages.error(self.request, 'وضعیت تاهل نامعتبر است.')
-                    return redirect(self.success_url)
-
-                if not educationdegree.isdigit():
-                    messages.error(self.request, 'مدرک تحصیلی نامعتبر است.')
-                    return redirect(self.success_url)
-
-                if fieldReq.get('educationdegree') not in ['0', '1', '2', '3', '4', '5', '6']:
-                    messages.error(self.request, 'مدرک تحصیلی نامعتبر است.')
-                    return redirect(self.success_url)
-
-                if not province.isdigit():
-                    messages.error(self.request, 'استان نامعتبر است.')
-                    return redirect(self.success_url)
-
-                if fieldReq.get('province') not in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-                                                    '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
-                                                    '21', '22', '23', '24', '25', '26', '27', '28', '29', '30']:
-                    messages.error(self.request, 'استان نامعتبر است.')
-                    return redirect(self.success_url)
-
+                
                 if Users.objects.filter(username__iexact=username).exists():
-                    messages.error(self.request, 'این نام کاربری موجود است.')
+                    messages.error(self.request, "این نام کاربری موجود است.")
                     return redirect(self.success_url)
-
-                if Users.objects.filter(email__iexact=email).exists():
-                    messages.error(self.request, 'این ایمیل موجود است.')
+                
+                if not extension:
+                    messages.error(self.request, "داخلی الزامی است.")
                     return redirect(self.success_url)
-
-                if Users.objects.filter(extension=extension).exists():
-                    messages.error(self.request, 'این داخلی موجود است.')
+                
+                # Check if role is selected
+                groupname = field.get('groupname') or fieldReq.get('groupname')
+                if not groupname or groupname in ['none', '']:
+                    messages.error(self.request, "انتخاب نقش الزامی است.")
                     return redirect(self.success_url)
-
-                if Users.objects.filter(extension=int(extension)).exists():
-                    messages.error(self.request, 'این داخلی موجود است.')
+                
+                # Check if at least one extension access is selected
+                if not listOfExts:
+                    messages.error(self.request, "انتخاب حداقل یک دسترسی به داخلی الزامی است.")
                     return redirect(self.success_url)
-
-                if not nationalcode.isdigit():
-                    messages.error(self.request, 'این کدملی موجود است.')
+                
+                # Check if at least one permission is selected
+                permCount = 0
+                for perm in ["can_view", "can_write", "can_modify", "can_delete"]:
+                    if fieldReq.get(perm):
+                        permCount += 1
+                
+                if permCount == 0:
+                    messages.error(self.request, "انتخاب حداقل یک سطح دسترسی الزامی است.")
                     return redirect(self.success_url)
-
-                if Infos.objects.filter(nationalcode=int(nationalcode)).exists():
-                    messages.error(self.request, 'این کدملی موجود است.')
+                
+                groupname = groupname.lower()
+                group = None
+                
+                print(f"Looking for group: {groupname}")
+                
+                # Try to find the group
+                if groupname:
+                    group = Groups.objects.filter(enname__iexact=groupname).first()
+                    if not group:
+                        group = Groups.objects.filter(pename__iexact=groupname).first()
+                
+                # If no group found, use the default 'member' group
+                if not group:
+                    print("Group not found, trying member group")
+                    group = Groups.objects.filter(enname__iexact='member').first()
+                    if not group:
+                        print("Member group not found, using first available group")
+                        group = Groups.objects.first()  # Last resort
+                        
+                if not group:
+                    print("No groups found in system!")
+                    messages.error(self.request, "هیچ گروهی در سیستم تعریف نشده است.")
                     return redirect(self.success_url)
-
-                if not phonenumber.isdigit():
-                    messages.error(self.request, 'این شماره همراه موجود است.')
-                    return redirect(self.success_url)
-
-                if Infos.objects.filter(phonenumber=int(phonenumber)).exists():
-                    messages.error(self.request, 'این شماره همراه موجود است.')
-                    return redirect(self.success_url)
-
-                if Infos.objects.filter(accountnumbershaba=accountnumbershaba).exists():
-                    messages.error(self.request, 'این شماره شبا موجود است.')
-                    return redirect(self.success_url)
-
-                if not cardnumber.isdigit():
-                    messages.error(self.request, 'این شماره کارت موجود است.')
-                    return redirect(self.success_url)
-
-                if Infos.objects.filter(cardnumber=int(cardnumber)).exists():
-                    messages.error(self.request, 'این شماره کارت موجود است.')
-                    return redirect(self.success_url)
-
-                if not accountnumber.isdigit():
-                    messages.error(self.request, 'این شماره حساب موجود است.')
-                    return redirect(self.success_url)
-
-                if Infos.objects.filter(accountnumber=int(accountnumber)).exists():
-                    messages.error(self.request, 'این شماره حساب موجود است.')
-                    return redirect(self.success_url)
-
+                
+                print(f"Selected group: {group.enname} (ID: {group.id})")
+                
+                # Set default extension if not provided
+                try:
+                    extension_value = int(extension) if extension else 1000
+                except ValueError:
+                    extension_value = 1000
+                
+                print(f"Extension value: {extension_value}")
+                
+                # Ensure required fields have values
+                if not name:
+                    name = username  # Use username as name if name is empty
+                if not lastname:
+                    lastname = "کاربر"  # Default lastname
+                if not email:
+                    email = f"{username}@example.com"  # Default email
+                
+                print(f"Final values - name: {name}, lastname: {lastname}, email: {email}")
+                
+                # Set default picture
+                picurl = "avatar.png"
+                
+                # Handle profile picture upload if provided
                 if uploadPhoto:
-
                     valid = validatePhotoExt(uploadPhoto.name)
                     if not valid:
                         messages.error(self.request, 'پسوند فایل ارسال شده نامعتبر میباشد.')
                         return redirect(self.success_url)
-                    filename = f"{username.lower()}_photo{valid.lower()}"
-                    filepath = os.path.join('Alvand/static/upload', filename)
+                    picurl = f"{username.lower()}_photo{valid.lower()}"
+                    filepath = os.path.join('Alvand/static/upload', picurl)
 
                     with open(filepath, '+wb') as f:
                         for bt in uploadPhoto:
                             f.write(bt)
-                    picurl = filename
-                else:
-                    picurl = 'avatar.png'
-                user = form.save(commit=False)
-
-                user.group = Groups.objects.filter(enname=form.cleaned_data['groupname']).first()
-                user.groupname = form.cleaned_data['groupname'].lower()
-                if picurl:
-                    user.picurl = picurl
-                listOfExts = fieldReq.getlist('usersextension')
-                labels = []
-                nonLabels = []
-                if any(l for l in listOfExts):
-                    for item in listOfExts:
-                        item = item.strip()
-                        if Extensionsgroups.objects.filter(label=str(item)).exists():
-                            labels.append(item)
-                        elif item.isdigit() and (
-                                Users.objects.filter(extension=int(item)).exists() or Records.objects.filter(
-                            extension=str(item)).exists()):
-                            nonLabels.append(str(item))
-                if nonLabels:
-                    user.usersextension = nonLabels
-                user.password = make_password("123456789")
-                user.save()
-                if labels:
-                    Permissions.objects.create(user=user, can_view=bool(fieldReq.get("can_view")),
-                                               can_write=bool(fieldReq.get("can_write")),
-                                               can_modify=bool(fieldReq.get("can_modify")),
-                                               can_delete=bool(fieldReq.get("can_delete")), exts_label=labels)
-                else:
-                    Permissions.objects.create(user=user, can_view=bool(fieldReq.get("can_view")),
-                                               can_write=bool(fieldReq.get("can_write")),
-                                               can_modify=bool(fieldReq.get("can_modify")),
-                                               can_delete=bool(fieldReq.get("can_delete")))
-                Infos.objects.create(user=user, gender=gender, nationalcode=nationalcode,
-                                     birthdate=fieldReq.get('birthdate'),
-                                     telephone=fieldReq.get('telephone'), phonenumber=phonenumber,
-                                     maritalstatus=maritalstatus,
-                                     military=military, educationfield=fieldReq.get('educationfield'),
-                                     educationdegree=educationdegree,
-                                     province=province, city=fieldReq.get('city'),
-                                     accountnumbershaba=accountnumbershaba,
-                                     cardnumber=cardnumber, accountnumber=accountnumber,
-                                     address=fieldReq.get('address'))
-
-                messages.success(self.request, f'کاربر {username} با موفقیت به جمع ما پیوست.')
+                
+                # Directly create the user
+                try:
+                    print("Creating user...")
+                    new_user = Users.objects.create(
+                        username=username,
+                        name=name,
+                        lastname=lastname,
+                        extension=extension_value,
+                        email=email,
+                        group=group,
+                        groupname=group.enname.lower(),
+                        picurl=picurl,
+                        active=active,
+                        usersextension=nonLabels,
+                        password=make_password("123456789"),
+                        needs_password_change=True
+                    )
+                    print(f"User created with ID: {new_user.id}")
+                    
+                    # Create permissions
+                    print("Creating permissions...")
+                    Permissions.objects.create(
+                        user=new_user,
+                        can_view=bool(fieldReq.get("can_view")),
+                        can_write=bool(fieldReq.get("can_write")),
+                        can_modify=bool(fieldReq.get("can_modify")),
+                        can_delete=bool(fieldReq.get("can_delete")),
+                        exts_label=labels
+                    )
+                    
+                    # Create user info - ensure NULL values for empty fields
+                    print("Creating user info...")
+                    Infos.objects.create(
+                        user=new_user,
+                        gender=int(gender) if gender and str(gender).isdigit() else None,
+                        nationalcode=int(nationalcode) if nationalcode and str(nationalcode).isdigit() else None,
+                        birthdate=birthdate,
+                        telephone=telephone,
+                        phonenumber=phonenumber,
+                        maritalstatus=maritalstatus,
+                        military=military,
+                        educationfield=educationfield,
+                        educationdegree=educationdegree,
+                        province=province,
+                        city=city,
+                        accountnumbershaba=accountnumbershaba,
+                        cardnumber=cardnumber,
+                        accountnumber=accountnumber,
+                        address=address
+                    )
+                    
+                    messages.success(self.request, f'کاربر {username} با موفقیت به جمع ما پیوست.')
+                
+                except Exception as e:
+                    import traceback
+                    print(f"Error creating user: {str(e)}")
+                    print(traceback.format_exc())
+                    messages.error(self.request, f'خطا در ایجاد کاربر: {str(e)}')
+            
+            # Edit mode
             elif editOrAdd == 'edit':
-                if isinstance(check := hasAccess("modify", "user", self.request), HttpResponseRedirect):
-                    return check
-                user = Users.objects.filter(username__iexact=username).first()
-                if not user:
-                    messages.error(self.request, 'کاربر مورد نظر موجود نیست.')
-                    return redirect(reverse_lazy("user"))
-
-                userInfo = Infos.objects.filter(user=user).first()
-                if user.email.lower() != email.lower():
-                    if Users.objects.filter(email__iexact=email).exists():
-                        messages.error(self.request, 'این ایمیل موجود است.')
+                # Find the user to edit
+                try:
+                    user = Users.objects.get(username=username)
+                    
+                    # Check permission to edit this user
+                    if not hasAccessToUser(self.request, user):
+                        messages.error(self.request, messagesTypes.permissionsNotFound)
                         return redirect(self.success_url)
+                    
+                    # Update user fields
+                    user.name = name
+                    user.lastname = lastname
+                    user.extension = int(extension) if extension and str(extension).isdigit() else user.extension
+                    user.email = email
+                    user.active = active
+                    user.usersextension = nonLabels
+                    
+                    # Update group if allowed
+                    if user.username != session_username:
+                        groupname = field.get('groupname')
+                        if groupname and groupname != 'none':
+                            group = Groups.objects.filter(enname__iexact=groupname).first()
+                            if not group:
+                                group = Groups.objects.filter(pename__iexact=groupname).first()
+                            
+                            if group:
+                                user.group = group
+                                user.groupname = group.enname.lower()
+                    
+                    # Handle profile picture upload if provided
+                    if uploadPhoto:
+                        valid = validatePhotoExt(uploadPhoto.name)
+                        if not valid:
+                            messages.error(self.request, 'پسوند فایل ارسال شده نامعتبر میباشد.')
+                            return redirect(self.success_url)
+                        picurl = f"{username.lower()}_photo{valid.lower()}"
+                        filepath = os.path.join('Alvand/static/upload', picurl)
 
-                if user.extension != int(extension):
-                    if Users.objects.filter(extension=int(extension)).exists():
-                        messages.error(self.request, 'این داخلی موجود است.')
-                        return redirect(self.success_url)
-
-                if not nationalcode.isdigit():
-                    messages.error(self.request, 'لطفا کد ملی را به صورت اعداد بنویسید.')
-                    return redirect(self.success_url)
-
-                if userInfo.nationalcode != int(nationalcode):
-                    if Infos.objects.filter(nationalcode=int(nationalcode)).exists():
-                        messages.error(self.request, 'این کدملی موجود است.')
-                        return redirect(self.success_url)
-
-                if "groupname" in form.cleaned_data and not form.cleaned_data['groupname'].lower() in ['superadmin', 'admin', 'member'] and not Groups.objects.filter(enname__iexact=form.cleaned_data['groupname']).exists():
-                    messages.error(self.request, "نقش نامعتبر است.")
-                    return redirect(self.success_url)
-
-                if not phonenumber.isdigit():
-                    messages.error(self.request, 'لطفا شماره همراه را به صورت اعداد بنویسید.')
-                    return redirect(self.success_url)
-                if int(userInfo.phonenumber) != int(phonenumber):
-                    if Infos.objects.filter(phonenumber=int(phonenumber)).exists():
-                        messages.error(self.request, 'این شماره همراه موجود است.')
-                        return redirect(self.success_url)
-
-                if str(userInfo.accountnumbershaba) != str(accountnumbershaba):
-                    if Infos.objects.filter(accountnumbershaba=accountnumbershaba).exists():
-                        messages.error(self.request, 'این شماره شبا موجود است.')
-                        return redirect(self.success_url)
-
-                if not cardnumber.isdigit():
-                    messages.error(self.request, 'لطفا شماره کارت را به صورت اعداد بنویسید.')
-                    return redirect(self.success_url)
-
-                if str(userInfo.cardnumber) != str(cardnumber):
-                    if Infos.objects.filter(cardnumber=cardnumber).exists():
-                        messages.error(self.request, 'این شماره کارت موجود است.')
-                        return redirect(self.success_url)
-
-                if not accountnumber.isdigit():
-                    messages.error(self.request, 'لطفا شماره حساب را به صورت اعداد بنویسید.')
-                    return redirect(self.success_url)
-
-                if int(userInfo.accountnumber) != int(accountnumber):
-                    if Infos.objects.filter(accountnumber=accountnumber).exists():
-                        messages.error(self.request, 'این شماره حساب موجود است.')
-                        return redirect(self.success_url)
-
-                if len(nationalcode) > 10:
-                    messages.error(self.request, 'کدملی نامعتبر است.')
-                    return redirect(self.success_url)
-
-                if len(phonenumber) > 11:
-                    messages.error(self.request, 'شماره همراه نامعتبر است.')
-                    return redirect(self.success_url)
-
-                if len(accountnumbershaba) != 22:
-                    messages.error(self.request, 'شماره شبا نامعتبر است.')
-                    return redirect(self.success_url)
-
-                if len(cardnumber) < 16 and len(cardnumber) > 19:
-                    messages.error(self.request, 'شماره کارت نامعتبر است.')
-                    return redirect(self.success_url)
-
-                if not gender.isdigit():
-                    messages.error(self.request, 'جنسیت نامعتبر است.')
-                    return redirect(self.success_url)
-
-                if fieldReq.get('gender') not in ['0', '1', '2']:
-                    messages.error(self.request, 'جنسیت نامعتبر است.')
-                    return redirect(self.success_url)
-
-                if fieldReq.get('gender') and fieldReq.get('gender') != "1" and fieldReq.get('military') not in ['0',
-                                                                                                                 '1',
-                                                                                                                 '2',
-                                                                                                                 '3',
-                                                                                                                 '4']:
-                    messages.error(self.request, 'وضعیت سربازی نامعتبر است.')
-                    return redirect(self.success_url)
-
-                if field.get('gender') == '1':
-                    military = None
-                else:
-                    military = fieldReq.get('military')
-
-                if not maritalstatus.isdigit():
-                    messages.error(self.request, 'وضعیت تاهل نامعتبر است.')
-                    return redirect(self.success_url)
-
-                if fieldReq.get('maritalstatus') not in ['0', '1']:
-                    messages.error(self.request, 'وضعیت تاهل نامعتبر است.')
-                    return redirect(self.success_url)
-
-                if not educationdegree.isdigit():
-                    messages.error(self.request, 'مدرک تحصیلی نامعتبر است.')
-                    return redirect(self.success_url)
-
-                if fieldReq.get('educationdegree') not in ['0', '1', '2', '3', '4', '5', '6']:
-                    messages.error(self.request, 'مدرک تحصیلی نامعتبر است.')
-                    return redirect(self.success_url)
-
-                if not province.isdigit():
-                    messages.error(self.request, 'استان نامعتبر است.')
-                    return redirect(self.success_url)
-
-                if fieldReq.get('province') not in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-                                                    '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
-                                                    '21', '22', '23', '24', '25', '26', '27', '28', '29', '30']:
-                    messages.error(self.request, 'استان نامعتبر است.')
-                    return redirect(self.success_url)
-                listOfExts = fieldReq.getlist('usersextension')
-                labels = []
-                nonLabels = []
-                if any(l for l in listOfExts):
-                    for item in listOfExts:
-                        item = item.strip()
-                        if Extensionsgroups.objects.filter(label=str(item)).exists():
-                            labels.append(item)
-                        elif item.isdigit() and (
-                                Users.objects.filter(extension=int(item)).exists() or Records.objects.filter(
-                            extension=str(item)).exists()):
-                            nonLabels.append(str(item))
-                filename = "avatar.png"
-                if uploadPhoto:
-                    valid = validatePhotoExt(uploadPhoto.name)
-                    if not valid:
-                        messages.error(self.request, 'پسوند فایل ارسال شده نامعتبر میباشد.')
-                        return redirect(self.success_url)
-                    filename = f"{username.lower()}_photo{valid.lower()}"
-                    filepath = os.path.join('Alvand/static/upload', filename)
-
-                    with open(filepath, '+wb') as f:
-                        for bt in uploadPhoto:
-                            f.write(bt)
-                checkuserobj = Users.objects.filter(username__iexact=username)
-                gp = Groups.objects.filter(enname__iexact=form.cleaned_data['groupname']).first() if "groupname" in form.cleaned_data else None
-                if uploadPhoto:
-                    if checkuserobj.exists():
-                        if username.lower() == checkSession(self.request) and str(getUserinfoByUsername(username, "groupname")) in ['superadmin', 'supporter']:
-                            checkuserobj.update(name=field.get('name'),
-                                                lastname=field.get('lastname'), extension=extension,
-                                                email=email, usersextension=nonLabels, active=bool(field.get('active')),
-                                                picurl=filename)
-                        else:
-                            checkuserobj.update(name=field.get('name'),
-                                                lastname=field.get('lastname'), extension=extension,
-                                                email=email, usersextension=nonLabels, active=bool(field.get('active')),
-                                                picurl=filename, group=gp, groupname=form.cleaned_data['groupname'].lower())
-                else:
-                    if checkuserobj.exists():
-                        if username.lower() == checkSession(self.request) and str(getUserinfoByUsername(username, "groupname")) in ['superadmin', 'supporter']:
-                            checkuserobj.update(name=field.get('name'),
-                                              lastname=field.get('lastname'), extension=extension,
-                                               email=email, usersextension=nonLabels, active=bool(field.get('active')))
-                        else:
-                            checkuserobj.update(name=field.get('name'),
-                                                lastname=field.get('lastname'), extension=extension,
-                                                email=email, usersextension=nonLabels, active=bool(field.get('active')),
-                                                group=gp, groupname=form.cleaned_data['groupname'].lower())
-                if checkuserobj.exists():
-                    perm = Permissions.objects.filter(user=checkuserobj.first())
-                    if perm.exists():
-                        perm.update(can_view=bool(fieldReq.get("can_view")), can_write=bool(fieldReq.get("can_write")),
-                                    can_modify=bool(fieldReq.get("can_modify")),
-                                    can_delete=bool(fieldReq.get("can_delete")), exts_label=labels)
-                    inf = Infos.objects.filter(user=checkuserobj.first())
-                    if inf.exists():
-                        inf.update(gender=gender, nationalcode=nationalcode,
-                                   birthdate=fieldReq.get('birthdate'),
-                                   telephone=fieldReq.get('telephone'),
-                                   phonenumber=phonenumber,
-                                   maritalstatus=maritalstatus,
-                                   military=military,
-                                   educationfield=fieldReq.get(
-                                       'educationfield'),
-                                   educationdegree=educationdegree,
-                                   province=province, city=fieldReq.get('city'),
-                                   accountnumbershaba=accountnumbershaba,
-                                   cardnumber=cardnumber,
-                                   accountnumber=accountnumber,
-                                   address=fieldReq.get('address'))
-
-                messages.success(self.request, f'اطلاعات کاربر {username} با موفقیت بروز شد.')
-
+                        with open(filepath, '+wb') as f:
+                            for bt in uploadPhoto:
+                                f.write(bt)
+                        user.picurl = picurl
+                    
+                    # Save user updates
+                    user.save()
+                    
+                    # Update permissions
+                    perm = Permissions.objects.filter(user=user).first()
+                    if perm:
+                        perm.can_view = bool(fieldReq.get("can_view"))
+                        perm.can_write = bool(fieldReq.get("can_write"))
+                        perm.can_modify = bool(fieldReq.get("can_modify"))
+                        perm.can_delete = bool(fieldReq.get("can_delete"))
+                        perm.exts_label = labels
+                        perm.save()
+                    else:
+                        Permissions.objects.create(
+                            user=user,
+                            can_view=bool(fieldReq.get("can_view")),
+                            can_write=bool(fieldReq.get("can_write")),
+                            can_modify=bool(fieldReq.get("can_modify")),
+                            can_delete=bool(fieldReq.get("can_delete")),
+                            exts_label=labels
+                        )
+                    
+                    # Update user info
+                    userInfo = Infos.objects.filter(user=user).first()
+                    if userInfo:
+                        userInfo.gender = int(gender) if gender and gender.isdigit() else userInfo.gender
+                        userInfo.nationalcode = int(nationalcode) if nationalcode and nationalcode.isdigit() else userInfo.nationalcode
+                        userInfo.birthdate = birthdate
+                        userInfo.telephone = telephone
+                        userInfo.phonenumber = phonenumber
+                        userInfo.maritalstatus = maritalstatus
+                        userInfo.military = military
+                        userInfo.educationfield = educationfield
+                        userInfo.educationdegree = educationdegree
+                        userInfo.province = province
+                        userInfo.city = city
+                        userInfo.accountnumbershaba = accountnumbershaba
+                        userInfo.cardnumber = cardnumber
+                        userInfo.accountnumber = accountnumber
+                        userInfo.address = address
+                        userInfo.save()
+                    else:
+                        Infos.objects.create(
+                            user=user,
+                            gender=int(gender) if gender and gender.isdigit() else None,
+                            nationalcode=int(nationalcode) if nationalcode and nationalcode.isdigit() else None,
+                            birthdate=birthdate,
+                            telephone=telephone,
+                            phonenumber=phonenumber,
+                            maritalstatus=maritalstatus,
+                            military=military,
+                            educationfield=educationfield,
+                            educationdegree=educationdegree,
+                            province=province,
+                            city=city,
+                            accountnumbershaba=accountnumbershaba,
+                            cardnumber=cardnumber,
+                            accountnumber=accountnumber,
+                            address=address
+                        )
+                    
+                    messages.success(self.request, f'اطلاعات کاربر {username} با موفقیت بروز شد.')
+                    
+                except Users.DoesNotExist:
+                    messages.error(self.request, 'کاربر مورد نظر یافت نشد.')
+                except Exception as e:
+                    import traceback
+                    print(f"Error updating user: {str(e)}")
+                    print(traceback.format_exc())
+                    messages.error(self.request, f'خطا در بروزرسانی کاربر: {str(e)}')
+            
             else:
                 messages.error(self.request,
                                'برای انجام عملیات ویرایش یا اضافه کاربر باید گزینه مناسب را در فیلد ویرایش/اضافه انتخاب کنید.')
-                return redirect(reverse_lazy("user"))
+        
         elif deleteUser:
-            if isinstance(check := hasAccess("delete", "user", self.request), HttpResponseRedirect):
-                return check
-            if editOrAdd == 'edit':
-                username = form.cleaned_data.get('username')
-                found_user = Users.objects.filter(username__iexact=username)
-                if found_user.exists():
-                    if username.lower() == checkSession(self.request) and str(getUserinfoByUsername(username, "groupname")) in ['superadmin', 'supporter']:
-                        messages.error(self.request, "شما نمی توانید حساب کاربری بالاترین مقام را حذف کنید.")
+            # Process delete user request
+            try:
+                user = Users.objects.filter(username=username).first()
+                if user:
+                    if not hasAccessToUser(self.request, user):
+                        messages.error(self.request, messagesTypes.permissionsNotFound)
                         return redirect(self.success_url)
-                    Extensionsgroups.objects.filter(modifyby=found_user.first()).delete()
-                    Infos.objects.filter(user=found_user.first()).delete()
-                    Permissions.objects.filter(user=found_user.first()).delete()
-                    Verifications.objects.filter(user=found_user.first()).delete()
-                    filename = found_user.first().picurl
-                    if filename in os.listdir('Alvand/static/upload'):
-                        os.remove(f'Alvand/static/upload/{filename}')
-                    found_user.delete()
-                    messages.success(self.request, f'کاربر {username} با موفقیت حذف شد')
-                    return redirect(self.success_url)
+                    
+                    # Delete user and related records
+                    user_id = user.id
+                    
+                    # Delete permissions
+                    Permissions.objects.filter(user=user).delete()
+                    
+                    # Delete info
+                    Infos.objects.filter(user=user).delete()
+                    
+                    # Delete user
+                    user.delete()
+                    
+                    messages.success(self.request, f'کاربر {username} با موفقیت حذف شد.')
                 else:
-                    messages.error(self.request, f'کاربر {username} وجود ندارد')
-                    return redirect(self.success_url)
-
-            messages.error(self.request, 'برای حذف کاربر باید مقدار ویرایش را انتخاب کنید.')
+                    messages.error(self.request, 'کاربر مورد نظر یافت نشد.')
+            except Exception as e:
+                messages.error(self.request, f'خطا در حذف کاربر: {str(e)}')
+        
         elif deleteProfile:
-            if isinstance(check := hasAccess("delete", "user", self.request), HttpResponseRedirect):
-                return check
-            if editOrAdd == 'edit':
-                username = form.cleaned_data.get('username')
-                found_user_pro = Users.objects.filter(username__iexact=username)
-                if found_user_pro.exists():
-                    if found_user_pro.first().picurl.lower() == "avatar.png":
-                        messages.error(self.request, f'کاربر {username} عکسی ندارد.')
+            # Process delete profile (info only) request
+            try:
+                user = Users.objects.filter(username=username).first()
+                if user:
+                    if not hasAccessToUser(self.request, user):
+                        messages.error(self.request, messagesTypes.permissionsNotFound)
                         return redirect(self.success_url)
-                    else:
-                        filename = found_user_pro.first().picurl
-                        if filename in os.listdir('Alvand/static/upload'):
-                            os.remove(f'Alvand/static/upload/{filename}')
-
-                        found_user_pro.update(picurl='avatar.png')
-                        messages.success(self.request, f'پروفایل کاربر {username} با موفقیت حذف شد.')
-                        return redirect(self.success_url)
+                    
+                    # Delete info only
+                    Infos.objects.filter(user=user).delete()
+                    
+                    messages.success(self.request, f'پروفایل کاربر {username} با موفقیت حذف شد.')
                 else:
-                    messages.error(self.request, f' کاربر {username} وجود ندارد.')
-                    return redirect(self.success_url)
-            else:
-                messages.error(self.request, 'برای حذف پروفایل کاربر باید مقدار ویرایش را انتخاب کنید.')
-                return redirect(self.success_url)
-        elif ChangePassword:
-            if editOrAdd == 'edit':
-                username = form.cleaned_data.get('username')
-                found_user = Users.objects.filter(username__iexact=username)
-                if found_user.exists():
-                    psw = 123456789
-                    if check_password(psw, found_user.first().password):
-                        messages.error(self.request, f'رمز عبور کاربر {username} قبلا بازنگاری شده است.')
+                    messages.error(self.request, 'کاربر مورد نظر یافت نشد.')
+            except Exception as e:
+                messages.error(self.request, f'خطا در حذف پروفایل کاربر: {str(e)}')
+        
+        elif changePassword:
+            # Process change password request
+            try:
+                user = Users.objects.filter(username=username).first()
+                if user:
+                    if not hasAccessToUser(self.request, user):
+                        messages.error(self.request, messagesTypes.permissionsNotFound)
                         return redirect(self.success_url)
-                    Users.objects.update(password=make_password('123456789'))
-                    messages.success(self.request, f'رمز عبور کاربر {username} با موفقیت بازنگاری شد.')
-                    return redirect(self.success_url)
+                    
+                    # Reset password and set change flag
+                    user.password = make_password("123456789")
+                    user.needs_password_change = True
+                    user.save()
+                    
+                    messages.success(self.request, f'رمز عبور کاربر {username} با موفقیت بازنشانی شد.')
                 else:
-                    messages.error(self.request, f'کاربر {username} وجود ندارد.')
-                    return redirect(self.success_url)
-
-            messages.error(self.request, 'برای حذف پروفایل کاربر باید مقدار ویرایش را انتخاب کنید.')
-            return redirect(self.success_url)
+                    messages.error(self.request, 'کاربر مورد نظر یافت نشد.')
+            except Exception as e:
+                messages.error(self.request, f'خطا در بازنشانی رمز عبور: {str(e)}')
+                
+        return redirect(self.success_url)
+        
+    def hasAccessToUser(request, target_user):
+        """Helper function to check if the logged in user has access to modify the target user."""
+        session_username = checkSession(request)
+        session_user = Users.objects.filter(username__iexact=session_username).first()
+        
+        if not session_user:
+            return False
+            
+        # Get user roles
+        session_role = session_user.groupname.lower()
+        target_role = target_user.groupname.lower()
+        
+        # Check permissions hierarchy
+        if session_role == 'supporter':
+            return True  # Supporter can modify anyone
+        elif session_role == 'superadmin':
+            return target_role not in ['supporter']  # Superadmin can't modify supporter
+        elif session_role == 'admin':
+            return target_role not in ['supporter', 'superadmin']  # Admin can't modify supporter or superadmin
+        elif session_user.id == target_user.id:
+            return True  # User can modify themselves
         else:
-            if isinstance(check := hasAccess("view", "user", self.request), HttpResponseRedirect):
-                return check
-            messages.error(self.request, "درخواست ارسال شده نامعتبر است.")
-
-        return super().form_valid(form)
+            return False
 
     def form_invalid(self, form):
         if not checkSession(self.request):
@@ -1825,18 +1822,131 @@ class UserForm(FormView, View):
         if not check_active(checkSession(self.request)):
             messages.error(self.request, messagesTypes.deAvtive)
             return redirect(reverse_lazy('logout' if checkSession(self.request) else 'login'))
-        if isinstance(check := hasAccess("view", "settings", self.request), HttpResponseRedirect):
+        if isinstance(check := hasAccess("write", "user", self.request), HttpResponseRedirect):
             return check
-        if self.request.POST.get('deleteUser'):
-            return self.form_valid(form)
-        if self.request.POST.get('deleteProfile'):
-            return self.form_valid(form)
-        if self.request.POST.get(form):
-            return self.form_valid('ChangePassword')
-        if self.request.POST.get('saveUser') and str(self.request.POST.get('username')) == checkSession(self.request) and str(getUserinfoByUsername(checkSession(self.request), "groupname")) in ['superadmin', 'supporter']:
-            return self.form_valid(form)
         messages.error(self.request, messagesTypes.fillAllFields)
-        return redirect(reverse_lazy("user"))
+        return redirect(self.success_url)
+
+    def post(self, request, *args, **kwargs):
+        """Handle POST requests for user form."""
+        print("=" * 50)
+        print("POST request received to UserForm")
+        print(f"POST data: {dict(request.POST)}")
+        print(f"FILES data: {dict(request.FILES)}")
+        
+        # Debug the saveUser field specifically
+        print(f"saveUser field present: {'saveUser' in request.POST}")
+        print(f"saveUser field value: {request.POST.get('saveUser')}")
+        
+        # Special handling for direct actions
+        if 'saveUser' in request.POST:
+            # Get form data
+            username = request.POST.get('username')
+            editOrAdd = request.POST.get('editOrAdd')
+            
+            print(f"Direct saveUser action detected - username: {username}, mode: {editOrAdd}")
+            
+            # Process form using form_valid directly
+            form = self.get_form()
+            if form.is_valid():
+                print("Form is valid, calling form_valid")
+                return self.form_valid(form)
+            else:
+                print("Form validation failed")
+                print(f"Form errors: {form.errors}")
+                return self.form_invalid(form)
+        elif 'deleteUser' in request.POST:
+            # Handle direct delete
+            username = request.POST.get('username')
+            print(f"Direct deleteUser action detected for username: {username}")
+            
+            try:
+                user = Users.objects.filter(username=username).first()
+                if user:
+                    if not hasAccessToUser(request, user):
+                        messages.error(request, messagesTypes.permissionsNotFound)
+                        return redirect(self.success_url)
+                    
+                    # Delete user and related records
+                    user_id = user.id
+                    
+                    # Delete permissions
+                    Permissions.objects.filter(user=user).delete()
+                    
+                    # Delete info
+                    Infos.objects.filter(user=user).delete()
+                    
+                    # Delete user
+                    user.delete()
+                    
+                    messages.success(request, f'کاربر {username} با موفقیت حذف شد.')
+                else:
+                    messages.error(request, 'کاربر مورد نظر یافت نشد.')
+            except Exception as e:
+                messages.error(request, f'خطا در حذف کاربر: {str(e)}')
+            
+            return redirect(self.success_url)
+        elif 'deleteProfile' in request.POST:
+            # Handle direct profile delete
+            username = request.POST.get('username')
+            print(f"Direct deleteProfile action detected for username: {username}")
+            
+            try:
+                user = Users.objects.filter(username=username).first()
+                if user:
+                    if not hasAccessToUser(request, user):
+                        messages.error(request, messagesTypes.permissionsNotFound)
+                        return redirect(self.success_url)
+                    
+                    # Delete info only
+                    Infos.objects.filter(user=user).delete()
+                    
+                    messages.success(request, f'پروفایل کاربر {username} با موفقیت حذف شد.')
+                else:
+                    messages.error(request, 'کاربر مورد نظر یافت نشد.')
+            except Exception as e:
+                messages.error(request, f'خطا در حذف پروفایل کاربر: {str(e)}')
+            
+            return redirect(self.success_url)
+        elif 'ChangePassword' in request.POST:
+            # Handle direct password change
+            username = request.POST.get('username')
+            print(f"Direct ChangePassword action detected for username: {username}")
+            
+            try:
+                user = Users.objects.filter(username=username).first()
+                if user:
+                    if not hasAccessToUser(request, user):
+                        messages.error(request, messagesTypes.permissionsNotFound)
+                        return redirect(self.success_url)
+                    
+                    # Reset password and set change flag
+                    user.password = make_password("123456789")
+                    user.needs_password_change = True
+                    user.save()
+                    
+                    messages.success(request, f'رمز عبور کاربر {username} با موفقیت بازنشانی شد.')
+                else:
+                    messages.error(request, 'کاربر مورد نظر یافت نشد.')
+            except Exception as e:
+                messages.error(request, f'خطا در بازنشانی رمز عبور: {str(e)}')
+            
+            return redirect(self.success_url)
+        
+        # Regular form processing if no direct action detected
+        form = self.get_form()
+        print(f"Form is valid: {form.is_valid()}")
+        if form.is_valid():
+            print("Form validation passed, calling form_valid")
+            return self.form_valid(form)
+        else:
+            print(f"Form validation failed!")
+            print(f"Form errors: {form.errors}")
+            print(f"Form non-field errors: {form.non_field_errors()}")
+            # Add detailed error messages to help debug
+            for field, errors in form.errors.items():
+                print(f"Field '{field}' errors: {errors}")
+            return self.form_invalid(form)
 
 
 def index(request):
@@ -1909,3 +2019,176 @@ def userprofile_view(request):
     }
     
     return render(request, 'Alvand/templates/userprofile.html', context)
+
+class ChangePasswordView(View):
+    template_name = 'change_password.html'
+
+    def get(self, request):
+        if not checkSession(request):
+            return redirect('login')
+        return render(request, self.template_name)
+
+    def post(self, request):
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+        if new_password != confirm_password:
+            messages.error(request, 'Passwords do not match.')
+            return redirect('change_password')
+        user = Users.objects.get(username=checkSession(request))
+        user.password = make_password(new_password)
+        user.needs_password_change = False
+        user.save()
+        logout(request)
+        messages.success(request, 'Password changed successfully. Please login with new password.')
+        return redirect('login')
+
+class ForgotPasswordView(View):
+    template_name = 'forgot_password.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        email = request.POST.get('email')
+        user = Users.objects.filter(email__iexact=email).first()
+        if user:
+            reset_code = getRandomCode()
+            Verifications.objects.create(user=user, type=verificationType.email, code=reset_code)
+            sendEmail('بازنشانی رمز عبور', f'کد بازنشانی: {reset_code}', [email], request)
+            messages.success(request, 'کد بازنشانی به ایمیل شما ارسال شد.')
+            return redirect('reset_password')
+        messages.error(request, 'ایمیل یافت نشد.')
+        return redirect('forgot_password')
+
+class ResetPasswordView(View):
+    template_name = 'reset_password.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        code = request.POST.get('code')
+        new_password = request.POST.get('new_password')
+        confirm = request.POST.get('confirm_password')
+        if new_password != confirm:
+            messages.error(request, 'Passwords do not match.')
+            return redirect('reset_password')
+        ver = Verifications.objects.filter(code=code, type=verificationType.email).first()
+        if ver:
+            user = ver.user
+            user.password = make_password(new_password)
+            user.needs_password_change = False
+            user.save()
+            ver.delete()
+            messages.success(request, 'Password reset successfully.')
+            return redirect('login')
+        messages.error(request, 'Invalid code.')
+        return redirect('reset_password')
+
+def test_user_create(request):
+    """Simple test view for direct user creation."""
+    from django.shortcuts import render
+    from django.contrib import messages
+    from Alvand.models import Users, Groups
+    from django.contrib.auth.hashers import make_password
+    import traceback
+    
+    # Get all groups for dropdown
+    groups = Groups.objects.all()
+    context = {'groups': groups}
+    
+    # Handle form submission
+    if request.method == 'POST':
+        try:
+            # Get form data
+            username = request.POST.get('username')
+            name = request.POST.get('name', '')
+            lastname = request.POST.get('lastname', '')
+            extension = request.POST.get('extension', '1000')
+            email = request.POST.get('email', '')
+            group_id = request.POST.get('group_id')
+            
+            # Validate required fields
+            if not username:
+                messages.error(request, 'Username is required')
+                return render(request, 'test_user_create.html', context)
+            
+            # Check if username exists
+            if Users.objects.filter(username__iexact=username).exists():
+                messages.error(request, 'Username already exists')
+                return render(request, 'test_user_create.html', context)
+            
+            # Get group
+            try:
+                group = Groups.objects.get(id=group_id)
+            except (Groups.DoesNotExist, ValueError):
+                messages.error(request, 'Invalid group ID')
+                return render(request, 'test_user_create.html', context)
+            
+            # Process extension
+            try:
+                extension_value = int(extension)
+            except ValueError:
+                extension_value = 1000
+            
+            # Create user
+            new_user = Users(
+                username=username,
+                name=name,
+                lastname=lastname,
+                extension=extension_value,
+                email=email,
+                group=group,
+                groupname=group.enname.lower(),
+                picurl="avatar.png",
+                active=True,
+                usersextension=[],
+                password=make_password("123456789"),
+                needs_password_change=True
+            )
+            
+            # Save user
+            new_user.save()
+            
+            # Show success message
+            messages.success(request, f'User {username} created successfully with ID: {new_user.id}')
+            
+            # Add result details
+            result = f"User created successfully:\n"
+            result += f"ID: {new_user.id}\n"
+            result += f"Username: {new_user.username}\n"
+            result += f"Group: {new_user.group.enname}\n"
+            result += f"Extension: {new_user.extension}\n"
+            
+            context['result'] = result
+            
+        except Exception as e:
+            error_details = traceback.format_exc()
+            messages.error(request, f'Error creating user: {str(e)}')
+            context['result'] = f"Error details:\n{error_details}"
+    
+    return render(request, 'test_user_create.html', context)
+
+def hasAccessToUser(request, target_user):
+    """Helper function to check if the logged in user has access to modify the target user."""
+    session_username = checkSession(request)
+    session_user = Users.objects.filter(username__iexact=session_username).first()
+    
+    if not session_user:
+        return False
+        
+    # Get user roles
+    session_role = session_user.groupname.lower()
+    target_role = target_user.groupname.lower()
+    
+    # Check permissions hierarchy
+    if session_role == 'supporter':
+        return True  # Supporter can modify anyone
+    elif session_role == 'superadmin':
+        return target_role not in ['supporter']  # Superadmin can't modify supporter
+    elif session_role == 'admin':
+        return target_role not in ['supporter', 'superadmin']  # Admin can't modify supporter or superadmin
+    elif session_user.id == target_user.id:
+        return True  # User can modify themselves
+    else:
+        return False

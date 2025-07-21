@@ -74,3 +74,4 @@ password.txt
 *.pot
 *.pyc
 __pycache__/
+test_*.py   

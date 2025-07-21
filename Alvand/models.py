@@ -244,8 +244,8 @@ class Errors(models.Model):
     errormessage = models.TextField(blank=True, null=True)
     probablecause = models.TextField(blank=True, null=True)
     solution = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
-    updated_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class Extensionsgroups(models.Model):
@@ -352,6 +352,7 @@ class Users(models.Model):
     password = models.CharField(max_length=191)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(blank=True, null=True)
+    needs_password_change = models.BooleanField(default=True)
 
 
 class Verifications(models.Model):

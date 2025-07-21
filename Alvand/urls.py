@@ -15,9 +15,13 @@ urlpatterns = [
     path('support/', views.support, name='support'),
     path('errors/', views.errorsPage.as_view(), name='errors'),
     path('user/', views.UserForm.as_view(), name='user'),
+    path('change-password/', views.ChangePasswordView.as_view(), name='change_password'),
+    path('forgot-password/', views.ForgotPasswordView.as_view(), name='forgot_password'),
+    path('reset-password/', views.ResetPasswordView.as_view(), name='reset_password'),
     path('', views.userLogin.as_view(), name='index'),
     path('login/', views.userLogin.as_view(), name='login'),
     path('logout/', views.logout.as_view(), name='logout'),
     path('license/', views.licenseNotActive, name='license'),
+    path('test-user-create/', views.test_user_create, name='test_user_create'),
     re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
 ]

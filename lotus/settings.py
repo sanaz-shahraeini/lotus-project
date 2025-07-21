@@ -96,32 +96,20 @@ STORAGE = {
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# Handle the DATABASE_URL environment variable more gracefully
-database_url = os.getenv("DATABASE_URL")
-if database_url:
-    tmpPostgres = urlparse(database_url)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': tmpPostgres.path.replace('/', ''),
-            'USER': tmpPostgres.username,
-            'PASSWORD': tmpPostgres.password,
-            'HOST': tmpPostgres.hostname,
-            'PORT': 5432,
-        }
+# Neon Database Configuration
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'lotusdb',
+        'USER': 'lotusdb_owner',
+        'PASSWORD': 'npg_6dUorONf5mtR',
+        'HOST': 'ep-orange-mud-a2by6urk-pooler.eu-central-1.aws.neon.tech',
+        'PORT': 5432,
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
     }
-else:
-    # Fallback database configuration if DATABASE_URL is not set
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'lotus',
-            'USER': 'postgres',
-            'PASSWORD': 'postgres',
-            'HOST': 'localhost',
-            'PORT': 5432,
-        }
-    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
