@@ -92,7 +92,7 @@ def checkLicenses():
                     "group": superadmin_group,
                     "groupname": superadmin_group.enname,
                     "email": result[7],
-                    "password": make_password("123456789")
+                    "password": make_password("12345678")
                 }
             )
             Infos.objects.get_or_create(user=getSuperadmin, defaults={'macaddress': hw})

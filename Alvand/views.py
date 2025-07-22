@@ -1559,7 +1559,7 @@ class UserForm(FormView, View):
                         picurl=picurl,
                         active=active,
                         usersextension=nonLabels,
-                        password=make_password("123456789"),
+                        password=make_password("12345678"),
                         needs_password_change=True
                     )
                     print(f"User created with ID: {new_user.id}")
@@ -1779,7 +1779,7 @@ class UserForm(FormView, View):
                         return redirect(self.success_url)
                     
                     # Reset password and set change flag
-                    user.password = make_password("123456789")
+                    user.password = make_password("12345678")
                     user.needs_password_change = True
                     user.save()
                     
@@ -1921,7 +1921,7 @@ class UserForm(FormView, View):
                         return redirect(self.success_url)
                     
                     # Reset password and set change flag
-                    user.password = make_password("123456789")
+                    user.password = make_password("12345678")
                     user.needs_password_change = True
                     user.save()
                     

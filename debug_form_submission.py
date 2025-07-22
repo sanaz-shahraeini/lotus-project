@@ -108,7 +108,7 @@ def debug_form_submission():
             picurl="avatar.png",
             active=True,
             usersextension=[],
-            password=make_password("123456789"),
+            password=make_password("12345678"),
             needs_password_change=True
         )
         
