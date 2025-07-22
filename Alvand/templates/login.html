@@ -10,223 +10,21 @@
     <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fonts/css/iransans.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/dist/styles.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/theme.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'css/theme-toggle-login-fix.css' %}" rel="stylesheet" type="text/css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700&display=swap');
-        
-        :root {
-            --primary-color: #00BCD4;       /* Lotus Aqua */
-            --primary-hover: #29B6F6;       /* Sky Blue */
-            --primary-light: #80DEEA;       /* Soft Mint */
-            --secondary-color: #F5F7FA;     /* White Smoke */
-            --text-color: #37474F;          /* Dark Gray */
-            --light-text: #90A4AE;          /* Medium Gray */
-            --border-color: #CFD8DC;        /* Light Gray */
-            --bg-color: #F5F7FA;            /* White Smoke */
-            --card-bg: white;
-            --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-        }
-        
-        html.dark {
-            --primary-color: #00BCD4;         /* Lotus Aqua */
-            --primary-hover: #29B6F6;         /* Sky Blue */
-            --primary-light: #80DEEA;         /* Soft Mint */
-            --secondary-color: #0D1B2A;       /* Deep Indigo */
-            --text-color: #F5F7FA;            /* White Smoke */
-            --light-text: #CFD8DC;            /* Light Gray */
-            --border-color: #37474F;          /* Dark Gray */
-            --bg-color: #121212;              /* Dark Navy */
-            --card-bg: #0D1B2A;               /* Deep Indigo */
-            --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        }
-        
-        body {
-            font-family: 'Vazirmatn', system-ui, sans-serif;
-            background-color: var(--bg-color);
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-color);
-            transition: background-color 0.3s, color 0.3s;
-        }
-        
-        .login-container {
-            width: 100%;
-            max-width: 420px;
-            background-color: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: var(--card-shadow);
-            padding: 2.5rem;
-            position: relative;
-            overflow: hidden;
-            transition: background-color 0.3s, box-shadow 0.3s;
-        }
-        
-        .login-container::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 6px;
-            background: linear-gradient(to right, #00BCD4, #536DFE); /* Lotus Aqua to Electric Violet */
-        }
-        
-        .logo-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-        
-        .logo {
-            width: 80px;
-            height: 80px;
-            object-fit: contain;
-            margin-bottom: 1rem;
-        }
-        
-        .app-name {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin: 0;
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--text-color);
-            transition: color 0.3s;
-        }
-        
-        .form-input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 0.95rem;
-            transition: border-color 0.2s, box-shadow 0.2s, background-color 0.3s, color 0.3s;
-            background-color: var(--secondary-color);
-            color: var(--text-color);
-        }
-        
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1); /* Lotus Aqua with opacity */
-        }
-        
-        .form-input::placeholder {
-            color: var(--light-text);
-        }
-        
-        .login-button {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            margin-top: 1rem;
-        }
-        
-        .login-button:hover {
-            background-color: var(--primary-hover);
-        }
-        
-        .input-icon-wrapper {
-            position: relative;
-        }
-        
-        .input-icon {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--light-text);
-            transition: color 0.3s;
-        }
-        
-        /* Theme toggle styles */
-        .theme-toggle {
-            position: absolute;
-            top: 1rem;
-            left: 1rem;
-            background: none;
-            border: none;
-            color: var(--text-color);
-            font-size: 1.25rem;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s, color 0.3s;
-            z-index: 10;
-        }
-        
-        .theme-toggle:hover {
-            background-color: var(--secondary-color);
-        }
-        
-        .theme-toggle-icon {
-            transition: transform 0.5s;
-        }
-        
-        html.dark .theme-toggle .fa-moon {
-            display: none;
-        }
-        
-        html.light .theme-toggle .fa-sun {
-            display: none;
-        }
-        
-        @media (max-width: 480px) {
-            .login-container {
-                max-width: 100%;
-                border-radius: 0;
-                padding: 1.5rem;
-                height: 100vh;
-            }
-            
-            body {
-                background-color: var(--card-bg);
-            }
-            
-            .theme-toggle {
-                top: 1.5rem;
-                left: 1.5rem;
-            }
-        }
-    </style>
+    <link href="{% static 'css/login-styles.css' %}" rel="stylesheet" type="text/css">
 </head>
-<body>
+<body class="login-page">
 {% include "messages.html" %}
 
-<button class="theme-toggle" id="theme-toggle" aria-label="تغییر حالت نمایش" type="button">
-    <i class="fa-solid fa-sun theme-toggle-icon"></i>
-    <i class="fa-solid fa-moon theme-toggle-icon"></i>
+<!-- Theme Toggle Button (matching navbar style) -->
+<button id="theme-toggle" class="lotus-theme-toggle" aria-label="تغییر حالت نمایش">
+    <i class="fa-solid fa-sun"></i>
+    <i class="fa-solid fa-moon" style="color: #00BCD4 !important;"></i>
 </button>
 
 <div class="login-container">
-    
     <div class="logo-container">
         <img src="{% static 'pic/logo.png' %}" alt="Lotus Logo" class="logo">
         <h1 class="app-name">لوتوس</h1>
@@ -258,6 +56,5 @@
 
 <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
 <script src="{% static 'js/theme-toggle.js' %}"></script>
-
 </body>
 </html>

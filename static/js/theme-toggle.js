@@ -1,46 +1,52 @@
-// Theme toggle functionality
+/**
+ * Theme Toggle Functionality for Lotus Application
+ * Provides consistent dark/light mode toggle across all pages
+ */
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Get the theme toggle button
-    const themeToggle = document.getElementById('theme-toggle');
-    const sunIcon = document.querySelector('.fa-sun');
-    const moonIcon = document.querySelector('.fa-moon');
-    
-    // Check for saved theme preference or use default
-    const currentTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.className = currentTheme;
-    
-    // Set initial icon visibility
-    if (currentTheme === 'dark') {
-        sunIcon.style.display = 'block';
-        moonIcon.style.display = 'none';
-    } else {
-        sunIcon.style.display = 'none';
-        moonIcon.style.display = 'block';
-        // Make sure moon icon is visible in light mode
-        if (moonIcon) moonIcon.style.color = '#3b82f6';
-    }
-    
-    // Add click event listener
-    themeToggle.addEventListener('click', function() {
-        console.log('Theme toggle clicked');
+    // Initialize theme toggle button with forceful override
+    const initThemeToggle = function() {
+        const themeToggleBtn = document.getElementById('theme-toggle');
         
-        // Toggle theme
-        if (document.documentElement.classList.contains('light')) {
-            // Switch to dark mode
-            document.documentElement.classList.replace('light', 'dark');
-            localStorage.setItem('theme', 'dark');
-            sunIcon.style.display = 'block';
-            moonIcon.style.display = 'none';
-            console.log('Switched to dark mode');
+        if (!themeToggleBtn) return;
+        
+        // Remove any existing event listeners
+        const newButton = themeToggleBtn.cloneNode(true);
+        themeToggleBtn.parentNode.replaceChild(newButton, themeToggleBtn);
+        
+        // Get saved theme or use system preference
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        // Set initial theme
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
         } else {
-            // Switch to light mode
-            document.documentElement.classList.replace('dark', 'light');
-            localStorage.setItem('theme', 'light');
-            sunIcon.style.display = 'none';
-            moonIcon.style.display = 'block';
-            // Make sure moon icon is visible in light mode
-            if (moonIcon) moonIcon.style.color = '#3b82f6';
-            console.log('Switched to light mode');
+            document.documentElement.classList.add('light');
+            document.documentElement.classList.remove('dark');
         }
-    });
+        
+        // Add toggle event
+        newButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                document.documentElement.classList.add('light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.remove('light');
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+    };
+    
+    // Initialize theme toggle
+    initThemeToggle();
+    
+    // Add a backup initialization for any race conditions
+    setTimeout(initThemeToggle, 500);
 });

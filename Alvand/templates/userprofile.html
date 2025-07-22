@@ -849,6 +849,43 @@ label.required:after,
                     style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 3px;">Close</button>
             </div>
             
+            <!-- Password Reset Requests Section -->
+            {% if password_reset_requests %}
+            <div class="form-section">
+                <h2 class="text-lg font-semibold mb-4">درخواست‌های بازنشانی رمز عبور</h2>
+                <div class="alert alert-warning">
+                    <i class="fa-solid fa-triangle-exclamation"></i> 
+                    <strong>توجه:</strong> برای بازنشانی رمز عبور کاربر، نام کاربری را در قسمت ویرایش وارد کنید و سپس دکمه "بازنشانی رمز عبور" را بزنید.
+                </div>
+                <table style="width: 100%; margin-top: 1rem; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border-color);">نام کاربری</th>
+                            <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border-color);">نام و نام خانوادگی</th>
+                            <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border-color);">تاریخ درخواست</th>
+                            <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border-color);">عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for request in password_reset_requests %}
+                        <tr>
+                            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border-color);">{{ request.user.username }}</td>
+                            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border-color);">{{ request.user.name }} {{ request.user.lastname }}</td>
+                            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border-color);">{{ request.created_at|date:"Y/m/d H:i" }}</td>
+                            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border-color);">
+                                <button type="button" class="select-user-btn" 
+                                        data-username="{{ request.user.username }}" 
+                                        style="background-color: #00BCD4; color: white; padding: 0.25rem 0.75rem; border-radius: 4px; border: none; cursor: pointer;">
+                                    انتخاب
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+            
             <!-- User Profile Image Section - Moved to top -->
             <div class="profile-header">
                 <div class="profile-image-container">

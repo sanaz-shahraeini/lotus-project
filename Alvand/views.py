@@ -974,7 +974,10 @@ def getIPAddress(request):
 
 
 def log(request, errCode, errMessage, byWho=None):
-    user = Users.objects.filter(username__iexact=checkSession(request) if not isinstance(request, str) else request)
+    username = checkSession(request) if not isinstance(request, str) else request
+    if not username or not isinstance(username, str) or not username.strip():
+        return False
+    user = Users.objects.filter(username__iexact=username)
     if not user.exists():
         return False
     ip = getIPAddress(request)
@@ -1296,6 +1299,11 @@ class UserForm(FormView, View):
         # Get the QuerySet based on user role
         if str(getUser).lower() in ["superadmin", "supporter"]:
             users_queryset = Users.objects.exclude(groupname="supporter")
+            
+            # Add password reset requests to context for supporters
+            from .models import PasswordResetRequest
+            reset_requests = PasswordResetRequest.objects.filter(resolved=False).select_related('user')
+            data['password_reset_requests'] = reset_requests
         else:
             users_queryset = Users.objects.exclude(groupname__in=['superadmin', 'supporter'])
         
@@ -1783,7 +1791,22 @@ class UserForm(FormView, View):
                     user.needs_password_change = True
                     user.save()
                     
-                    messages.success(self.request, f'رمز عبور کاربر {username} با موفقیت بازنشانی شد.')
+                    # Mark any pending password reset requests as resolved
+                    from .models import PasswordResetRequest
+                    current_user = Users.objects.filter(username=checkSession(request)).first()
+                    pending_requests = PasswordResetRequest.objects.filter(user=user, resolved=False)
+                    
+                    if pending_requests.exists():
+                        for req in pending_requests:
+                            req.resolved = True
+                            req.resolved_by = current_user
+                            req.resolved_at = timezone.now()
+                            req.save()
+                    
+                    # Log the password reset
+                    log(request, logErrCodes.userSettings, f"رمز عبور کاربر {username} با موفقیت بازنشانی شد.", checkSession(request))
+                    
+                    messages.success(request, f'رمز عبور کاربر {username} با موفقیت بازنشانی شد.')
                 else:
                     messages.error(self.request, 'کاربر مورد نظر یافت نشد.')
             except Exception as e:
@@ -1925,11 +1948,26 @@ class UserForm(FormView, View):
                     user.needs_password_change = True
                     user.save()
                     
+                    # Mark any pending password reset requests as resolved
+                    from .models import PasswordResetRequest
+                    current_user = Users.objects.filter(username=checkSession(request)).first()
+                    pending_requests = PasswordResetRequest.objects.filter(user=user, resolved=False)
+                    
+                    if pending_requests.exists():
+                        for req in pending_requests:
+                            req.resolved = True
+                            req.resolved_by = current_user
+                            req.resolved_at = timezone.now()
+                            req.save()
+                    
+                    # Log the password reset
+                    log(request, logErrCodes.userSettings, f"رمز عبور کاربر {username} با موفقیت بازنشانی شد.", checkSession(request))
+                    
                     messages.success(request, f'رمز عبور کاربر {username} با موفقیت بازنشانی شد.')
                 else:
-                    messages.error(request, 'کاربر مورد نظر یافت نشد.')
+                    messages.error(self.request, 'کاربر مورد نظر یافت نشد.')
             except Exception as e:
-                messages.error(request, f'خطا در بازنشانی رمز عبور: {str(e)}')
+                messages.error(self.request, f'خطا در بازنشانی رمز عبور: {str(e)}')
             
             return redirect(self.success_url)
         
@@ -2103,33 +2141,30 @@ class ChangePasswordView(View):
 
 class ForgotPasswordView(View):
     template_name = 'forgot_password.html'
+    notification_template = 'forgot_password_notification.html'
 
     def get(self, request):
         return render(request, self.template_name)
 
     def post(self, request):
-        email = request.POST.get('email')
-        user = Users.objects.filter(email__iexact=email).first()
+        username = request.POST.get('username')
+        
+        # Check if user exists
+        user = Users.objects.filter(username__iexact=username).first()
         if user:
-            reset_code = getRandomCode()
-            # حذف کدهای قبلی برای این کاربر
-            Verifications.objects.filter(user=user, type=verificationType.email).delete()
-            # ایجاد کد جدید
-            Verifications.objects.create(user=user, type=verificationType.email, code=reset_code)
+            # Create a password reset request
+            from .models import PasswordResetRequest
+            PasswordResetRequest.objects.create(user=user)
             
-            # ارسال ایمیل
-            sent = sendEmail('بازنشانی رمز عبور', f'کد بازنشانی رمز عبور شما: {reset_code}', [email], request)
-            if sent:
-                # ثبت رویداد در لاگ
-                log(request, logErrCodes.emails, logMessages.emailVerifyCodeSent.format(user.username, email), user.username)
+            # Log the request only if username is valid
+            if username and isinstance(username, str) and username.strip():
+                log(request, logErrCodes.userSettings, f"درخواست بازنشانی رمز عبور برای کاربر {username} ثبت شد.", username)
+            
+            # Show notification page
+            messages.success(request, f'درخواست بازنشانی رمز عبور برای کاربر {username} با موفقیت ثبت شد.')
+            return render(request, self.notification_template)
                 
-                messages.success(request, f'کد بازنشانی به ایمیل {email} ارسال شد.')
-                return redirect('reset_password')
-            else:
-                messages.error(request, 'خطا در ارسال ایمیل. لطفا دوباره تلاش کنید.')
-                return redirect('forgot_password')
-                
-        messages.error(request, 'ایمیل وارد شده در سیستم ثبت نشده است.')
+        messages.error(request, 'نام کاربری وارد شده در سیستم یافت نشد.')
         return redirect('forgot_password')
 
 class ResetPasswordView(View):
@@ -2279,3 +2314,21 @@ def hasAccessToUser(request, target_user):
         return True  # User can modify themselves
     else:
         return False
+
+# Add this context processor at the end of the file
+
+def password_reset_request_count(request):
+    from .models import PasswordResetRequest, Users
+    count = 0
+    groupname = None
+    username = None
+    if 'user' in request.session:
+        username = request.session['user']
+        user = Users.objects.filter(username=username).first()
+        if user:
+            groupname = user.groupname
+    elif hasattr(request, 'user') and hasattr(request.user, 'groupname'):
+        groupname = getattr(request.user, 'groupname', None)
+    if groupname and str(groupname).lower() in ['supporter', 'superadmin', 'admin']:
+        count = PasswordResetRequest.objects.filter(resolved=False).count()
+    return {'pending_password_reset_count': count}

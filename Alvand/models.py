@@ -362,6 +362,20 @@ class Verifications(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
 
 
+class PasswordResetRequest(models.Model):
+    user = models.ForeignKey(Users, models.CASCADE, related_name='reset_requests')
+    created_at = models.DateTimeField(default=timezone.now)
+    resolved = models.BooleanField(default=False)
+    resolved_by = models.ForeignKey(Users, models.SET_NULL, related_name='resolved_reset_requests', null=True, blank=True)
+    resolved_at = models.DateTimeField(null=True, blank=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"Reset request for {self.user.username} ({self.created_at.strftime('%Y-%m-%d %H:%M')})"
+
+
 class Log(models.Model):
     user = models.ForeignKey('Users', models.DO_NOTHING, db_column="user")
     userBackup = models.CharField(max_length=200)

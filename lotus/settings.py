@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     'Alvand',
    # 'tailwind',
    # 'fontawesomefree',
-    'django_celery_beat',  # DOES TASK
+    # 'django_celery_beat',  # DOES TASK
 
 ]
 
@@ -80,6 +80,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
+                'Alvand.views.password_reset_request_count',
             ],
         },
     },
@@ -171,16 +172,16 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 # CELERY - GET DATA FROM DEVICE SETTIGNS
-CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
-CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_ACKS_LATE = True
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+# CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+# CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
+# CELERY_ACCEPT_CONTENT = ['json']
+# CELERY_TASK_SERIALIZER = 'json'
+# CELERY_ACKS_LATE = True
+# CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
-# Celery error handling
-CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
-CELERY_BROKER_CONNECTION_MAX_RETRIES = 10
+# # Celery error handling
+# CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+# CELERY_BROKER_CONNECTION_MAX_RETRIES = 10
 
 # # External DB
 # externalDB_user = "postgres"

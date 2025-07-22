@@ -1,4 +1,141 @@
 {% load static baseTags %}
+
+<style>
+        .settings-toggle {
+        overflow: visible !important;
+    }
+
+    .sidebar-badge {
+        position: absolute !important;
+        top: 50% !important;
+        right: 10px !important;
+        transform: translateY(-50%) !important;
+        background: #FF5252 !important;
+        color: white !important;
+        border-radius: 999px !important;
+        font-size: 0.8em !important;
+        padding: 0.2em 0.6em !important;
+        font-weight: bold !important;
+        z-index: 10000 !important;
+    }
+</style>
+
+<style>
+    /* استایل‌های سفارشی برای مودال خروج با استفاده از !important برای بازنویسی استایل‌های موجود */
+    #exitmodal, #exitmodal-mb {
+        background-color: rgba(0, 0, 0, 0.8) !important;
+        backdrop-filter: blur(5px) !important;
+        z-index: 9999 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    #exitmodal.hidden, #exitmodal-mb.hidden {
+        display: none !important;
+    }
+    
+    .modal-content {
+        border-radius: 0.75rem !important;
+        border: 1px solid #e5e7eb !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+        background-color: white !important;
+        max-width: 24rem !important;
+        width: 100% !important;
+        padding: 1.5rem !important;
+        margin: 0 1rem !important;
+    }
+    
+    html.dark .modal-content {
+        background-color: #0D1B2A !important;
+        border-color: #37474F !important;
+    }
+    
+    .modal-title {
+        color: #1F2937 !important;
+        font-weight: 700 !important;
+        font-size: 1.25rem !important;
+    }
+    
+    html.dark .modal-title {
+        color: #F3F4F6 !important;
+    }
+    
+    .modal-icon {
+        color: #00BCD4 !important;
+        font-size: 1.5rem !important;
+        margin-right: 0.75rem !important;
+    }
+    
+    .modal-text {
+        color: #374151 !important;
+        line-height: 1.6 !important;
+        margin-bottom: 1.5rem !important;
+        text-align: right !important;
+        padding-right: 0.5rem !important;
+        font-size: 1rem !important;
+    }
+    
+    html.dark .modal-text {
+        color: #D1D5DB !important;
+    }
+    
+    .modal-divider {
+        height: 1px !important;
+        width: 100% !important;
+        background: linear-gradient(to right, transparent, #d1d5db, transparent) !important;
+        margin: 1.25rem 0 !important;
+    }
+    
+    html.dark .modal-divider {
+        background: linear-gradient(to right, transparent, #4b5563, transparent) !important;
+    }
+    
+    .modal-cancel {
+        background-color: #e5e7eb !important;
+        color: #4b5563 !important;
+        transition: all 0.2s ease !important;
+        padding: 0.5rem 1rem !important;
+        border-radius: 0.375rem !important;
+        font-weight: 500 !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+    
+    .modal-cancel:hover {
+        background-color: #d1d5db !important;
+    }
+    
+    html.dark .modal-cancel {
+        background-color: #374151 !important;
+        color: #e5e7eb !important;
+    }
+    
+    html.dark .modal-cancel:hover {
+        background-color: #4b5563 !important;
+    }
+    
+    .exit-btn {
+        background: linear-gradient(to right, #FF7043, #FF5722) !important;
+        color: white !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+        transition: all 0.2s ease !important;
+        padding: 0.5rem 1rem !important;
+        border-radius: 0.375rem !important;
+        font-weight: 500 !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+    
+    .exit-btn:hover {
+        background: linear-gradient(to right, #FF5722, #FF7043) !important;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+        transform: translateY(-1px) !important;
+    }
+</style>
+
+<!-- Debug: Show pending_password_reset_count value -->
+
 <!-- Desktop Sidebar -->
 <aside id="sidebar"
        class="w-[240px] overflow-y-auto h-screen text-white z-40 fixed top-0 right-0 transform transition-all duration-300 ease-in-out sm:w-[240px] hidden lg:block">
@@ -35,10 +172,16 @@
                     <a href="{% url 'user' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                         <i class="fas fa-user-cog ml-2"></i>
                         <span title="مدیریت کاربران">مدیریت کاربران</span>
+                        <!-- DEBUG: Count is {{ pending_password_reset_count }} -->
+                        {% if pending_password_reset_count|add:0 > 0 %}
+                            <span class="sidebar-badge">
+                                {{ pending_password_reset_count }}
+                            </span>
+                        {% endif %}
                     </a>
                     <a href="{% url 'settings' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                         <i class="fas fa-cogs ml-2"></i>
-                        <span title="تنظیمات سیستمی">تنظیمات سیستمی</span>
+                        <span title="مدیریت سیستم">مدیریت سیستم</span>
                     </a>
                 </div>
             </div>
@@ -91,8 +234,11 @@
         <div class="settings-container-mb relative w-full">
             <!-- Settings button -->
             <button type="button" id="show-settings-mb" data-toggle="dropdown"
-                    class="settings-toggle w-full text-center no-underline text-xs sm:text-sm p-3 flex items-center justify-start">
+                    class="settings-toggle w-full text-center no-underline text-xs sm:text-sm p-3 flex items-center justify-start" style="position: relative;">
                 <i class="fas fa-cog"></i> <span class="ml-2 sidebar-text" title="تنظیمات">تنظیمات</span>
+                {% if pending_password_reset_count|add:0 > 0 %}
+                    <span class="sidebar-badge">{{ pending_password_reset_count }}</span>
+                {% endif %}
             </button>
             
             <!-- Settings dropdown content -->
@@ -101,10 +247,11 @@
                     <a href="{% url 'user' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                         <i class="fas fa-user-cog ml-2"></i>
                         <span title="مدیریت کاربران">مدیریت کاربران</span>
+
                     </a>
                     <a href="{% url 'settings' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                         <i class="fas fa-cogs ml-2"></i>
-                        <span title="تنظیمات سیستمی">تنظیمات سیستمی</span>
+                        <span title="مدیریت سیستم">مدیریت سیستم</span>
                     </a>
                 </div>
             </div>
@@ -125,26 +272,90 @@
     </nav>
 </div>
 
-<!-- Exit Modal for Desktop -->
-<div id="exitmodal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
-    <div class="bg-white dark:bg-[#0D1B2A] rounded-lg p-8 max-w-md w-full">
-        <h2 class="text-xl font-bold mb-4 dark:text-[#F5F7FA]">آیا مطمئن هستید؟</h2>
-        <p class="mb-6 dark:text-[#CFD8DC]">آیا می‌خواهید از حساب کاربری خود خارج شوید؟</p>
-        <div class="flex justify-end space-x-4">
-            <button id="close" class="px-4 py-2 bg-gray-200 dark:bg-[#37474F] text-gray-800 dark:text-[#F5F7FA] rounded-lg">انصراف</button>
-            <a href="{% url 'logout' %}" class="px-4 py-2 bg-[#FF7043] text-white rounded-lg">خروج</a>
+<!-- Logout Confirmation Modal (Desktop) -->
+<div id="exitmodal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden" style="opacity: 0; transition: opacity 0.3s ease;">
+    <div class="bg-white dark:bg-[#0D1B2A] rounded-xl p-6 max-w-md w-full shadow-lg border border-gray-100 dark:border-[#37474F] modal-content" style="transform: scale(0.95); transition: transform 0.3s ease;">
+        <div class="flex items-center mb-5">
+            <i class="fa-solid fa-circle-question text-2xl mr-3 text-[#00BCD4] modal-icon"></i>
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 modal-title mr-2">تأیید خروج</h3>
+        </div>
+        
+        <div class="w-full h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-600 to-transparent mb-5 modal-divider"></div>
+        
+        <p class="mb-6 text-gray-700 dark:text-gray-200 text-right pr-2 leading-relaxed modal-text">
+            آیا مطمئن هستید که می‌خواهید از حساب کاربری خود خارج شوید؟
+        </p>
+        
+        <div class="flex justify-end items-center mt-4">
+            <button type="button" class="modal-cancel" onclick="document.getElementById('exitmodal').classList.add('hidden');">
+                <i class="fa-solid fa-ban mr-2"></i>
+                انصراف
+            </button>
+            <div class="w-4"></div> <!-- فاصله بین دکمه‌ها -->
+            <a href="{% url 'logout' %}" class="exit-btn">
+                <i class="fa-solid fa-arrow-right-from-bracket mr-2"></i>
+                خروج
+            </a>
         </div>
     </div>
 </div>
 
-<!-- Exit Modal for Mobile -->
-<div id="exitmodal-mb" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
-    <div class="bg-white dark:bg-[#0D1B2A] rounded-lg p-8 max-w-md w-full">
-        <h2 class="text-xl font-bold mb-4 dark:text-[#F5F7FA]">آیا مطمئن هستید؟</h2>
-        <p class="mb-6 dark:text-[#CFD8DC]">آیا می‌خواهید از حساب کاربری خود خارج شوید؟</p>
-        <div class="flex justify-end space-x-4">
-            <button id="close-mb" class="px-4 py-2 bg-gray-200 dark:bg-[#37474F] text-gray-800 dark:text-[#F5F7FA] rounded-lg">انصراف</button>
-            <a href="{% url 'logout' %}" class="px-4 py-2 bg-[#FF7043] text-white rounded-lg">خروج</a>
+<!-- Logout Confirmation Modal (Mobile) -->
+<div id="exitmodal-mb" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden" style="opacity: 0; transition: opacity 0.3s ease;">
+    <div class="bg-white dark:bg-[#0D1B2A] rounded-xl p-6 max-w-md w-full mx-4 shadow-lg border border-gray-100 dark:border-[#37474F] modal-content" style="transform: scale(0.95); transition: transform 0.3s ease;">
+        <div class="flex items-center mb-5">
+            <i class="fa-solid fa-circle-question text-2xl mr-3 text-[#00BCD4] modal-icon"></i>
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 modal-title mr-2">تأیید خروج</h3>
+        </div>
+        
+        <div class="w-full h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-600 to-transparent mb-5 modal-divider"></div>
+        
+        <p class="mb-6 text-gray-700 dark:text-gray-200 text-right pr-2 leading-relaxed modal-text">
+            آیا مطمئن هستید که می‌خواهید از حساب کاربری خود خارج شوید؟
+        </p>
+        
+        <div class="flex justify-end items-center mt-4">
+            <button type="button" class="modal-cancel" onclick="document.getElementById('exitmodal-mb').classList.add('hidden');">
+                <i class="fa-solid fa-ban mr-1"></i>
+                انصراف
+            </button>
+            <div class="w-4"></div> <!-- فاصله بین دکمه‌ها -->
+            <a href="{% url 'logout' %}" class="exit-btn">
+                <i class="fa-solid fa-arrow-right-from-bracket mr-1"></i>
+                خروج
+            </a>
         </div>
     </div>
 </div>
+
+<!-- Debug script - Will be removed in production -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Debug script loaded for modals');
+        
+        // Check if modals exist
+        const exitModal = document.getElementById('exitmodal');
+        const exitModalMobile = document.getElementById('exitmodal-mb');
+        
+        console.log('Exit modal exists:', !!exitModal);
+        console.log('Exit mobile modal exists:', !!exitModalMobile);
+        
+        // Direct event listeners for testing
+        const exitBtn = document.getElementById('exit');
+        const exitBtnMobile = document.getElementById('exit-mb');
+        
+        if (exitBtn) {
+            exitBtn.addEventListener('click', function(e) {
+                console.log('Exit button clicked directly');
+                // We'll let the jQuery handlers do their job
+            });
+        }
+        
+        if (exitBtnMobile) {
+            exitBtnMobile.addEventListener('click', function(e) {
+                console.log('Mobile exit button clicked directly');
+                // We'll let the jQuery handlers do their job
+            });
+        }
+    });
+</script>

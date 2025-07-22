@@ -218,4 +218,30 @@ $(document).ready(function() {
     
     // Listen for checkbox changes
     $('input[type="checkbox"]').change(updateButtonText);
+    
+    // Handle select user button for password reset requests
+    $('.select-user-btn').click(function() {
+        const username = $(this).data('username');
+        
+        // Set the form to edit mode
+        $('#id_editOrAdd').val('edit');
+        $('#id_editOrAdd').trigger('change');
+        
+        // Fill in the username field
+        $('#id_username').val(username);
+        
+        // Trigger the username change to load user data
+        $('#id_username').trigger('change');
+        
+        // Scroll to the username field
+        $('html, body').animate({
+            scrollTop: $('#id_username').offset().top - 100
+        }, 500);
+        
+        // Highlight the fields
+        $('#id_username').css('border', '2px solid #00BCD4');
+        setTimeout(function() {
+            $('#id_username').css('border', '');
+        }, 2000);
+    });
 }); 
