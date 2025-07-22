@@ -2020,6 +2020,48 @@ def userprofile_view(request):
     
     return render(request, 'Alvand/templates/userprofile.html', context)
 
+def validate_password_complexity(password):
+    """
+    بررسی پیچیدگی رمز عبور
+    
+    شرایط رمز عبور معتبر:
+    1. حداقل 8 کاراکتر
+    2. حداقل یک حرف بزرگ انگلیسی
+    3. حداقل یک حرف کوچک انگلیسی
+    4. حداقل یک عدد
+    5. حداقل یک کاراکتر خاص (!@#$%^&*()_+-=[]{}|;:,.<>?/~)
+    6. نباید همان رمز عبور پیش‌فرض (12345678) باشد
+    
+    returns: (is_valid, error_message)
+    """
+    import re
+    
+    # بررسی طول رمز عبور
+    if len(password) < 8:
+        return False, 'رمز عبور باید حداقل ۸ کاراکتر باشد.'
+    
+    # بررسی وجود حروف بزرگ انگلیسی
+    if not re.search(r'[A-Z]', password):
+        return False, 'رمز عبور باید حداقل شامل یک حرف بزرگ انگلیسی باشد.'
+    
+    # بررسی وجود حروف کوچک انگلیسی
+    if not re.search(r'[a-z]', password):
+        return False, 'رمز عبور باید حداقل شامل یک حرف کوچک انگلیسی باشد.'
+    
+    # بررسی وجود اعداد
+    if not re.search(r'[0-9]', password):
+        return False, 'رمز عبور باید حداقل شامل یک عدد باشد.'
+    
+    # بررسی وجود کاراکترهای خاص
+    if not re.search(r'[!@#$%^&*()_+\-=\[\]{}|;:\'",.<>?/~]', password):
+        return False, 'رمز عبور باید حداقل شامل یک کاراکتر خاص مانند !@#$%^&* باشد.'
+    
+    # بررسی عدم استفاده از رمز عبور پیش‌فرض
+    if password == "12345678":
+        return False, 'رمز عبور نمی‌تواند همان رمز عبور پیش‌فرض باشد.'
+    
+    return True, ''
+
 class ChangePasswordView(View):
     template_name = 'change_password.html'
 
@@ -2038,19 +2080,10 @@ class ChangePasswordView(View):
             messages.error(request, 'رمزهای عبور وارد شده مطابقت ندارند.')
             return redirect('change_password')
         
-        # بررسی طول رمز عبور
-        if len(new_password) < 8:
-            messages.error(request, 'رمز عبور باید حداقل ۸ کاراکتر باشد.')
-            return redirect('change_password')
-        
-        # بررسی پیچیدگی رمز عبور (اعداد و حروف)
-        if not any(c.isdigit() for c in new_password) or not any(c.isalpha() for c in new_password):
-            messages.error(request, 'رمز عبور باید ترکیبی از اعداد و حروف باشد.')
-            return redirect('change_password')
-        
-        # بررسی عدم استفاده از رمز عبور پیش‌فرض
-        if new_password == "12345678":
-            messages.error(request, 'رمز عبور جدید نمی‌تواند همان رمز عبور پیش‌فرض باشد.')
+        # بررسی پیچیدگی رمز عبور
+        is_valid, error_message = validate_password_complexity(new_password)
+        if not is_valid:
+            messages.error(request, error_message)
             return redirect('change_password')
         
         # بروزرسانی رمز عبور
@@ -2115,19 +2148,10 @@ class ResetPasswordView(View):
             messages.error(request, 'رمزهای عبور وارد شده مطابقت ندارند.')
             return redirect('reset_password')
         
-        # بررسی طول رمز عبور
-        if len(new_password) < 8:
-            messages.error(request, 'رمز عبور باید حداقل ۸ کاراکتر باشد.')
-            return redirect('reset_password')
-        
-        # بررسی پیچیدگی رمز عبور (اعداد و حروف)
-        if not any(c.isdigit() for c in new_password) or not any(c.isalpha() for c in new_password):
-            messages.error(request, 'رمز عبور باید ترکیبی از اعداد و حروف باشد.')
-            return redirect('reset_password')
-        
-        # بررسی عدم استفاده از رمز عبور پیش‌فرض
-        if new_password == "12345678":
-            messages.error(request, 'رمز عبور جدید نمی‌تواند همان رمز عبور پیش‌فرض باشد.')
+        # بررسی پیچیدگی رمز عبور
+        is_valid, error_message = validate_password_complexity(new_password)
+        if not is_valid:
+            messages.error(request, error_message)
             return redirect('reset_password')
         
         # بررسی صحت کد بازنشانی
