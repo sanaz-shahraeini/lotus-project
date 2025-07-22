@@ -2025,21 +2025,47 @@ class ChangePasswordView(View):
 
     def get(self, request):
         if not checkSession(request):
+            messages.error(request, messagesTypes.notlogin)
             return redirect('login')
         return render(request, self.template_name)
 
     def post(self, request):
         new_password = request.POST.get('new_password')
         confirm_password = request.POST.get('confirm_password')
+        
+        # بررسی تطابق رمزها
         if new_password != confirm_password:
-            messages.error(request, 'Passwords do not match.')
+            messages.error(request, 'رمزهای عبور وارد شده مطابقت ندارند.')
             return redirect('change_password')
-        user = Users.objects.get(username=checkSession(request))
+        
+        # بررسی طول رمز عبور
+        if len(new_password) < 8:
+            messages.error(request, 'رمز عبور باید حداقل ۸ کاراکتر باشد.')
+            return redirect('change_password')
+        
+        # بررسی پیچیدگی رمز عبور (اعداد و حروف)
+        if not any(c.isdigit() for c in new_password) or not any(c.isalpha() for c in new_password):
+            messages.error(request, 'رمز عبور باید ترکیبی از اعداد و حروف باشد.')
+            return redirect('change_password')
+        
+        # بررسی عدم استفاده از رمز عبور پیش‌فرض
+        if new_password == "12345678":
+            messages.error(request, 'رمز عبور جدید نمی‌تواند همان رمز عبور پیش‌فرض باشد.')
+            return redirect('change_password')
+        
+        # بروزرسانی رمز عبور
+        username = checkSession(request)
+        user = Users.objects.get(username=username)
         user.password = make_password(new_password)
         user.needs_password_change = False
         user.save()
-        logout(request)
-        messages.success(request, 'Password changed successfully. Please login with new password.')
+        
+        # ثبت رویداد در لاگ
+        log(request, logErrCodes.userSettings, f"رمز عبور کاربر {username} با موفقیت تغییر یافت.", username)
+        
+        # خروج و درخواست ورود مجدد
+        del request.session['user']
+        messages.success(request, 'رمز عبور با موفقیت تغییر یافت. لطفا با رمز عبور جدید وارد شوید.')
         return redirect('login')
 
 class ForgotPasswordView(View):
@@ -2053,11 +2079,24 @@ class ForgotPasswordView(View):
         user = Users.objects.filter(email__iexact=email).first()
         if user:
             reset_code = getRandomCode()
+            # حذف کدهای قبلی برای این کاربر
+            Verifications.objects.filter(user=user, type=verificationType.email).delete()
+            # ایجاد کد جدید
             Verifications.objects.create(user=user, type=verificationType.email, code=reset_code)
-            sendEmail('بازنشانی رمز عبور', f'کد بازنشانی: {reset_code}', [email], request)
-            messages.success(request, 'کد بازنشانی به ایمیل شما ارسال شد.')
-            return redirect('reset_password')
-        messages.error(request, 'ایمیل یافت نشد.')
+            
+            # ارسال ایمیل
+            sent = sendEmail('بازنشانی رمز عبور', f'کد بازنشانی رمز عبور شما: {reset_code}', [email], request)
+            if sent:
+                # ثبت رویداد در لاگ
+                log(request, logErrCodes.emails, logMessages.emailVerifyCodeSent.format(user.username, email), user.username)
+                
+                messages.success(request, f'کد بازنشانی به ایمیل {email} ارسال شد.')
+                return redirect('reset_password')
+            else:
+                messages.error(request, 'خطا در ارسال ایمیل. لطفا دوباره تلاش کنید.')
+                return redirect('forgot_password')
+                
+        messages.error(request, 'ایمیل وارد شده در سیستم ثبت نشده است.')
         return redirect('forgot_password')
 
 class ResetPasswordView(View):
@@ -2070,9 +2109,28 @@ class ResetPasswordView(View):
         code = request.POST.get('code')
         new_password = request.POST.get('new_password')
         confirm = request.POST.get('confirm_password')
+        
+        # بررسی تطابق رمزها
         if new_password != confirm:
-            messages.error(request, 'Passwords do not match.')
+            messages.error(request, 'رمزهای عبور وارد شده مطابقت ندارند.')
             return redirect('reset_password')
+        
+        # بررسی طول رمز عبور
+        if len(new_password) < 8:
+            messages.error(request, 'رمز عبور باید حداقل ۸ کاراکتر باشد.')
+            return redirect('reset_password')
+        
+        # بررسی پیچیدگی رمز عبور (اعداد و حروف)
+        if not any(c.isdigit() for c in new_password) or not any(c.isalpha() for c in new_password):
+            messages.error(request, 'رمز عبور باید ترکیبی از اعداد و حروف باشد.')
+            return redirect('reset_password')
+        
+        # بررسی عدم استفاده از رمز عبور پیش‌فرض
+        if new_password == "12345678":
+            messages.error(request, 'رمز عبور جدید نمی‌تواند همان رمز عبور پیش‌فرض باشد.')
+            return redirect('reset_password')
+        
+        # بررسی صحت کد بازنشانی
         ver = Verifications.objects.filter(code=code, type=verificationType.email).first()
         if ver:
             user = ver.user
@@ -2080,9 +2138,14 @@ class ResetPasswordView(View):
             user.needs_password_change = False
             user.save()
             ver.delete()
-            messages.success(request, 'Password reset successfully.')
+            
+            # ثبت رویداد در لاگ
+            log(request, logErrCodes.userSettings, f"رمز عبور کاربر {user.username} با موفقیت بازنشانی شد.", user.username)
+            
+            messages.success(request, 'رمز عبور با موفقیت بازنشانی شد. اکنون می‌توانید با رمز عبور جدید وارد شوید.')
             return redirect('login')
-        messages.error(request, 'Invalid code.')
+            
+        messages.error(request, 'کد بازنشانی نامعتبر است.')
         return redirect('reset_password')
 
 def test_user_create(request):
