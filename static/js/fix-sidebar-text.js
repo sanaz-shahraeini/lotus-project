@@ -3,6 +3,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Find all sidebar text elements and remove any truncation
     fixSidebarTextTruncation();
     
+    // Remove any ellipsis from sidebar text
+    removeAllEllipsis();
+    
     // Check if there are any elements with ellipsis and fix them
     setTimeout(checkForEllipsis, 500);
 });
@@ -13,9 +16,9 @@ function fixSidebarTextTruncation() {
     
     sidebarTextElements.forEach(element => {
         // Remove any CSS properties that might cause truncation
-        element.style.textOverflow = 'initial';
+        element.style.textOverflow = 'clip';
         element.style.overflow = 'visible';
-        element.style.whiteSpace = 'normal';
+        element.style.whiteSpace = 'nowrap'; // Ensure text is on a single line
         element.style.width = 'auto';
         element.style.maxWidth = 'none';
         
@@ -36,14 +39,29 @@ function fixSidebarTextTruncation() {
     fixSpecificMenuItems();
 }
 
+// New function to remove all ellipsis
+function removeAllEllipsis() {
+    // Find all elements in the sidebar
+    const allElements = document.querySelectorAll('#sidebar *, #mobile-sidebar *');
+    
+    allElements.forEach(element => {
+        if (element.nodeType === Node.TEXT_NODE || typeof element.textContent === 'string') {
+            // Replace any occurrence of ellipsis with empty string
+            if (element.textContent) {
+                element.textContent = element.textContent.replace(/\.\.\./g, '');
+            }
+        }
+    });
+}
+
 function fixSpecificMenuItems() {
-    // Known menu item texts to fix
+    // Known menu item texts to fix - without ellipsis
     const knownMenuItems = {
-        'پروفایل کا...': 'پروفایل کاربری',
-        'تنظیمات ...': 'تنظیمات',
-        'تنظیمات سی...': 'تنظیمات سیستمی',
-        'تنظیمات ع...': 'تنظیمات عمومی کاربر',
-        'راهنم...': 'راهنما'
+        'پروفایل کاربری': 'پروفایل کاربری',
+        'مدیریت سیستم': 'مدیریت سیستم',
+        'مدیریت کاربران': 'مدیریت کاربران',
+        'راهنما': 'راهنما',
+        'گزارش خطا': 'گزارش خطا'
     };
     
     // Find all span elements
@@ -52,14 +70,11 @@ function fixSpecificMenuItems() {
     spans.forEach(span => {
         const text = span.textContent.trim();
         
-        // Check if this text needs fixing
-        for (const [truncated, full] of Object.entries(knownMenuItems)) {
-            if (text === truncated || text.includes('...')) {
-                // For exact matches or any text with ellipsis
-                if (text.startsWith(full.substring(0, 4))) {
-                    span.textContent = full;
-                    break;
-                }
+        // Check if this text needs fixing - use direct matching without ellipsis
+        for (const [key, full] of Object.entries(knownMenuItems)) {
+            if (text.includes(key.substring(0, 4))) {
+                span.textContent = full;
+                break;
             }
         }
     });
@@ -71,14 +86,17 @@ function checkForEllipsis() {
     let foundEllipsis = false;
     
     elements.forEach(el => {
-        if (el.textContent.includes('...')) {
+        if (el.textContent && el.textContent.includes('...')) {
             foundEllipsis = true;
             console.log('Found ellipsis in:', el);
             
+            // Remove ellipsis
+            el.textContent = el.textContent.replace(/\.\.\./g, '');
+            
             // Try to fix this specific element
-            el.style.textOverflow = 'initial';
+            el.style.textOverflow = 'clip';
             el.style.overflow = 'visible';
-            el.style.whiteSpace = 'normal';
+            el.style.whiteSpace = 'nowrap';
             el.style.width = 'auto';
         }
     });
@@ -94,9 +112,9 @@ function applyAggressiveFixes() {
     const style = document.createElement('style');
     style.textContent = `
         #sidebar *, #mobile-sidebar * {
-            text-overflow: initial !important;
+            text-overflow: clip !important;
             overflow: visible !important;
-            white-space: normal !important;
+            white-space: nowrap !important;
             width: auto !important;
         }
         
@@ -108,7 +126,17 @@ function applyAggressiveFixes() {
         
         /* Fix sidebar width */
         #sidebar, #mobile-sidebar {
-            width: 240px !important;
+            width: 260px !important; /* Increased from 240px to fit text better */
+        }
+        
+        /* Fix sidebar menu links visibility */
+        #sidebar a, #mobile-sidebar a,
+        #sidebar button, #mobile-sidebar button {
+            opacity: 1 !important;
+            visibility: visible !important;
+            display: flex !important;
+            align-items: center !important;
+            width: 100% !important;
         }
     `;
     
