@@ -209,8 +209,8 @@
     }
     
     .profile-avatar {
-        width: 90px;
-        height: 90px;
+        width: 100px;
+        height: 100px;
         border-radius: 50%;
         background: linear-gradient(135deg, #00BCD4, #29B6F6);
         display: flex;
@@ -223,6 +223,25 @@
         position: relative;
         margin-bottom: 5px;
         margin-right: 5px;
+        overflow: hidden; /* Ensure image doesn't overflow the circular container */
+        transition: all 0.3s ease;
+    }
+    
+    .profile-avatar:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    }
+    
+    .profile-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%; /* Ensure the image itself is also circular */
+        transition: transform 0.5s ease;
+    }
+    
+    .profile-avatar:hover img {
+        transform: scale(1.1);
     }
     
     .dark .profile-avatar {
@@ -232,11 +251,11 @@
     .camera-icon {
         position: absolute;
         bottom: -3px;
-        right: -3px;
+        right: -12px;
         background-color: white;
         color: #00BCD4;
-        width: 32px;
-        height: 32px;
+        width: 25px;
+        height: 25px;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -865,10 +884,10 @@
                 {% endif %}
                 
                 {% if user.email_verified_at %}
-                    <div class="status-badge">
+                    <!-- <div class="status-badge">
                         <i class="fa-solid fa-envelope-circle-check"></i>
                         ایمیل تایید شده
-                    </div>
+                    </div> -->
                 {% else %}
                     <div class="status-badge">
                         <i class="fa-solid fa-envelope"></i>
@@ -881,8 +900,9 @@
         <div class="profile-avatar-container">
             <div class="profile-avatar">
                 {% if user.profile_picture %}
-                <!-- <img src="{{ MEDIA_URL }}{{ user.profile_picture }}?t={{ user.updated_at|date:'U' }}" alt="{{ user.name }} {{ user.lastname }}" class="w-full h-full object-cover"> -->
-                <img src="../../static/upload/avatar.jpg" alt="{{ user.name }} {{ user.lastname }}" class="w-full h-full object-cover">
+                <img src="{% static 'upload/' %}{{ user.profile_picture }}" alt="{{ user.name }} {{ user.lastname }}">
+                {% elif user.picurl %}
+                <img src="{% static 'upload/' %}{{ user.picurl }}" alt="{{ user.name }} {{ user.lastname }}">
                 {% else %}
                 <i class="fa-solid fa-user"></i>
                 {% endif %}
@@ -1393,12 +1413,12 @@
                             let avatarImg = profileAvatar.querySelector('img');
                             if (!avatarImg) {
                                 avatarImg = document.createElement('img');
-                                avatarImg.className = 'w-full h-full object-cover';
                                 profileAvatar.appendChild(avatarImg);
                             }
                             
                             // Set the new image with a cache-busting parameter
                             avatarImg.src = data.image_url + '?t=' + new Date().getTime();
+                            avatarImg.alt = "{{ user.name }} {{ user.lastname }}";
                         }
                         
                         // Close modal

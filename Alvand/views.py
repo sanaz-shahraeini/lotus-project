@@ -1058,7 +1058,7 @@ class Profile(TemplateView, View):
                     return JsonResponse({'success': False, 'error': 'حجم فایل باید کمتر از 2 مگابایت باشد'})
                 
                 # Create directory if it doesn't exist
-                upload_dir = os.path.join(settings.MEDIA_ROOT, 'profile_pics')
+                upload_dir = os.path.join('Alvand/static/upload')
                 if not os.path.exists(upload_dir):
                     os.makedirs(upload_dir)
                 
@@ -1066,9 +1066,12 @@ class Profile(TemplateView, View):
                 filename = f"{user.username}{ext}"
                 filepath = os.path.join(upload_dir, filename)
                 
-                # Delete old profile picture if exists
-                if user.profile_picture and os.path.exists(os.path.join(settings.MEDIA_ROOT, user.profile_picture)):
-                    os.remove(os.path.join(settings.MEDIA_ROOT, user.profile_picture))
+                # Delete old profile picture if exists and it's not the default avatar
+                if user.profile_picture and user.profile_picture != "avatar.png" and os.path.exists(os.path.join('Alvand/static/upload', user.profile_picture)):
+                    try:
+                        os.remove(os.path.join('Alvand/static/upload', user.profile_picture))
+                    except:
+                        pass
                 
                 # Save the new profile picture
                 with open(filepath, 'wb+') as destination:
@@ -1076,15 +1079,15 @@ class Profile(TemplateView, View):
                         destination.write(chunk)
                 
                 # Update user model
-                relative_path = os.path.join('profile_pics', filename)
-                user.profile_picture = relative_path
+                user.profile_picture = filename
+                user.picurl = filename
                 user.save()
                 
                 # Log the action
                 log(request, logErrCodes.userSettings, f"کاربر {user.username} تصویر پروفایل خود را بروزرسانی کرد", user.username)
                 
                 # Return success response with image URL
-                image_url = os.path.join(settings.MEDIA_URL, relative_path)
+                image_url = f'/static/upload/{filename}'
                 return JsonResponse({'success': True, 'image_url': image_url})
                 
             except Exception as e:
