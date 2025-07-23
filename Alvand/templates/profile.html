@@ -881,7 +881,8 @@
         <div class="profile-avatar-container">
             <div class="profile-avatar">
                 {% if user.profile_picture %}
-                <img src="{{ MEDIA_URL }}{{ user.profile_picture }}?t={{ user.updated_at|date:'U' }}" alt="{{ user.name }} {{ user.lastname }}" class="w-full h-full object-cover">
+                <!-- <img src="{{ MEDIA_URL }}{{ user.profile_picture }}?t={{ user.updated_at|date:'U' }}" alt="{{ user.name }} {{ user.lastname }}" class="w-full h-full object-cover"> -->
+                <img src="../../static/upload/avatar.jpg" alt="{{ user.name }} {{ user.lastname }}" class="w-full h-full object-cover">
                 {% else %}
                 <i class="fa-solid fa-user"></i>
                 {% endif %}
