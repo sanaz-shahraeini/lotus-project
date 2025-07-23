@@ -3,7 +3,7 @@ from .models import Users, Infos
 def getTupleIndex(tuple, value):
     for i, val in enumerate(tuple):
         if val[0] == value:
-            return i
+            return val[1]
     return -1
 
 def getUserinfoByUsername(username, value):
