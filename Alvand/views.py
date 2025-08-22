@@ -156,19 +156,40 @@ def calculatePrice(duration: str, price: int) -> int:
 
 def persianCallTypeToEnglish(ct):
     callType = []
-    if "همه تماس ها" in ct:
-        return ['incomingNA', 'incomingRC', 'incomingAN', "Transfer", "incomingDISA", 'incomingHangUp', 'outGoing',
-                'Extension']
-    if "تماس های پاسخ نداده شده" in ct:
-        if "incomingNA" not in callType: callType.append("incomingNA")
-    if "تماس های ورودی" in ct:
-        for item in ['incomingNA', 'incomingRC', 'incomingAN', "Transfer", "incomingDISA", 'incomingHangUp']:
+    if not ct:
+        return callType
+
+    # Normalize list to a set for robust containment checks
+    normalized = set(ct)
+
+    # "All calls"
+    if "همه تماس ها" in normalized:
+        return [
+            'incomingNA', 'incomingRC', 'incomingAN', 'Transfer', 'incomingDISA', 'incomingHangUp', 'outGoing',
+            'Extension'
+        ]
+
+    # Missed calls: accept both common Persian phrasings
+    if ("تماس های پاسخ داده نشده" in normalized) or ("تماس های پاسخ نداده شده" in normalized):
+        if "incomingNA" not in callType:
+            callType.append("incomingNA")
+
+    # Incoming calls
+    if "تماس های ورودی" in normalized:
+        for item in ['incomingNA', 'incomingRC', 'incomingAN', 'Transfer', 'incomingDISA', 'incomingHangUp']:
             if item not in callType:
                 callType.append(item)
-    if "تماس های خروجی" in ct:
-        if "outGoing" not in callType: callType.append("outGoing")
-    if "تماس های داخلی" in ct:
-        if "Extension" not in callType: callType.append("Extension")
+
+    # Outgoing calls
+    if "تماس های خروجی" in normalized:
+        if "outGoing" not in callType:
+            callType.append("outGoing")
+
+    # Internal calls
+    if "تماس های داخلی" in normalized:
+        if "Extension" not in callType:
+            callType.append("Extension")
+
     return callType
 
 
@@ -912,51 +933,63 @@ class dashboardPage(TemplateView, View):
             return redirect(reverse_lazy('logout' if checkSession(request) else 'login'))
         context = self.get_context_data()
         if request.GET:
+            # Extract raw inputs
             dateFrom = request.GET.get('dateFrom')
             dateTo = request.GET.get('dateTo')
-            urbanline = request.GET.getlist('urbanline')
-            extline = request.GET.getlist('extline')
-            calls = request.GET.getlist('calls')
-            calls = persianCallTypeToEnglish(calls) if calls else None
-            calltype = Q(calltype__in=calls) if calls else Q()
-            urbanline = Q(urbanline__in=urbanline) if urbanline and "همه تماس ها" not in request.GET.getlist(
-                'calls') else Q()
-            extline = Q(extension__in=extline) if extline and "همه تماس ها" not in request.GET.getlist('calls') else Q()
-            filterDate = None
+            selected_urbanlines = request.GET.getlist('urbanline')
+            selected_extlines = request.GET.getlist('extline')
+            selected_calls = request.GET.getlist('calls')
+
+            # Map Persian call types to stored values
+            mapped_calls = persianCallTypeToEnglish(selected_calls) if selected_calls else None
+
+            # Build base query always constrained to user's accessible extensions
+            query = Q()
+            allowed_exts = getExtensionlines(checkSession(request))
+            if allowed_exts:
+                query &= Q(extension__in=allowed_exts)
+
+            # Apply independent filters
+            if selected_urbanlines:
+                query &= Q(urbanline__in=selected_urbanlines)
+            if selected_extlines:
+                query &= Q(extension__in=selected_extlines)
+            if mapped_calls:
+                query &= Q(calltype__in=mapped_calls)
+
+            # Date range (Jalali -> Gregorian)
             if dateFrom and dateTo:
                 try:
-                    convFrom = jdatetime.datetime.strptime(dateFrom.replace("/", "-").replace('از', '').strip(), "%Y-%m-%d").togregorian()
-                    convTo = jdatetime.datetime.strptime(dateTo.replace("/", "-").replace('تا', '').strip(), "%Y-%m-%d").togregorian()
+                    convFrom = jdatetime.datetime.strptime(
+                        dateFrom.replace("/", "-").replace('از', '').strip(), "%Y-%m-%d"
+                    ).togregorian()
+                    convTo = jdatetime.datetime.strptime(
+                        dateTo.replace("/", "-").replace('تا', '').strip(), "%Y-%m-%d"
+                    ).togregorian()
                 except:
                     messages.error(request, "فرمت تاریخ ها اشتباه است.")
                     return redirect(request.path)
                 if convTo < convFrom:
                     messages.warning(request, "تاریخ اول نباید بزرگ تر از تاریخ دوم باشد.")
                     return redirect(request.path)
+                query &= Q(date__range=(convFrom, convTo))
 
-                filterDate = Q(date__range=(convFrom, convTo))
-            query = Q()
-            if urbanline:
-                query &= urbanline
-            if calltype:
-                query &= calltype
-            if extline:
-                query &= extline
-            if filterDate:
-                query &= filterDate
-            
-            # Add search filter for 'q' parameter
+            # Free-text search
             search_query = request.GET.get('q', '').strip()
             if search_query:
-                # Search in contactnumber, extension, and urbanline fields
-                search_filter = Q(contactnumber__icontains=search_query) | \
-                               Q(extension__icontains=search_query) | \
-                               Q(urbanline__icontains=search_query)
-                query &= search_filter
-            # Ensure consistent ordering for pagination
-            base_query = Records.objects.filter(query).order_by('-created_at', '-id') if any(
-                item for item in [urbanline, calltype, extline, filterDate]) else dashboardData(
-                checkSession(request))
+                query &= (
+                    Q(contactnumber__icontains=search_query) |
+                    Q(extension__icontains=search_query) |
+                    Q(urbanline__icontains=search_query)
+                )
+
+            # Decide filtered vs default dataset
+            any_filter_applied = bool(selected_urbanlines or selected_extlines or mapped_calls or (dateFrom and dateTo) or search_query)
+            base_query = (
+                Records.objects.filter(query).order_by('-created_at', '-id')
+                if any_filter_applied else
+                dashboardData(checkSession(request))
+            )
             faults, page_obj = makePagination(base_query, 20, request)
             context['dashPage'] = page_obj
         return render(request, self.template_name, context=context)
