@@ -127,25 +127,8 @@
         });
     });
 
-    $(document).ready(function () {
-        const show = $('#dropdownmenu')
-        const show_mb = $('#dropdownmenu-mb')
-        $('#show-settings').on('click', function () {
-            show.toggleClass('hidden')
-        });
-
-        $('#show-settings-mb').on('click', function () {
-            show_mb.toggleClass('hidden')
-        })
-        $(document).on('click', function (e) {
-            if (!show.hasClass('hidden') && !$(e.target).closest('#show-settings, #dropdownmenu').length) {
-                show.addClass('hidden');
-            }
-            if (!show_mb.hasClass('hidden') && !$(e.target).closest('#show-settings-mb, #dropdownmenu-mb').length) {
-                show_mb.addClass('hidden');
-            }
-        });
-    });
+    // Removed problematic show-settings handlers that were causing conflicts
+    // These elements don't exist in the current templates
 
     $(document).ready(function () {
         const sidebar = $("#mobile-sidebar");

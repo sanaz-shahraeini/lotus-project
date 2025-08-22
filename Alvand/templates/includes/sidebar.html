@@ -97,6 +97,20 @@
         opacity: 1 !important;
         visibility: visible !important;
         padding: 0.75rem 1rem !important;
+        cursor: pointer !important;
+        text-decoration: none !important;
+        color: inherit !important;
+        position: relative !important;
+        z-index: 10 !important;
+        pointer-events: auto !important;
+    }
+    
+    /* Ensure links are clickable */
+    #sidebar a:hover, #mobile-sidebar a:hover {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        border-radius: 0.375rem !important;
+        margin: 0 0.5rem !important;
+        width: calc(100% - 1rem) !important;
     }
     
     #sidebar i, #mobile-sidebar i {
@@ -305,6 +319,7 @@
            class="py-3 text-xs sm:text-sm flex items-center justify-start">
             <i class="fas fa-question-circle"></i> <span class="ml-2 sidebar-text" title="راهنما">راهنما</span>
         </a>
+
         <button id="exit"
            class="w-full text-center no-underline text-xs sm:text-sm p-3 flex items-center justify-start">
             <i class="fas fa-sign-out-alt"></i> <span class="ml-2 sidebar-text">خروج</span>
@@ -364,6 +379,7 @@
            class="py-3 text-xs sm:text-sm flex items-center justify-start">
             <i class="fas fa-question-circle"></i> <span class="ml-2 sidebar-text" title="راهنما">راهنما</span>
         </a>
+
         <button id="exit-mb"
            class="w-full text-center no-underline text-xs sm:text-sm p-3 flex items-center justify-start">
             <i class="fas fa-sign-out-alt"></i> <span class="ml-2 sidebar-text">خروج</span>
