@@ -6,6 +6,6 @@ cd %~dp0
 call venv\Scripts\activate.bat
 
 :: Run Django server
-python manage.py runserver
+python manage.py runserver 0.0.0.0:8000
 
-pause 
+pause

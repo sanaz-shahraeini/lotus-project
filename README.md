@@ -10,7 +10,7 @@ Lotus is a web-based dashboard application designed for managing and reporting o
 *   **Filtering and Search:** Allows users to filter and search call records.
 *   **Responsive Design:** Adapts to different screen sizes for desktop and mobile viewing.
 *   **Theming:** Supports light mode, dark mode, and high-contrast themes.
-*   **User Interface:** Modern and clean UI for intuitive navigation and data visualization.
+*   **User Interface:** Modern and clean UI for intuitive navigation and+ data visualization.
 
 ## Technology Stack
 

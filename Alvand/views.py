@@ -1305,7 +1305,10 @@ class UserForm(FormView, View):
             
             # Add password reset requests to context for supporters
             from .models import PasswordResetRequest
-            reset_requests = PasswordResetRequest.objects.filter(resolved=False).select_related('user')
+            reset_requests = PasswordResetRequest.objects.filter(resolved=False).select_related(
+                'user'
+            ).order_by('-created_at')
+            
             data['password_reset_requests'] = reset_requests
         else:
             users_queryset = Users.objects.exclude(groupname__in=['superadmin', 'supporter'])
@@ -1799,17 +1802,22 @@ class UserForm(FormView, View):
                     current_user = Users.objects.filter(username=checkSession(request)).first()
                     pending_requests = PasswordResetRequest.objects.filter(user=user, resolved=False)
                     
+                    request_resolved = False
                     if pending_requests.exists():
                         for req in pending_requests:
                             req.resolved = True
                             req.resolved_by = current_user
                             req.resolved_at = timezone.now()
                             req.save()
+                        request_resolved = True
                     
                     # Log the password reset
                     log(request, logErrCodes.userSettings, f"رمز عبور کاربر {username} با موفقیت بازنشانی شد.", checkSession(request))
                     
-                    messages.success(request, f'رمز عبور کاربر {username} با موفقیت بازنشانی شد.')
+                    if request_resolved:
+                        messages.success(request, f'رمز عبور کاربر {username} با موفقیت بازنشانی شد و به 12345678 تغییر یافت. درخواست بازنشانی ثبت شده برای این کاربر نیز به وضعیت حل شده تغییر یافت.')
+                    else:
+                        messages.success(request, f'رمز عبور کاربر {username} با موفقیت بازنشانی شد و به 12345678 تغییر یافت.')
                 else:
                     messages.error(self.request, 'کاربر مورد نظر یافت نشد.')
             except Exception as e:
@@ -1956,17 +1964,22 @@ class UserForm(FormView, View):
                     current_user = Users.objects.filter(username=checkSession(request)).first()
                     pending_requests = PasswordResetRequest.objects.filter(user=user, resolved=False)
                     
+                    request_resolved = False
                     if pending_requests.exists():
                         for req in pending_requests:
                             req.resolved = True
                             req.resolved_by = current_user
                             req.resolved_at = timezone.now()
                             req.save()
+                        request_resolved = True
                     
                     # Log the password reset
                     log(request, logErrCodes.userSettings, f"رمز عبور کاربر {username} با موفقیت بازنشانی شد.", checkSession(request))
                     
-                    messages.success(request, f'رمز عبور کاربر {username} با موفقیت بازنشانی شد.')
+                    if request_resolved:
+                        messages.success(request, f'رمز عبور کاربر {username} با موفقیت بازنشانی شد و به 12345678 تغییر یافت. درخواست بازنشانی ثبت شده برای این کاربر نیز به وضعیت حل شده تغییر یافت.')
+                    else:
+                        messages.success(request, f'رمز عبور کاربر {username} با موفقیت بازنشانی شد و به 12345678 تغییر یافت.')
                 else:
                     messages.error(self.request, 'کاربر مورد نظر یافت نشد.')
             except Exception as e:
@@ -2006,6 +2019,23 @@ def userprofile_view(request):
 
     users_data = []
     for user in users_queryset:
+        # Get user extensions safely
+        user_extensions = user.usersextension if user.usersextension else []
+        
+        # Get list of extension groups safely
+        ext_groups = getListOfExtsGroups(user.username) or []
+        
+        # Get user permissions safely
+        user_perms_raw = getUserCanPerm(user.username) or '{}'
+        try:
+            user_perms = json.loads(user_perms_raw) if isinstance(user_perms_raw, str) else user_perms_raw
+        except (json.JSONDecodeError, TypeError):
+            user_perms = {}
+        
+        # Get user info safely
+        user_info = getObjectOfInfo(user.username)
+        user_info_list = list(user_info.values()) if user_info and hasattr(user_info, 'values') else []
+        
         user_dict = {
             'username': user.username,
             'name': user.name,
@@ -2015,19 +2045,27 @@ def userprofile_view(request):
             'active': user.active,
             'groupname': user.groupname,
             'picurl': user.picurl if user.picurl else 'avatar.png',
-            'usersextension': list(user.usersextension.values_list('field_name', flat=True)),
-            'getListOfExtsGroups': getListOfExtsGroups(user.username),
-            'getUserCanPerm': getUserCanPerm(user.username),
-            'getObjectOfInfo': list(getObjectOfInfo(user.username).values())
+            'usersextension': user_extensions,
+            'getListOfExtsGroups': ext_groups,
+            'getUserCanPerm': user_perms,
+            'getObjectOfInfo': user_info_list
         }
         users_data.append(user_dict)
     
     session_user_data = {}
     if session_user_obj:
-        session_user_data = {
-            'username': session_user_obj.username,
-            'getUserInfo_groupname': getUserInfo(session_user_obj, "groupname")
-        }
+        # session_user_obj is the username string, get the actual User object
+        try:
+            session_user = Users.objects.get(username=session_user_obj)
+            session_user_data = {
+                'username': session_user.username,
+                'getUserInfo_groupname': getUserInfo(session_user.username, "groupname")
+            }
+        except Users.DoesNotExist:
+            session_user_data = {
+                'username': session_user_obj,
+                'getUserInfo_groupname': ''
+            }
 
     all_contact_infos = []
     for user_obj in users_queryset:
@@ -2054,12 +2092,16 @@ def userprofile_view(request):
             all_contact_infos.append(info_dict)
 
     context = {
-        'users': json.dumps(users_data, cls=CustomJSONEncoder),
-        'session_user': json.dumps(session_user_data, cls=CustomJSONEncoder),
-        'contactInfos': json.dumps(all_contact_infos, cls=CustomJSONEncoder),
+        'pageTitle': 'مدیریت پروفایل کاربران',
+        'userform': userProfileForm(),
+        'infosform': InfosForm(),
+        'permform': PermissionsForm(),
+        'users': users_data,
+        'session_user': session_user_data,
+        'contactInfos': all_contact_infos,
     }
     
-    return render(request, 'Alvand/templates/userprofile.html', context)
+    return render(request, 'userprofile.html', context)
 
 def validate_password_complexity(password):
     """

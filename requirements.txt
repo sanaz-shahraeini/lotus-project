@@ -7,3 +7,4 @@ pyserial~=3.5
 Django==5.1.6
 jdatetime==5.0.0
 whitenoise==6.9.0
+psycopg2-binary==2.9.9

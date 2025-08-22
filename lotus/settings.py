@@ -35,7 +35,11 @@ SECRET_KEY = 'django-insecure-qiezo77a$)bo(gs=fvzjobm_!x5u$w$==v982gn#m=8n9g*aqm
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "192.168.43.137",
+]
 
 # Application definition
 
@@ -67,6 +71,11 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'lotus.urls'
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+    'http://192.168.43.137:8000',
+]
 
 TEMPLATES = [
     {
@@ -97,20 +106,32 @@ STORAGE = {
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# Neon Database Configuration
+# Local PostgreSQL Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'lotusdb',
-        'USER': 'lotusdb_owner',
-        'PASSWORD': 'npg_6dUorONf5mtR',
-        'HOST': 'ep-orange-mud-a2by6urk-pooler.eu-central-1.aws.neon.tech',
-        'PORT': 5432,
-        'OPTIONS': {
-            'sslmode': 'require',
-        },
+        'NAME': 'LotusDB',
+        'USER': 'postgres',
+        'PASSWORD': 'mgee5d65',  # Replace this with your actual password
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
+
+# Neon Database (commented out for now)
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'lotusdb',
+#         'USER': 'lotusdb_owner',
+#         'PASSWORD': 'npg_6dUorONf5mtR',
+#         'HOST': 'ep-orange-mud-a2by6urk-pooler.eu-central-1.aws.neon.tech',
+#         'PORT': 5432,
+#         'OPTIONS': {
+#             'sslmode': 'require',
+#         },
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -161,7 +182,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 INTERNAL_IPS = [
     "127.0.0.1",
+    "192.168.43.137",
+    "192.168.43.137:8000",
 ]
+# ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.43.137']
+
 
 NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
 
