@@ -1,0 +1,21 @@
+"id","errorcodenum","errormessage","probablecause","solution","created_at","updated_at"
+"1","537","Change into Isolated mode","• Malfunction occurred in Master unit or Backup Master unit.
+• Malfunction occurred in the communication path of Slave unit.","• Check error log of Master unit or Backup Master unit.
+• Check all cable connections between the sites, and check that hubs, routers, etc. are operating correctly
+• Confirm that the communication transmission speed between sites is sufficient
+• Confirm that all other parties equipment is powered on
+• Consult your network administrator","2025-07-19 14:24:31.160579+00","2025-07-19 14:24:31.368591+00"
+"2","538","Isolated mode was released","Isolated mode was released.","This message shows that the operation mode recovered from Isolated mode.","2025-07-19 14:24:31.160579+00","2025-07-19 14:24:31.368591+00"
+"3","539","VPN error","A communication error is occurring in VPN.","• Check all cable connections between PBX and the other equipment connected via VPN, and check that hubs, routers, etc. are operating correctly
+• Confirm that the communication transmission speed between PBX and the other equipment connected via VPN is sufficient
+• Confirm that all other parties equipment is powered on
+• Consult your network administrator","2025-07-19 14:24:31.160579+00","2025-07-19 14:24:31.368591+00"
+"4","540","Network Security Alarm","Security issue such as DOS attacks occurred.","Consult your network administrator","2025-07-19 14:24:31.160579+00","2025-07-19 14:24:31.368591+00"
+"5","541","NAS disconnected","• NAS is not active
+• Network malfunction","• Check all cable connections between the PBX and the NAS, and check that hubs, routers, etc. are operating correctly
+• Confirm that the communication transmission speed between the PBX and the NAS is sufficient
+• Confirm that all other equipment is powered on
+• Consult your network administrator","2025-07-19 14:24:31.160579+00","2025-07-19 14:24:31.368591+00"
+"6","542","Not enough free space on NAS","• Not enough memory space available to save the data
+• Wrong permission of the NAS","• Remove unnecessary files from the NAS
+• Check the permission of the NAS","2025-07-19 14:24:31.160579+00","2025-07-19 14:24:31.368591+00"

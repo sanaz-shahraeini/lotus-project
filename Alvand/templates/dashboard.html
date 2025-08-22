@@ -98,6 +98,85 @@
         display: none !important;
     }
     
+    /* Enhanced search functionality styles */
+    .search-indicator {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--primary-color);
+        z-index: 10;
+    }
+    
+    .search-results-indicator {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+        color: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.875rem;
+        box-shadow: 0 2px 8px rgba(0, 188, 212, 0.3);
+        animation: slideIn 0.3s ease;
+    }
+    
+    .search-results-indicator i {
+        font-size: 0.875rem;
+    }
+    
+    .search-results-indicator .clear-search {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        padding: 4px 6px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-right: auto;
+    }
+    
+    .search-results-indicator .clear-search:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.05);
+    }
+    
+    .search-input-wrapper {
+        position: relative;
+    }
+    
+    .search-input-wrapper input.searching {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
+    }
+    
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Dark mode support for search indicators */
+    .dark .search-results-indicator {
+        background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
+        color: var(--dark);
+    }
+    
+    .dark .search-results-indicator .clear-search {
+        background: rgba(13, 27, 42, 0.2);
+        color: var(--dark);
+    }
+    
+    .dark .search-results-indicator .clear-search:hover {
+        background: rgba(13, 27, 42, 0.3);
+    }
+    
     .fa-moon {
         display: inline-block !important;
     }
@@ -1382,9 +1461,14 @@
             calculateTotalCosts();
         });
         
-        // Combined search for quickSearch (header) and searchBox (filter)
+        // Enhanced search functionality with better UX
+        let searchTimeout;
+        
         $('#quickSearch, #searchBox').on('input', function() {
-            const searchTerm = $(this).val().toLowerCase();
+            const searchTerm = $(this).val().trim();
+            
+            // Clear previous timeout
+            clearTimeout(searchTimeout);
             
             // If one search box is used, update the other
             if ($(this).attr('id') === 'quickSearch') {
@@ -1393,18 +1477,100 @@
                 $('#quickSearch').val($(this).val());
             }
 
-            // Perform filtering
+            // Add loading indicator
+            if (searchTerm.length > 0) {
+                $(this).addClass('searching');
+                // Show search indicator
+                if (!$(this).siblings('.search-indicator').length) {
+                    $(this).after('<span class="search-indicator"><i class="fa-solid fa-spinner fa-spin"></i></span>');
+                }
+            } else {
+                $(this).removeClass('searching');
+                $(this).siblings('.search-indicator').remove();
+            }
+
+            // Debounce search to improve performance
+            searchTimeout = setTimeout(function() {
+                performSearch(searchTerm);
+            }, 300); // 300ms delay
+        });
+        
+        function performSearch(searchTerm) {
+            // Remove loading indicator
+            $('.search-indicator').remove();
+            $('#quickSearch, #searchBox').removeClass('searching');
+            
+            if (searchTerm.length === 0) {
+                // Show all rows if search is empty
+                if (window.innerWidth < 768) {
+                    $('.mobile-card').show();
+                } else {
+                    $('#tbody tr').show();
+                }
+                calculateTotalCosts();
+                return;
+            }
+            
+            const searchLower = searchTerm.toLowerCase();
+            let foundCount = 0;
+            
+            // Perform filtering with better matching
             if (window.innerWidth < 768) {
                 $('.mobile-card').each(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(searchTerm) > -1);
+                    const text = $(this).text().toLowerCase();
+                    const isMatch = text.indexOf(searchLower) > -1;
+                    $(this).toggle(isMatch);
+                    if (isMatch) foundCount++;
                 });
             } else {
                 $('#tbody tr').each(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(searchTerm) > -1);
+                    const text = $(this).text().toLowerCase();
+                    const isMatch = text.indexOf(searchLower) > -1;
+                    $(this).toggle(isMatch);
+                    if (isMatch) foundCount++;
                 });
             }
-            calculateTotalCosts(); // Recalculate after filter
-        });
+            
+            // Show search results count
+            showSearchResults(foundCount, searchTerm);
+            calculateTotalCosts();
+        }
+        
+        function showSearchResults(count, term) {
+            // Remove existing result indicator
+            $('.search-results-indicator').remove();
+            
+            if (term.length > 0) {
+                const indicator = $(`
+                    <div class="search-results-indicator">
+                        <i class="fa-solid fa-search"></i>
+                        <span>${count} نتیجه برای "${term}" یافت شد</span>
+                        <button class="clear-search" onclick="clearSearch()">
+                            <i class="fa-solid fa-times"></i>
+                        </button>
+                    </div>
+                `);
+                
+                // Insert after search box
+                $('#searchBox').parent().after(indicator);
+            }
+        }
+        
+        // Global function to clear search
+        window.clearSearch = function() {
+            $('#quickSearch, #searchBox').val('');
+            $('.search-results-indicator').remove();
+            $('.search-indicator').remove();
+            $('#quickSearch, #searchBox').removeClass('searching');
+            
+            // Show all rows
+            if (window.innerWidth < 768) {
+                $('.mobile-card').show();
+            } else {
+                $('#tbody tr').show();
+            }
+            calculateTotalCosts();
+        };
         
         $("#printbtn").on("click", function() {
             const table = $("#table").clone(); // Clone the desktop table

@@ -325,6 +325,9 @@ class Records(models.Model):
     transferring = ArrayField(models.CharField(), blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(blank=True, null=True)
+    
+    class Meta:
+        db_table = 'alvand_records'
 
 
 class Telephons(models.Model):

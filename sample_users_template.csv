@@ -1,2 +1,0 @@
-id,active,online,extension,usersextension,name,username,lastname,groupname,picurl,email,email_verified_at,password,created_at,updated_at,group_id,profile_picture,needs_password_change
-1,TRUE,1,-1,,Poorya,supporter,Admin,supporter,avatar.jpg,admin@example.com,2025-05-13 20:58:23.297004+00,amanazpoorya,2025-08-17 00:00:00+00,2025-08-17 00:00:00+00,1,,TRUE

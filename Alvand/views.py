@@ -232,7 +232,7 @@ def dashboardData(username):
         if extGroup.exists():
             for item in extGroup:
                 allExtentions = allExtentions + item.exts
-    extensions = [x for x in Records.objects.filter(extension__in=allExtentions).order_by('-created_at')]
+    extensions = [x for x in Records.objects.filter(extension__in=allExtentions).order_by('-created_at', '-id')]
     return extensions
 
 def getPrice(which):
@@ -944,11 +944,20 @@ class dashboardPage(TemplateView, View):
                 query &= extline
             if filterDate:
                 query &= filterDate
-            faults, page_obj = makePagination(
-                Records.objects.filter(query).order_by(
-                    '-created_at') if any(
-                    item for item in [urbanline, calltype, extline, filterDate]) else dashboardData(
-                    checkSession(request)), 20, request)
+            
+            # Add search filter for 'q' parameter
+            search_query = request.GET.get('q', '').strip()
+            if search_query:
+                # Search in contactnumber, extension, and urbanline fields
+                search_filter = Q(contactnumber__icontains=search_query) | \
+                               Q(extension__icontains=search_query) | \
+                               Q(urbanline__icontains=search_query)
+                query &= search_filter
+            # Ensure consistent ordering for pagination
+            base_query = Records.objects.filter(query).order_by('-created_at', '-id') if any(
+                item for item in [urbanline, calltype, extline, filterDate]) else dashboardData(
+                checkSession(request))
+            faults, page_obj = makePagination(base_query, 20, request)
             context['dashPage'] = page_obj
         return render(request, self.template_name, context=context)
 
