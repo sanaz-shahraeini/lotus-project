@@ -18,8 +18,8 @@
         /* Lotus Aqua */
         --primary-hover: #29B6F6;
         /* Sky Blue */
-        --secondary-color: #F5F7FA;
-        /* White Smoke */
+        --secondary-color: #E3F2FD;
+        /* Light Blue */
         --text-color: #37474F;
         /* Dark Gray */
         --light-text: #90A4AE;
@@ -30,6 +30,7 @@
         /* White Smoke */
         --card-bg: white;
         --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        --hover-color: #E3F2FD;
 
         /* Dashboard-specific variables */
         --primary: var(--primary-color);
@@ -207,11 +208,54 @@
 
     .btn-secondary {
         background-color: var(--secondary-color);
-        color: white;
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
     }
 
     .btn-secondary:hover {
-        background-color: var(--secondary-hover);
+        background-color: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+    }
+
+    /* استایل جدید دکمه دانلود اکسل */
+    .excel-btn {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        transition: all 0.3s ease;
+        border-radius: 12px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .excel-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .excel-btn:hover::before {
+        left: 100%;
+    }
+
+    .excel-btn:hover {
+        background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+    }
+
+    .excel-btn i {
+        margin-left: 0.5rem;
+        font-size: 1.1rem;
     }
 
     .input-field {
@@ -229,10 +273,11 @@
     }
 
     .table-container {
-        background: white;
+        background: var(--card-bg);
         border-radius: 0.75rem;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--card-shadow);
         overflow-x: auto;
+        border: 1px solid var(--border-color);
     }
 
     .table-modern {
@@ -243,21 +288,226 @@
     }
 
     .table-modern th {
-        background-color: #f8fafc;
+        background-color: var(--secondary-color);
+        color: var(--text-color);
         padding: 1rem;
         font-weight: 600;
         text-align: center;
         border-bottom: 2px solid var(--border-color);
+        direction: ltr;
     }
 
     .table-modern td {
         padding: 1rem;
-        text-align: center;
+        text-align: left;
         border-bottom: 1px solid var(--border-color);
+        max-width: 200px; /* محدود کردن عرض ستون‌ها */
+        word-wrap: break-word;
+        position: relative;
+        direction: ltr;
+    }
+
+    /* وسط چین کردن ستون‌های خاص */
+    .table-modern th:nth-child(1),
+    .table-modern th:nth-child(2),
+    .table-modern th:nth-child(3),
+    .table-modern th:nth-child(4),
+    .table-modern td:nth-child(1),
+    .table-modern td:nth-child(2),
+    .table-modern td:nth-child(3),
+    .table-modern td:nth-child(4) {
+        text-align: center;
+    }
+
+    /* استایل برای ستون‌های متن طولانی */
+    .text-cell {
+        cursor: pointer;
+        position: relative;
+        transition: all 0.2s;
+    }
+
+    .text-cell:hover {
+        background-color: var(--hover-color) !important;
+        color: var(--primary-color) !important;
+        border-radius: 8px;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 188, 212, 0.2);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .text-cell::after {
+        content: "⋮";
+        position: absolute;
+        right: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 18px;
+        color: var(--primary-color);
+        opacity: 0;
+        transition: all 0.3s ease;
+        font-weight: bold;
+    }
+
+    .text-cell:hover::after {
+        opacity: 1;
+        transform: translateY(-50%) scale(1.1);
+        color: var(--primary-hover);
+    }
+
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+        background-color: var(--card-bg);
+        color: var(--text-color);
+        margin: 0;
+        padding: 2.5rem;
+        border-radius: 16px;
+        width: 100%;
+     
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        animation: modalSlideIn 0.3s ease-out;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    @keyframes modalSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--primary-color);
+    }
+
+    .modal-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin: 0;
+    }
+
+    .close {
+        color: #aaa;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+
+    .close:hover {
+        color: var(--primary-color);
+    }
+
+    .modal-body {
+        line-height: 1.8;
+        font-size: 1.1rem;
+    }
+
+    .modal-section {
+        margin-bottom: 2rem;
+    }
+
+    .modal-section-title {
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+        border-bottom: 2px solid #e0f7fa;
+        padding-bottom: 0.5rem;
+    }
+
+    .modal-section-content {
+        background: linear-gradient(135deg, var(--bg-color) 0%, var(--secondary-color) 100%);
+        color: var(--text-color);
+        padding: 2rem;
+        border-radius: 16px;
+        border-right: 4px solid var(--primary-color);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        font-size: 1.1rem;
+        line-height: 2;
+        text-align: left;
+        direction: ltr;
+    }
+
+    /* بهبود نمایش متن‌های طولانی */
+    .modal-section-content p {
+        margin-bottom: 1.5rem;
+        text-indent: 0;
+        padding: 0.5rem 0;
+    }
+
+    .modal-section-content ul {
+        margin: 1.5rem 0;
+        padding-left: 0;
+        list-style: none;
+    }
+
+    .modal-section-content li {
+        margin-bottom: 1.2rem;
+        position: relative;
+        padding: 0.8rem 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text-color);
+        border-radius: 8px;
+        border-left: 4px solid var(--primary-color);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .modal-section-content li:hover {
+        background: rgba(255, 255, 255, 0.2) !important;
+        color: var(--text-color) !important;
+        transform: translateX(5px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-section-content li:before {
+        content: "✦";
+        color: var(--primary-color);
+        font-weight: bold;
+        font-size: 1.2rem;
+        position: absolute;
+        left: -0.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: var(--card-bg);
+        border-radius: 50%;
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .table-modern tbody tr:hover {
-        background-color: #f8fafc;
+        background-color: var(--hover-color);
     }
 
     .sort-btn {
@@ -270,7 +520,7 @@
     }
 
     .sort-btn:hover {
-        background-color: #f1f5f9;
+        background-color: var(--hover-color);
     }
 
     .pagination {
@@ -363,14 +613,14 @@
             font-size: 0.875rem;
         }
 
-        /* Make the most important columns visible by default - RTL order */
-        .table-modern th:nth-last-child(-n+4),
-        .table-modern td:nth-last-child(-n+4) {
+        /* Make the most important columns visible by default - LTR order */
+        .table-modern th:nth-child(-n+4),
+        .table-modern td:nth-child(-n+4) {
             display: table-cell;
         }
 
-        .table-modern th:nth-last-child(n+5),
-        .table-modern td:nth-last-child(n+5) {
+        .table-modern th:nth-child(n+5),
+        .table-modern td:nth-child(n+5) {
             display: none;
         }
 
@@ -475,8 +725,8 @@
 
     jdp-container .jdp-icon-minus svg,
     jdp-container .jdp-icon-plus svg {
-        width: 16px !important;
-        height: 16px !important;
+        width: 18px !important;
+        height: 18px !important;
         fill: #011619 !important;
         transition: fill 0.2s !important;
     }
@@ -633,6 +883,112 @@
             padding: 0.5em 0.8em !important;
         }
     }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .modal-content {
+            width: 95%;
+            max-width: 95%;
+            padding: 1.5rem;
+            max-height: 85vh;
+        }
+        
+        .modal-section-content {
+            padding: 1.5rem;
+            font-size: 1rem;
+            text-align: left;
+            direction: ltr;
+            color: var(--text-color);
+        }
+        
+        .modal-section-content li {
+            padding: 0.6rem 1rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+        
+        .modal-section-content li:hover {
+            background: rgba(255, 255, 255, 0.2) !important;
+            color: var(--text-color) !important;
+        }
+        
+        .modal-section-content li:before {
+            width: 1.5rem;
+            height: 1.5rem;
+            font-size: 1rem;
+        }
+        
+        .table-modern td {
+            max-width: 150px;
+            font-size: 0.9rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .modal-content {
+            width: 98%;
+            padding: 1rem;
+            max-height: 90vh;
+        }
+        
+        .modal-title {
+            font-size: 1.2rem;
+        }
+        
+        .modal-section-title {
+            font-size: 1.1rem;
+        }
+        
+        .modal-section-content {
+            padding: 1rem;
+            font-size: 0.95rem;
+            text-align: left;
+            direction: ltr;
+            color: var(--text-color);
+        }
+        
+        .modal-section-content li {
+            padding: 0.5rem 0.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--text-color);
+        }
+        
+        .modal-section-content li:hover {
+            background: rgba(255, 255, 255, 0.2) !important;
+            color: var(--text-color) !important;
+        }
+        
+        .modal-section-content li:before {
+            width: 1.2rem;
+            height: 1.2rem;
+            font-size: 0.8rem;
+        }
+    }
+
+    /* Dark mode specific styles */
+    [data-theme="dark"] .text-cell {
+        color: var(--text-color);
+    }
+
+    [data-theme="dark"] .text-cell:hover {
+        background-color: rgba(99, 102, 241, 0.2) !important;
+        color: #60a5fa !important;
+    }
+
+    [data-theme="dark"] .modal-section-content li {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-color);
+    }
+
+    [data-theme="dark"] .modal-section-content li:hover {
+        background: rgba(255, 255, 255, 0.15) !important;
+        color: var(--text-color) !important;
+    }
+
+    /* Clean text styles to remove question marks */
+    .clean-text {
+        display: inline-block;
+    }
 </style>
 {% endblock %}
 
@@ -666,65 +1022,80 @@
 
                 {% if pages %}
                 <div class="pagination">
+                    <a href="{% if pages.has_next %}?p={{ pages.next_page_number }}{% if request.GET.dateFrom %}&dateFrom={{ request.GET.dateFrom }}{% endif %}{% if request.GET.dateTo %}&dateTo={{ request.GET.dateTo }}{% endif %}{% else %}#{% endif %}"
+                    class="pagination-btn btn-primary {% if not pages.has_next %}opacity-50 cursor-not-allowed{% endif %}">
+                    بعدی
+                </a>
+                    <span class="text-sm whitespace-nowrap">
+                        صفحه {{ pages.number }}/{{ pages.paginator.num_pages }}
+                    </span>
                     <a href="{% if pages.has_previous %}?p={{ pages.previous_page_number }}{% if request.GET.dateFrom %}&dateFrom={{ request.GET.dateFrom }}{% endif %}{% if request.GET.dateTo %}&dateTo={{ request.GET.dateTo }}{% endif %}{% else %}#{% endif %}"
                         class="pagination-btn btn-primary {% if not pages.has_previous %}opacity-50 cursor-not-allowed{% endif %}">
                         قبلی
                     </a>
-                    <span class="text-sm whitespace-nowrap">
-                        صفحه {{ pages.number }}/{{ pages.paginator.num_pages }}
-                    </span>
-                    <a href="{% if pages.has_next %}?p={{ pages.next_page_number }}{% if request.GET.dateFrom %}&dateFrom={{ request.GET.dateFrom }}{% endif %}{% if request.GET.dateTo %}&dateTo={{ request.GET.dateTo }}{% endif %}{% else %}#{% endif %}"
-                        class="pagination-btn btn-primary {% if not pages.has_next %}opacity-50 cursor-not-allowed{% endif %}">
-                        بعدی
-                    </a>
+                
                 </div>
                 {% endif %}
-
-                <!-- <button id='printbtn' class="btn btn-secondary">
-                            چاپ
-                        </button> -->
+                <button id='excelbtn' class="btn btn-secondary excel-btn">
+                    <i class="fas fa-file-excel mr-2"></i>
+                    دانلود اکسل
+                </button>
             </div>
         </div>
 
         <div class="table-container">
             <table id='table' class="table-modern">
-                <thead>
+                <thead align="center">
                     <tr>
-                        <th>راه حل پیشنهادی</th>
-                        <th>علت احتمالی</th>
-                        <th>عنوان خطا</th>
-                        <th>شماره خطا</th>
-                        <th>ساعت</th>
-                        <th>تاریخ</th>
                         <th>ردیف</th>
+                        <th>تاریخ</th>
+                        <th>ساعت</th>
+                        <th>شماره خطا</th>
+                        <th>عنوان خطا</th>
+                        <th>علت احتمالی</th>
+                        <th>راه حل پیشنهادی</th>
                     </tr>
                 </thead>
                 <tbody id="errorsTable">
                     {% if pages %}
                     {% for fault in pages.object_list %}
                     <tr>
-                        <td title="{{ fault.errorcode|getDataOfFields:" solution"|default:"راه حل پیشنهادی موجود نیست"
-                            }}">
-                            {{ fault.errorcode|getDataOfFields:"solution"|truncatewords:5|default:"موجود نیست" }}
-                        </td>
-                        <td title="{{ fault.errorcode|getDataOfFields:" probablecause"|default:"علت احتمالی مشخص نیست"
-                            }}">
-                            {{ fault.errorcode|getDataOfFields:"probablecause"|truncatewords:5|default:"مشخص نیست" }}
-                        </td>
-                        <td title="{{ fault.errorcode|getDataOfFields:" errormessage"|default:"عنوان خطا مشخص نیست" }}">
-                            {{ fault.errorcode|getDataOfFields:"errormessage"|truncatewords:3|default:"مشخص نیست" }}
-                        </td>
-                        <td>{{ fault.errorcode }}</td>
-                        <td>{% if fault.date_time %}{{ fault.date_time|date:'H:i' }}{% else %}{{
-                            fault.created_at|date:'H:i' }}{% endif %}</td>
-                        <td>{% if fault.date_time %}{{ fault.date_time|date:'Y-m-d'|convertDatesToHijri }}{% else %}{{
-                            fault.created_at|date:'Y-m-d'|convertDatesToHijri }}{% endif %}</td>
                         <td>{{ forloop.counter0|add:pages.start_index }}</td>
+                        <td>{% if fault.date %}{{ fault.date|date:'Y-m-d'|convertDatesToHijri }}{% else %}{{ fault.created_at|date:'Y-m-d'|convertDatesToHijri }}{% endif %}</td>
+                        <td>{% if fault.time %}{{ fault.time|time:'H:i' }}{% else %}{{ fault.created_at|time:'H:i' }}{% endif %}</td>
+                        <td>{{ fault.errorcode }}</td>
+                        <td class="text-cell" onclick="showDetailModal('errormessage', '{{ fault.errormessage|escapejs|default:'عنوان خطا مشخص نیست' }}', '{{ fault.errorcode }}')" title="کلیک کنید تا عنوان کامل خطا را مشاهده کنید ({{ fault.errormessage|length }} کاراکتر)">
+                            <span class="clean-text">{{ fault.errormessage|slice:":70"|default:"مشخص نیست" }}</span>
+                        </td>
+                        <td class="text-cell" onclick="showDetailModal('probablecause', '{{ fault.probablecause|escapejs|default:'علت احتمالی مشخص نیست' }}', '{{ fault.errorcode }}')" title="کلیک کنید تا علت کامل را مشاهده کنید ({{ fault.probablecause|length }} کاراکتر)">
+                            <span class="clean-text">{{ fault.probablecause|slice:":80"|default:"مشخص نیست" }}</span>
+                        </td>
+                        <td class="text-cell" onclick="showDetailModal('solution', '{{ fault.solution|escapejs|default:'راه حل پیشنهادی موجود نیست' }}', '{{ fault.errorcode }}')" title="کلیک کنید تا راه حل کامل را مشاهده کنید ({{ fault.solution|length }} کاراکتر)">
+                            <span class="clean-text">{{ fault.solution|slice:":80"|default:"موجود نیست" }}</span>
+                        </td>
                     </tr>
                     {% endfor %}
                     {% endif %}
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for displaying full text -->
+<div id="detailModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title" id="modalTitle">جزئیات خطا</h3>
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="modal-section">
+                <div class="modal-section-title" id="sectionTitle">محتوا</div>
+                <div class="modal-section-content" id="modalContent">
+                    <!-- Content will be loaded here -->
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -789,6 +1160,105 @@
     });
 </script>
 <script>
+    // Modal functions
+    function showDetailModal(type, content, errorCode) {
+        const modal = document.getElementById('detailModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const sectionTitle = document.getElementById('sectionTitle');
+        const modalContent = document.getElementById('modalContent');
+        
+        // Set titles based on type
+        let title = '';
+        let sectionTitleText = '';
+        
+        switch(type) {
+            case 'solution':
+                title = `راه حل پیشنهادی - خطای ${errorCode}`;
+               
+                break;
+            case 'probablecause':
+                title = `علت احتمالی - خطای ${errorCode}`;
+              
+                break;
+            case 'errormessage':
+                title = `عنوان خطا - خطای ${errorCode}`;
+             
+                break;
+        }
+        
+        modalTitle.textContent = title;
+        sectionTitle.textContent = sectionTitleText;
+        
+        // بهبود متن و حذف علامت سوال‌ها
+        let formattedContent = content
+            .replace(/\?/g, '') // حذف علامت سوال‌ها
+            .replace(/\s+/g, ' ') // حذف فاصله‌های اضافی
+            .replace(/\s*,\s*/g, ', ') // تمیز کردن کاماها
+            .replace(/\s*\.\s*/g, '. ') // تمیز کردن نقطه‌ها
+            .trim();
+        
+        // تبدیل متن به فرمت بهتر
+        formattedContent = formatTextForModal(formattedContent);
+        
+        modalContent.innerHTML = formattedContent;
+        
+        modal.style.display = 'block';
+        
+        // Prevent body scroll
+        document.body.style.overflow = 'hidden';
+    }
+    
+    // تابع برای فرمت کردن متن
+    function formatTextForModal(text) {
+        // تقسیم متن بر اساس نقطه، علامت تعجب، یا خط جدید
+        let sentences = text.split(/[.!?]/).filter(s => s.trim().length > 0);
+        
+        // اگر متن کوتاه است، فقط آن را برگردان
+        if (sentences.length <= 1) {
+            return `<p style="padding: 1rem; background: rgba(255, 255, 255, 0.1); color: var(--text-color); border-radius: 8px; border-left: 4px solid var(--primary-color);">${text}</p>`;
+        }
+        
+        // تبدیل به لیست زیبا
+        let formattedText = '<ul>';
+        sentences.forEach((sentence, index) => {
+            let cleanSentence = sentence.trim();
+            if (cleanSentence.length > 0) {
+                // حذف کاماهای اضافی از ابتدا و انتها
+                cleanSentence = cleanSentence.replace(/^[,.\s]+/, '').replace(/[,.\s]+$/, '');
+                if (cleanSentence.length > 0) {
+                    // اضافه کردن شماره به bullet point
+                    formattedText += `<li>${cleanSentence}</li>`;
+                }
+            }
+        });
+        formattedText += '</ul>';
+        
+        return formattedText;
+    }
+    
+    function closeModal() {
+        const modal = document.getElementById('detailModal');
+        modal.style.display = 'none';
+        
+        // Restore body scroll
+        document.body.style.overflow = 'auto';
+    }
+    
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('detailModal');
+        if (event.target === modal) {
+            closeModal();
+        }
+    }
+    
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeModal();
+        }
+    });
+
     let reversed = false;
 
     $(document).ready(function () {
@@ -808,7 +1278,9 @@
         $("#search").on("keyup input", function () {
             let txt = $(this).val().toLowerCase()
             tr.filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(txt) > -1)
+                // Search in all columns of the table
+                const rowText = $(this).text().toLowerCase()
+                $(this).toggle(rowText.indexOf(txt) > -1)
             })
         })
 
@@ -828,103 +1300,193 @@
 
 <script>
     $(document).ready(function () {
-        $("#printbtn").on("click", function () {
-            printTable();
+        $("#excelbtn").on("click", function () {
+            downloadExcel();
         });
 
-        function printTable() {
-            const table = $("#table").clone();
-            let columnsToRemove = [];
-
-            table.find("tr").first().find("th, td").each(function (index, element) {
-                const columnText = $(element).text().trim();
-                if (columnText === "علت احتمالی" || columnText === "راه حل پیشنهادی") {
-                    columnsToRemove.push(index);
+        // پاک کردن علامت سوال و کوتاه کردن متن‌ها
+        function cleanAndTruncateText() {
+            $('.clean-text').each(function() {
+                let text = $(this).text();
+                if (text) {
+                    // Remove question marks and clean up extra spaces
+                    text = text.replace(/\?/g, '')
+                              .replace(/\s+/g, ' ')
+                              .trim();
+                    
+                    // Smart truncation without ellipsis
+                    let maxLength = 50;
+                    if (text.length > maxLength) {
+                        // Find the last complete word within the limit
+                        let truncated = text.substring(0, maxLength);
+                        let lastSpace = truncated.lastIndexOf(' ');
+                        if (lastSpace > maxLength * 0.7) { // If we can find a good break point
+                            truncated = truncated.substring(0, lastSpace);
+                        }
+                        text = truncated;
+                    }
+                    
+                    $(this).text(text);
                 }
             });
+        }
 
-            table.find("tr").each(function () {
-                columnsToRemove.forEach(function (index) {
-                    $(this).find("th, td").eq(index).remove();
-                });
-            });
+        // اجرای تابع پاک کردن علامت سوال و کوتاه کردن متن‌ها
+        cleanAndTruncateText();
 
-            table.find("tr").each(function (rowIndex) {
-                $(this).find("th, td").each(function (index, element) {
-                    if (![2, 3, 4, 5, 6].includes(index)) {
-                        $(element).remove();
+        function downloadExcel() {
+            // نمایش loading
+            $("#excelbtn").html('<i class="fas fa-spinner fa-spin mr-2"></i>در حال دانلود...');
+            $("#excelbtn").prop('disabled', true);
+            
+            // دریافت تمام داده‌ها از سرور
+            let currentUrl = window.location.href;
+            let baseUrl = currentUrl.split('?')[0];
+            
+            // اضافه کردن پارامتر برای دریافت تمام داده‌ها
+            let downloadUrl = baseUrl + '?download_all=true';
+            
+            // اگر فیلتر تاریخ وجود دارد، آن را حفظ کن
+            let urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('dateFrom')) {
+                downloadUrl += '&dateFrom=' + urlParams.get('dateFrom');
+            }
+            if (urlParams.has('dateTo')) {
+                downloadUrl += '&dateTo=' + urlParams.get('dateTo');
+            }
+            if (urlParams.has('search')) {
+                downloadUrl += '&search=' + urlParams.get('search');
+            }
+            
+            // درخواست AJAX برای دریافت تمام داده‌ها
+            $.ajax({
+                url: downloadUrl,
+                method: 'GET',
+                success: function(response) {
+                    try {
+                        // اگر پاسخ JSON است
+                        if (typeof response === 'object') {
+                            createExcelFromData(response.data, response.headers);
+                        } else {
+                            // اگر پاسخ HTML است، از جدول فعلی استفاده کن
+                            createExcelFromCurrentTable();
+                        }
+                    } catch (e) {
+                        console.error('Error processing response:', e);
+                        createExcelFromCurrentTable();
                     }
-                });
-            });
-
-            table.find("td").each(function (index1) {
-                const fullTitle = $(this).attr("title");
-                if (fullTitle) {
-                    $(this).text(fullTitle);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error downloading data:', error);
+                    // در صورت خطا، از جدول فعلی استفاده کن
+                    createExcelFromCurrentTable();
+                },
+                complete: function() {
+                    // بازگرداندن دکمه به حالت عادی
+                    $("#excelbtn").html('<i class="fas fa-file-excel mr-2"></i>دانلود اکسل');
+                    $("#excelbtn").prop('disabled', false);
                 }
             });
-
-            const printWindow = window.open('', '', 'height=1123,width=794');
-            printWindow.document.write('<html><head>');
-            printWindow.document.write('<style>');
-            printWindow.document.write(`
-                    @page {
-                        size: A4;
-                        margin: 10mm;
+        }
+        
+        function createExcelFromData(data, headers) {
+            let excelData = [];
+            
+            // اضافه کردن header ها
+            if (headers && headers.length > 0) {
+                excelData.push(headers);
+            } else {
+                // استفاده از header های پیش‌فرض
+                $("#table th").each(function() {
+                    excelData.push([$(this).text().trim()]);
+                });
+            }
+            
+            // اضافه کردن داده‌ها
+            if (data && data.length > 0) {
+                data.forEach(function(row) {
+                    let rowData = [];
+                    if (Array.isArray(row)) {
+                        rowData = row;
+                    } else if (typeof row === 'object') {
+                        // اگر داده به صورت object است
+                        rowData = [
+                            row.row || '',
+                            row.date || '',
+                            row.time || '',
+                            row.errorcode || '',
+                            row.errormessage || '',
+                            row.probablecause || '',
+                            row.solution || ''
+                        ];
                     }
-                    body {
-                        width: 210mm;
-                        height: 297mm;
-                        margin: 0;
-                        padding: 0;
-                        font-family: system-ui, -apple-system, sans-serif;
-                    }
-                    .header {
-                        text-align: center;
-                        margin-bottom: 20px;
-                        font-size: 16px;
-                        font-weight: bold;
-                        color: #1a1a1a;
-                    }
-                    table {
-                        width: 100%;
-                        margin: 0 auto;
-                        border-collapse: collapse;
-                    }
-                    th, td {
-                        border: 1px solid #000;
-                        padding: 12px;
-                        text-align: center;
-                    }
-                    th {
-                        background-color: #f8fafc;
-                        font-weight: 600;
-                    }
-                    @media print {
-                        body {
-                            width: 100%;
-                            height: 100%;
+                    excelData.push(rowData);
+                });
+            }
+            
+            downloadCSV(excelData);
+        }
+        
+        function createExcelFromCurrentTable() {
+            let excelData = [];
+            
+            // اضافه کردن header ها
+            let headers = [];
+            $("#table th").each(function() {
+                headers.push($(this).text().trim());
+            });
+            excelData.push(headers);
+            
+            // اضافه کردن داده‌های جدول فعلی
+            $("#table tbody tr").each(function() {
+                let rowData = [];
+                $(this).find("td").each(function(index) {
+                    let cellText = $(this).text().trim();
+                    
+                    // برای ستون‌های متن طولانی، از onclick attribute استفاده کن
+                    if ($(this).hasClass('text-cell')) {
+                        let onclickAttr = $(this).attr('onclick');
+                        if (onclickAttr) {
+                            // استخراج متن کامل از onclick
+                            let match = onclickAttr.match(/showDetailModal\('.*?', '([^']+)',/);
+                            if (match && match[1]) {
+                                // decode HTML entities
+                                let decodedText = $('<div/>').html(match[1]).text();
+                                cellText = decodedText;
+                            }
                         }
                     }
-                `);
-            printWindow.document.write('</style></head><body>');
-
-            const today = new Date().toLocaleDateString('fa-IR');
-            printWindow.document.write(`
-                    <div class="header">
-                        گزارش خطاها - تاریخ: ${today}
-                    </div>
-                `);
-
-            printWindow.document.write(table.wrap('<div>').parent().html());
-            printWindow.document.write('</body></html>');
-            printWindow.document.close();
-
-            printWindow.document.title = "گزارش خطاها";
-
-            printWindow.focus();
-            printWindow.print();
-            printWindow.close();
+                    
+                    rowData.push(cellText);
+                });
+                excelData.push(rowData);
+            });
+            
+            downloadCSV(excelData);
+        }
+        
+        function downloadCSV(excelData) {
+            // تبدیل به CSV
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+            excelData.forEach(function(rowArray) {
+                let row = rowArray.map(function(cell) {
+                    // حذف کاراکترهای مشکل‌ساز برای CSV
+                    if (cell === null || cell === undefined) {
+                        cell = '';
+                    }
+                    return '"' + String(cell).replace(/"/g, '""').replace(/\n/g, ' ').replace(/\r/g, ' ') + '"';
+                }).join(",");
+                csvContent += row + "\r\n";
+            });
+            
+            // دانلود فایل
+            let encodedUri = encodeURI(csvContent);
+            let link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "گزارش_خطاها_کامل_" + new Date().toISOString().slice(0,10) + ".csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     });
 </script>

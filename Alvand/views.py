@@ -1456,11 +1456,57 @@ class errorsPage(TemplateView, View):
             print(f"Permission check error: {e}")
             pass
         
+        # Get SMDR records with error codes (dial_number starting with "MN ALM")
+        import re
+        smdr_error_records = SMDRRecord.objects.filter(dial_number__startswith="MN ALM").order_by('-created_at')
+        
+        # Create error data list
+        error_data = []
+        for smdr_record in smdr_error_records:
+            try:
+                # Extract error code from dial_number
+                if "#" in smdr_record.dial_number:
+                    after_hash = smdr_record.dial_number.split("#")[1].strip()
+                    # Extract first number from the string after #
+                    error_numbers = re.findall(r'\d+', after_hash)
+                    if error_numbers:
+                        error_code = int(error_numbers[0])
+                        
+                        # Look up error details
+                        error_info = Errors.objects.filter(errorcodenum=error_code).first()
+                        
+                        if error_info:
+                            error_entry = {
+                                'errorcode': error_code,
+                                'errormessage': error_info.errormessage or 'پیام خطا موجود نیست',
+                                'probablecause': error_info.probablecause or 'علت احتمالی مشخص نیست',
+                                'solution': error_info.solution or 'راه حل ارائه نشده',
+                                'date': smdr_record.date,
+                                'time': smdr_record.time,
+                                'created_at': smdr_record.created_at,
+                            }
+                        else:
+                            error_entry = {
+                                'errorcode': error_code,
+                                'errormessage': f'خطای شماره {error_code}',
+                                'probablecause': 'اطلاعات این خطا در پایگاه داده موجود نیست',
+                                'solution': 'لطفاً با پشتیبانی تماس بگیرید',
+                                'date': smdr_record.date,
+                                'time': smdr_record.time,
+                                'created_at': smdr_record.created_at,
+                            }
+                        
+                        error_data.append(error_entry)
+            except Exception as e:
+                print(f"Error processing SMDR record {smdr_record.id}: {e}")
+                continue
+        
         # Handle date filtering
-        qs = Faults.objects.all()
         if request.GET:
             dateFrom = request.GET.get('dateFrom')
             dateTo = request.GET.get('dateTo')
+            search_query = request.GET.get('search', '').strip()
+            
             if dateFrom and dateTo:
                 try:
                     convFrom = jdatetime.datetime.strptime(dateFrom.replace("/", "-").replace('از', '').strip(), "%Y-%m-%d").togregorian()
@@ -1470,22 +1516,67 @@ class errorsPage(TemplateView, View):
                         messages.warning(request, "تاریخ اول نباید بزرگ تر از تاریخ دوم باشد.")
                         return redirect(request.path)
                     
-                    # Filter by date_time if available, otherwise by created_at
-                    qs = qs.filter(
-                        models.Q(date_time__date__range=(convFrom.date(), convTo.date())) |
-                        models.Q(date_time__isnull=True, created_at__date__range=(convFrom.date(), convTo.date()))
-                    )
+                    # Filter error_data by date
+                    filtered_data = []
+                    for error in error_data:
+                        try:
+                            error_date = error['created_at'].date()
+                            if convFrom.date() <= error_date <= convTo.date():
+                                filtered_data.append(error)
+                        except:
+                            continue
                     
-                    if not qs.exists():
+                    error_data = filtered_data
+                    
+                    if not error_data:
                         messages.error(request, f"در بین تاریخ های {dateFrom} و {dateTo} گزارش خطایی پیدا نشد.")
                         
                 except Exception as e:
                     messages.error(request, "فرمت تاریخ ها اشتباه است.")
                     return redirect(request.path)
+            
+            # Handle search filtering
+            if search_query:
+                filtered_data = []
+                for error in error_data:
+                    if (search_query.lower() in str(error['errorcode']).lower() or
+                        search_query.lower() in error['errormessage'].lower() or
+                        search_query.lower() in error['probablecause'].lower() or
+                        search_query.lower() in error['solution'].lower()):
+                        filtered_data.append(error)
+                error_data = filtered_data
+        
+        # Sort by created_at in reverse order
+        error_data.sort(key=lambda x: x['created_at'], reverse=True)
+        
+        # Check if this is a download request
+        if request.GET.get('download_all') == 'true':
+            # Return JSON response for download
+            from django.http import JsonResponse
+            headers = ['ردیف', 'تاریخ', 'ساعت', 'شماره خطا', 'عنوان خطا', 'علت احتمالی', 'راه حل پیشنهادی']
+            
+            # Prepare data for download
+            download_data = []
+            for i, error in enumerate(error_data, 1):
+                download_data.append([
+                    i,
+                    error['date'].strftime('%Y/%m/%d') if error['date'] else '',
+                    error['time'].strftime('%H:%M') if error['time'] else '',
+                    error['errorcode'],
+                    error['errormessage'],
+                    error['probablecause'],
+                    error['solution']
+                ])
+            
+            return JsonResponse({
+                'headers': headers,
+                'data': download_data,
+                'total_count': len(error_data)
+            })
         
         # Pagination
         page_number = request.GET.get('p', 1)
-        paginator = Paginator(qs.order_by('-created_at'), 20)
+        paginator = Paginator(error_data, 20)
         try:
             page_obj = paginator.page(page_number)
         except PageNotAnInteger:
@@ -1500,8 +1591,6 @@ class errorsPage(TemplateView, View):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pageTitle'] = 'گزارش خطا ها'
-        faults, page_obj = makePagination(Faults.objects.order_by('-created_at'), 20, self.request)
-        context['pages'] = page_obj
         return context
 
 
