@@ -659,6 +659,930 @@
         border-color: var(--primary-color);
         box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
     }
+
+    /* Beautiful Calendar Styling */
+    .date-range-container {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: nowrap;
+        width: 100%;
+    }
+
+    .date-input-wrapper {
+        position: relative;
+        flex: 1;
+        min-width: 0;
+        max-width: 200px;
+    }
+
+    .date-input-wrapper input[data-jdp] {
+        width: 100%;
+        padding: 10px 16px 10px 40px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 13px;
+        font-family: 'IRANSans', sans-serif;
+        background: white;
+        color: #37474F;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        cursor: pointer;
+        height: 42px;
+        box-sizing: border-box;
+    }
+
+    .date-input-wrapper input[data-jdp]:hover {
+        border-color: #00BCD4;
+        box-shadow: 0 3px 10px rgba(0, 188, 212, 0.15);
+        transform: translateY(-1px);
+    }
+
+    .date-input-wrapper input[data-jdp]:focus {
+        outline: none;
+        border-color: #00BCD4;
+        box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .date-input-wrapper input[data-jdp]::placeholder {
+        color: #94a3b8;
+        font-weight: 400;
+        font-size: 12px;
+    }
+
+    .date-input-wrapper i.fa-regular.fa-calendar {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #00BCD4;
+        font-size: 16px;
+        pointer-events: none;
+        transition: all 0.3s ease;
+    }
+
+    .date-input-wrapper:hover i.fa-regular.fa-calendar {
+        color: #0097A7;
+        transform: translateY(-50%) scale(1.05);
+    }
+
+    /* Jalali Datepicker Custom Styling */
+    .jalali-datepicker {
+        font-family: 'IRANSans', sans-serif !important;
+        border-radius: 12px !important;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15) !important;
+        border: none !important;
+        overflow: hidden !important;
+        animation: calendarSlideIn 0.3s ease-out !important;
+        max-width: 320px !important;
+        min-width: 300px !important;
+    }
+
+    .jalali-datepicker .jalali-datepicker-header {
+        background: linear-gradient(135deg, #00BCD4, #29B6F6) !important;
+        color: white !important;
+        padding: 12px 16px !important;
+        text-align: center !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+
+    .jalali-datepicker .jalali-datepicker-header h3 {
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        margin: 0 !important;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .jalali-datepicker .jalali-datepicker-header .jalali-datepicker-nav {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        margin-top: 8px !important;
+    }
+
+    .jalali-datepicker .jalali-datepicker-nav button {
+        background: rgba(255, 255, 255, 0.2) !important;
+        border: none !important;
+        color: white !important;
+        width: 28px !important;
+        height: 28px !important;
+        border-radius: 50% !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 12px !important;
+    }
+
+    .jalali-datepicker .jalali-datepicker-nav button:hover {
+        background: rgba(255, 255, 255, 0.3) !important;
+        transform: scale(1.05) !important;
+    }
+
+    .jalali-datepicker .jalali-datepicker-nav button:active {
+        transform: scale(0.95) !important;
+    }
+
+    .jalali-datepicker .jalali-datepicker-body {
+        padding: 16px 20px !important;
+        background: white !important;
+    }
+
+    .jalali-datepicker .jalali-datepicker-weekdays {
+        display: grid !important;
+        grid-template-columns: repeat(7, 1fr) !important;
+        gap: 6px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .jalali-datepicker .jalali-datepicker-weekdays span {
+        text-align: center !important;
+        font-weight: 600 !important;
+        color: #64748b !important;
+        font-size: 12px !important;
+        padding: 6px 2px !important;
+        border-radius: 6px !important;
+        background: #f8fafc !important;
+    }
+
+    .jalali-datepicker .jalali-datepicker-days {
+        display: grid !important;
+        grid-template-columns: repeat(7, 1fr) !important;
+        gap: 4px !important;
+    }
+
+    .jalali-datepicker .jalali-datepicker-day {
+        width: 36px !important;
+        height: 36px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 8px !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        color: #37474F !important;
+        background: transparent !important;
+        border: 2px solid transparent !important;
+    }
+
+    .jalali-datepicker .jalali-datepicker-day:hover {
+        background: #f0f9ff !important;
+        color: #00BCD4 !important;
+        transform: scale(1.05) !important;
+        box-shadow: 0 3px 8px rgba(0, 188, 212, 0.2) !important;
+    }
+
+    .jalali-datepicker .jalali-datepicker-day.today {
+        background: linear-gradient(135deg, #00BCD4, #29B6F6) !important;
+        color: white !important;
+        font-weight: 600 !important;
+        box-shadow: 0 3px 8px rgba(0, 188, 212, 0.3) !important;
+    }
+
+    .jalali-datepicker .jalali-datepicker-day.selected {
+        background: linear-gradient(135deg, #26A69A, #4DB6AC) !important;
+        color: white !important;
+        font-weight: 600 !important;
+        box-shadow: 0 3px 8px rgba(38, 166, 154, 0.3) !important;
+    }
+
+    .jalali-datepicker .jalali-datepicker-day.other-month {
+        color: #cbd5e1 !important;
+        opacity: 0.5 !important;
+    }
+
+    .jalali-datepicker .jalali-datepicker-day.other-month:hover {
+        background: #f1f5f9 !important;
+        color: #64748b !important;
+        opacity: 0.8 !important;
+    }
+
+    .jalali-datepicker .jalali-datepicker-footer {
+        padding: 12px 20px !important;
+        background: #f8fafc !important;
+        border-top: 1px solid #e2e8f0 !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+    }
+
+    .jalali-datepicker .jalali-datepicker-footer button {
+        background: linear-gradient(135deg, #00BCD4, #29B6F6) !important;
+        color: white !important;
+        border: none !important;
+        padding: 8px 16px !important;
+        border-radius: 6px !important;
+        cursor: pointer !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease !important;
+        font-size: 13px !important;
+    }
+
+    .jalali-datepicker .jalali-datepicker-footer button:hover {
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3) !important;
+    }
+
+    .jalali-datepicker .jalali-datepicker-footer button:active {
+        transform: translateY(0) !important;
+    }
+
+    /* Calendar Animation */
+    @keyframes calendarSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px) scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    /* Mobile Responsive Calendar */
+    @media (max-width: 768px) {
+        .date-range-container {
+            flex-direction: column;
+            gap: 12px;
+            align-items: stretch;
+        }
+
+        .date-input-wrapper {
+            min-width: 100%;
+            max-width: none;
+        }
+
+        .date-input-wrapper input[data-jdp] {
+            height: 44px;
+            font-size: 14px;
+        }
+
+        .jalali-datepicker {
+            margin: 10px !important;
+            max-width: calc(100vw - 20px) !important;
+            min-width: 280px !important;
+        }
+
+        .jalali-datepicker .jalali-datepicker-day {
+            width: 32px !important;
+            height: 32px !important;
+            font-size: 12px !important;
+        }
+
+        .jalali-datepicker .jalali-datepicker-header {
+            padding: 14px 16px !important;
+        }
+
+        .jalali-datepicker .jalali-datepicker-header h3 {
+            font-size: 15px !important;
+        }
+
+        .jalali-datepicker .jalali-datepicker-body {
+            padding: 14px 16px !important;
+        }
+
+        .jalali-datepicker .jalali-datepicker-footer {
+            padding: 10px 16px !important;
+        }
+
+        .jalali-datepicker .jalali-datepicker-weekdays span {
+            font-size: 11px !important;
+            padding: 4px 1px !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .date-range-container {
+            gap: 10px;
+        }
+
+        .date-input-wrapper input[data-jdp] {
+            height: 46px;
+            font-size: 15px;
+        }
+
+        .jalali-datepicker {
+            min-width: 260px !important;
+        }
+
+        .jalali-datepicker .jalali-datepicker-day {
+            width: 30px !important;
+            height: 30px !important;
+            font-size: 11px !important;
+        }
+    }
+
+    /* Dark Mode Support for Calendar */
+    .dark .jalali-datepicker {
+        background: #1e293b !important;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    .dark .jalali-datepicker .jalali-datepicker-body {
+        background: #1e293b !important;
+    }
+
+    .dark .jalali-datepicker .jalali-datepicker-weekdays span {
+        background: #334155 !important;
+        color: #cbd5e1 !important;
+    }
+
+    .dark .jalali-datepicker .jalali-datepicker-day {
+        color: #e2e8f0 !important;
+    }
+
+    .dark .jalali-datepicker .jalali-datepicker-day:hover {
+        background: #334155 !important;
+        color: #80DEEA !important;
+    }
+
+    .dark .jalali-datepicker .jalali-datepicker-day.other-month {
+        color: #64748b !important;
+    }
+
+    .dark .jalali-datepicker .jalali-datepicker-day.other-month:hover {
+        background: #475569 !important;
+        color: #94a3b8 !important;
+    }
+
+    .dark .jalali-datepicker .jalali-datepicker-footer {
+        background: #334155 !important;
+        border-top-color: #475569 !important;
+    }
+
+    /* Enhanced Date Input States */
+    .date-input-wrapper input[data-jdp].has-value {
+        border-color: #26A69A;
+        background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    }
+
+    .date-input-wrapper input[data-jdp].has-value i.fa-regular.fa-calendar {
+        color: #26A69A;
+    }
+
+    .date-input-wrapper input[data-jdp].error {
+        border-color: #ef4444;
+        background: linear-gradient(135deg, #fef2f2, #fef2f2);
+        animation: shake 0.5s ease-in-out;
+    }
+
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+
+    /* Calendar Z-Index Fix */
+    .jalali-datepicker {
+        z-index: 9999 !important;
+    }
+
+    /* Ripple Effect for Calendar Inputs */
+    .date-input-wrapper {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .ripple-effect {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(0, 188, 212, 0.3);
+        transform: scale(0);
+        animation: ripple 0.6s linear;
+        pointer-events: none;
+    }
+
+    @keyframes ripple {
+        to {
+            transform: scale(4);
+            opacity: 0;
+        }
+    }
+
+    /* Success Animation */
+    .success-animation {
+        animation: successPulse 1s ease-in-out;
+    }
+
+    @keyframes successPulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+        100% { transform: scale(1); }
+    }
+
+    /* Focus State Enhancement */
+    .date-input-wrapper.focused input[data-jdp] {
+        border-color: #00BCD4;
+        box-shadow: 0 0 0 4px rgba(0, 188, 212, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .date-input-wrapper.focused i.fa-regular.fa-calendar {
+        color: #0097A7;
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    /* Enhanced Hover States */
+    .date-input-wrapper:hover {
+        transform: translateY(-1px);
+    }
+
+    .date-input-wrapper:hover input[data-jdp] {
+        border-color: #00BCD4;
+        box-shadow: 0 4px 12px rgba(0, 188, 212, 0.15);
+    }
+
+    /* Calendar Input Validation States */
+    .date-input-wrapper input[data-jdp].valid {
+        border-color: #10b981;
+        background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    }
+
+    .date-input-wrapper input[data-jdp].valid i.fa-regular.fa-calendar {
+        color: #10b981;
+    }
+
+    .date-input-wrapper input[data-jdp].invalid {
+        border-color: #ef4444;
+        background: linear-gradient(135deg, #fef2f2, #fef2f2);
+        animation: shake 0.5s ease-in-out;
+    }
+
+    .date-input-wrapper input[data-jdp].invalid i.fa-regular.fa-calendar {
+        color: #ef4444;
+    }
+
+    /* Calendar Input Loading State */
+    .date-input-wrapper.loading input[data-jdp] {
+        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        cursor: wait;
+    }
+
+    .date-input-wrapper.loading i.fa-regular.fa-calendar {
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        from { transform: translateY(-50%) rotate(0deg); }
+        to { transform: translateY(-50%) rotate(360deg); }
+    }
+
+    /* Calendar Input Disabled State */
+    .date-input-wrapper.disabled input[data-jdp] {
+        background: #f8fafc;
+        color: #94a3b8;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    .date-input-wrapper.disabled i.fa-regular.fa-calendar {
+        color: #94a3b8;
+        opacity: 0.6;
+    }
+
+    /* Calendar Input Group Styling */
+    .date-range-container .date-input-wrapper:first-child input[data-jdp] {
+        border-top-right-radius: 12px;
+        border-bottom-right-radius: 12px;
+        border-left-radius: 0;
+    }
+
+    .date-range-container .date-input-wrapper:last-child input[data-jdp] {
+        border-top-left-radius: 12px;
+        border-bottom-left-radius: 12px;
+        border-right-radius: 0;
+    }
+
+    .date-range-container .date-input-wrapper:not(:first-child):not(:last-child) input[data-jdp] {
+        border-radius: 0;
+    }
+
+    /* Calendar Input with Icon Animation */
+    .date-input-wrapper i.fa-regular.fa-calendar {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .date-input-wrapper:hover i.fa-regular.fa-calendar {
+        animation: iconBounce 0.6s ease-in-out;
+    }
+
+    @keyframes iconBounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(-50%) scale(1); }
+        40% { transform: translateY(-50%) scale(1.1); }
+        60% { transform: translateY(-50%) scale(0.9); }
+    }
+
+    .jalali-datepicker .jalali-datepicker-header {
+        padding: 10px 14px !important;
+    }
+
+    .jalali-datepicker .jalali-datepicker-header h3 {
+        font-size: 13px !important;
+    }
+
+    /* Beautiful Filter Dropdown Styling */
+    .filter-dropdown-button {
+        width: 100%;
+        padding: 10px 16px;
+        background: white;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 13px;
+        font-family: 'IRANSans', sans-serif;
+        color: #37474F;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        position: relative;
+        min-height: 42px;
+    }
+
+    .filter-dropdown-button:hover {
+        border-color: #00BCD4;
+        box-shadow: 0 3px 10px rgba(0, 188, 212, 0.15);
+        transform: translateY(-1px);
+    }
+
+    .filter-dropdown-button:focus {
+        outline: none;
+        border-color: #00BCD4;
+        box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
+    }
+
+    .filter-dropdown-button i.fa-solid.fa-chevron-down {
+        color: #64748b;
+        transition: transform 0.3s ease;
+        font-size: 12px;
+    }
+
+    .filter-dropdown-button[aria-expanded="true"] i.fa-solid.fa-chevron-down {
+        transform: rotate(180deg);
+    }
+
+    .filter-dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+        margin-top: 4px;
+        max-height: 300px;
+        overflow-y: auto;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        border-top: none;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+
+    .filter-dropdown-menu.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .filter-dropdown-menu.hidden {
+        display: none;
+    }
+
+    .filter-dropdown-search {
+        position: relative;
+        padding: 12px 16px;
+        border-bottom: 1px solid #e2e8f0;
+        background: #f8fafc;
+    }
+
+    .filter-dropdown-search input {
+        width: 100%;
+        padding: 8px 12px 8px 32px;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        font-size: 12px;
+        font-family: 'IRANSans', sans-serif;
+        background: white;
+        color: #37474F;
+        transition: all 0.3s ease;
+    }
+
+    .filter-dropdown-search input:focus {
+        outline: none;
+        border-color: #00BCD4;
+        box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.1);
+    }
+
+    .filter-dropdown-search input:focus + i.fa-solid.fa-search {
+        color: #00BCD4;
+    }
+
+    .filter-dropdown-search input.searching {
+        border-color: #00BCD4;
+        background: #f0f9ff;
+    }
+
+    .filter-dropdown-search input.searching + i.fa-solid.fa-search {
+        color: #00BCD4;
+        animation: searchPulse 1s ease-in-out infinite;
+    }
+
+    @keyframes searchPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.6; }
+    }
+
+    .filter-dropdown-search input::placeholder {
+        color: #94a3b8;
+        font-style: italic;
+    }
+
+    .filter-dropdown-search input:not(:placeholder-shown) {
+        background: #f8fafc;
+        border-color: #00BCD4;
+    }
+
+    .filter-dropdown-search i.fa-solid.fa-search {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #64748b;
+        font-size: 12px;
+    }
+
+    .filter-dropdown-menu ul {
+        list-style: none;
+        margin: 0;
+        padding: 8px 0;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .filter-dropdown-menu li {
+        margin: 0;
+        padding: 0;
+    }
+
+    .filter-dropdown-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 16px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border-radius: 4px;
+        margin: 2px 8px;
+    }
+
+    .filter-dropdown-item:hover {
+        background: #f0f9ff;
+        transform: translateX(-2px);
+    }
+
+    .filter-dropdown-item input[type="checkbox"] {
+        margin-left: 8px;
+        accent-color: #00BCD4;
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+    }
+
+    .filter-dropdown-item label {
+        cursor: pointer;
+        font-size: 13px;
+        color: #37474F;
+        font-weight: 500;
+        flex: 1;
+        user-select: none;
+    }
+
+    .filter-dropdown-item:hover label {
+        color: #00BCD4;
+    }
+
+    /* Selected state styling */
+    .filter-dropdown-item.selected {
+        background: #e0f2fe;
+        border-left: 3px solid #00BCD4;
+    }
+
+    .filter-dropdown-item.selected label {
+        color: #0097A7;
+        font-weight: 600;
+    }
+
+    /* Dropdown scrollbar styling */
+    .filter-dropdown-menu::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .filter-dropdown-menu::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 3px;
+    }
+
+    .filter-dropdown-menu::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+    }
+
+    .filter-dropdown-menu::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+    /* Filter button states */
+    .filter-dropdown-button.has-selection {
+        border-color: #26A69A;
+        background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    }
+
+    .filter-dropdown-button.has-selection span {
+        color: #059669;
+        font-weight: 600;
+    }
+
+    /* Dropdown animations */
+    @keyframes dropdownSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px) scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .filter-dropdown-menu.show {
+        animation: dropdownSlideIn 0.3s ease-out;
+    }
+
+    /* Dark mode support for dropdowns */
+    .dark .filter-dropdown-button {
+        background: #1e293b;
+        border-color: #475569;
+        color: #e2e8f0;
+    }
+
+    .dark .filter-dropdown-button:hover {
+        border-color: #80DEEA;
+        background: #334155;
+    }
+
+    .dark .filter-dropdown-menu {
+        background: #1e293b;
+        border-color: #475569;
+    }
+
+    .dark .filter-dropdown-search {
+        background: #334155;
+        border-bottom-color: #475569;
+    }
+
+    .dark .filter-dropdown-search input {
+        background: #475569;
+        border-color: #64748b;
+        color: #e2e8f0;
+    }
+
+    .dark .filter-dropdown-item {
+        color: #e2e8f0;
+    }
+
+    .dark .filter-dropdown-item:hover {
+        background: #334155;
+    }
+
+    .dark .filter-dropdown-item.selected {
+        background: #0f172a;
+        border-left-color: #80DEEA;
+    }
+
+    .dark .filter-dropdown-item label {
+        color: #e2e8f0;
+    }
+
+    .dark .filter-dropdown-item:hover label {
+        color: #80DEEA;
+    }
+
+    .dark .filter-dropdown-item.selected label {
+        color: #80DEEA;
+    }
+
+    /* No results message styling */
+    .no-results-message {
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .no-results-message i.fa-solid.fa-search {
+        display: block;
+        margin: 0 auto 8px;
+    }
+
+    .no-results-message p:first-of-type {
+        font-weight: 500;
+        margin-bottom: 4px;
+    }
+
+    .no-results-message p:last-of-type {
+        opacity: 0.8;
+    }
+
+    /* No items message styling */
+    .no-items-message .filter-dropdown-item {
+        background: #f8fafc;
+        border: 1px dashed #cbd5e1;
+        border-radius: 8px;
+        margin: 8px;
+    }
+
+    .no-items-message i.fa-solid.fa-info-circle {
+        color: #64748b;
+        display: block;
+        margin: 0 auto 8px;
+    }
+
+    .no-items-message p {
+        margin: 0;
+        line-height: 1.4;
+    }
+
+    /* Enhanced dropdown item styling */
+    .filter-dropdown-item {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .filter-dropdown-item::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: transparent;
+        transition: background-color 0.3s ease;
+    }
+
+    .filter-dropdown-item:hover::before {
+        background: #00BCD4;
+    }
+
+    .filter-dropdown-item.selected::before {
+        background: #26A69A;
+    }
+
+    /* Filtering Indicator Styling */
+    .filtering-indicator {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+        from {
+            transform: translateX(-50%) translateY(-20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .filtering-indicator i.fa-solid.fa-filter {
+        animation: spin 1s linear infinite;
+    }
+
+    /* Enhanced checkbox styling for better visibility */
+    .checkbox-visible {
+        accent-color: #00BCD4 !important;
+        transform: scale(1.1);
+        transition: all 0.2s ease;
+    }
+
+    .checkbox-visible:checked {
+        accent-color: #26A69A !important;
+        transform: scale(1.2);
+    }
+
+    .checkbox-visible:hover {
+        transform: scale(1.15);
+    }
 </style>
 {% endblock head_extra %}
 
@@ -1378,34 +2302,11 @@
         adjustTableResponsiveness();
         $(window).on('resize', adjustTableResponsiveness);
         
-        $("[data-dropdown-toggle]").each(function() {
-            const dropdownId = $(this).attr("data-dropdown-toggle");
-            const $dropdown = $("#" + dropdownId);
-            $(this).on('click', function(e) {
-                e.stopPropagation();
-                // Close other dropdowns before toggling the current one
-                $("[id$='DropDown'],[id^='dropdown']").not($dropdown).addClass('hidden');
-                $dropdown.toggleClass('hidden');
-            });
-        });
+        // Dropdown functionality moved to enhanceFilterDropdowns() function
+        // to prevent conflicts and provide enhanced features
         
-        $(document).on('click', function(e) {
-            // If click is not on a dropdown toggle or inside a dropdown, close all dropdowns
-            if (!$(e.target).closest('[data-dropdown-toggle]').length && !$(e.target).closest("[id$='DropDown'],[id^='dropdown']").length) {
-                $("[id$='DropDown'],[id^='dropdown']").addClass('hidden');
-            }
-        });
-        
-        // Stop propagation for clicks inside dropdowns to prevent immediate closure
-        $("[id$='DropDown'],[id^='dropdown']").on('click', function(e) {
-            e.stopPropagation();
-        });
-
-        $("#searchInternal, #searchUrban").on('input', function() {
-            const searchTerm = $(this).val().toLowerCase();
-            const itemClass = $(this).attr('id') === 'searchInternal' ? '.internal-line-item' : '.urban-line-item';
-            $(itemClass).each(function() { $(this).toggle($(this).text().toLowerCase().indexOf(searchTerm) > -1); });
-        });
+        // Search functionality moved to enhanceFilterDropdowns() function
+        // to prevent conflicts and provide enhanced search features
         
         function calculateTotalCosts() {
             let total = 0;
@@ -1559,15 +2460,15 @@
         });
         
         // Trigger filtering when Internal/Urban/Call-Type checkboxes change
-        $('input[name="extline"], input[name="urbanline"], input[name="calls"]').on('change', function() {
-            const currentTerm = $('#searchBox').val().trim();
-            performSearch(currentTerm);
-        });
+        // Moved to enhanceFilterDropdowns() function to prevent conflicts
         
         function performSearch(searchTerm) {
             // Remove loading indicator
             $('.search-indicator').remove();
             $('#quickSearch, #searchBox').removeClass('searching');
+            
+            // Show filtering indicator
+            showFilteringIndicator();
             
             const searchLower = (searchTerm || '').toLowerCase();
             const selectedExts = $('input[name="extline"]:checked').map(function(){ return ($(this).val() || '').toString().trim(); }).get();
@@ -1680,6 +2581,9 @@
             
             // Toggle Excel button visibility based on results
             toggleExcelButton();
+            
+            // Hide filtering indicator
+            hideFilteringIndicator();
         }
         
         function showSearchResults(count, term) {
@@ -2072,6 +2976,522 @@
             }
         }
 
+        // Always calculate call statistics client-side
+        setTimeout(function() {
+            console.log('Forcing client-side calculation of call statistics');
+            // Get the total count from the Total card
+            const totalCount = parseInt($('.stat-card.total h3').text()) || 0;
+            console.log('Total count from card:', totalCount);
+            
+            if (totalCount > 0) {
+                // Use a proportional distribution if we have a total but no breakdown
+                calculateCallStats(totalCount);
+            } else {
+                // Fall back to counting what's in the table
+                calculateCallStats();
+            }
+        }, 500);
+
+        // Enhanced Calendar Functionality
+        function enhanceCalendarInputs() {
+            const dateInputs = $('input[data-jdp]');
+            
+            dateInputs.each(function() {
+                const $input = $(this);
+                const $wrapper = $input.closest('.date-input-wrapper');
+                
+                // Add visual feedback when date is selected
+                $input.on('change', function() {
+                    if ($(this).val()) {
+                        $(this).addClass('has-value');
+                        $wrapper.addClass('has-value');
+                        
+                        // Add success animation
+                        $wrapper.addClass('success-animation');
+                        setTimeout(() => {
+                            $wrapper.removeClass('success-animation');
+                        }, 1000);
+                    } else {
+                        $(this).removeClass('has-value');
+                        $wrapper.removeClass('has-value');
+                    }
+                });
+
+                // Add focus effects
+                $input.on('focus', function() {
+                    $wrapper.addClass('focused');
+                });
+
+                $input.on('blur', function() {
+                    $wrapper.removeClass('focused');
+                });
+
+                // Add click ripple effect
+                $input.on('click', function(e) {
+                    const $ripple = $('<span class="ripple-effect"></span>');
+                    $wrapper.append($ripple);
+                    
+                    const rect = $wrapper[0].getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    $ripple.css({
+                        width: size + 'px',
+                        height: size + 'px',
+                        left: x + 'px',
+                        top: y + 'px'
+                    });
+                    
+                    setTimeout(() => {
+                        $ripple.remove();
+                    }, 600);
+                });
+            });
+        }
+
+        // Enhanced Filter Dropdown Functionality
+        function enhanceFilterDropdowns() {
+            // Initialize dropdown toggles
+            $("[data-dropdown-toggle]").each(function() {
+                const $button = $(this);
+                const dropdownId = $button.attr("data-dropdown-toggle");
+                const $dropdown = $("#" + dropdownId);
+                
+                $button.on('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Close other dropdowns
+                    $("[id$='DropDown'],[id^='dropdown']").not($dropdown).removeClass('show').addClass('hidden');
+                    
+                    // Toggle current dropdown
+                    $dropdown.toggleClass('hidden show');
+                    $button.attr('aria-expanded', $dropdown.hasClass('show'));
+                    
+                    // Debug: Show dropdown contents when opened
+                    if ($dropdown.hasClass('show')) {
+                        console.log(`Dropdown ${dropdownId} opened`);
+                        debugDropdownContents(dropdownId);
+                        $dropdown.find('input[type="text"]').first().focus();
+                    }
+                });
+            });
+
+            // Debug function to show dropdown contents
+            function debugDropdownContents(dropdownId) {
+                if (dropdownId === 'dropdownInternal') {
+                    const $items = $('.internal-line-item');
+                    console.log(`Internal line dropdown has ${$items.length} items:`);
+                    $items.each(function(index) {
+                        const $item = $(this);
+                        const label = $item.find('label').text().trim();
+                        const value = $item.find('input').val().trim();
+                        console.log(`  Item ${index + 1}: Label="${label}", Value="${value}"`);
+                    });
+                } else if (dropdownId === 'dropdownUrban') {
+                    const $items = $('.urban-line-item');
+                    console.log(`Urban line dropdown has ${$items.length} items:`);
+                    $items.each(function(index) {
+                        const $item = $(this);
+                        const label = $item.find('label').text().trim();
+                        const value = $item.find('input').val().trim();
+                        console.log(`  Item ${index + 1}: Label="${label}", Value="${value}"`);
+                    });
+                }
+            }
+
+            // Close dropdowns when clicking outside
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('[data-dropdown-toggle]').length && 
+                    !$(e.target).closest("[id$='DropDown'],[id^='dropdown']").length) {
+                    $("[id$='DropDown'],[id^='dropdown']").removeClass('show').addClass('hidden');
+                    $("[data-dropdown-toggle]").attr('aria-expanded', 'false');
+                }
+            });
+
+            // Search functionality for internal lines
+            $('#searchInternal').on('input', function() {
+                const searchTerm = $(this).val().toLowerCase().trim();
+                console.log('Searching internal lines for:', searchTerm);
+                
+                // Add visual feedback
+                if (searchTerm.length > 0) {
+                    $(this).addClass('searching');
+                } else {
+                    $(this).removeClass('searching');
+                }
+                
+                // Check if there are any items to search
+                const $items = $('.internal-line-item');
+                console.log('Total internal line items found:', $items.length);
+                
+                if ($items.length === 0) {
+                    console.log('No internal line items found in DOM');
+                    showNoResultsMessage('internal', 'no-items');
+                    return;
+                }
+                
+                let visibleCount = 0;
+                
+                $items.each(function() {
+                    const $item = $(this);
+                    const labelText = $item.find('label').text().toLowerCase().trim();
+                    const valueText = $item.find('input[type="checkbox"]').val().toLowerCase().trim();
+                    
+                    console.log('Item text:', labelText, 'Value:', valueText);
+                    
+                    if (searchTerm === '' || labelText.includes(searchTerm) || valueText.includes(searchTerm)) {
+                        $item.show();
+                        visibleCount++;
+                        console.log('Showing item:', labelText);
+                    } else {
+                        $item.hide();
+                        console.log('Hiding item:', labelText);
+                    }
+                });
+                
+                console.log(`Showing ${visibleCount} of ${$items.length} internal line items`);
+                
+                // Show appropriate message
+                if (searchTerm.length > 0 && visibleCount === 0) {
+                    showNoResultsMessage('internal', 'no-results');
+                } else {
+                    hideNoResultsMessage('internal');
+                }
+            });
+
+            // Search functionality for urban lines
+            $('#searchUrban').on('input', function() {
+                const searchTerm = $(this).val().toLowerCase().trim();
+                console.log('Searching urban lines for:', searchTerm);
+                
+                // Add visual feedback
+                if (searchTerm.length > 0) {
+                    $(this).addClass('searching');
+                } else {
+                    $(this).removeClass('searching');
+                }
+                
+                // Check if there are any items to search
+                const $items = $('.urban-line-item');
+                console.log('Total urban line items found:', $items.length);
+                
+                if ($items.length === 0) {
+                    console.log('No urban line items found in DOM');
+                    showNoResultsMessage('urban', 'no-items');
+                    return;
+                }
+                
+                let visibleCount = 0;
+                
+                $items.each(function() {
+                    const $item = $(this);
+                    const labelText = $item.find('label').text().toLowerCase().trim();
+                    const valueText = $item.find('input[type="checkbox"]').val().toLowerCase().trim();
+                    
+                    console.log('Item text:', labelText, 'Value:', valueText);
+                    
+                    if (searchTerm === '' || labelText.includes(searchTerm) || valueText.includes(searchTerm)) {
+                        $item.show();
+                        visibleCount++;
+                        console.log('Showing item:', labelText);
+                    } else {
+                        $item.hide();
+                        console.log('Hiding item:', labelText);
+                    }
+                });
+                
+                console.log(`Showing ${visibleCount} of ${$items.length} urban line items`);
+                
+                // Show appropriate message
+                if (searchTerm.length > 0 && visibleCount === 0) {
+                    showNoResultsMessage('urban', 'no-results');
+                } else {
+                    hideNoResultsMessage('urban');
+                }
+            });
+
+            // Function to refresh dropdowns when table data changes
+            function refreshDropdowns() {
+                console.log('Refreshing dropdowns...');
+                populateDropdownsFromTable();
+                
+                // Update button text states
+                updateCallTypeButtonText();
+                updateInternalLineButtonText();
+                updateUrbanLineButtonText();
+                updateFilterButtonStates();
+            }
+
+            // Refresh dropdowns when search results change
+            $(document).on('searchResultsChanged', function() {
+                refreshDropdowns();
+            });
+
+            // Handle checkbox changes and update button text
+            $('input[name="calls"], input[name="extline"], input[name="urbanline"]').on('change', function() {
+                updateDropdownButtonText($(this));
+                updateFilterButtonStates();
+                
+                // Trigger search/filter update
+                const currentTerm = $('#searchBox').val().trim();
+                performSearch(currentTerm);
+            });
+
+            // Update dropdown button text based on selections
+            function updateDropdownButtonText($checkbox) {
+                const name = $checkbox.attr('name');
+                const value = $checkbox.val();
+                const isChecked = $checkbox.is(':checked');
+                
+                if (name === 'calls') {
+                    updateCallTypeButtonText();
+                } else if (name === 'extline') {
+                    updateInternalLineButtonText();
+                } else if (name === 'urbanline') {
+                    updateUrbanLineButtonText();
+                }
+            }
+
+            function updateCallTypeButtonText() {
+                const $button = $('[data-dropdown-toggle="callTypeBodyDropDown"]');
+                const selectedCalls = $('input[name="calls"]:checked');
+                
+                if (selectedCalls.length === 0) {
+                    $button.find('span').text('همه انواع تماس');
+                    $button.removeClass('has-selection');
+                } else if (selectedCalls.length === 1) {
+                    $button.find('span').text(selectedCalls.first().val());
+                    $button.addClass('has-selection');
+                } else {
+                    $button.find('span').text(`${selectedCalls.length} نوع انتخاب شده`);
+                    $button.addClass('has-selection');
+                }
+            }
+
+            function updateInternalLineButtonText() {
+                const $button = $('#dropdownInternalLineBtn');
+                const selectedLines = $('input[name="extline"]:checked');
+                
+                if (selectedLines.length === 0) {
+                    $button.find('span').text('همه خطوط داخلی');
+                    $button.removeClass('has-selection');
+                } else if (selectedLines.length === 1) {
+                    $button.find('span').text(selectedLines.first().val());
+                    $button.addClass('has-selection');
+                } else {
+                    $button.find('span').text(`${selectedLines.length} خط انتخاب شده`);
+                    $button.addClass('has-selection');
+                }
+            }
+
+            function updateUrbanLineButtonText() {
+                const $button = $('#dropdownUrbanLineBtn');
+                const selectedLines = $('input[name="urbanline"]:checked');
+                
+                if (selectedLines.length === 0) {
+                    $button.find('span').text('همه خطوط شهری');
+                    $button.removeClass('has-selection');
+                } else if (selectedLines.length === 1) {
+                    $button.find('span').text(selectedLines.first().val());
+                    $button.addClass('has-selection');
+                } else {
+                    $button.find('span').text(`${selectedLines.length} خط انتخاب شده`);
+                    $button.addClass('has-selection');
+                }
+            }
+
+            function updateFilterButtonStates() {
+                // Update selected state styling for items
+                $('input[name="calls"]:checked').closest('.filter-dropdown-item').addClass('selected');
+                $('input[name="calls"]:not(:checked)').closest('.filter-dropdown-item').removeClass('selected');
+                
+                $('input[name="extline"]:checked').closest('.filter-dropdown-item').addClass('selected');
+                $('input[name="extline"]:not(:checked)').closest('.filter-dropdown-item').removeClass('selected');
+                
+                $('input[name="urbanline"]:checked').closest('.filter-dropdown-item').addClass('selected');
+                $('input[name="urbanline"]:not(:checked)').closest('.filter-dropdown-item').removeClass('selected');
+            }
+
+            // Initialize button text states
+            updateCallTypeButtonText();
+            updateInternalLineButtonText();
+            updateUrbanLineButtonText();
+            updateFilterButtonStates();
+        }
+
+        // Initialize calendar enhancements
+        enhanceCalendarInputs();
+
+        // Initialize filter dropdown enhancements
+        enhanceFilterDropdowns();
+
+        // Dynamically populate dropdowns from table data
+        populateDropdownsFromTable();
+
+        // Function to populate dropdowns from table data
+        function populateDropdownsFromTable() {
+            console.log('Populating dropdowns from table data...');
+            
+            // Get unique internal line numbers from table
+            const internalLines = new Set();
+            const urbanLines = new Set();
+            
+            $('#tbody tr').each(function() {
+                const $row = $(this);
+                const internalLine = $row.find('td').eq(4).find('span.font-medium').text().trim();
+                const urbanLine = $row.find('td').eq(5).text().trim();
+                
+                if (internalLine && internalLine !== '-') {
+                    internalLines.add(internalLine);
+                }
+                if (urbanLine && urbanLine !== '-') {
+                    urbanLines.add(urbanLine);
+                }
+            });
+            
+            console.log('Found internal lines:', Array.from(internalLines));
+            console.log('Found urban lines:', Array.from(urbanLines));
+            
+            // Populate internal line dropdown
+            populateDropdown('dropdownInternal', 'internal-line-item', Array.from(internalLines), 'extline');
+            
+            // Populate urban line dropdown
+            populateDropdown('dropdownUrban', 'urban-line-item', Array.from(urbanLines), 'urbanline');
+        }
+
+        function populateDropdown(dropdownId, itemClass, items, inputName) {
+            const $dropdown = $(`#${dropdownId}`);
+            const $ul = $dropdown.find('ul');
+            
+            // Clear existing items
+            $ul.empty();
+            
+            if (items.length === 0) {
+                $ul.append(`
+                    <li class="no-items-message">
+                        <div class="filter-dropdown-item text-center text-slate-500 py-4">
+                            <i class="fa-solid fa-info-circle text-lg mb-2"></i>
+                            <p class="text-sm">هیچ داده‌ای موجود نیست</p>
+                        </div>
+                    </li>
+                `);
+                return;
+            }
+            
+            // Add items
+            items.forEach((item, index) => {
+                const $li = $(`
+                    <li class="${itemClass}">
+                        <div class="filter-dropdown-item">
+                            <input id="${inputName}-${index + 1}" type="checkbox" name="${inputName}" value="${item}" class="checkbox-visible">
+                            <label for="${inputName}-${index + 1}">${item}</label>
+                        </div>
+                    </li>
+                `);
+                $ul.append($li);
+            });
+            
+            // Re-bind checkbox events with immediate filtering
+            $ul.find('input[type="checkbox"]').off('change').on('change', function() {
+                console.log(`Checkbox changed: ${inputName} = ${$(this).val()}, checked: ${$(this).is(':checked')}`);
+                
+                // Update button text and visual states
+                updateDropdownButtonText($(this));
+                updateFilterButtonStates();
+                
+                // Immediately apply filtering
+                const currentTerm = $('#searchBox').val().trim();
+                console.log('Applying immediate filter with term:', currentTerm);
+                performSearch(currentTerm);
+                
+                // Update Excel button visibility
+                toggleExcelButton();
+            });
+            
+            console.log(`Populated ${dropdownId} with ${items.length} items`);
+        }
+
+        // Re-initialize when new elements are added (if any)
+        $(document).on('DOMNodeInserted', function(e) {
+            if ($(e.target).find('input[data-jdp]').length) {
+                enhanceCalendarInputs();
+            }
+            if ($(e.target).find('[data-dropdown-toggle]').length) {
+                enhanceFilterDropdowns();
+            }
+        });
+
+        // Helper functions for search feedback
+        function showNoResultsMessage(type, reason) {
+            const $dropdown = type === 'internal' ? $('#dropdownInternal') : $('#dropdownUrban');
+            const $existingMessage = $dropdown.find('.no-results-message');
+            
+            if ($existingMessage.length === 0) {
+                let messageText = '';
+                let subText = '';
+                
+                if (reason === 'no-items') {
+                    messageText = 'هیچ خطی موجود نیست';
+                    subText = 'لطفاً با مدیر سیستم تماس بگیرید';
+                } else if (reason === 'no-results') {
+                    messageText = 'نتیجه‌ای یافت نشد';
+                    subText = 'لطفاً عبارت دیگری را امتحان کنید';
+                }
+                
+                const $message = $(`
+                    <div class="no-results-message p-4 text-center text-slate-500 bg-slate-50 border-t border-slate-200">
+                        <i class="fa-solid fa-search text-2xl mb-2 text-slate-300"></i>
+                        <p class="text-sm">${messageText}</p>
+                        <p class="text-xs text-slate-400">${subText}</p>
+                    </div>
+                `);
+                $dropdown.find('ul').after($message);
+            }
+        }
+
+        function hideNoResultsMessage(type) {
+            const $dropdown = type === 'internal' ? $('#dropdownInternal') : $('#dropdownUrban');
+            $dropdown.find('.no-results-message').remove();
+        }
+
+        // Also populate dropdowns when page is fully loaded
+        $(window).on('load', function() {
+            console.log('Page fully loaded, refreshing dropdowns...');
+            setTimeout(refreshDropdowns, 1000); // Wait 1 second for all data to load
+        });
+
+        // Function to show filtering indicator
+        function showFilteringIndicator() {
+            if ($('.filtering-indicator').length === 0) {
+                const $indicator = $(`
+                    <div class="filtering-indicator fixed top-4 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-filter fa-spin"></i>
+                            <span>در حال اعمال فیلتر...</span>
+                        </div>
+                    </div>
+                `);
+                $('body').append($indicator);
+                
+                // Animate in
+                setTimeout(() => {
+                    $indicator.addClass('opacity-100');
+                }, 100);
+            }
+        }
+        
+        // Function to hide filtering indicator
+        function hideFilteringIndicator() {
+            const $indicator = $('.filtering-indicator');
+            if ($indicator.length > 0) {
+                $indicator.addClass('opacity-0');
+                setTimeout(() => {
+                    $indicator.remove();
+                }, 300);
+            }
+        }
     });
 </script>
 <!-- Safe JSON injection for filter values - Django's json_script is preferred -->
