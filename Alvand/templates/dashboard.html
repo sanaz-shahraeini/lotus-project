@@ -996,7 +996,7 @@
                         <tbody id="tbody">
                             {% if dashPage %}
                                 {% for rec in dashPage.object_list %}
-                                    <tr>
+                                    <tr data-extline="{{ rec.extension }}" data-urbanline="{{ rec.urbanline|default:'-' }}" data-calltype="{{ rec.calltype }}">
                                         <td class="text-center"><span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 text-slate-700">{{ forloop.counter0|add:dashPage.start_index }}</span></td>
                                         <td class="text-center" dir="ltr"><span class="font-medium">{{ rec.date|date:"Y-m-d" }}</span></td>
                                         <td class="text-center" dir="ltr"><span class="font-medium">{{ rec.hour }}</span></td>
@@ -1035,7 +1035,7 @@
                     <ul class="divide-y divide-slate-200">
                         {% if dashPage %}
                             {% for rec in dashPage.object_list %}
-                                <li class="p-4 mobile-card">
+                                <li class="p-4 mobile-card" data-extline="{{ rec.extension }}" data-urbanline="{{ rec.urbanline|default:'-' }}" data-calltype="{{ rec.calltype }}">
                                     <div class="mobile-card-header">
                                         <div class="flex items-center">
                                             <div class="w-8 h-8 rounded-full flex items-center justify-center {% if rec.calltype == 'ورودی' %}bg-green-100 text-green-600{% elif rec.calltype == 'خروجی' %}bg-blue-100 text-blue-600{% elif rec.calltype == 'بی‌پاسخ' %}bg-red-100 text-red-600{% else %}bg-slate-100 text-slate-600{% endif %}"><img src="{% static 'pic/' %}{{ rec.calltype|getCallTypeIcon }}" class="w-4 h-4"></div>
@@ -1495,13 +1495,37 @@
             }, 300); // 300ms delay
         });
         
+        // Trigger filtering when Internal/Urban/Call-Type checkboxes change
+        $('input[name="extline"], input[name="urbanline"], input[name="calls"]').on('change', function() {
+            const currentTerm = $('#searchBox').val().trim();
+            performSearch(currentTerm);
+        });
+        
         function performSearch(searchTerm) {
             // Remove loading indicator
             $('.search-indicator').remove();
             $('#quickSearch, #searchBox').removeClass('searching');
             
-            if (searchTerm.length === 0) {
-                // Show all rows if search is empty
+            const searchLower = (searchTerm || '').toLowerCase();
+            const selectedExts = $('input[name="extline"]:checked').map(function(){ return ($(this).val() || '').toString().trim(); }).get();
+            const selectedUrban = $('input[name="urbanline"]:checked').map(function(){ return ($(this).val() || '').toString().trim(); }).get();
+            let selectedCalls = $('input[name="calls"]:checked').map(function(){ return ($(this).val() || '').toString().trim(); }).get();
+            // Treat "همه تماس ها" as no call-type filter
+            if (selectedCalls.some(v => v.indexOf('همه') > -1)) { selectedCalls = []; }
+            // Normalize selected call types to keywords we can match against record call types
+            const callKeywords = selectedCalls.map(function(v){
+                if (v.indexOf('ورودی') > -1) return 'ورودی';
+                if (v.indexOf('خروجی') > -1) return 'خروجی';
+                if (v.indexOf('داخلی') > -1) return 'داخلی';
+                if (v.indexOf('پاسخ') > -1) return 'پاسخ'; // برای تماس های پاسخ داده نشده / بی‌پاسخ
+                return v;
+            });
+            const hasAnyFilter = searchLower.length > 0 || selectedExts.length > 0 || selectedUrban.length > 0 || selectedCalls.length > 0;
+            
+            let foundCount = 0;
+            
+            // If no filters at all, show everything and exit
+            if (!hasAnyFilter) {
                 if (window.innerWidth < 768) {
                     $('.mobile-card').show();
                 } else {
@@ -1511,28 +1535,84 @@
                 return;
             }
             
-            const searchLower = searchTerm.toLowerCase();
-            let foundCount = 0;
-            
-            // Perform filtering with better matching
+            // Apply combined filters
             if (window.innerWidth < 768) {
                 $('.mobile-card').each(function() {
-                    const text = $(this).text().toLowerCase();
-                    const isMatch = text.indexOf(searchLower) > -1;
-                    $(this).toggle(isMatch);
+                    const $card = $(this);
+                    const textAll = $card.text().toLowerCase();
+                    const searchMatch = searchLower.length === 0 ? true : (textAll.indexOf(searchLower) > -1);
+                    
+                    // Robust values from data attributes
+                    const extAttr = (($card.data('extline')) || '').toString().trim();
+                    const urbanAttr = (($card.data('urbanline')) || '').toString().trim();
+                    const callTypeAttr = (($card.data('calltype')) || '').toString().trim();
+                    
+                    // Handle possible ext normalization (leading 9 variations)
+                    const extCandidates = [extAttr];
+                    if (extAttr) {
+                        if (extAttr.startsWith('9')) {
+                            extCandidates.push(extAttr.slice(1));
+                        } else {
+                            extCandidates.push('9' + extAttr);
+                        }
+                    }
+                    const extMatch = selectedExts.length === 0 ? true : selectedExts.some(v => extCandidates.includes((v || '').trim()));
+                    const urbanMatch = selectedUrban.length === 0 ? true : selectedUrban.includes(urbanAttr);
+                    // Call-type match using normalized Persian keywords
+                    const callsMatch = callKeywords.length === 0 ? true : callKeywords.some(function(kw){
+                        if (kw === 'پاسخ') {
+                            // Match both "بی‌پاسخ" and phrases containing "پاسخ"
+                            return callTypeAttr.indexOf('بی') > -1 || callTypeAttr.indexOf('پاسخ') > -1;
+                        }
+                        return callTypeAttr.indexOf(kw) > -1;
+                    });
+                    
+                    const isMatch = searchMatch && extMatch && urbanMatch && callsMatch;
+                    $card.toggle(isMatch);
                     if (isMatch) foundCount++;
                 });
             } else {
                 $('#tbody tr').each(function() {
-                    const text = $(this).text().toLowerCase();
-                    const isMatch = text.indexOf(searchLower) > -1;
-                    $(this).toggle(isMatch);
+                    const $row = $(this);
+                    const textAll = $row.text().toLowerCase();
+                    const searchMatch = searchLower.length === 0 ? true : (textAll.indexOf(searchLower) > -1);
+                    
+                    // Robust values from data attributes
+                    const extAttr = (($row.data('extline')) || '').toString().trim();
+                    const urbanAttr = (($row.data('urbanline')) || '').toString().trim();
+                    const callTypeAttr = (($row.data('calltype')) || '').toString().trim();
+                    
+                    // Handle possible ext normalization (leading 9 variations)
+                    const extCandidates = [extAttr];
+                    if (extAttr) {
+                        if (extAttr.startsWith('9')) {
+                            extCandidates.push(extAttr.slice(1));
+                        } else {
+                            extCandidates.push('9' + extAttr);
+                        }
+                    }
+                    const extMatch = selectedExts.length === 0 ? true : selectedExts.some(v => extCandidates.includes((v || '').trim()));
+                    const urbanMatch = selectedUrban.length === 0 ? true : selectedUrban.includes(urbanAttr);
+                    // Call-type match using normalized Persian keywords
+                    const callsMatch = callKeywords.length === 0 ? true : callKeywords.some(function(kw){
+                        if (kw === 'پاسخ') {
+                            return callTypeAttr.indexOf('بی') > -1 || callTypeAttr.indexOf('پاسخ') > -1;
+                        }
+                        return callTypeAttr.indexOf(kw) > -1;
+                    });
+                    
+                    const isMatch = searchMatch && extMatch && urbanMatch && callsMatch;
+                    $row.toggle(isMatch);
                     if (isMatch) foundCount++;
                 });
             }
             
-            // Show search results count
-            showSearchResults(foundCount, searchTerm);
+            // Show search results count only for text search
+            if (searchLower.length > 0) {
+                showSearchResults(foundCount, searchTerm);
+            } else {
+                $('.search-results-indicator').remove();
+            }
             calculateTotalCosts();
         }
         
@@ -1632,6 +1712,9 @@
                     $('#quickSearch').val(searchQuery); // Sync quick search
                     // Trigger input event to filter table
                     $('#searchBox').trigger('input');
+                } else if (exts.length > 0 || urbanlines.length > 0) {
+                    // Apply ext/urban filters even without a text query
+                    performSearch('');
                 }
             }
         }
