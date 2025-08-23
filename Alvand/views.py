@@ -1,6 +1,6 @@
 import datetime
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage, InvalidPage
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from .user_utils import getUserinfoByUsername, getTupleIndex
@@ -12,13 +12,14 @@ from .forms import *
 from .models import *
 from functools import wraps
 import math, jdatetime, wmi, pythoncom, random, os, sys
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.utils import timezone
 from django.core.serializers.json import DjangoJSONEncoder
 import json
 from django.db import models
 from .models import Users
 from .templatetags.userProfileTags import getListOfExtsGroups, getUserCanPerm, getUserInfo, getObjectOfInfo
+import csv
 
 upload = os.path.join("Alvand/static/upload")
 os.makedirs(upload, exist_ok=True)
@@ -1001,6 +1002,60 @@ class dashboardPage(TemplateView, View):
         context['dashPage'] = page_obj
         context['urbanlines'] = getUrbanlinesThatUserAccessThem(checkSession(self.request))
         context['extlines'] = getExtensionlines(checkSession(self.request))
+
+        # Aggregate stats for dashboard cards (for the user's accessible extensions)
+        try:
+            username = checkSession(self.request)
+            user_qs = Users.objects.filter(username__iexact=username)
+            allExtentions = []
+            if user_qs.exists():
+                user_obj = user_qs.first()
+                if user_obj.extension:
+                    allExtentions.append(user_obj.extension)
+                if user_obj.usersextension:
+                    for userext in user_obj.usersextension:
+                        if userext:
+                            allExtentions.append(userext)
+                labels = Permissions.objects.filter(user=user_obj)
+                if labels.exists() and labels.first().exts_label:
+                    extGroup = Extensionsgroups.objects.filter(label__in=labels.first().exts_label)
+                    if extGroup.exists():
+                        for item in extGroup:
+                            allExtentions = allExtentions + item.exts
+            
+            base_qs = Records.objects.filter(extension__in=allExtentions) if allExtentions else Records.objects.none()
+            incoming_types = ['incomingNA', 'incomingRC', 'incomingAN', 'Transfer', 'incomingDISA', 'incomingHangUp']
+
+            context['incoming_calls_count'] = base_qs.filter(calltype__in=incoming_types).count()
+            context['outgoing_calls_count'] = base_qs.filter(calltype='outGoing').count()
+            context['missed_calls_count'] = base_qs.filter(calltype='incomingNA').count()
+
+            # Top 5 extensions by call volume
+            top_ext = base_qs.values('extension').annotate(total=Count('id')).order_by('-total')[:5]
+            context['top_extensions'] = list(top_ext)
+
+            # Total call duration (HH:MM:SS)
+            def _parse_duration(d):
+                try:
+                    h, m, s = map(int, str(d).split(':'))
+                    return h * 3600 + m * 60 + s
+                except Exception:
+                    return 0
+            total_seconds = 0
+            for d in base_qs.exclude(durationtime__isnull=True).values_list('durationtime', flat=True):
+                total_seconds += _parse_duration(d)
+            hh = total_seconds // 3600
+            mm = (total_seconds % 3600) // 60
+            ss = total_seconds % 60
+            context['total_call_duration'] = f"{hh:02d}:{mm:02d}:{ss:02d}"
+        except Exception:
+            # Fail silently to avoid breaking dashboard
+            context.setdefault('incoming_calls_count', 0)
+            context.setdefault('outgoing_calls_count', 0)
+            context.setdefault('missed_calls_count', 0)
+            context.setdefault('top_extensions', [])
+            context.setdefault('total_call_duration', '00:00:00')
+
         return context
 
 
