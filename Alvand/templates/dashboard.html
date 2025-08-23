@@ -5,10 +5,6 @@
 {% block head_extra %}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <!-- Consolidated CSS files -->
-<link rel="stylesheet" href="{% static 'css/dashboard-fix.css' %}" />
-<link rel="stylesheet" href="{% static 'css/dashboard-width-fix.css' %}" />
-<link rel="stylesheet" href="{% static 'css/direct-layout-fix.css' %}" />
-<link rel="stylesheet" href="{% static 'css/dashboard-content.css' %}" />
 
 <!-- Modern dashboard styles -->
 <style>
@@ -1110,7 +1106,6 @@
 {% endblock main %}
 
 {% block js_extra %}
-<script src="{% static 'js/jquery.js' %}"></script>
 <script>
     $(document).ready(function() {
         // Mobile sidebar toggle
