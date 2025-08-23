@@ -1049,19 +1049,126 @@ class dashboardPage(TemplateView, View):
             ss = total_seconds % 60
             context['total_call_duration'] = f"{hh:02d}:{mm:02d}:{ss:02d}"
         except Exception:
-            # Fail silently to avoid breaking dashboard
             context.setdefault('incoming_calls_count', 0)
             context.setdefault('outgoing_calls_count', 0)
             context.setdefault('missed_calls_count', 0)
             context.setdefault('top_extensions', [])
-            context.setdefault('total_call_duration', '00:00:00')
-
+            context['extlines'] = getExtensionlines(checkSession(self.request))
         return context
+
+
+def dashboard_export(request):
+    """Export filtered dashboard records as CSV using the same filter logic as the dashboard page."""
+    if not checkSession(request):
+        messages.error(request, messagesTypes.notlogin)
+        return redirect(reverse_lazy("login"))
+    if not check_active(checkSession(request)):
+        messages.error(request, messagesTypes.deAvtive)
+        return redirect(reverse_lazy('logout' if checkSession(request) else 'login'))
+
+    # Build filters identical to dashboardPage.get
+    dateFrom = request.GET.get('dateFrom')
+    dateTo = request.GET.get('dateTo')
+    selected_urbanlines = request.GET.getlist('urbanline')
+    selected_extlines = request.GET.getlist('extline')
+    selected_calls = request.GET.getlist('calls')
+
+    mapped_calls = persianCallTypeToEnglish(selected_calls) if selected_calls else None
+
+    query = Q()
+    allowed_exts = getExtensionlines(checkSession(request))
+    if allowed_exts:
+        query &= Q(extension__in=allowed_exts)
+
+    if selected_urbanlines:
+        query &= Q(urbanline__in=selected_urbanlines)
+    if selected_extlines:
+        query &= Q(extension__in=selected_extlines)
+    if mapped_calls:
+        query &= Q(calltype__in=mapped_calls)
+
+    if dateFrom and dateTo:
+        try:
+            convFrom = jdatetime.datetime.strptime(
+                dateFrom.replace("/", "-").replace('از', '').strip(), "%Y-%m-%d"
+            ).togregorian()
+            convTo = jdatetime.datetime.strptime(
+                dateTo.replace("/", "-").replace('تا', '').strip(), "%Y-%m-%d"
+            ).togregorian()
+        except:
+            messages.error(request, "فرمت تاریخ ها اشتباه است.")
+            return redirect(request.path)
+        if convTo < convFrom:
+            messages.warning(request, "تاریخ اول نباید بزرگ تر از تاریخ دوم باشد.")
+            return redirect(request.path)
+        query &= Q(date__range=(convFrom, convTo))
+
+    search_query = request.GET.get('q', '').strip()
+    if search_query:
+        query &= (
+            Q(contactnumber__icontains=search_query) |
+            Q(extension__icontains=search_query) |
+            Q(urbanline__icontains=search_query)
+        )
+
+    any_filter_applied = bool(selected_urbanlines or selected_extlines or mapped_calls or (dateFrom and dateTo) or search_query)
+    base_qs = (
+        Records.objects.filter(query).order_by('-created_at', '-id')
+        if any_filter_applied else
+        dashboardData(checkSession(request))
+    )
+
+    # Prepare CSV response
+    response = HttpResponse(content_type='text/csv; charset=utf-8')
+    filename = f"dashboard_export_{timezone.now().strftime('%Y%m%d_%H%M%S')}.csv"
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    # Ensure correct encoding and Excel compatibility
+    response.charset = 'utf-8'
+    # Prepend UTF-8 BOM so Excel recognizes encoding
+    response.write('\ufeff')
+
+    writer = csv.writer(response, lineterminator='\r\n')
+    # Header row (Persian labels to match UI)
+    writer.writerow([
+        'تاریخ', 'ساعت', 'شماره مخاطب', 'شماره داخلی', 'خط شهری', 'مدت تماس', 'نوع تماس', 'زمان برق', 'انتقال', 'هزینه'
+    ])
+
+    # Write data rows
+    for rec in base_qs:
+        try:
+            # Compute price similar to calculateOnePrice template filter
+            price_val = '0'
+            if getattr(rec, 'durationtime', None) and getattr(rec, 'contactnumber', None):
+                calltype_kind = callTypeDetector(rec.contactnumber)
+                if calltype_kind is not None:
+                    unit_price = getPrice(calltype_kind)
+                    if unit_price is None:
+                        price_val = 'ندارد'
+                    else:
+                        calculated = calculatePrice(str(rec.durationtime), unit_price)
+                        price_val = str(calculated)
+
+            writer.writerow([
+                rec.date.strftime('%Y-%m-%d') if getattr(rec, 'date', None) else '',
+                getattr(rec, 'hour', '') or '',
+                getattr(rec, 'contactnumber', '') or '',
+                getattr(rec, 'extension', '') or '',
+                getattr(rec, 'urbanline', '') or '',
+                getattr(rec, 'durationtime', '0') or '0',
+                getattr(rec, 'calltype', '') or '',
+                getattr(rec, 'beepsnumber', 0) or 0,
+                'بله' if getattr(rec, 'transferring', False) else 'خیر',
+                price_val,
+            ])
+        except Exception:
+            # Skip problematic rows but continue export
+            continue
+
+    return response
 
 
 def support(request):
     return render(request, 'support.html', context={'pageTitle': 'پشتیبانی'})
-
 
 def checkSession(request):
     if 'user' in request.session:

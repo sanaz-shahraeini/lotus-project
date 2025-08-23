@@ -702,10 +702,6 @@
                                 <option value="50" {% if dashPage.paginator.per_page == 50 %}selected{% endif %}>50</option>
                                 <option value="100" {% if dashPage.paginator.per_page == 100 %}selected{% endif %}>100</option>
                             </select>
-                            <button type="submit" form="dashboardFiltersForm" class="h-9 px-3 rounded-md bg-white/20 hover:bg-white/30 text-white text-sm">اعمال</button>
-                            <button type="submit" form="dashboardFiltersForm" name="export" value="csv" class="h-9 px-3 rounded-md bg-white/20 hover:bg-white/30 text-white text-sm">
-                                <i class="fa-solid fa-file-csv ml-1"></i> خروجی CSV
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -1101,6 +1097,17 @@
                             <li class="p-6 text-center"><p class="text-sm text-slate-500">هیچ تماسی یافت نشد</p></li>
                         {% endif %}
                     </ul>
+                </div>
+                <!-- Bottom-right actions under the table -->
+                <div class="px-4 py-3 flex justify-end gap-2">
+                    <button type="submit" form="dashboardFiltersForm" class="px-4 py-2 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white text-sm">
+                        <i class="fa-solid fa-filter"></i>
+                        <span class="mr-1">اعمال فیلتر</span>
+                    </button>
+                    <button type="submit" form="dashboardFiltersForm" formmethod="get" formaction="{% url 'dashboard_export' %}" name="export" value="csv" class="px-4 py-2 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white text-sm">
+                        <i class="fa-solid fa-file-csv ml-1"></i>
+                        خروجی CSV
+                    </button>
                 </div>
             </div>
 
