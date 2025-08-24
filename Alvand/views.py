@@ -409,6 +409,10 @@ def _check_access(access, redirectTo, request):
         messages.error(request, messagesTypes.userInfoNotFound)
         return redirect(reverse_lazy("login"))
 
+    # Supporter users have full access - bypass permission checks
+    if user.first().groupname.lower() == "supporter":
+        return True
+
     perm = Permissions.objects.filter(user=user.first())
     if not perm.exists():
         messages.error(request, messagesTypes.permissionsNotFound)
@@ -1736,17 +1740,16 @@ class UserForm(FormView, View):
         
         # Get the logged in user session
         session_username = checkSession(self.request)
+        print(f"Session username: {session_username}")
         if not session_username:
+            print("Session check failed - no session username")
             messages.error(self.request, messagesTypes.notlogin)
             return redirect(self.success_url)
             
         if not check_active(session_username):
+            print("Active check failed - user not active")
             messages.error(self.request, messagesTypes.deAvtive)
             return redirect(reverse_lazy('logout' if session_username else 'login'))
-        
-        # Check access permission    
-        if isinstance(check := hasAccess("view", "settings", self.request), HttpResponseRedirect):
-            return check
         
         # Get form data
         field = form.cleaned_data
@@ -1802,32 +1805,42 @@ class UserForm(FormView, View):
         
         # Handle the different actions
         if saveUser:
+            print(f"Processing saveUser action with mode: {editOrAdd}")
             if editOrAdd == 'add':
+                print("Entering add user mode")
                 # Check write permission for adding users
                 if isinstance(check := hasAccess("write", "user", self.request), HttpResponseRedirect):
+                    print("Access check failed - redirecting")
                     return check
                 
                 # Validate required fields for adding a user
                 if not username:
+                    print("Username validation failed")
                     messages.error(self.request, "نام کاربری الزامی است.")
                     return redirect(self.success_url)
                 
                 if Users.objects.filter(username__iexact=username).exists():
+                    print("Username already exists")
                     messages.error(self.request, "این نام کاربری موجود است.")
                     return redirect(self.success_url)
                 
                 if not extension:
+                    print("Extension validation failed")
                     messages.error(self.request, "داخلی الزامی است.")
                     return redirect(self.success_url)
                 
                 # Check if role is selected
                 groupname = field.get('groupname') or fieldReq.get('groupname')
+                print(f"Groupname value: {groupname}")
                 if not groupname or groupname in ['none', '']:
+                    print("Groupname validation failed")
                     messages.error(self.request, "انتخاب نقش الزامی است.")
                     return redirect(self.success_url)
                 
                 # Check if at least one extension access is selected
+                print(f"Extension list: {listOfExts}")
                 if not listOfExts:
+                    print("Extensions validation failed")
                     messages.error(self.request, "انتخاب حداقل یک دسترسی به داخلی الزامی است.")
                     return redirect(self.success_url)
                 
@@ -1836,10 +1849,15 @@ class UserForm(FormView, View):
                 for perm in ["can_view", "can_write", "can_modify", "can_delete"]:
                     if fieldReq.get(perm):
                         permCount += 1
+                        print(f"Permission {perm} is set")
                 
+                print(f"Total permissions selected: {permCount}")
                 if permCount == 0:
+                    print("Permissions validation failed")
                     messages.error(self.request, "انتخاب حداقل یک سطح دسترسی الزامی است.")
                     return redirect(self.success_url)
+                
+                print("All validations passed, proceeding with user creation...")
                 
                 groupname = groupname.lower()
                 group = None
@@ -2165,6 +2183,11 @@ class UserForm(FormView, View):
             except Exception as e:
                 messages.error(self.request, f'خطا در بازنشانی رمز عبور: {str(e)}')
                 
+        # Final redirect
+        print(f"At end of form_valid method")
+        print(f"self.success_url = {self.success_url}")
+        print(f"reverse_lazy('user') = {reverse_lazy('user')}")
+        print(f"About to redirect to: {self.success_url}")
         return redirect(self.success_url)
         
     def hasAccessToUser(request, target_user):
@@ -2200,7 +2223,23 @@ class UserForm(FormView, View):
             return redirect(reverse_lazy('logout' if checkSession(self.request) else 'login'))
         if isinstance(check := hasAccess("write", "user", self.request), HttpResponseRedirect):
             return check
-        messages.error(self.request, messagesTypes.fillAllFields)
+        
+        # Debug form errors
+        print("Form validation failed in form_invalid method:")
+        print(f"Form errors: {form.errors}")
+        print(f"Form non-field errors: {form.non_field_errors()}")
+        
+        # Add specific error messages for debugging
+        error_messages = []
+        for field, errors in form.errors.items():
+            for error in errors:
+                error_messages.append(f"{field}: {error}")
+        
+        if error_messages:
+            messages.error(self.request, "خطاهای فرم: " + ", ".join(error_messages))
+        else:
+            messages.error(self.request, messagesTypes.fillAllFields)
+        
         return redirect(self.success_url)
 
     def post(self, request, *args, **kwargs):
@@ -2214,6 +2253,17 @@ class UserForm(FormView, View):
         print(f"saveUser field present: {'saveUser' in request.POST}")
         print(f"saveUser field value: {request.POST.get('saveUser')}")
         
+        # Check session and permissions first
+        if not checkSession(request):
+            print("User not logged in")
+            messages.error(request, messagesTypes.notlogin)
+            return redirect(reverse_lazy('login'))
+            
+        if not check_active(checkSession(request)):
+            print("User not active")
+            messages.error(request, messagesTypes.deAvtive)
+            return redirect(reverse_lazy('logout'))
+        
         # Special handling for direct actions
         if 'saveUser' in request.POST:
             # Get form data
@@ -2224,12 +2274,16 @@ class UserForm(FormView, View):
             
             # Process form using form_valid directly
             form = self.get_form()
+            print(f"Form created: {form.__class__.__name__}")
+            print(f"Form data before validation: {form.data}")
+            
             if form.is_valid():
                 print("Form is valid, calling form_valid")
                 return self.form_valid(form)
             else:
                 print("Form validation failed")
                 print(f"Form errors: {form.errors}")
+                print(f"Form non-field errors: {form.non_field_errors()}")
                 return self.form_invalid(form)
         elif 'deleteUser' in request.POST:
             # Handle direct delete

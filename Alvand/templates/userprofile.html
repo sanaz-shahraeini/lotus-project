@@ -1238,6 +1238,26 @@ label.required:after,
         
         // Call function when editOrAdd changes
         $('#id_editOrAdd').change(updateRequiredFields);
+        
+        // Add debug logging for form submission
+        $('#form').on('submit', function(e) {
+            console.log('Form submission intercepted for debugging');
+            
+            const formData = new FormData(this);
+            console.log('Form Data:');
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
+            
+            const mode = $('#id_editOrAdd').val();
+            const submitButtonName = $(document.activeElement).attr('name');
+            
+            console.log('Mode:', mode);
+            console.log('Submit button name:', submitButtonName);
+            
+            // Allow form to continue submitting
+            return true;
+        });
     });
 </script>
 {% endblock %}

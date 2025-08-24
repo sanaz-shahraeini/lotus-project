@@ -27,13 +27,13 @@ class userProfileForm(forms.ModelForm):
 
         exts = sorted(exts, key=lambda x: x[0])
         CHOICES = extgps + exts
-        self.fields['usersextension'] = forms.MultipleChoiceField(choices=CHOICES, required=True,  # دسترسی به دفاتر - required (red star)
+        self.fields['usersextension'] = forms.MultipleChoiceField(choices=CHOICES, required=False,  # دسترسی به دفاتر - backend validates this
                                                 widget=forms.CheckboxSelectMultiple(attrs={
                                                     'class': 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500'}))
         
         self.fields['groupname'] = forms.ChoiceField(
             choices=[("none", "------")] + [(group.enname, group.pename) for group in Groups.objects.exclude(enname__in=["superadmin", "supporter"])],
-            required=True,  # نقش - required (red star)
+            required=False,  # نقش - backend validates this
             widget=forms.Select(
                 attrs={'class': 'w-[140px] h-6 text-gray-600 text-xs py-[2px] appearance-none'}))
 
