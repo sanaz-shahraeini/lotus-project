@@ -1456,127 +1456,132 @@ class errorsPage(TemplateView, View):
             print(f"Permission check error: {e}")
             pass
         
-        # Get SMDR records with error codes (dial_number starting with "MN ALM")
+        # Handle date filtering - get SMDR records with LM prefix in dial_number
+        from django.db.models import Q
         import re
-        smdr_error_records = SMDRRecord.objects.filter(dial_number__startswith="MN ALM").order_by('-created_at')
         
-        # Create error data list
+        # Get SMDR records where dial_number contains 'ALM #' (Alarm messages)
+        smdr_qs = SMDRRecord.objects.filter(
+            dial_number__contains='ALM #'
+        )
+        
+        print(f"Total SMDR records with ALM # pattern: {smdr_qs.count()}")
+        
+        # Extract error codes and create error data
         error_data = []
-        for smdr_record in smdr_error_records:
+        for record in smdr_qs:
             try:
-                # Extract error code from dial_number
-                if "#" in smdr_record.dial_number:
-                    after_hash = smdr_record.dial_number.split("#")[1].strip()
-                    # Extract first number from the string after #
-                    error_numbers = re.findall(r'\d+', after_hash)
-                    if error_numbers:
-                        error_code = int(error_numbers[0])
+                # Extract error code after ALM # sign
+                match = re.search(r'ALM #(\d+)', record.dial_number)
+                if match:
+                    error_code = int(match.group(1))
+                    
+                    # Find corresponding error details
+                    try:
+                        error_detail = Errors.objects.get(errorcodenum=error_code)
                         
-                        # Look up error details
-                        error_info = Errors.objects.filter(errorcodenum=error_code).first()
+                        # Combine date and time to create datetime
+                        error_datetime = datetime.datetime.combine(record.date, record.time)
                         
-                        if error_info:
-                            error_entry = {
-                                'errorcode': error_code,
-                                'errormessage': error_info.errormessage or 'پیام خطا موجود نیست',
-                                'probablecause': error_info.probablecause or 'علت احتمالی مشخص نیست',
-                                'solution': error_info.solution or 'راه حل ارائه نشده',
-                                'date': smdr_record.date,
-                                'time': smdr_record.time,
-                                'created_at': smdr_record.created_at,
-                            }
-                        else:
-                            error_entry = {
-                                'errorcode': error_code,
-                                'errormessage': f'خطای شماره {error_code}',
-                                'probablecause': 'اطلاعات این خطا در پایگاه داده موجود نیست',
-                                'solution': 'لطفاً با پشتیبانی تماس بگیرید',
-                                'date': smdr_record.date,
-                                'time': smdr_record.time,
-                                'created_at': smdr_record.created_at,
-                            }
+                        # Convert to Persian date for display
+                        persian_date = jdatetime.datetime.fromgregorian(datetime=error_datetime)
                         
-                        error_data.append(error_entry)
-            except Exception as e:
-                print(f"Error processing SMDR record {smdr_record.id}: {e}")
+                        error_data.append({
+                            'id': record.id,
+                            'errorcode': error_code,
+                            'errormessage': error_detail.errormessage,
+                            'probablecause': error_detail.probablecause,
+                            'solution': error_detail.solution,
+                            'date_time': error_datetime,
+                            'persian_date': persian_date.strftime('%Y/%m/%d'),
+                            'persian_time': persian_date.strftime('%H:%M'),
+                            'dial_number': record.dial_number,
+                        })
+                    except Errors.DoesNotExist:
+                        print(f"Error code {error_code} not found in Errors table")
+                        continue
+            except (ValueError, AttributeError) as e:
+                print(f"Error parsing dial_number {record.dial_number}: {e}")
                 continue
         
-        # Handle date filtering
+        print(f"Processed {len(error_data)} error records")
+        
+        # Convert to queryset-like structure for pagination
+        class ErrorRecord:
+            def __init__(self, data):
+                for key, value in data.items():
+                    setattr(self, key, value)
+        
+        error_records = [ErrorRecord(data) for data in error_data]
+        
+        # Apply date filtering if provided
         if request.GET:
-            dateFrom = request.GET.get('dateFrom')
-            dateTo = request.GET.get('dateTo')
-            search_query = request.GET.get('search', '').strip()
+            dateFrom = request.GET.get('dateFrom', '').strip()
+            dateTo = request.GET.get('dateTo', '').strip()
             
             if dateFrom and dateTo:
                 try:
-                    convFrom = jdatetime.datetime.strptime(dateFrom.replace("/", "-").replace('از', '').strip(), "%Y-%m-%d").togregorian()
-                    convTo = jdatetime.datetime.strptime(dateTo.replace("/", "-").replace('تا','').strip(), "%Y-%m-%d").togregorian()
+                    # Clean and normalize date strings
+                    dateFrom = dateFrom.replace('از', '').replace('تا', '').strip()
+                    dateTo = dateTo.replace('از', '').replace('تا', '').strip()
+                    
+                    # Try parsing with different date formats
+                    date_formats = [
+                        "%Y-%m-%d",  # 1403-01-01
+                        "%Y/%m/%d",  # 1403/01/01
+                        "%Y %m %d",  # 1403 01 01
+                    ]
+                    
+                    convFrom = None
+                    convTo = None
+                    
+                    for fmt in date_formats:
+                        try:
+                            convFrom = jdatetime.datetime.strptime(dateFrom, fmt).togregorian()
+                            convTo = jdatetime.datetime.strptime(dateTo, fmt).togregorian()
+                            break
+                        except ValueError:
+                            continue
+                    
+                    if not convFrom or not convTo:
+                        raise ValueError("Invalid date format")
+                    
+                    # Add one day to dateTo to include the entire end date
+                    convTo = convTo + datetime.timedelta(days=1)
                     
                     if convTo < convFrom:
                         messages.warning(request, "تاریخ اول نباید بزرگ تر از تاریخ دوم باشد.")
                         return redirect(request.path)
                     
-                    # Filter error_data by date
-                    filtered_data = []
-                    for error in error_data:
-                        try:
-                            error_date = error['created_at'].date()
-                            if convFrom.date() <= error_date <= convTo.date():
-                                filtered_data.append(error)
-                        except:
-                            continue
+                    # Debug log the dates being used for filtering
+                    print(f"Filtering from {convFrom} to {convTo}")
                     
-                    error_data = filtered_data
+                    # Filter error records by date range
+                    filtered_error_data = []
+                    for record in error_records:
+                        if convFrom <= record.date_time < convTo:
+                            filtered_error_data.append(record)
                     
-                    if not error_data:
+                    error_records = filtered_error_data
+                    print(f"After date filtering: {len(error_records)} records")
+                    
+                    if not error_records:
                         messages.error(request, f"در بین تاریخ های {dateFrom} و {dateTo} گزارش خطایی پیدا نشد.")
                         
                 except Exception as e:
-                    messages.error(request, "فرمت تاریخ ها اشتباه است.")
+                    import traceback
+                    print(f"Error parsing dates: {e}")
+                    print(traceback.format_exc())
+                    messages.error(request, f"خطا در فرمت تاریخ‌ها. لطفاً تاریخ‌ها را به درستی وارد کنید. ({str(e)})")
                     return redirect(request.path)
-            
-            # Handle search filtering
-            if search_query:
-                filtered_data = []
-                for error in error_data:
-                    if (search_query.lower() in str(error['errorcode']).lower() or
-                        search_query.lower() in error['errormessage'].lower() or
-                        search_query.lower() in error['probablecause'].lower() or
-                        search_query.lower() in error['solution'].lower()):
-                        filtered_data.append(error)
-                error_data = filtered_data
         
-        # Sort by created_at in reverse order
-        error_data.sort(key=lambda x: x['created_at'], reverse=True)
+        # Sort error records by date_time (newest first)
+        error_records.sort(key=lambda x: x.date_time, reverse=True)
         
-        # Check if this is a download request
-        if request.GET.get('download_all') == 'true':
-            # Return JSON response for download
-            from django.http import JsonResponse
-            headers = ['ردیف', 'تاریخ', 'ساعت', 'شماره خطا', 'عنوان خطا', 'علت احتمالی', 'راه حل پیشنهادی']
-            
-            # Prepare data for download
-            download_data = []
-            for i, error in enumerate(error_data, 1):
-                download_data.append([
-                    i,
-                    error['date'].strftime('%Y/%m/%d') if error['date'] else '',
-                    error['time'].strftime('%H:%M') if error['time'] else '',
-                    error['errorcode'],
-                    error['errormessage'],
-                    error['probablecause'],
-                    error['solution']
-                ])
-            
-            return JsonResponse({
-                'headers': headers,
-                'data': download_data,
-                'total_count': len(error_data)
-            })
-        
-        # Pagination
+        # Pagination for error records list
         page_number = request.GET.get('p', 1)
-        paginator = Paginator(error_data, 20)
+        paginator = Paginator(error_records, 20)
+        print(f"Paginator total count: {len(error_records)}")
         try:
             page_obj = paginator.page(page_number)
         except PageNotAnInteger:
@@ -1584,13 +1589,17 @@ class errorsPage(TemplateView, View):
         except EmptyPage:
             page_obj = paginator.page(paginator.num_pages)
         
+        print(f"Page object has {len(page_obj.object_list)} items")
+        
         context = self.get_context_data()
         context['pages'] = page_obj
+        print(f"Context pages: {context.get('pages', 'None')}")
         return render(request, self.template_name, context=context)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['pageTitle'] = 'گزارش خطا ها'
+        # Don't override pages here - it's handled in the get method
         return context
 
 

@@ -324,6 +324,15 @@
         cursor: pointer;
         position: relative;
         transition: all 0.2s;
+        max-width: 200px;
+    }
+    
+    .text-cell .clean-text {
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
     }
 
     .text-cell:hover {
@@ -614,15 +623,15 @@
         }
 
         /* Make the most important columns visible by default - LTR order */
-        .table-modern th:nth-child(-n+4),
+        /* .table-modern th:nth-child(-n+4),
         .table-modern td:nth-child(-n+4) {
             display: table-cell;
-        }
+        } */
 
-        .table-modern th:nth-child(n+5),
+        /* .table-modern th:nth-child(n+5),
         .table-modern td:nth-child(n+5) {
             display: none;
-        }
+        } */
 
         /* Show the row number column always */
         .table-modern th:first-child,
@@ -999,14 +1008,14 @@
         <div class="filter-section">
             <div class="flex flex-wrap gap-4 justify-items-center items-center">
                 <div class="flex items-center gap-3">
-                    <form method="get" class="flex items-center gap-3">
+                    <form id="filterForm" method="get" class="flex items-center gap-3">
                         <div class="flex items-center gap-3">
                             <input id="dateFrom" data-jdp placeholder="از تاریخ" name="dateFrom" class="input-field"
                                 value="{{ request.GET.dateFrom|default:'' }}" />
                             <input id="dateTo" data-jdp placeholder="تا تاریخ" name="dateTo" class="input-field"
                                 value="{{ request.GET.dateTo|default:'' }}" />
                         </div>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="button" id="applyFilterBtn" class="btn btn-primary">
                             اعمال فیلتر
                         </button>
                     </form>
@@ -1045,7 +1054,7 @@
 
         <div class="table-container">
             <table id='table' class="table-modern">
-                <thead align="center">
+                <thead>
                     <tr>
                         <th>ردیف</th>
                         <th>تاریخ</th>
@@ -1061,17 +1070,17 @@
                     {% for fault in pages.object_list %}
                     <tr>
                         <td>{{ forloop.counter0|add:pages.start_index }}</td>
-                        <td>{% if fault.date %}{{ fault.date|date:'Y-m-d'|convertDatesToHijri }}{% else %}{{ fault.created_at|date:'Y-m-d'|convertDatesToHijri }}{% endif %}</td>
-                        <td>{% if fault.time %}{{ fault.time|time:'H:i' }}{% else %}{{ fault.created_at|time:'H:i' }}{% endif %}</td>
+                        <td>{{ fault.persian_date|default:"تاریخ نامشخص" }}</td>
+                        <td>{{ fault.persian_time|default:"زمان نامشخص" }}</td>
                         <td>{{ fault.errorcode }}</td>
-                        <td class="text-cell" onclick="showDetailModal('errormessage', '{{ fault.errormessage|escapejs|default:'عنوان خطا مشخص نیست' }}', '{{ fault.errorcode }}')" title="کلیک کنید تا عنوان کامل خطا را مشاهده کنید ({{ fault.errormessage|length }} کاراکتر)">
-                            <span class="clean-text">{{ fault.errormessage|slice:":70"|default:"مشخص نیست" }}</span>
+                        <td class="text-cell" data-content="{{ fault.errormessage|default:'عنوان خطا مشخص نیست'|escape }}" data-code="{{ fault.errorcode|escape }}" onclick="showDetailModal('errormessage', this.dataset.content, this.dataset.code)" title="کلیک کنید تا عنوان کامل خطا را مشاهده کنید">
+                            <span class="clean-text">{{ fault.errormessage|default:"مشخص نیست" }}</span>
                         </td>
-                        <td class="text-cell" onclick="showDetailModal('probablecause', '{{ fault.probablecause|escapejs|default:'علت احتمالی مشخص نیست' }}', '{{ fault.errorcode }}')" title="کلیک کنید تا علت کامل را مشاهده کنید ({{ fault.probablecause|length }} کاراکتر)">
-                            <span class="clean-text">{{ fault.probablecause|slice:":80"|default:"مشخص نیست" }}</span>
+                        <td class="text-cell" data-content="{{ fault.probablecause|default:'علت احتمالی مشخص نیست'|escape }}" data-code="{{ fault.errorcode|escape }}" onclick="showDetailModal('probablecause', this.dataset.content, this.dataset.code)" title="کلیک کنید تا علت کامل را مشاهده کنید">
+                            <span class="clean-text">{{ fault.probablecause|default:"مشخص نیست" }}</span>
                         </td>
-                        <td class="text-cell" onclick="showDetailModal('solution', '{{ fault.solution|escapejs|default:'راه حل پیشنهادی موجود نیست' }}', '{{ fault.errorcode }}')" title="کلیک کنید تا راه حل کامل را مشاهده کنید ({{ fault.solution|length }} کاراکتر)">
-                            <span class="clean-text">{{ fault.solution|slice:":80"|default:"موجود نیست" }}</span>
+                        <td class="text-cell" data-content="{{ fault.solution|default:'راه حل پیشنهادی موجود نیست'|escape }}" data-code="{{ fault.errorcode|escape }}" onclick="showDetailModal('solution', this.dataset.content, this.dataset.code)" title="کلیک کنید تا راه حل کامل را مشاهده کنید">
+                            <span class="clean-text">{{ fault.solution|default:"موجود نیست" }}</span>
                         </td>
                     </tr>
                     {% endfor %}
@@ -1108,9 +1117,9 @@
         if (typeof jalaliDatepicker !== 'undefined') {
             console.log('Jalali Datepicker library loaded successfully');
 
-            // Initialize Jalali Datepicker
+            // Initialize date picker with proper format
             try {
-                jalaliDatepicker.startWatch({
+                const datePickerOptions = {
                     minDate: "attr",
                     maxDate: "today",
                     hideAfterChange: true,
@@ -1118,15 +1127,47 @@
                     showTodayBtn: true,
                     showEmptyBtn: true,
                     persianDigits: true,
+                    time: false,
+                    format: 'YYYY/MM/DD',
+                    autoClose: true,
                     topSpace: 10,
                     bottomSpace: 30,
                     dayRendering(opt, input) {
                         return {
                             isHollyDay: opt.day == 1
                         }
+                    },
+                    onSelect: function(formattedDate, dateObject, inputElement) {
+                        if (inputElement) {
+                            inputElement.value = formattedDate;
+                        }
+                    }
+                };
+                
+                // Initialize date picker
+                jalaliDatepicker.startWatch(datePickerOptions);
+                console.log('Jalali Datepicker initialized successfully with format YYYY/MM/DD');
+                
+                // Add form submission handler
+                $('form#filterForm').on('submit', function(e) {
+                    const $dateFrom = $('#dateFrom');
+                    const $dateTo = $('#dateTo');
+                    
+                    if ($dateFrom.val() && $dateTo.val()) {
+                        try {
+                            // Ensure dates are in YYYY/MM/DD format
+                            const formatDate = (dateStr) => {
+                                return dateStr.replace(/-/g, '/');
+                            };
+                            
+                            $dateFrom.val(formatDate($dateFrom.val()));
+                            $dateTo.val(formatDate($dateTo.val()));
+                            
+                        } catch (error) {
+                            console.error('Error formatting dates:', error);
+                        }
                     }
                 });
-                console.log('Jalali Datepicker initialized successfully');
             } catch (error) {
                 console.error('Error initializing Jalali Datepicker:', error);
             }
@@ -1138,7 +1179,7 @@
             script.src = "{% static 'dist/jalalidatepicker.js' %}";
             script.onload = function () {
                 console.log('Jalali Datepicker loaded manually');
-                jalaliDatepicker.startWatch({
+                const datePickerOptions = {
                     minDate: "attr",
                     maxDate: "today",
                     hideAfterChange: true,
@@ -1146,11 +1187,41 @@
                     showTodayBtn: true,
                     showEmptyBtn: true,
                     persianDigits: true,
+                    time: false,
+                    format: 'YYYY/MM/DD',
+                    autoClose: true,
                     topSpace: 10,
                     bottomSpace: 30,
                     dayRendering(opt, input) {
                         return {
                             isHollyDay: opt.day == 1
+                        }
+                    },
+                    onSelect: function(formattedDate, dateObject, inputElement) {
+                        if (inputElement) {
+                            inputElement.value = formattedDate;
+                        }
+                    }
+                };
+                
+                jalaliDatepicker.startWatch(datePickerOptions);
+                
+                // Add form submission handler for fallback as well
+                $('form#filterForm').on('submit', function(e) {
+                    const $dateFrom = $('#dateFrom');
+                    const $dateTo = $('#dateTo');
+                    
+                    if ($dateFrom.val() && $dateTo.val()) {
+                        try {
+                            const formatDate = (dateStr) => {
+                                return dateStr.replace(/-/g, '/');
+                            };
+                            
+                            $dateFrom.val(formatDate($dateFrom.val()));
+                            $dateTo.val(formatDate($dateTo.val()));
+                            
+                        } catch (error) {
+                            console.error('Error formatting dates (fallback):', error);
                         }
                     }
                 });
@@ -1259,30 +1330,97 @@
         }
     });
 
-    let reversed = false;
-
+    // Initialize table and search functionality when document is ready
     $(document).ready(function () {
-        const errTable = $("#errorsTable");
-        const tr = $("#errorsTable tr");
+        // Initialize variables
+        let reversed = false;
+        const $table = $("#table");
+        const $searchInput = $("#search");
+        const $tableBody = $("#errorsTable");
+        const $filterForm = $("#filterForm");
+        const $applyFilterBtn = $("#applyFilterBtn");
+        let $tableRows = $table.find("tbody tr");
+        let $originalTableRows = $table.find("tbody tr"); // Keep reference to all original rows
+        
+        // Handle filter form submission
+        $applyFilterBtn.on("click", function(e) {
+            e.preventDefault();
+            const dateFrom = $("#dateFrom").val();
+            const dateTo = $("#dateTo").val();
+            
+            // Validate dates if needed
+            if (dateFrom && dateTo && new Date(dateFrom) > new Date(dateTo)) {
+                alert("تاریخ شروع نباید از تاریخ پایان بزرگتر باشد");
+                return;
+            }
+            
+            // Submit the form
+            $filterForm.submit();
+        });
+        
+        // Sort functionality
         $("#up").on("click", function () {
             const icon = $("#up i");
             icon.toggleClass("fa-arrow-up fa-arrow-down");
-            const rows = [...tr]
+            
+            // Convert to array for sorting
+            const rows = $tableRows.get();
+            
+            // Toggle sort direction
             if (reversed) {
-                errTable.append(rows)
+                $tableBody.append(rows);
             } else {
-                errTable.append(rows.reverse())
+                $tableBody.append(rows.reverse());
             }
-            reversed = !reversed
+            
+            reversed = !reversed;
+            
+            // Update the rows reference after sorting
+            $tableRows = $table.find("tbody tr:visible");
         });
-        $("#search").on("keyup input", function () {
-            let txt = $(this).val().toLowerCase()
-            tr.filter(function () {
-                // Search in all columns of the table
-                const rowText = $(this).text().toLowerCase()
-                $(this).toggle(rowText.indexOf(txt) > -1)
-            })
-        })
+        
+        // Search functionality
+        function performSearch() {
+            const searchText = $searchInput.val().toLowerCase().trim();
+            
+            if (!searchText) {
+                // If search is empty, show all original rows
+                $originalTableRows.show();
+                $tableRows = $originalTableRows;
+                return;
+            }
+            
+            // Search through all original rows (not just visible ones)
+            $originalTableRows.each(function() {
+                const $row = $(this);
+                
+                // Get text only from the error code column (4th column - شماره خطا)
+                const errorCodeCell = $row.find('td:nth-child(4)');
+                const errorCodeText = errorCodeCell.text().toLowerCase();
+                
+                // Show/hide row based on search match in error code column only
+                $row.toggle(errorCodeText.indexOf(searchText) > -1);
+            });
+            
+            // Update the visible rows reference
+            $tableRows = $table.find("tbody tr:visible");
+        }
+        
+        // Handle search input events
+        $searchInput.on({
+            'input keyup paste': function(e) {
+                // Search as user types, including backspace
+                performSearch();
+            },
+            'search': function() {
+                // This event fires when the user clicks the clear (x) button
+                performSearch();
+            }
+        });
+        
+        // Initial setup
+        $tableRows = $table.find("tbody tr");
+        $originalTableRows = $table.find("tbody tr");
 
         // Add toggle functionality for mobile view to show/hide columns
         if (window.innerWidth <= 768) {
