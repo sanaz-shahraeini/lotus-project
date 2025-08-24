@@ -8,7 +8,6 @@
 <link rel="stylesheet" href="{% static 'css/dashboard-width-fix.css' %}">
 <link rel="stylesheet" href="{% static 'css/direct-layout-fix.css' %}">
 <link rel="stylesheet" href="{% static 'css/dashboard-content.css' %}">
-<link rel="stylesheet" href="{% static 'css/jalalidatepicker.min.css' %}">
 
 
 <style>
@@ -183,53 +182,308 @@
     }
 
     .filter-section {
-        background-color: var(--bg-color);
-        border-radius: 0.75rem;
-        padding: 1.25rem;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        margin-bottom: 1.5rem;
+        background-color: var(--card-bg);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        box-shadow: var(--card-shadow);
+        margin-bottom: 2rem;
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+    }
+
+    .filter-section:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 188, 212, 0.15);
     }
 
     .btn {
-        padding: 0.5rem 1rem;
-        border-radius: 0.375rem;
+        padding: 0.75rem 1.25rem;
+        border-radius: 0.75rem;
         font-weight: 500;
-        transition: all 0.2s;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        min-height: 44px;
+        font-size: 0.95rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .btn:hover::before {
+        left: 100%;
     }
 
     .btn-primary {
-        background-color: var(--primary-color);
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
         color: white;
+        box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3);
     }
 
     .btn-primary:hover {
-        background-color: var(--primary-hover);
+        background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary-color) 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 188, 212, 0.4);
     }
 
     .btn-secondary {
-        background-color: var(--secondary-color);
+        background: linear-gradient(135deg, var(--secondary-color) 0%, rgba(255, 255, 255, 0.9) 100%);
         color: var(--text-color);
         border: 1px solid var(--border-color);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
     .btn-secondary:hover {
-        background-color: var(--primary-color);
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
         color: white;
         border-color: var(--primary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 188, 212, 0.3);
     }
 
-    /* استایل جدید دکمه دانلود اکسل */
+    /* Compact Single Line Filter Controls */
+    .filter-controls-single-line {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: nowrap;
+        justify-content: center;
+        overflow-x: auto;
+        padding: 0.5rem 0;
+    }
+
+    /* Compact Input Fields */
+    .input-field-compact {
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        transition: all 0.2s;
+        background: var(--card-bg);
+        color: var(--text-color);
+        font-size: 0.875rem;
+        min-width: 140px;
+        width: 160px;
+        height: 36px;
+        flex-shrink: 0;
+    }
+
+    .search-compact {
+        min-width: 120px;
+        width: 120px;
+    }
+
+    .input-field-compact:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.1);
+        outline: none;
+    }
+
+    /* Compact Buttons */
+    .btn-compact {
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: all 0.3s;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.25rem;
+        text-decoration: none;
+        height: 36px;
+        font-size: 0.875rem;
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+
+    .btn-compact.btn-primary {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+        color: white;
+        min-width: 60px;
+    }
+
+    .sort-btn-compact {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 36px;
+        width: 36px;
+        flex-shrink: 0;
+        color: var(--text-color);
+    }
+
+    .sort-btn-compact:hover {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+    }
+
+    /* Compact Pagination */
+    .pagination-compact {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        background: var(--card-bg);
+        padding: 0.25rem;
+        border-radius: 0.5rem;
+        border: 1px solid var(--border-color);
+        flex-shrink: 0;
+        height: 36px;
+        margin-left: 1rem;
+        margin-right: 3rem;
+
+    }
+
+    .nav-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 0.375rem;
+        background: var(--primary-color);
+        color: white;
+        text-decoration: none;
+        transition: all 0.2s;
+        font-size: 0.75rem;
+    }
+
+    .nav-btn:hover:not(.disabled) {
+        background: var(--primary-hover);
+        transform: scale(1.05);
+    }
+
+    .nav-btn.disabled {
+        background: #ccc;
+        color: #888;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    .page-info {
+        font-size: 0.75rem;
+        color: var(--text-color);
+        font-weight: 500;
+        padding: 0 0.5rem;
+        white-space: nowrap;
+        min-width: 40px;
+        text-align: center;
+    }
+
+    /* Compact Excel Button */
+    .excel-btn-compact {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+        color: white;
+        border: none;
+        padding: 0.5rem 0.75rem;
+        font-weight: 500;
+        border-radius: 0.5rem;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        height: 36px;
+        font-size: 0.875rem;
+        flex-shrink: 0;
+        white-space: nowrap;
+        cursor: pointer;
+        min-width: 70px;
+        box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3);
+    }
+
+    .excel-btn-compact:hover {
+        background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary-color) 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(0, 188, 212, 0.4);
+    }
+
+    /* Filter Controls Container */
+    .filter-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+
+    .filter-left {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: center;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .filter-right {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    .date-filter-group {
+        display: flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 0.75rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        flex-shrink: 0;
+    }
+
+    .search-group {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 0.75rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        flex-shrink: 0;
+    }
+
+    /* Enhanced Excel Button */
     .excel-btn {
         background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
         color: white;
         border: none;
-        padding: 0.75rem 1.5rem;
+        padding: 0.875rem 1.75rem;
         font-weight: 600;
-        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-        transition: all 0.3s ease;
-        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(40, 167, 69, 0.25);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 0.75rem;
         position: relative;
         overflow: hidden;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        white-space: nowrap;
+        min-height: 44px;
     }
 
     .excel-btn::before {
@@ -240,7 +494,7 @@
         width: 100%;
         height: 100%;
         background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        transition: left 0.5s;
+        transition: left 0.6s ease;
     }
 
     .excel-btn:hover::before {
@@ -249,13 +503,22 @@
 
     .excel-btn:hover {
         background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
-        transform: translateY(-3px);
+        transform: translateY(-2px);
         box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
     }
 
+    .excel-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
+
     .excel-btn i {
-        margin-left: 0.5rem;
         font-size: 1.1rem;
+        transition: transform 0.3s ease;
+    }
+
+    .excel-btn:hover i {
+        transform: scale(1.1);
     }
 
     .input-field {
@@ -519,35 +782,77 @@
         background-color: var(--hover-color);
     }
 
-    .sort-btn {
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        padding: 0.5rem;
-        border-radius: 0.375rem;
-        transition: all 0.2s;
-    }
-
-    .sort-btn:hover {
-        background-color: var(--hover-color);
-    }
-
     .pagination {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.75rem;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 0.75rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
     .pagination-btn {
-        padding: 0.5rem 1rem;
-        border-radius: 0.375rem;
+        padding: 0.625rem 1rem;
+        border-radius: 0.5rem;
         font-weight: 500;
-        transition: all 0.2s;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        min-height: 40px;
+        font-size: 0.9rem;
+        position: relative;
+        overflow: hidden;
     }
 
-    .pagination-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
+    .pagination-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.4s ease;
+    }
+
+    .pagination-btn:hover::before {
+        left: 100%;
+    }
+
+    .pagination-btn:not(.opacity-50):hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 188, 212, 0.2);
+    }
+
+    .sort-btn {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid var(--border-color);
+        cursor: pointer;
+        padding: 0.75rem;
+        border-radius: 0.75rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        min-width: 44px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .sort-btn:hover {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 188, 212, 0.3);
+    }
+
+    .sort-btn:hover i {
+        color: white !important;
+        transform: scale(1.1);
     }
 
     @media print {
@@ -569,51 +874,149 @@
         }
     }
 
-    /* Mobile responsive styles */
+    /* Enhanced Mobile Responsive Styles for Compact Layout */
+    @media (max-width: 1200px) {
+        .input-field-compact {
+            min-width: 100px;
+            width: 100px;
+        }
+        
+        .search-compact {
+            min-width: 110px;
+            width: 110px;
+        }
+        
+        .excel-btn-compact {
+            min-width: 60px;
+        }
+        
+        .page-info {
+            min-width: 35px;
+        }
+    }
+
+    @media (max-width: 1024px) {
+        .filter-controls-single-line {
+            gap: 0.375rem;
+        }
+        
+        .input-field-compact {
+            min-width: 90px;
+            width: 90px;
+            font-size: 0.8rem;
+        }
+        
+        .search-compact {
+            min-width: 100px;
+            width: 100px;
+        }
+        
+        .btn-compact {
+            padding: 0.4rem 0.6rem;
+            font-size: 0.8rem;
+            min-width: 50px;
+        }
+        
+        .excel-btn-compact {
+            min-width: 55px;
+            font-size: 0.8rem;
+        }
+
+        .filter-controls {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 1.5rem;
+        }
+
+        .filter-left {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .filter-right {
+            justify-content: center;
+        }
+    }
+
     @media (max-width: 768px) {
         .filter-section {
             padding: 1rem 0.75rem;
+            margin-bottom: 1.5rem;
         }
 
-        .flex.flex-wrap.gap-4 {
-            gap: 0.75rem !important;
-        }
-
-        .flex.items-center.gap-3 {
-            flex-direction: column;
-            align-items: flex-start;
-            width: 100%;
-            gap: 0.5rem !important;
-        }
-
-        form.flex.items-center.gap-3 {
-            flex-direction: column;
-            width: 100%;
-        }
-
-        form .flex.items-center.gap-3 {
-            flex-direction: row;
+        .filter-controls-single-line {
             flex-wrap: wrap;
-            width: 100%;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+        
+        .input-field-compact {
+            min-width: 120px;
+            width: 120px;
+        }
+        
+        .search-compact {
+            min-width: 140px;
+            width: 140px;
+        }
+        
+        .btn-compact {
+            min-width: 70px;
+        }
+        
+        .excel-btn-compact {
+            min-width: 80px;
+        }
+
+        .filter-controls {
+            gap: 1.25rem;
+        }
+
+        .date-filter-group,
+        .search-group {
+            flex-direction: column;
+            align-items: stretch;
+            padding: 1rem;
+        }
+
+        .date-filter-group {
+            gap: 1rem;
+        }
+
+        .search-group {
+            gap: 0.75rem;
         }
 
         .input-field {
             width: 100%;
-            max-width: 100%;
+            min-height: 44px;
+            font-size: 1rem;
         }
 
-        input[type="search"].input-field.w-64 {
+        .btn {
             width: 100%;
+            min-height: 44px;
+            font-size: 1rem;
+            justify-content: center;
+        }
+
+        .excel-btn {
+            padding: 1rem 1.5rem;
+            justify-content: center;
         }
 
         .pagination {
             width: 100%;
             justify-content: space-between;
+            padding: 1rem 0;
         }
 
-        .btn {
-            width: 100%;
-            text-align: center;
+        .sort-btn {
+            min-height: 44px;
+            min-width: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .table-modern th,
@@ -623,32 +1026,54 @@
         }
 
         /* Make the most important columns visible by default - LTR order */
-        /* .table-modern th:nth-child(-n+4),
-        .table-modern td:nth-child(-n+4) {
-            display: table-cell;
-        } */
-
-        /* .table-modern th:nth-child(n+5),
-        .table-modern td:nth-child(n+5) {
-            display: none;
-        } */
-
-        /* Show the row number column always */
-        .table-modern th:first-child,
-        .table-modern td:first-child {
-            display: table-cell;
-        }
     }
 
-    /* For even smaller screens */
     @media (max-width: 480px) {
         .filter-section {
-            padding: 0.75rem 0.5rem;
+            padding: 1rem 0.75rem;
+        }
+
+        .filter-controls {
+            gap: 1rem;
+        }
+
+        .date-filter-group,
+        .search-group {
+            padding: 0.75rem;
+        }
+
+        .excel-btn {
+            padding: 0.875rem 1.25rem;
+            font-size: 0.95rem;
         }
 
         .pagination span {
             display: none;
         }
+
+        .btn {
+            font-size: 0.95rem;
+        }
+    }
+
+    /* Dark mode enhancements for filter section */
+    .dark .filter-section {
+        background: linear-gradient(135deg, var(--card-bg) 0%, rgba(13, 27, 42, 0.8) 100%);
+        border-color: var(--border-color);
+    }
+
+    .dark .date-filter-group,
+    .dark .search-group {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: var(--border-color);
+    }
+
+    .dark .excel-btn {
+        box-shadow: 0 4px 16px rgba(40, 167, 69, 0.15);
+    }
+
+    .dark .excel-btn:hover {
+        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.25);
     }
 
     /* --- Jalali Datepicker Custom Fixes --- */
@@ -1006,48 +1431,43 @@
 <div class="my-0 w-full">
     <div class="w-full h-auto mt-1 mx-auto flex flex-col rtl">
         <div class="filter-section">
-            <div class="flex flex-wrap gap-4 justify-items-center items-center">
-                <div class="flex items-center gap-3">
-                    <form id="filterForm" method="get" class="flex items-center gap-3">
-                        <div class="flex items-center gap-3">
-                            <input id="dateFrom" data-jdp placeholder="از تاریخ" name="dateFrom" class="input-field"
-                                value="{{ request.GET.dateFrom|default:'' }}" />
-                            <input id="dateTo" data-jdp placeholder="تا تاریخ" name="dateTo" class="input-field"
-                                value="{{ request.GET.dateTo|default:'' }}" />
-                        </div>
-                        <button type="button" id="applyFilterBtn" class="btn btn-primary">
-                            اعمال فیلتر
-                        </button>
-                    </form>
-                </div>
-
-                <div class="flex items-center gap-3">
-                    <button id="up" class="sort-btn">
-                        <i class="fa-regular fa-arrow-up text-gray-700 text-lg"></i>
+            <div class="filter-controls-single-line">
+                <!-- Compact form elements -->
+                <form id="filterForm" method="get" style="display: contents;">
+                    <input id="dateFrom" data-jdp placeholder="از تاریخ" name="dateFrom" class="input-field-compact"
+                        value="{{ request.GET.dateFrom|default:'' }}" />
+                    <input id="dateTo" data-jdp placeholder="تا تاریخ" name="dateTo" class="input-field-compact"
+                        value="{{ request.GET.dateTo|default:'' }}" />
+                    <button type="button" id="applyFilterBtn" class="btn-compact btn-primary">
+                        <i class="fas fa-filter"></i>
+                        فیلتر
                     </button>
-                    <input type="search" id="search" name="search-box" placeholder="جستجو خطا"
-                        class="input-field w-64" />
-                </div>
+                </form>
+                
+                <input type="search" id="search" name="search-box" placeholder="شماره خطا"
+                    class="input-field-compact search-compact" />
+                    
+                <button id="up" class="sort-btn-compact">
+                    <i class="fa-regular fa-arrow-up"></i>
+                </button>
 
                 {% if pages %}
-                <div class="pagination">
+                <div class="pagination-compact">
                     <a href="{% if pages.has_next %}?p={{ pages.next_page_number }}{% if request.GET.dateFrom %}&dateFrom={{ request.GET.dateFrom }}{% endif %}{% if request.GET.dateTo %}&dateTo={{ request.GET.dateTo }}{% endif %}{% else %}#{% endif %}"
-                    class="pagination-btn btn-primary {% if not pages.has_next %}opacity-50 cursor-not-allowed{% endif %}">
-                    بعدی
-                </a>
-                    <span class="text-sm whitespace-nowrap">
-                        صفحه {{ pages.number }}/{{ pages.paginator.num_pages }}
-                    </span>
-                    <a href="{% if pages.has_previous %}?p={{ pages.previous_page_number }}{% if request.GET.dateFrom %}&dateFrom={{ request.GET.dateFrom }}{% endif %}{% if request.GET.dateTo %}&dateTo={{ request.GET.dateTo }}{% endif %}{% else %}#{% endif %}"
-                        class="pagination-btn btn-primary {% if not pages.has_previous %}opacity-50 cursor-not-allowed{% endif %}">
-                        قبلی
+                        class="nav-btn {% if not pages.has_next %}disabled{% endif %}">
+                        <i class="fas fa-chevron-right"></i>
                     </a>
-                
+                    <span class="page-info">{{ pages.number }}/{{ pages.paginator.num_pages }}</span>
+                    <a href="{% if pages.has_previous %}?p={{ pages.previous_page_number }}{% if request.GET.dateFrom %}&dateFrom={{ request.GET.dateFrom }}{% endif %}{% if request.GET.dateTo %}&dateTo={{ request.GET.dateTo }}{% endif %}{% else %}#{% endif %}"
+                        class="nav-btn {% if not pages.has_previous %}disabled{% endif %}">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
                 </div>
                 {% endif %}
-                <button id='excelbtn' class="btn btn-secondary excel-btn">
-                    <i class="fas fa-file-excel mr-2"></i>
-                    دانلود اکسل
+                
+                <button id='excelbtn' class="excel-btn-compact">
+                    <i class="fas fa-file-excel"></i>
+                  دانلود اکسل 
                 </button>
             </div>
         </div>
