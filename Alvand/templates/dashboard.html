@@ -1616,20 +1616,6 @@
                                 <i class="fa-solid fa-search text-slate-700 text-xs"></i>
                             </div>
                         </div>
-                        
-                        <!-- Optional filter button -->
-                        <button id="toggleFilters" class="mr-3 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-all duration-200">
-                            <i class="fa-solid fa-sliders-h text-sm"></i>
-                        </button>
-                        
-                        <!-- Page size and Export -->
-                        <div class="flex items-center gap-2 ml-3">
-                            <select name="page_size" form="dashboardFiltersForm" class="h-9 rounded-md text-sm px-2">
-                                <option value="20" {% if dashPage.paginator.per_page == 20 %}selected{% endif %}>20</option>
-                                <option value="50" {% if dashPage.paginator.per_page == 50 %}selected{% endif %}>50</option>
-                                <option value="100" {% if dashPage.paginator.per_page == 100 %}selected{% endif %}>100</option>
-                            </select>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -1747,37 +1733,7 @@
             </div>
             
             <!-- Aggregate extras: total duration and top extensions -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 md:gap-6">
-                <div class="card bg-white p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center gap-2">
-                            <i class="fa-regular fa-clock text-blue-600"></i>
-                            <h3 class="font-bold text-slate-800">مجموع مدت تماس‌ها</h3>
-                        </div>
-                    </div>
-                    <div class="text-2xl font-extrabold text-slate-800">{{ total_call_duration|default:"00:00:00" }}</div>
-                </div>
-                <div class="card bg-white p-6 lg:col-span-2">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-ranking-star text-amber-600"></i>
-                            <h3 class="font-bold text-slate-800">برترین داخلی‌ها بر اساس تعداد تماس</h3>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {% if top_extensions %}
-                            {% for item in top_extensions %}
-                                <div class="flex items-center justify-between p-3 rounded-md border border-slate-200">
-                                    <div class="text-slate-700">داخلی {{ item.extension|default:"—" }}</div>
-                                    <div class="font-bold text-slate-900">{{ item.total }}</div>
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            <div class="text-slate-500">داده‌ای برای نمایش وجود ندارد.</div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
+
 
             <!-- Filter Bar - Redesigned -->
             <form id="dashboardFiltersForm" method="get" class="search-filters-container">
