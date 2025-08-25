@@ -922,6 +922,40 @@
         box-sizing: border-box;
     }
     
+    /* Ensure username and extension are always editable unless explicitly readonly */
+    #id_username:not([readonly]), #id_extension:not([readonly]) {
+        background-color: var(--input-bg) !important;
+        cursor: text !important;
+        pointer-events: auto !important;
+        opacity: 1 !important;
+    }
+    
+    /* Force editable appearance for add mode - highest priority */
+    body #form #id_username[data-mode="add"],
+    body #form #id_extension[data-mode="add"],
+    body #form #id_username:not([readonly]):not([disabled]),
+    body #form #id_extension:not([readonly]):not([disabled]) {
+        background-color: white !important;
+        cursor: text !important;
+        pointer-events: auto !important;
+        opacity: 1 !important;
+        color: #333 !important;
+        border: 1px solid var(--border-color) !important;
+    }
+    
+    /* Style for readonly username in edit mode */
+    #id_username[readonly] {
+        background-color: #f8f9fa !important;
+        cursor: not-allowed !important;
+        color: #6c757d !important;
+    }
+    
+    /* Dark mode support for readonly fields */
+    html.dark #id_username[readonly] {
+        background-color: #374151 !important;
+        color: #9ca3af !important;
+    }
+    
     #id_editOrAdd, #id_gender, #id_maritalstatus, 
     #id_military, #id_educationdegree, #id_province, 
     #id_groupname {
@@ -1464,6 +1498,11 @@ label.required:after,
             
             <!-- Action Buttons Section -->
             <div class="action-buttons-container">
+                <!-- Test button for debugging field states -->
+                <button type="button" onclick="testFieldStates()" style="background: orange; color: white; padding: 10px; margin: 10px; border: none; border-radius: 5px;">
+                    🔧 Test Field Fix
+                </button>
+                
                 <button type="submit" name="saveUser" value="save" class="action-button save-user">
                     <i class="fa-solid fa-save"></i>
                     <span>ذخیره کاربر</span>
@@ -1545,7 +1584,7 @@ label.required:after,
 {% endblock %}
 
 {% block js_extra %}
-<script src="{% static 'js/user-profile-fix.js' %}?v={% now 'U' %}"></script>
+<script src="{% static 'js/user-profile-fix.js' %}?v={% now 'U' %}&fix={{ 'now'|date:'YmdHis' }}"></script>
 {{ users|json_script:"users-data" }}
 {{ session_user|json_script:"session-user-data" }}
 {{ contactInfos|json_script:"contact-infos-data" }}
@@ -1571,13 +1610,36 @@ label.required:after,
                     $(field.starSelector).hide();
                 });
                 $('#required-fields-notice').hide();
+                
+                // In edit mode, make username readonly but extension editable
+                $('#id_username').attr('readonly', true).css({
+                    'background-color': '#f8f9fa',
+                    'cursor': 'not-allowed'
+                });
+                $('#id_extension').removeAttr('readonly').removeAttr('disabled').css({
+                    'background-color': '',
+                    'cursor': 'text'
+                });
             } 
-            // In add mode, show all stars
+            // In add mode, show all stars and ensure fields are editable
             else if (mode === 'add') {
                 requiredFields.forEach(field => {
                     $(field.starSelector).show();
                 });
                 $('#required-fields-notice').show();
+                
+                // Ensure both fields are editable in add mode
+                $('#id_username, #id_extension').each(function() {
+                    $(this).removeAttr('readonly').removeAttr('disabled');
+                    this.readOnly = false;
+                    this.disabled = false;
+                    $(this).css({
+                        'background-color': '',
+                        'cursor': 'text',
+                        'pointer-events': 'auto',
+                        'opacity': '1'
+                    });
+                });
             }
             // In default "none" mode, hide the notice but keep stars
             else {
@@ -1585,14 +1647,115 @@ label.required:after,
                 requiredFields.forEach(field => {
                     $(field.starSelector).show();
                 });
+                
+                // Ensure fields are editable in none mode too
+                $('#id_username, #id_extension').each(function() {
+                    $(this).removeAttr('readonly').removeAttr('disabled');
+                    this.readOnly = false;
+                    this.disabled = false;
+                    $(this).css({
+                        'background-color': '',
+                        'cursor': 'text',
+                        'pointer-events': 'auto',
+                        'opacity': '1'
+                    });
+                });
             }
         }
         
-        // Call function on page load
-        updateRequiredFields();
+        // Call function on page load with fewer attempts
+        setTimeout(updateRequiredFields, 500);
         
         // Call function when editOrAdd changes
-        $('#id_editOrAdd').change(updateRequiredFields);
+        $('#id_editOrAdd').change(function() {
+            setTimeout(updateRequiredFields, 50);
+        });
     });
+    
+    // One-time field editable enforcer on page load
+    setTimeout(function() {
+        const mode = $('#id_editOrAdd').val();
+        if (mode === 'add' || mode === 'none' || !mode) {
+            const username = document.getElementById('id_username');
+            const extension = document.getElementById('id_extension');
+            
+            if (username) {
+                username.removeAttribute('readonly');
+                username.removeAttribute('disabled');
+                username.readOnly = false;
+                username.disabled = false;
+                username.style.backgroundColor = '';
+                username.style.cursor = 'text';
+                username.style.pointerEvents = 'auto';
+                username.style.opacity = '1';
+            }
+            
+            if (extension) {
+                extension.removeAttribute('readonly');
+                extension.removeAttribute('disabled');
+                extension.readOnly = false;
+                extension.disabled = false;
+                extension.style.backgroundColor = '';
+                extension.style.cursor = 'text';
+                extension.style.pointerEvents = 'auto';
+                extension.style.opacity = '1';
+            }
+        }
+    }, 1000); // Run once after page load
+    
+    // Global test function for debugging
+    window.testFieldStates = function() {
+        console.log('=== FIELD STATE TEST ===' );
+        const mode = $('#id_editOrAdd').val();
+        console.log('Current mode:', mode);
+        
+        const username = document.getElementById('id_username');
+        const extension = document.getElementById('id_extension');
+        
+        if (username) {
+            console.log('Username field:');
+            console.log('  readonly property:', username.readOnly);
+            console.log('  disabled property:', username.disabled);
+            console.log('  readonly attribute:', username.getAttribute('readonly'));
+            console.log('  disabled attribute:', username.getAttribute('disabled'));
+            console.log('  computed style cursor:', window.getComputedStyle(username).cursor);
+            console.log('  computed style background:', window.getComputedStyle(username).backgroundColor);
+            
+            // Force fix
+            username.removeAttribute('readonly');
+            username.removeAttribute('disabled');
+            username.readOnly = false;
+            username.disabled = false;
+            username.style.backgroundColor = 'white';
+            username.style.cursor = 'text';
+            username.focus();
+            console.log('Username field forced to editable and focused');
+        }
+        
+        if (extension) {
+            console.log('Extension field:');
+            console.log('  readonly property:', extension.readOnly);
+            console.log('  disabled property:', extension.disabled);
+            console.log('  readonly attribute:', extension.getAttribute('readonly'));
+            console.log('  disabled attribute:', extension.getAttribute('disabled'));
+            console.log('  computed style cursor:', window.getComputedStyle(extension).cursor);
+            console.log('  computed style background:', window.getComputedStyle(extension).backgroundColor);
+            
+            // Force fix
+            extension.removeAttribute('readonly');
+            extension.removeAttribute('disabled');
+            extension.readOnly = false;
+            extension.disabled = false;
+            extension.style.backgroundColor = 'white';
+            extension.style.cursor = 'text';
+            console.log('Extension field forced to editable');
+        }
+        
+        // Set mode to add to ensure fields should be editable
+        $('#id_editOrAdd').val('add').trigger('change');
+        console.log('Mode set to add');
+        
+        alert('Field states have been tested and fixed. Check console for details.');
+    };
 </script>
 {% endblock %}

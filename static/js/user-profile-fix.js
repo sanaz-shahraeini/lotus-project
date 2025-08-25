@@ -519,6 +519,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Add our valid file
                     formData.set('uploadPhoto', validFile);
                     
+                    // CRITICAL: Add the saveUser field to trigger backend processing
+                    formData.set('saveUser', 'save');
+                    
                     // Final validation of FormData
                     const finalFile = formData.get('uploadPhoto');
                     if (!finalFile || !isValidFile(finalFile)) {
@@ -650,12 +653,39 @@ document.addEventListener('DOMContentLoaded', function() {
             // Set required attributes on inputs
             $('#id_username, #id_extension, #id_groupname').prop('required', true);
             
+            // Ensure username and extension fields are editable in add mode
+            $('#id_username, #id_extension').prop('readonly', false).prop('disabled', false);
+            $('#id_username, #id_extension').css({
+                'background-color': '',
+                'cursor': '',
+                'pointer-events': '',
+                'opacity': ''
+            });
+            
             // Show the notice
             $('#required-fields-notice').show();
 
         } else { // 'edit' mode or other
             // Remove required attributes
             $('form input, form select').prop('required', false);
+            
+            // In edit mode, username should be readonly but extension can be editable
+            if (mode === 'edit') {
+                $('#id_username').prop('readonly', true).css({
+                    'background-color': '#f8f9fa',
+                    'cursor': 'not-allowed'
+                });
+                $('#id_extension').prop('readonly', false).prop('disabled', false);
+            } else {
+                // For 'none' mode, ensure fields are editable
+                $('#id_username, #id_extension').prop('readonly', false).prop('disabled', false);
+                $('#id_username, #id_extension').css({
+                    'background-color': '',
+                    'cursor': '',
+                    'pointer-events': '',
+                    'opacity': ''
+                });
+            }
             
             // Hide the notice
             $('#required-fields-notice').hide();
@@ -725,6 +755,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const editOrAddValue = $('#id_editOrAdd').val();
         const initialMode = editOrAddValue ? editOrAddValue.toLowerCase() : 'none';
         updateUserFormUI(initialMode);
+        
+        // Force ensure username and extension are editable if not in edit mode
+        if (initialMode !== 'edit') {
+            $('#id_username, #id_extension').prop('readonly', false).prop('disabled', false);
+            $('#id_username, #id_extension').css({
+                'background-color': '',
+                'cursor': '',
+                'pointer-events': '',
+                'opacity': ''
+            });
+        }
     }, 500); // A small delay to ensure other scripts have finished
 
     // Function to load user data for editing
@@ -863,6 +904,15 @@ document.addEventListener('DOMContentLoaded', function() {
         $('#form select:not(#id_editOrAdd)').val('');
         $('#form input[type="checkbox"]').prop('checked', false);
         
+        // Explicitly clear readonly and disabled states on key fields
+        $('#id_username, #id_extension').prop('readonly', false).prop('disabled', false);
+        $('#id_username, #id_extension').css({
+            'background-color': '',
+            'cursor': '',
+            'pointer-events': '',
+            'opacity': ''
+        });
+        
         // Restore editOrAdd value and update visual state
         if (currentMode) {
             $('#id_editOrAdd').val(currentMode);
@@ -922,21 +972,20 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Direct event listener on username field
-        $(document).on('change keyup input blur', '#id_username', function() {
+        // Direct event listener on username field - only for edit mode
+        $(document).on('change blur', '#id_username', function() {
             const mode = $('#id_editOrAdd').val();
             const username = $(this).val();
             
+            // Only trigger user loading in edit mode
             if (mode === 'edit' && username && username.trim() !== '') {
                 // Debounce the loading to avoid too many requests
                 clearTimeout(window.userLoadTimeout);
                 window.userLoadTimeout = setTimeout(function() {
                     loadUserData(username);
                 }, 500);
-            } else if (mode === 'add') {
-                // In add mode, just clear the form when username changes
-                clearForm();
             }
+            // Removed the clearForm() call for add mode to prevent form clearing on keystroke
         });
 
         // Listen for mode changes
@@ -950,13 +999,29 @@ document.addEventListener('DOMContentLoaded', function() {
             const uploadInput = document.getElementById('upload');
             const preservedFile = uploadInput && uploadInput._selectedFile;
             
-            if (mode === 'edit' && username && username.trim() !== '') {
-                loadUserData(username);
-            } else {
-                clearForm();
+            // Only clear form when switching between modes, not when already in add mode
+            if (mode === 'add') {
+                // Only clear if we have data from edit mode
+                if (username && username.trim() !== '') {
+                    const shouldClear = confirm('Switching to add mode will clear the current form. Continue?');
+                    if (shouldClear) {
+                        clearForm();
+                    } else {
+                        return; // Don't change mode
+                    }
+                }
+                
+                // Ensure fields are editable
+                $('#id_username, #id_extension').prop('readonly', false).prop('disabled', false);
+                $('#id_username, #id_extension').css({
+                    'background-color': '',
+                    'cursor': 'text',
+                    'pointer-events': 'auto',
+                    'opacity': '1'
+                });
                 
                 // Restore file if we're switching to add mode and had a file
-                if (mode === 'add' && preservedFile) {
+                if (preservedFile) {
                     console.log('Restoring file after mode change to add');
                     try {
                         const dt = new DataTransfer();
@@ -977,12 +1042,51 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.error('Failed to restore file after mode change:', error);
                     }
                 }
+            } else if (mode === 'edit' && username && username.trim() !== '') {
+                loadUserData(username);
+            } else if (mode === 'none') {
+                // Clear form when going to none mode
+                clearForm();
             }
+            
+            // Update UI based on new mode
+            updateUserFormUI(mode);
         });
     }
     
     // Call setup function after a delay to ensure DOM is ready
     setTimeout(setupUsernameListeners, 1000);
+    
+    // Add a function to explicitly fix field states
+    function fixFieldStates() {
+        const mode = $('#id_editOrAdd').val();
+        console.log('Fixing field states for mode:', mode);
+        
+        if (mode === 'add' || mode === 'none' || !mode) {
+            // Ensure username and extension are editable
+            $('#id_username, #id_extension').prop('readonly', false).prop('disabled', false);
+            $('#id_username, #id_extension').css({
+                'background-color': '',
+                'cursor': '',
+                'pointer-events': '',
+                'opacity': ''
+            });
+            console.log('Fields made editable for add/none mode');
+        } else if (mode === 'edit') {
+            // In edit mode, username should be readonly but extension can be editable
+            $('#id_username').prop('readonly', true).css({
+                'background-color': '#f8f9fa',
+                'cursor': 'not-allowed'
+            });
+            $('#id_extension').prop('readonly', false).prop('disabled', false);
+            console.log('Username readonly, extension editable for edit mode');
+        }
+    }
+    
+    // Run field state fix on page load and periodically
+    setTimeout(fixFieldStates, 500);
+    setTimeout(fixFieldStates, 1500);
+    setTimeout(fixFieldStates, 3000);
 
     // Basic form validation
     $('#form').on('submit', function(e) {
