@@ -1772,6 +1772,10 @@ class UserForm(FormView, View):
         changePassword = fieldReq.get('ChangePassword')
         
         print(f"Action: editOrAdd={editOrAdd}, saveUser={saveUser}, deleteUser={deleteUser}, deleteProfile={deleteProfile}, changePassword={changePassword}")
+        print(f"Files in request: {list(self.request.FILES.keys())}")
+        print(f"uploadPhoto received: {uploadPhoto is not None}")
+        if uploadPhoto:
+            print(f"Upload photo details: name={uploadPhoto.name}, size={uploadPhoto.size}, content_type={uploadPhoto.content_type}")
         
         # Get info fields - convert empty strings to None for nullable fields
         nationalcode = fieldReq.get('nationalcode') or None
@@ -1915,16 +1919,41 @@ class UserForm(FormView, View):
                 
                 # Handle profile picture upload if provided
                 if uploadPhoto:
+                    print(f"Photo upload detected for new user: {uploadPhoto.name}, size: {uploadPhoto.size}")
                     valid = validatePhotoExt(uploadPhoto.name)
                     if not valid:
+                        print(f"Invalid photo extension for file: {uploadPhoto.name}")
                         messages.error(self.request, 'پسوند فایل ارسال شده نامعتبر میباشد.')
                         return redirect(self.success_url)
                     picurl = f"{username.lower()}_photo{valid.lower()}"
                     filepath = os.path.join('Alvand/static/upload', picurl)
+                    print(f"Saving new user photo to: {filepath}")
 
-                    with open(filepath, '+wb') as f:
-                        for bt in uploadPhoto:
-                            f.write(bt)
+                    try:
+                        # Ensure upload directory exists
+                        upload_dir = os.path.join('Alvand/static/upload')
+                        if not os.path.exists(upload_dir):
+                            print(f"Creating upload directory: {upload_dir}")
+                            os.makedirs(upload_dir, exist_ok=True)
+                        
+                        print(f"Upload directory exists: {os.path.exists(upload_dir)}")
+                        print(f"Upload directory permissions: {oct(os.stat(upload_dir).st_mode)[-3:] if os.path.exists(upload_dir) else 'N/A'}")
+                        
+                        with open(filepath, 'wb') as f:  # Changed from '+wb' to 'wb'
+                            for chunk in uploadPhoto.chunks():  # Use chunks() for better memory handling
+                                f.write(chunk)
+                        
+                        print(f"Photo saved successfully for new user: {picurl}")
+                        print(f"Database fields will be set - picurl: {picurl}, profile_picture: {picurl}")
+                        print(f"File exists after save: {os.path.exists(filepath)}")
+                        print(f"File size after save: {os.path.getsize(filepath) if os.path.exists(filepath) else 'N/A'}")
+                        
+                    except Exception as photo_error:
+                        print(f"Error saving photo for new user: {str(photo_error)}")
+                        messages.error(self.request, f'خطا در ذخیره تصویر: {str(photo_error)}')
+                        return redirect(self.success_url)
+                else:
+                    print("No photo upload in add user request")
                 
                 # Directly create the user
                 try:
@@ -1938,12 +1967,14 @@ class UserForm(FormView, View):
                         group=group,
                         groupname=group.enname.lower(),
                         picurl=picurl,
+                        profile_picture=picurl,  # Also update profile_picture field
                         active=active,
                         usersextension=nonLabels,
                         password=make_password("12345678"),
                         needs_password_change=True
                     )
                     print(f"User created with ID: {new_user.id}")
+                    print(f"New user database verification - picurl: {new_user.picurl}, profile_picture: {new_user.profile_picture}")
                     
                     # Create permissions
                     print("Creating permissions...")
@@ -2018,20 +2049,54 @@ class UserForm(FormView, View):
                     
                     # Handle profile picture upload if provided
                     if uploadPhoto:
+                        print(f"Photo upload detected: {uploadPhoto.name}, size: {uploadPhoto.size}")
                         valid = validatePhotoExt(uploadPhoto.name)
                         if not valid:
+                            print(f"Invalid photo extension for file: {uploadPhoto.name}")
                             messages.error(self.request, 'پسوند فایل ارسال شده نامعتبر میباشد.')
                             return redirect(self.success_url)
                         picurl = f"{username.lower()}_photo{valid.lower()}"
                         filepath = os.path.join('Alvand/static/upload', picurl)
+                        print(f"Saving photo to: {filepath}")
 
-                        with open(filepath, '+wb') as f:
-                            for bt in uploadPhoto:
-                                f.write(bt)
-                        user.picurl = picurl
+                        try:
+                            # Ensure upload directory exists
+                            upload_dir = os.path.join('Alvand/static/upload')
+                            if not os.path.exists(upload_dir):
+                                print(f"Creating upload directory: {upload_dir}")
+                                os.makedirs(upload_dir, exist_ok=True)
+                            
+                            print(f"Upload directory exists: {os.path.exists(upload_dir)}")
+                            print(f"Upload directory permissions: {oct(os.stat(upload_dir).st_mode)[-3:] if os.path.exists(upload_dir) else 'N/A'}")
+                            
+                            with open(filepath, 'wb') as f:  # Changed from '+wb' to 'wb'
+                                for chunk in uploadPhoto.chunks():  # Use chunks() for better memory handling
+                                    f.write(chunk)
+                            
+                            user.picurl = picurl
+                            user.profile_picture = picurl  # Also update profile_picture field
+                            print(f"Photo saved successfully: {picurl}")
+                            print(f"Database fields set - picurl: {user.picurl}, profile_picture: {user.profile_picture}")
+                            print(f"File exists after save: {os.path.exists(filepath)}")
+                            print(f"File size after save: {os.path.getsize(filepath) if os.path.exists(filepath) else 'N/A'}")
+                            
+                        except Exception as photo_error:
+                            print(f"Error saving photo: {str(photo_error)}")
+                            messages.error(self.request, f'خطا در ذخیره تصویر: {str(photo_error)}')
+                            return redirect(self.success_url)
+                    else:
+                        print("No photo upload in request")
                     
                     # Save user updates
                     user.save()
+                    print(f"User saved to database successfully for: {username}")
+                    
+                    # Verify database update by reloading user
+                    updated_user = Users.objects.filter(username=username).first()
+                    if updated_user:
+                        print(f"Database verification - picurl: {updated_user.picurl}, profile_picture: {updated_user.profile_picture}")
+                    else:
+                        print(f"Error: Could not reload user {username} from database after save")
                     
                     # Update permissions
                     perm = Permissions.objects.filter(user=user).first()

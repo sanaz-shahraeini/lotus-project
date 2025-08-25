@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="{% static 'css/dashboard-width-fix.css' %}" />
 <link rel="stylesheet" href="{% static 'css/direct-layout-fix.css' %}" />
 <link rel="stylesheet" href="{% static 'css/dashboard-content.css' %}" />
+<link rel="stylesheet" href="{% static 'css/photo-upload-enhanced.css' %}" />
 <style>
     
     :root {
@@ -488,33 +489,79 @@
         box-shadow: 0 4px 8px rgba(255, 82, 82, 0.4);
     }
     
-    /* Profile Image Styles */
+    /* Enhanced Profile Image Styles */
+    .profile-section {
+        background: var(--card-bg);
+        border-radius: 1rem;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--card-shadow);
+        border: 1px solid var(--border-color);
+        text-align: center;
+    }
+    
     .profile-image-container {
         position: relative;
-        width: 150px;
-        height: 150px;
-        margin: 0 auto;
-        padding: 5px;
+        width: 180px;
+        height: 180px;
+        margin: 0 auto 1.5rem;
+        padding: 6px;
         background: linear-gradient(135deg, #00BCD4, #536DFE);
         border-radius: 50%;
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+    }
+    
+    .profile-image-container:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
     }
     
     .user-image {
-        width: 140px;
-        height: 140px;
+        width: 168px;
+        height: 168px;
         border-radius: 50%;
         object-fit: cover;
         border: 4px solid white;
-        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+        box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
     }
     
-    .profile-upload-button {
+    .photo-upload-overlay {
         position: absolute;
-        bottom: 5px;
-        right: 5px;
-        width: 40px;
-        height: 40px;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        color: white;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+    
+    .profile-image-container:hover .photo-upload-overlay {
+        opacity: 1;
+    }
+    
+    .photo-upload-overlay i {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .photo-upload-button {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        width: 50px;
+        height: 50px;
         background: linear-gradient(135deg, #00BCD4, #29B6F6);
         color: white;
         border-radius: 50%;
@@ -522,16 +569,164 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-        transition: all 0.2s ease;
-        border: 2px solid white;
-        font-size: 1rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+        border: 3px solid white;
+        font-size: 1.1rem;
     }
     
-    .profile-upload-button:hover {
-        transform: scale(1.15);
+    .photo-upload-button:hover {
+        transform: scale(1.1);
         background: linear-gradient(135deg, #0097A7, #0288D1);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    }
+    
+    .photo-upload-zone {
+        margin-top: 1rem;
+        padding: 1.5rem;
+        border: 2px dashed var(--border-color);
+        border-radius: 0.75rem;
+        background: var(--input-bg);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+    }
+    
+    .photo-upload-zone:hover {
+        border-color: var(--primary-color);
+        background: rgba(0, 188, 212, 0.05);
+        transform: translateY(-1px);
+    }
+    
+    .photo-upload-zone.drag-over {
+        border-color: var(--primary-color);
+        background: rgba(0, 188, 212, 0.1);
+        transform: scale(1.02);
+    }
+    
+    .upload-instructions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        color: var(--text-color);
+    }
+    
+    .upload-icon {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, #00BCD4, #29B6F6);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .upload-text {
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .upload-subtext {
+        font-size: 0.875rem;
+        color: var(--light-text);
+        margin-bottom: 0.5rem;
+    }
+    
+    .file-types {
+        font-size: 0.75rem;
+        color: var(--light-text);
+        background: rgba(0, 188, 212, 0.1);
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        display: inline-block;
+    }
+    
+    .upload-button {
+        background: linear-gradient(135deg, #00BCD4, #29B6F6);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 0.75rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .upload-button:hover {
+        background: linear-gradient(135deg, #0097A7, #0288D1);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3);
+    }
+    
+    .file-preview {
+        display: none;
+        margin-top: 1rem;
+        padding: 1rem;
+        background: rgba(40, 167, 69, 0.1);
+        border: 1px solid rgba(40, 167, 69, 0.3);
+        border-radius: 0.5rem;
+        color: #28a745;
+    }
+    
+    .file-preview.show {
+        display: block;
+    }
+    
+    .file-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.875rem;
+    }
+    
+    .file-info i {
+        font-size: 1.25rem;
+    }
+    
+    .file-details {
+        flex: 1;
+    }
+    
+    .file-name {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+    
+    .file-size {
+        color: rgba(40, 167, 69, 0.8);
+        font-size: 0.75rem;
+    }
+    
+    .remove-file {
+        background: none;
+        border: none;
+        color: #dc3545;
+        cursor: pointer;
+        font-size: 1.25rem;
+        padding: 0.25rem;
+        border-radius: 0.25rem;
+        transition: all 0.2s ease;
+    }
+    
+    .remove-file:hover {
+        background: rgba(220, 53, 69, 0.1);
+        transform: scale(1.1);
+    }
+    
+    /* Dark mode adjustments */
+    .dark .profile-section {
+        background: var(--card-bg);
+        border-color: var(--border-color);
     }
     
     .dark .profile-image-container {
@@ -539,11 +734,53 @@
     }
     
     .dark .user-image {
-        border-color: #1F2937;
+        border-color: var(--card-bg);
     }
     
-    .dark .profile-upload-button {
-        border-color: #1F2937;
+    .dark .photo-upload-button {
+        border-color: var(--card-bg);
+    }
+    
+    .dark .photo-upload-zone {
+        background: var(--input-bg);
+        border-color: var(--border-color);
+    }
+    
+    .dark .photo-upload-zone:hover {
+        background: rgba(0, 188, 212, 0.08);
+    }
+    
+    .dark .file-types {
+        background: rgba(0, 188, 212, 0.15);
+    }
+    
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+        .profile-image-container {
+            width: 150px;
+            height: 150px;
+        }
+        
+        .user-image {
+            width: 138px;
+            height: 138px;
+        }
+        
+        .photo-upload-button {
+            width: 45px;
+            height: 45px;
+            font-size: 1rem;
+        }
+        
+        .photo-upload-zone {
+            padding: 1.25rem;
+        }
+        
+        .upload-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1.25rem;
+        }
     }
     
     /* Profile header styles */
@@ -969,18 +1206,53 @@ label.required:after,
             </div>
             {% endif %}
             
-            <!-- User Profile Image Section - Moved to top -->
-            <div class="profile-header">
+            <!-- Enhanced User Profile Image Section -->
+            <div class="profile-section">
                 <div class="profile-image-container">
                     <img id="id_picurl" src="" class="user-image">
-                    <input type="file" id="upload" class="hidden" name="uploadPhoto">
-                    <label for="upload" class="profile-upload-button">
+                    <div class="photo-upload-overlay">
+                        <i class="fa-solid fa-camera"></i>
+                        <span>تغییر عکس</span>
+                    </div>
+                    <input type="file" id="upload" class="hidden" name="uploadPhoto" accept="image/*">
+                    <label for="upload" class="photo-upload-button">
                         <i class="fa-solid fa-camera"></i>
                     </label>
                 </div>
+                
                 <div class="profile-name-display">
                     <div id="profileNameDisplay" class="profile-name">انتخاب کاربر</div>
                     <div id="profileUsernameDisplay" class="profile-username">نام کاربری</div>
+                </div>
+                
+                <!-- Enhanced Photo Upload Zone -->
+                <div class="photo-upload-zone" id="photoUploadZone">
+                    <div class="upload-instructions">
+                        <div class="upload-icon">
+                            <i class="fa-solid fa-cloud-upload-alt"></i>
+                        </div>
+                        <div class="upload-text">انتخاب یا کشیدن عکس پروفایل</div>
+                        <div class="upload-subtext">عکس پروفایل خود را انتخاب کنید یا در این ناحیه رها کنید</div>
+                        <div class="file-types">JPG, PNG, GIF - حداکثر 5MB</div>
+                        <button type="button" class="upload-button" onclick="document.getElementById('upload').click()">
+                            <i class="fa-solid fa-folder-open"></i>
+                            انتخاب فایل
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- File Preview -->
+                <div class="file-preview" id="filePreview">
+                    <div class="file-info">
+                        <i class="fa-solid fa-file-image"></i>
+                        <div class="file-details">
+                            <div class="file-name" id="fileName"></div>
+                            <div class="file-size" id="fileSize"></div>
+                        </div>
+                        <button type="button" class="remove-file" id="removeFile">
+                            <i class="fa-solid fa-times"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
             
