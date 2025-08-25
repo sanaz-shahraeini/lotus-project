@@ -16,6 +16,7 @@ urlpatterns = [
     path('support/', views.support, name='support'),
     path('errors/', views.errorsPage.as_view(), name='errors'),
     path('user/', views.UserForm.as_view(), name='user'),
+    path('get-user-data/', views.get_user_data, name='get_user_data'),
     path('userprofile/', views.userprofile_view, name='userprofile'),
     path('change-password/', views.ChangePasswordView.as_view(), name='change_password'),
     path('forgot-password/', views.ForgotPasswordView.as_view(), name='forgot_password'),

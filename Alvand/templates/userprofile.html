@@ -691,9 +691,92 @@
         appearance: none;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
         background-repeat: no-repeat;
-        background-position: right 0.5rem center;
+        background-position: left 0.5rem center;
         background-size: 1rem;
+        padding-left: 2rem;
+        padding-right: 0.75rem;
+        cursor: pointer;
+    }
+    
+    /* Special styling for editOrAdd dropdown to make selection more visible */
+    #id_editOrAdd {
+        font-weight: 600;
+        color: var(--primary-color);
+        border: 2px solid var(--border-color);
+        background-color: var(--card-bg);
+        transition: all 0.3s ease;
+    }
+    
+    #id_editOrAdd:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
+        outline: none;
+    }
+    
+    #id_editOrAdd option {
+        padding: 8px 12px;
+        font-weight: 600;
+        background-color: var(--card-bg);
+        color: var(--text-color);
+    }
+    
+    #id_editOrAdd option:checked,
+    #id_editOrAdd option[selected] {
+        background-color: var(--primary-color) !important;
+        color: white !important;
+        font-weight: bold;
+    }
+    
+    #id_editOrAdd option[value="edit"] {
+        color: #28a745; /* Green for edit */
+    }
+    
+    #id_editOrAdd option[value="add"] {
+        color: #007bff; /* Blue for add */
+    }
+    
+    #id_editOrAdd option[value="none"] {
+        color: #6c757d; /* Gray for none */
+    }
+    
+    /* RTL-specific adjustments for dropdown arrows */
+    html[dir="rtl"] #id_editOrAdd,
+    html[dir="rtl"] #id_gender, 
+    html[dir="rtl"] #id_maritalstatus,
+    html[dir="rtl"] #id_military, 
+    html[dir="rtl"] #id_educationdegree, 
+    html[dir="rtl"] #id_province,
+    html[dir="rtl"] #id_groupname {
+        background-position: right 0.5rem center;
         padding-right: 2rem;
+        padding-left: 0.75rem;
+    }
+    
+    /* For LTR layout (default) */
+    html:not([dir="rtl"]) #id_editOrAdd,
+    html:not([dir="rtl"]) #id_gender,
+    html:not([dir="rtl"]) #id_maritalstatus,
+    html:not([dir="rtl"]) #id_military,
+    html:not([dir="rtl"]) #id_educationdegree,
+    html:not([dir="rtl"]) #id_province,
+    html:not([dir="rtl"]) #id_groupname {
+        background-position: right 0.5rem center;
+        padding-right: 2rem;
+        padding-left: 0.75rem;
+    }
+    
+    /* Since this is RTL by default, ensure proper positioning */
+    body[dir="rtl"] #id_editOrAdd,
+    body[dir="rtl"] #id_gender,
+    body[dir="rtl"] #id_maritalstatus,
+    body[dir="rtl"] #id_military,
+    body[dir="rtl"] #id_educationdegree,
+    body[dir="rtl"] #id_province,
+    body[dir="rtl"] #id_groupname {
+        background-position: left 0.5rem center;
+        padding-left: 2rem;
+        padding-right: 0.75rem;
+        text-align: right;
     }
     
     #id_address {
@@ -1258,6 +1341,94 @@ label.required:after,
             // Allow form to continue submitting
             return true;
         });
+        
+        // DEBUGGING: Add test functions to window object for console testing
+        window.testEditFunctionality = function() {
+            console.log('=== EDIT FUNCTIONALITY TEST ===');
+            console.log('editOrAdd element exists:', $('#id_editOrAdd').length > 0);
+            console.log('editOrAdd value:', $('#id_editOrAdd').val());
+            console.log('username element exists:', $('#id_username').length > 0);
+            console.log('username value:', $('#id_username').val());
+            
+            // Test mode change
+            console.log('Changing mode to edit...');
+            $('#id_editOrAdd').val('edit').trigger('change');
+            
+            // Test username change
+            console.log('Setting username to test user...');
+            $('#id_username').val('yek_nafar').trigger('input');
+            
+            console.log('Test completed. Check console for AJAX requests.');
+        };
+        
+        window.testAjaxDirectly = function(username) {
+            const testUsername = username || 'yek_nafar';
+            console.log('Testing AJAX directly for user:', testUsername);
+            
+            $.ajax({
+                url: '/get-user-data/',
+                method: 'GET',
+                data: { username: testUsername },
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                success: function(response) {
+                    console.log('AJAX Success:', response);
+                },
+                error: function(xhr, status, error) {
+                    console.log('AJAX Error:', error);
+                    console.log('Status:', status);
+                    console.log('Response:', xhr.responseText);
+                }
+            });
+        };
+        
+        // Test the complete edit flow
+        window.testCompleteEditFlow = function(username) {
+            const testUsername = username || 'yek_nafar';
+            console.log('=== TESTING COMPLETE EDIT FLOW ===');
+            
+            // Step 1: Set mode to edit
+            console.log('Step 1: Setting mode to edit');
+            $('#id_editOrAdd').val('edit');
+            
+            // Step 2: Set username
+            console.log('Step 2: Setting username to:', testUsername);
+            $('#id_username').val(testUsername);
+            
+            // Step 3: Trigger the edit functionality
+            console.log('Step 3: Triggering change events');
+            $('#id_editOrAdd').trigger('change');
+            $('#id_username').trigger('input');
+            
+            console.log('Test initiated. Check console for AJAX requests and form population.');
+        };
+        
+        // Test form submission with proper values
+        window.testFormSubmission = function() {
+            console.log('=== TESTING FORM SUBMISSION ===');
+            
+            // Set required values
+            $('#id_editOrAdd').val('add');
+            $('#id_username').val('test_user_' + Date.now());
+            $('#id_extension').val('1001');
+            $('#id_groupname').val('member');
+            
+            // Select at least one extension access
+            $('#accessToExtsDp input[type="checkbox"]:first').prop('checked', true);
+            
+            // Select at least one permission
+            $('#id_can_view').prop('checked', true);
+            
+            // Check form data before submission
+            console.log('Form data before submission:');
+            console.log('editOrAdd:', $('#id_editOrAdd').val());
+            console.log('username:', $('#id_username').val());
+            console.log('extension:', $('#id_extension').val());
+            console.log('groupname:', $('#id_groupname').val());
+            
+            console.log('Ready to submit. Click save button manually or call $("button[name=saveUser]").click()');
+        };
     });
 </script>
 {% endblock %}

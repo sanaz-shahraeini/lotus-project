@@ -1,6 +1,6 @@
 import datetime
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage, InvalidPage
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from .user_utils import getUserinfoByUsername, getTupleIndex
@@ -1640,7 +1640,7 @@ class UserForm(FormView, View):
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         data['pageTitle'] = "تنظیمات کاربری"
-        data['userform'] = self.form_class
+        data['userform'] = self.form_class()
         data['infosform'] = InfosForm()
         data['permform'] = PermissionsForm()
         getUser = getUserinfoByUsername(checkSession(self.request), "groupname")
@@ -1806,6 +1806,13 @@ class UserForm(FormView, View):
         # Handle the different actions
         if saveUser:
             print(f"Processing saveUser action with mode: {editOrAdd}")
+            
+            # Validate editOrAdd field
+            if not editOrAdd or editOrAdd in ['none', '']:
+                print("editOrAdd validation failed - must select edit or add mode")
+                messages.error(self.request, "لطفا نوع عملیات (ویرایش یا اضافه) را انتخاب کنید.")
+                return redirect(self.success_url)
+            
             if editOrAdd == 'add':
                 print("Entering add user mode")
                 # Check write permission for adding users
@@ -2397,6 +2404,81 @@ class UserForm(FormView, View):
             for field, errors in form.errors.items():
                 print(f"Field '{field}' errors: {errors}")
             return self.form_invalid(form)
+
+
+def get_user_data(request):
+    """AJAX endpoint to fetch user data for editing."""
+    print(f"get_user_data called - Method: {request.method}")
+    print(f"Headers: {dict(request.headers)}")
+    print(f"GET params: {dict(request.GET)}")
+    
+    if request.method == 'GET' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        username = request.GET.get('username')
+        print(f"AJAX request for username: {username}")
+        
+        if not username:
+            return JsonResponse({'success': False, 'error': 'Username is required'})
+        
+        try:
+            # Get user data
+            user = Users.objects.filter(username__iexact=username).first()
+            if not user:
+                return JsonResponse({'success': False, 'error': 'User not found'})
+            
+            # Get user info
+            user_info = Infos.objects.filter(user=user).first()
+            
+            # Get user permissions
+            permissions = Permissions.objects.filter(user=user).first()
+            
+            # Prepare user data
+            user_data = {
+                'username': user.username,
+                'name': user.name or '',
+                'lastname': user.lastname or '',
+                'extension': user.extension,
+                'email': user.email or '',
+                'groupname': user.groupname or '',
+                'active': user.active,
+                'usersextension': user.usersextension or [],
+                'picurl': user.picurl or 'avatar.png'
+            }
+            
+            # Add user info if exists
+            if user_info:
+                user_data.update({
+                    'nationalcode': user_info.nationalcode or '',
+                    'birthdate': user_info.birthdate.strftime('%Y/%m/%d') if user_info.birthdate else '',
+                    'telephone': user_info.telephone or '',
+                    'phonenumber': user_info.phonenumber or '',
+                    'gender': user_info.gender or '',
+                    'maritalstatus': user_info.maritalstatus or '',
+                    'military': user_info.military or '',
+                    'educationfield': user_info.educationfield or '',
+                    'educationdegree': user_info.educationdegree or '',
+                    'province': user_info.province or '',
+                    'city': user_info.city or '',
+                    'accountnumbershaba': user_info.accountnumbershaba or '',
+                    'cardnumber': user_info.cardnumber or '',
+                    'accountnumber': user_info.accountnumber or '',
+                    'address': user_info.address or ''
+                })
+            
+            # Add permissions if exists
+            if permissions:
+                user_data.update({
+                    'can_view': permissions.can_view,
+                    'can_write': permissions.can_write,
+                    'can_modify': permissions.can_modify,
+                    'can_delete': permissions.can_delete
+                })
+            
+            return JsonResponse({'success': True, 'user_data': user_data})
+            
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request'})
 
 
 def index(request):

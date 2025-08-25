@@ -20,6 +20,10 @@ class userProfileForm(forms.ModelForm):
         self.fields['username'].required = True  # نام کاربری - required
         # Note: groupname and usersextension are set as required in their field definitions below
         
+        # Ensure editOrAdd has a default value
+        if 'editOrAdd' in self.fields:
+            self.fields['editOrAdd'].initial = 'none'
+            
         user_choices = [(user.extension, user.extension) for user in Users.objects.all()]
         extgps = [(extgp.label, extgp.label) for extgp in Extensionsgroups.objects.all()]
         recs = [(int(rec.extension), int(rec.extension)) for rec in Records.objects.all()]
@@ -38,14 +42,14 @@ class userProfileForm(forms.ModelForm):
                 attrs={'class': 'w-[140px] h-6 text-gray-600 text-xs py-[2px] appearance-none'}))
 
     usersextension = forms.MultipleChoiceField(choices=[], required=False)
-    editOrAdd = forms.ChoiceField(choices=EDIT_OR_ADD, required=True, widget=forms.Select(
-        attrs={'required': True, 'class': 'w-[140px] h-6  text-gray-600 py-[2px] text-xs appearance-none'}))
+    editOrAdd = forms.ChoiceField(choices=EDIT_OR_ADD, required=False, initial='none', widget=forms.Select(
+        attrs={'class': 'w-[140px] h-6  text-gray-600 py-[2px] text-xs appearance-none', 'data-default': 'none'}))
     groupname = forms.ChoiceField(choices=[("", "------")], required=False, widget=forms.Select(
             attrs={'class': 'w-[140px] h-6 text-gray-600 text-xs py-[2px] appearance-none'}))
 
     class Meta:
         model = Users
-        fields = ["editOrAdd", "username", "name", "lastname", "extension", "usersextension", "groupname", "email",
+        fields = ["username", "name", "lastname", "extension", "usersextension", "groupname", "email",
                   "email_verified_at", "active"]
 
         widgets = {
