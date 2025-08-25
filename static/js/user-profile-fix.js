@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Forward declaration of updateEditOrAddVisualState function
     let updateEditOrAddVisualState;
     
-    // Enhanced Photo Upload Functionality
+    // Photo Upload Functionality
     function initializePhotoUpload() {
         const uploadInput = document.getElementById('upload');
         const uploadZone = document.getElementById('photoUploadZone');
@@ -12,90 +12,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const removeFile = document.getElementById('removeFile');
         const userImage = document.getElementById('id_picurl');
         
-        console.log('Initializing photo upload...');
-        console.log('Upload input found:', !!uploadInput);
-        console.log('Upload zone found:', !!uploadZone);
-        console.log('Form element:', document.getElementById('form'));
-        
-        if (!uploadInput) {
-            console.error('Upload input not found!');
+        if (!uploadInput || !uploadZone) {
             return;
         }
         
-        if (!uploadZone) {
-            console.error('Upload zone not found!');
-            return;
-        }
-        
-        // Verify form association
-        console.log('Upload input name:', uploadInput.name);
-        console.log('Upload input form:', uploadInput.form);
-        console.log('Upload input parent form:', uploadInput.closest('form'));
-        
-        // Add test function for file selection with global storage check
-        window.testFileSelection = function() {
-            const fileInput = document.getElementById('upload');
-            console.log('=== ENHANCED FILE SELECTION TEST ===');
-            console.log('File input element:', fileInput);
-            console.log('File input name:', fileInput ? fileInput.name : 'N/A');
-            console.log('File input form:', fileInput ? fileInput.form : 'N/A');
-            console.log('Files in input:', fileInput ? fileInput.files.length : 'N/A');
-            console.log('Global file available:', !!window.selectedUploadFile);
-            console.log('Backup file available:', fileInput ? !!fileInput._selectedFile : 'N/A');
-            
-            // Check all possible file sources
-            const inputFile = fileInput && fileInput.files.length > 0 ? fileInput.files[0] : null;
-            const globalFile = window.selectedUploadFile;
-            const backupFile = fileInput ? fileInput._selectedFile : null;
-            
-            console.log('File sources:');
-            if (inputFile) {
-                console.log('  Input file:', { name: inputFile.name, size: inputFile.size });
-            }
-            if (globalFile) {
-                console.log('  Global file:', { name: globalFile.name, size: globalFile.size });
-            }
-            if (backupFile) {
-                console.log('  Backup file:', { name: backupFile.name, size: backupFile.size });
-            }
-            
-            // Test FormData creation
-            const form = document.getElementById('form');
-            if (form) {
-                const formData = new FormData(form);
-                const formFile = formData.get('uploadPhoto');
-                console.log('Form file:', formFile);
-                
-                if (globalFile) {
-                    console.log('Testing manual file injection...');
-                    formData.set('uploadPhoto', globalFile);
-                    const injectedFile = formData.get('uploadPhoto');
-                    console.log('Injected file:', {
-                        name: injectedFile.name,
-                        size: injectedFile.size,
-                        type: injectedFile.type
-                    });
-                }
-            }
-            
-            console.log('=== END ENHANCED TEST ===');
-        };
-        
-        // Manual file upload trigger for testing
-        window.triggerFileUpload = function() {
-            const fileInput = document.getElementById('upload');
-            if (fileInput) {
-                fileInput.click();
-            } else {
-                console.error('File input not found');
-            }
-        };
-        
-        // Call test function after initialization
-        setTimeout(() => {
-            console.log('Auto-running enhanced file selection test...');
-            window.testFileSelection();
-        }, 2000);
+
         
         // File validation settings
         const maxFileSize = 5 * 1024 * 1024; // 5MB
@@ -199,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
                    file.size > 0;
         }
         
-        // Enhanced file input monitoring with mutation observer
+        // File input monitoring with mutation observer
         function setupFileInputMonitoring() {
             if (!uploadInput) return;
             
@@ -207,7 +128,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const observer = new MutationObserver(function(mutations) {
                 mutations.forEach(function(mutation) {
                     if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
-                        console.log('File input value changed via attribute');
                         validateCurrentFiles();
                     }
                 });
@@ -223,10 +143,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (uploadInput.files.length > 0) {
                     const file = uploadInput.files[0];
                     if (!isValidFile(file)) {
-                        console.log('Invalid file detected during monitoring, clearing:', {
-                            name: file.name,
-                            size: file.size
-                        });
                         uploadInput.value = '';
                         window.selectedUploadFile = null;
                         uploadInput._selectedFile = null;
@@ -237,8 +153,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Run validation every 2 seconds
             setInterval(validateCurrentFiles, 2000);
-            
-            console.log('File input monitoring setup complete');
         }
         
         // Initialize monitoring
@@ -251,7 +165,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (uploadInput && uploadInput.files.length > 0) {
             const existingFile = uploadInput.files[0];
             if (!isValidFile(existingFile)) {
-                console.log('Found invalid/empty file in input, clearing it');
                 uploadInput.value = '';
             }
         }
@@ -261,10 +174,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const uploadPhotoFile = formData.get('uploadPhoto');
             if (uploadPhotoFile && uploadPhotoFile instanceof File) {
                 if (!isValidFile(uploadPhotoFile)) {
-                    console.log('Removing invalid file from FormData:', {
-                        name: uploadPhotoFile.name,
-                        size: uploadPhotoFile.size
-                    });
                     formData.delete('uploadPhoto');
                     return false; // No valid file
                 }
@@ -293,46 +202,22 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // File input change event with direct file storage
         uploadInput.addEventListener('change', function(e) {
-            console.log('File input change event triggered');
-            console.log('Event target:', e.target);
-            console.log('Files selected:', e.target.files.length);
-            
             if (e.target.files.length > 0) {
                 const file = e.target.files[0];
-                console.log('File details:', {
-                    name: file.name,
-                    size: file.size,
-                    type: file.type,
-                    valid: isValidFile(file)
-                });
                 
                 if (isValidFile(file)) {
-                    console.log('Valid file selected, processing...');
-                    
                     // Store file globally for reliable access
                     window.selectedUploadFile = file;
                     uploadInput._selectedFile = file;
                     
-                    console.log('File stored globally and in input backup');
                     handleFileSelect(file);
-                    
-                    // Verify file is still accessible
-                    setTimeout(() => {
-                        console.log('File accessibility check:');
-                        console.log('  Input files:', e.target.files.length);
-                        console.log('  Input file valid:', e.target.files.length > 0 ? isValidFile(e.target.files[0]) : false);
-                        console.log('  Global file:', !!window.selectedUploadFile);
-                        console.log('  Backup file:', !!uploadInput._selectedFile);
-                    }, 100);
                 } else {
-                    console.log('Invalid file detected (empty or corrupted), clearing selection');
                     e.target.value = '';
                     window.selectedUploadFile = null;
                     uploadInput._selectedFile = null;
                     hideFilePreview();
                 }
             } else {
-                console.log('No file selected');
                 window.selectedUploadFile = null;
                 uploadInput._selectedFile = null;
                 hideFilePreview();
@@ -342,12 +227,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Remove file functionality with complete cleanup
         if (removeFile) {
             removeFile.addEventListener('click', function() {
-                console.log('Remove file clicked');
                 uploadInput.value = '';
                 uploadInput._selectedFile = null;
                 window.selectedUploadFile = null;
                 hideFilePreview();
-                console.log('File removed and all references cleared');
             });
         }
         
@@ -380,11 +263,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const files = e.dataTransfer.files;
             if (files.length > 0) {
                 const file = files[0];
-                console.log('File dropped:', file.name, 'Size:', file.size);
                 
                 if (isValidFile(file)) {
-                    console.log('Valid file dropped, processing...');
-                    
                     // Store file globally and in input
                     window.selectedUploadFile = file;
                     uploadInput._selectedFile = file;
@@ -394,18 +274,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     dt.items.add(file);
                     uploadInput.files = dt.files;
                     
-                    console.log('File set to input via drag and drop');
                     handleFileSelect(file);
-                    
-                    // Verify the file is properly set
-                    setTimeout(() => {
-                        console.log('Drag drop file verification:');
-                        console.log('  Input files:', uploadInput.files.length);
-                        console.log('  Input file valid:', uploadInput.files.length > 0 ? isValidFile(uploadInput.files[0]) : false);
-                        console.log('  Global file:', !!window.selectedUploadFile);
-                    }, 100);
                 } else {
-                    console.log('Invalid file dropped, ignoring');
                     showError('فایل نامعتبر است. لطفا یک فایل معتبر انتخاب کنید.');
                 }
             }
@@ -441,12 +311,10 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
         
-        // Form submission interceptor with enhanced file validation
+        // Form submission interceptor with file validation
         const form = document.getElementById('form');
         if (form) {
             form.addEventListener('submit', function(e) {
-                console.log('=== FORM SUBMISSION INTERCEPTED ===');
-                
                 const fileInput = document.getElementById('upload');
                 
                 // Get all possible file sources and validate them
@@ -457,9 +325,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     const inputFile = fileInput.files[0];
                     if (isValidFile(inputFile)) {
                         validFile = inputFile;
-                        console.log('Valid file found in input:', { name: inputFile.name, size: inputFile.size });
-                    } else {
-                        console.log('Invalid file in input, ignoring:', { name: inputFile.name, size: inputFile.size });
                     }
                 }
                 
@@ -467,9 +332,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!validFile && window.selectedUploadFile) {
                     if (isValidFile(window.selectedUploadFile)) {
                         validFile = window.selectedUploadFile;
-                        console.log('Valid file found in global storage:', { name: validFile.name, size: validFile.size });
                     } else {
-                        console.log('Invalid file in global storage, ignoring');
                         window.selectedUploadFile = null;
                     }
                 }
@@ -478,34 +341,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!validFile && fileInput && fileInput._selectedFile) {
                     if (isValidFile(fileInput._selectedFile)) {
                         validFile = fileInput._selectedFile;
-                        console.log('Valid file found in backup storage:', { name: validFile.name, size: validFile.size });
                     } else {
-                        console.log('Invalid file in backup storage, ignoring');
                         fileInput._selectedFile = null;
                     }
                 }
-                
-                console.log('File validation summary:');
-                console.log('  Input files count:', fileInput ? fileInput.files.length : 0);
-                console.log('  Global file available:', !!window.selectedUploadFile);
-                console.log('  Backup file available:', fileInput ? !!fileInput._selectedFile : false);
-                console.log('  Valid file selected:', !!validFile);
                 
                 // If we have a valid file, handle upload
                 if (validFile) {
                     // Prevent default submission
                     e.preventDefault();
                     
-                    console.log('Processing file upload for:', {
-                        name: validFile.name,
-                        size: validFile.size,
-                        type: validFile.type
-                    });
-                    
                     // Validate file before submission
                     const errors = validateFile(validFile);
                     if (errors.length > 0) {
-                        console.error('File validation errors:', errors);
                         showError(errors.join(' '));
                         return false;
                     }
@@ -525,18 +373,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Final validation of FormData
                     const finalFile = formData.get('uploadPhoto');
                     if (!finalFile || !isValidFile(finalFile)) {
-                        console.error('Final validation failed - invalid file in FormData');
                         showError('خطا در بارگذاری فایل. لطفا دوباره تلاش کنید.');
                         return false;
-                    }
-                    
-                    console.log('FormData created with validated file:');
-                    for (let [key, value] of formData.entries()) {
-                        if (value instanceof File) {
-                            console.log(`  ${key}: File(${value.name}, ${value.size} bytes, ${value.type})`);
-                        } else {
-                            console.log(`  ${key}:`, value);
-                        }
                     }
                     
                     // Show loading state
@@ -554,11 +392,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             'X-Requested-With': 'XMLHttpRequest',
                         }
                     }).then(response => {
-                        console.log('Form submitted successfully');
                         // Reload the page to show results
                         window.location.reload();
                     }).catch(error => {
-                        console.error('Form submission error:', error);
                         // Re-enable buttons on error
                         submitButtons.forEach(btn => {
                             btn.disabled = false;
@@ -569,13 +405,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     return false;
                 } else {
-                    console.log('No valid file to upload, proceeding with normal submission');
-                    
                     // Clean up any invalid files in the form data to prevent empty file submissions
                     if (fileInput && fileInput.files.length > 0) {
                         const inputFile = fileInput.files[0];
                         if (!isValidFile(inputFile)) {
-                            console.log('Clearing invalid file from input before submission');
                             fileInput.value = '';
                         }
                     }
@@ -811,15 +644,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to populate form with user data
     function populateForm(userData) {
-        console.log('populateForm called with:', userData);
-        
         // Preserve any currently selected file during form population
         const uploadInput = document.getElementById('upload');
         const preservedFile = uploadInput && uploadInput._selectedFile;
-        
-        if (preservedFile) {
-            console.log('Preserving selected file during form population:', preservedFile.name);
-        }
         // Basic user info
         $('#id_name').val(userData.name || '');
         $('#id_lastname').val(userData.lastname || '');
@@ -877,25 +704,19 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Restore preserved file if it exists
         if (preservedFile && uploadInput) {
-            console.log('Restoring preserved file after form population');
             try {
                 const dt = new DataTransfer();
                 dt.items.add(preservedFile);
                 uploadInput.files = dt.files;
                 uploadInput._selectedFile = preservedFile;
-                console.log('File restored successfully');
             } catch (error) {
-                console.error('Failed to restore preserved file:', error);
+                // Silent fail for file restoration
             }
         }
-        
-        console.log('Form population completed');
     }
 
     // Function to clear form
     function clearForm() {
-        console.log('clearForm called');
-        
         // Store current editOrAdd value to preserve it
         const currentMode = $('#id_editOrAdd').val();
         
@@ -935,12 +756,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Only clear file input if not in edit mode or if explicitly requested
         const uploadInput = document.getElementById('upload');
         if (uploadInput && currentMode !== 'edit') {
-            console.log('Clearing file input (not in edit mode)');
             uploadInput.value = '';
             uploadInput._selectedFile = null;
             window.selectedUploadFile = null;
-        } else {
-            console.log('Preserving file input (in edit mode)');
         }
         
         // Remove any error messages
@@ -951,10 +769,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (uploadZone) {
             uploadZone.classList.remove('drag-over', 'active', 'error');
         }
-                $('#profileNameDisplay').text('انتخاب کاربر');
+        $('#profileNameDisplay').text('انتخاب کاربر');
         $('#profileUsernameDisplay').text('نام کاربری');
-        
-        console.log('Form cleared, mode preserved:', currentMode);
     }
 
     // Listen for username changes in edit mode
@@ -993,8 +809,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const mode = $(this).val();
             const username = $('#id_username').val();
             
-            console.log('Mode changed to:', mode, 'for username:', username);
-            
             // Preserve file selection during mode changes
             const uploadInput = document.getElementById('upload');
             const preservedFile = uploadInput && uploadInput._selectedFile;
@@ -1022,7 +836,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Restore file if we're switching to add mode and had a file
                 if (preservedFile) {
-                    console.log('Restoring file after mode change to add');
                     try {
                         const dt = new DataTransfer();
                         dt.items.add(preservedFile);
@@ -1037,9 +850,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             fileSize.textContent = formatFileSize(preservedFile.size);
                             filePreview.classList.add('show');
                         }
-                        console.log('File and preview restored after mode change');
                     } catch (error) {
-                        console.error('Failed to restore file after mode change:', error);
+                        // Silent fail for file restoration
                     }
                 }
             } else if (mode === 'edit' && username && username.trim() !== '') {
@@ -1060,7 +872,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add a function to explicitly fix field states
     function fixFieldStates() {
         const mode = $('#id_editOrAdd').val();
-        console.log('Fixing field states for mode:', mode);
         
         if (mode === 'add' || mode === 'none' || !mode) {
             // Ensure username and extension are editable
@@ -1071,7 +882,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 'pointer-events': '',
                 'opacity': ''
             });
-            console.log('Fields made editable for add/none mode');
         } else if (mode === 'edit') {
             // In edit mode, username should be readonly but extension can be editable
             $('#id_username').prop('readonly', true).css({
@@ -1079,7 +889,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 'cursor': 'not-allowed'
             });
             $('#id_extension').prop('readonly', false).prop('disabled', false);
-            console.log('Username readonly, extension editable for edit mode');
         }
     }
     
