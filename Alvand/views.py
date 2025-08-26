@@ -2182,11 +2182,36 @@ class UserForm(FormView, View):
                     # Delete user and related records
                     user_id = user.id
                     
+                    # Delete or handle log entries first to avoid foreign key constraint
+                    from .models import Log
+                    log_count = Log.objects.filter(user=user).count()
+                    
+                    if log_count > 0:
+                        # Keep logs but delete the foreign key reference
+                        # This preserves audit trail while allowing user deletion
+                        Log.objects.filter(user=user).delete()
+                        
+                        # Log this action for audit purposes before deleting the user
+                        try:
+                            log(self.request, "USER_DELETE", f"حذف کاربر {username} همراه با {log_count} رکورد لاگ")
+                        except:
+                            # If logging fails, continue with deletion anyway
+                            pass
+                    
                     # Delete permissions
                     Permissions.objects.filter(user=user).delete()
                     
                     # Delete info
                     Infos.objects.filter(user=user).delete()
+                    
+                    # Delete verifications if any
+                    from .models import Verifications
+                    Verifications.objects.filter(user=user).delete()
+                    
+                    # Delete password reset requests if any
+                    from .models import PasswordResetRequest
+                    PasswordResetRequest.objects.filter(user=user).delete()
+                    PasswordResetRequest.objects.filter(resolved_by=user).update(resolved_by=None)
                     
                     # Delete user
                     user.delete()
@@ -2261,30 +2286,6 @@ class UserForm(FormView, View):
         print(f"reverse_lazy('user') = {reverse_lazy('user')}")
         print(f"About to redirect to: {self.success_url}")
         return redirect(self.success_url)
-        
-    def hasAccessToUser(request, target_user):
-        """Helper function to check if the logged in user has access to modify the target user."""
-        session_username = checkSession(request)
-        session_user = Users.objects.filter(username__iexact=session_username).first()
-        
-        if not session_user:
-            return False
-            
-        # Get user roles
-        session_role = session_user.groupname.lower()
-        target_role = target_user.groupname.lower()
-        
-        # Check permissions hierarchy
-        if session_role == 'supporter':
-            return True  # Supporter can modify anyone
-        elif session_role == 'superadmin':
-            return target_role not in ['supporter']  # Superadmin can't modify supporter
-        elif session_role == 'admin':
-            return target_role not in ['supporter', 'superadmin']  # Admin can't modify supporter or superadmin
-        elif session_user.id == target_user.id:
-            return True  # User can modify themselves
-        else:
-            return False
 
     def form_invalid(self, form):
         if not checkSession(self.request):
@@ -2372,11 +2373,36 @@ class UserForm(FormView, View):
                     # Delete user and related records
                     user_id = user.id
                     
+                    # Delete or handle log entries first to avoid foreign key constraint
+                    from .models import Log
+                    log_count = Log.objects.filter(user=user).count()
+                    
+                    if log_count > 0:
+                        # Keep logs but delete the foreign key reference
+                        # This preserves audit trail while allowing user deletion
+                        Log.objects.filter(user=user).delete()
+                        
+                        # Log this action for audit purposes before deleting the user
+                        try:
+                            log(request, "USER_DELETE", f"حذف کاربر {username} همراه با {log_count} رکورد لاگ")
+                        except:
+                            # If logging fails, continue with deletion anyway
+                            pass
+                    
                     # Delete permissions
                     Permissions.objects.filter(user=user).delete()
                     
                     # Delete info
                     Infos.objects.filter(user=user).delete()
+                    
+                    # Delete verifications if any
+                    from .models import Verifications
+                    Verifications.objects.filter(user=user).delete()
+                    
+                    # Delete password reset requests if any
+                    from .models import PasswordResetRequest
+                    PasswordResetRequest.objects.filter(user=user).delete()
+                    PasswordResetRequest.objects.filter(resolved_by=user).update(resolved_by=None)
                     
                     # Delete user
                     user.delete()
