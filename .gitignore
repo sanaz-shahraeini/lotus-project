@@ -59,7 +59,7 @@ coverage.xml
 *.mo
 
 # Django stuff
-staticfiles/
+# staticfiles/
 
 # Celery
 celerybeat-schedule

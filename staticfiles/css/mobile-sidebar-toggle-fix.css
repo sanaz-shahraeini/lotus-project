@@ -1,0 +1,64 @@
+/* 
+ * Mobile Sidebar Toggle Button Fix
+ * Removes background and adds proper styling for the toggle button
+ */
+
+/* Hide toggle button on desktop */
+@media (min-width: 1024px) {
+    #toggle-menu,
+    #toggle-sidebar-mobile {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+}
+
+#toggle-menu,
+#toggle-sidebar-mobile {
+    background-color: rgba(255, 255, 255, 0.8) !important; /* Semi-transparent background */
+    border: none !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important; /* Add subtle shadow */
+    position: fixed !important; /* Ensure it stays fixed on screen */
+    z-index: 9999 !important; /* Very high z-index to be above all other elements */
+}
+
+#toggle-menu:hover,
+#toggle-sidebar-mobile:hover {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+#toggle-menu:focus,
+#toggle-sidebar-mobile:focus {
+    outline: none !important;
+}
+
+#toggle-menu i,
+#toggle-sidebar-mobile i {
+    color: var(--primary-color, #4f46e5) !important; /* Use theme color or default to indigo */
+    font-size: 1.25rem !important;
+}
+
+/* Dark mode adjustments */
+html.dark #toggle-menu,
+html.dark #toggle-sidebar-mobile {
+    background-color: rgba(31, 41, 55, 0.8) !important; /* Dark semi-transparent background */
+}
+
+html.dark #toggle-menu i,
+html.dark #toggle-sidebar-mobile i {
+    color: var(--text-color, #F5F7FA) !important;
+}
+
+/* Make sure the button is easily clickable but doesn't have a visible background */
+#toggle-menu,
+#toggle-sidebar-mobile {
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    transition: background-color 0.2s ease !important;
+    pointer-events: auto !important; /* Ensure it's clickable */
+    cursor: pointer !important;
+}

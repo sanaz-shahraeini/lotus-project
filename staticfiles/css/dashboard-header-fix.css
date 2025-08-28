@@ -1,0 +1,92 @@
+/* Dashboard Header Fixes for RTL Layout */
+
+/* Ensure the main dashboard header has proper RTL alignment */
+.dashboard-header {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+/* Fix the search input and button alignment */
+.dashboard-header .flex {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Ensure text elements are properly aligned */
+.dashboard-header h1, 
+.dashboard-header p {
+    text-align: right !important;
+}
+
+/* Fix the search input positioning */
+.dashboard-header input[type="search"] {
+    text-align: right;
+    padding-right: 2.5rem;
+    direction: rtl;
+}
+
+/* Fix the search icon positioning */
+.dashboard-header .absolute {
+    right: 0.75rem;
+    left: auto;
+}
+
+/* Fix the print button icon alignment */
+.dashboard-header button i {
+    margin-left: 0.375rem;
+    margin-right: 0;
+}
+
+/* Fix the flex layout for the header content */
+.dashboard-header .relative.z-10 {
+    width: 100%;
+}
+
+/* Improve RTL support for specific layouts */
+.dashboard-header .flex.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+/* Fix the header content alignment in mobile and desktop views */
+@media (max-width: 768px) {
+    .dashboard-header .flex-col {
+        align-items: flex-start;
+    }
+    
+    .dashboard-header input[type="search"] {
+        width: 100%;
+    }
+}
+
+/* Override Bootstrap and other framework RTL issues */
+.rtl .row {
+    flex-direction: row;
+}
+
+/* Fix for search input */
+.dashboard-header .relative input[type="search"] {
+    padding-right: 2.5rem;
+    padding-left: 1rem;
+}
+
+/* Fix for button styling */
+.dashboard-header button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+/* Ensure proper RTL layout for all header elements */
+.rtl {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+/* Properly position the search input and icon */
+.inset-y-0.right-0 {
+    right: 0 !important;
+    left: auto !important;
+} 

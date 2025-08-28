@@ -1,0 +1,64 @@
+/* Fix for mobile sidebar links and icons to match desktop view */
+
+/* Ensure consistent styling for links in mobile sidebar */
+#mobile-sidebar a,
+#mobile-sidebar button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 0.75rem 1rem !important;
+    text-align: right !important;
+    width: 100% !important;
+    color: white !important;
+}
+
+/* Fix icon alignment in mobile sidebar */
+#mobile-sidebar i {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 1.5rem !important;
+    margin-left: 0.75rem !important;
+    font-size: 1.1rem !important;
+}
+
+/* Ensure text is visible and properly aligned */
+#mobile-sidebar .sidebar-text {
+    display: inline-block !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 0.85rem !important;
+}
+
+/* Fix mobile sidebar padding and spacing */
+#mobile-sidebar {
+    padding-top: 1rem !important;
+}
+
+/* Fix profile section in mobile sidebar */
+#mobile-sidebar .text-center {
+    padding: 1rem 0.5rem !important;
+    margin-bottom: 1rem !important;
+}
+
+/* Fix dark mode styling for mobile sidebar links */
+html.dark #mobile-sidebar a,
+html.dark #mobile-sidebar button {
+    color: var(--text-color) !important;
+}
+
+html.dark #mobile-sidebar i {
+    color: var(--text-color) !important;
+}
+
+/* Fix hover states */
+#mobile-sidebar a:hover,
+#mobile-sidebar button:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+html.dark #mobile-sidebar a:hover,
+html.dark #mobile-sidebar button:hover {
+    background-color: var(--secondary-color) !important;
+}

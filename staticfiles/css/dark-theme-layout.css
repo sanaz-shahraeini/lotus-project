@@ -1,0 +1,125 @@
+/* Dark Theme Background and Layout */
+
+/* Main background */
+body, 
+.content-wrapper,
+.min-h-screen {
+    background-color: #0D1B2A !important;
+    color: #F5F7FA !important;
+}
+
+/* Settings container */
+.settings-container {
+    max-width: 1280px !important;
+    margin: 0 auto !important;
+    padding: 0 1rem !important;
+}
+
+/* Page header */
+.page-header {
+    border-bottom: 1px solid #1E2A3B !important;
+    margin-bottom: 2rem !important;
+    padding-bottom: 1rem !important;
+}
+
+.page-title {
+    color: #00BCD4 !important;
+    font-size: 1.5rem !important;
+    font-weight: 600 !important;
+}
+
+/* Section titles */
+.section-title {
+    color: #00BCD4 !important;
+    text-align: right !important;
+    font-size: 1.25rem !important;
+    margin-bottom: 1.5rem !important;
+    border-bottom: 1px solid #1E2A3B !important;
+    padding-bottom: 0.75rem !important;
+}
+
+/* Grid layout */
+.settings-grid {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    margin: 0 -1rem !important;
+}
+
+.settings-column {
+    padding: 0 1rem !important;
+    width: 100% !important;
+}
+
+@media (min-width: 1024px) {
+    .settings-column {
+        width: 50% !important;
+    }
+}
+
+/* Submit button container */
+.submit-container {
+    display: flex !important;
+    justify-content: center !important;
+    margin-top: 2rem !important;
+    margin-bottom: 2rem !important;
+}
+
+/* Dark mode adjustments for form elements */
+input::placeholder,
+textarea::placeholder {
+    color: #546E7A !important;
+}
+
+/* Focus states for form elements */
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none !important;
+    border-color: #00BCD4 !important;
+    box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.25) !important;
+}
+
+/* Hover states */
+.btn:hover,
+.dropdown-toggle:hover {
+    filter: brightness(110%) !important;
+}
+
+/* Active states */
+.btn:active,
+.dropdown-toggle:active {
+    filter: brightness(90%) !important;
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+    width: 8px !important;
+    height: 8px !important;
+}
+
+::-webkit-scrollbar-track {
+    background: #121824 !important;
+    border-radius: 4px !important;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #1E2A3B !important;
+    border-radius: 4px !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #263238 !important;
+}
+
+/* Specific styling for the access groups section header */
+.access-groups-section .card-header {
+    color: #00BCD4 !important;
+    font-size: 1.25rem !important;
+}
+
+/* Specific styling for the email settings section header */
+.email-settings-section .card-header {
+    color: #00BCD4 !important;
+    font-size: 1.25rem !important;
+} 

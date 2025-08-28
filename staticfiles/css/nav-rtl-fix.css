@@ -1,0 +1,24 @@
+/* Navigation RTL Layout Fixes */
+
+/* Fix for the main navigation header */
+header.bg-white.shadow-sm {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+/* Fix for the navigation flex container */
+header .flex.items-center.justify-between {
+    display: flex !important;
+    flex-direction: row !important;
+}
+
+/* Fix for mobile menu button and title */
+header .flex.items-center.gap-4 {
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* Ensure proper RTL layout for all text elements in header */
+header .text-slate-800 {
+    text-align: right !important;
+} 

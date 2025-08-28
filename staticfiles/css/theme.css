@@ -1,0 +1,129 @@
+/* Theme CSS for Lotus Application */
+/* Based on Lotus logo featuring aqua to blue gradients on a dark background */
+
+:root {
+    /* Primary Palette (Core UI Elements) */
+    --primary-color: #00BCD4;       /* Lotus Aqua */
+    --primary-hover: #29B6F6;       /* Sky Blue */
+    --bg-color: #F5F7FA;            /* White Smoke */
+    --text-color: #37474F;          /* Dark Gray */
+    --light-text: #90A4AE;          /* Medium Gray */
+    --border-color: #CFD8DC;        /* Light Gray */
+    --secondary-color: #F5F7FA;     /* White Smoke */
+    --card-bg: white;
+    --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+html.dark {
+    /* Primary Palette (Core UI Elements) */
+    --primary-color: #00BCD4;         /* Lotus Aqua */
+    --primary-hover: #29B6F6;         /* Sky Blue */
+    --bg-color: #121212;              /* Dark Navy */
+    --text-color: #F5F7FA;            /* White Smoke */
+    --light-text: #CFD8DC;            /* Light Gray */
+    
+    /* UI elements */
+    --secondary-color: #0D1B2A;       /* Deep Indigo */
+    --card-bg: #0D1B2A;               /* Deep Indigo */
+    --border-color: #37474F;          /* Dark Gray */
+    --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    
+    /* Additional dark mode variables */
+    --sidebar-bg: #0D1B2A;            /* Deep Indigo */
+    --header-bg: #0D1B2A;             /* Deep Indigo */
+    --header-gradient: linear-gradient(135deg, #00BCD4, #536DFE);
+    
+    /* Stats cards colors - Supporting Palette */
+    --stat-total-bg: #536DFE;         /* Electric Violet */
+    --stat-incoming-bg: #26A69A;      /* Emerald Green */
+    --stat-outgoing-bg: #80DEEA;      /* Soft Mint */
+    --stat-missed-bg: #FF7043;        /* Sunset Orange */
+    
+    /* Table specific */
+    --table-header-bg: #0D1B2A;       /* Deep Indigo */
+    --table-row-hover: rgba(255, 255, 255, 0.08);
+    --table-border: #37474F;          /* Dark Gray */
+    
+    /* Form elements */
+    --input-bg: #0D1B2A;              /* Deep Indigo */
+    --input-border: #37474F;          /* Dark Gray */
+    --input-focus: #00BCD4;           /* Lotus Aqua */
+    
+    /* Button colors */
+    --button-primary-bg: #00BCD4;     /* Lotus Aqua */
+    --button-primary-text: #F5F7FA;   /* White Smoke */
+    --button-secondary-bg: #0D1B2A;   /* Deep Indigo */
+    --button-secondary-text: #F5F7FA; /* White Smoke */
+}
+
+/* Theme toggle styles */
+/* Theme toggle button */
+.theme-toggle {
+    position: fixed;
+    top: 1.25rem;
+    left: 1.25rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    font-size: 1.1rem;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.theme-toggle:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.theme-toggle:active {
+    transform: translateY(0);
+}
+
+.theme-toggle-icon {
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Dark mode specific toggle styles */
+/* html.dark .theme-toggle {
+    background: var(--card-bg);
+    border-color: var(--border-color);
+} */
+
+html.dark .theme-toggle:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+
+
+/* Dark mode scrollbar */
+html.dark ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+html.dark ::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 5px;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+    background: var(--light-text);
+}

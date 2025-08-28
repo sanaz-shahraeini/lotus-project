@@ -1,0 +1,73 @@
+/* Direct fix for sidebar and dashboard layout */
+
+/* Override sidebar width and position */
+#sidebar {
+    width: 160px !important;
+    right: 0 !important;
+    position: fixed !important;
+    z-index: 40 !important;
+    background: linear-gradient(to bottom, #6366f1, #4f46e5);
+    transition: background-color 0.3s;
+}
+
+/* Dark mode sidebar background */
+html.dark #sidebar {
+    background: #1f2937 !important;
+    background-image: none !important;
+}
+
+/* Fix main content positioning */
+.main-content {
+    margin-right: 160px !important;
+    width: calc(100% - 160px) !important;
+    padding: 0 !important;
+}
+
+/* Reset container margins and padding */
+.min-h-screen {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Fix container padding */
+.container.mx-auto {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    max-width: none !important;
+}
+
+/* Add padding to inner content */
+.space-y-6 {
+    padding: 1rem !important;
+}
+
+/* Fix sidebar links */
+#sidebar a, #sidebar button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 0.75rem 1rem !important;
+    text-align: right !important;
+    width: 100% !important;
+}
+
+/* Fix sidebar icons */
+#sidebar i {
+    width: 20px !important;
+    margin-left: 8px !important;
+    text-align: center !important;
+}
+
+/* Mobile adjustments */
+@media (max-width: 1023px) {
+    .main-content {
+        margin-right: 0 !important;
+        width: 100% !important;
+    }
+    
+    #mobile-sidebar {
+        width: 160px !important;
+    }
+}

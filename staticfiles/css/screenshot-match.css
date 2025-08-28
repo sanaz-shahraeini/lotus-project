@@ -1,0 +1,215 @@
+/* CSS to exactly match the screenshot styling */
+
+/* Background colors */
+body, html {
+    background-color: #0D1B2A !important;
+}
+
+.min-h-screen {
+    background-color: #0D1B2A !important;
+}
+
+/* Card styling */
+.settings-card {
+    background-color: #0D1B2A !important;
+    border: 1px solid #1E2A3B !important;
+    border-radius: 10px !important;
+    padding: 1.5rem !important;
+    margin-bottom: 2rem !important;
+}
+
+.access-groups-section, 
+.email-settings-section {
+    border: 1px solid #00BCD4 !important;
+    box-shadow: 0 0 15px rgba(0, 188, 212, 0.1) !important;
+}
+
+/* Section headers */
+.settings-card .card-header {
+    color: #00BCD4 !important;
+    font-size: 1.25rem !important;
+    text-align: right !important;
+    border-bottom: 1px solid #1E2A3B !important;
+    padding-bottom: 0.75rem !important;
+    margin-bottom: 1.5rem !important;
+}
+
+/* Form labels */
+.form-label {
+    color: #B0BEC5 !important;
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    margin-bottom: 0.5rem !important;
+    display: block !important;
+    text-align: right !important;
+}
+
+/* Form inputs */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+select,
+textarea {
+    background-color: #121824 !important;
+    border: 1px solid #1E2A3B !important;
+    color: #F5F7FA !important;
+    border-radius: 6px !important;
+    height: 38px !important;
+    width: 100% !important;
+}
+
+/* Radio buttons - Operation selection */
+.radio-group {
+    display: flex !important;
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin-bottom: 1.5rem !important;
+    justify-content: center !important;
+}
+
+.radio-item {
+    position: relative !important;
+    margin: 0 0.25rem !important;
+}
+
+.radio-item input[type="radio"] {
+    position: absolute !important;
+    opacity: 0 !important;
+}
+
+.radio-item label {
+    display: block !important;
+    padding: 0.5rem 1.5rem !important;
+    background-color: transparent !important;
+    color: #B0BEC5 !important;
+    border-radius: 30px !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+}
+
+.radio-item input[type="radio"]:checked + label {
+    background-color: #00BCD4 !important;
+    color: white !important;
+}
+
+/* Dropdowns */
+.dropdown-toggle {
+    background-color: #121824 !important;
+    border: 1px solid #1E2A3B !important;
+    border-radius: 6px !important;
+    color: #F5F7FA !important;
+    height: 38px !important;
+    padding: 0 1rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+}
+
+.dropdown-menu {
+    background-color: #121824 !important;
+    border: 1px solid #1E2A3B !important;
+    border-radius: 6px !important;
+    margin-top: 4px !important;
+    width: 100% !important;
+    max-height: 200px !important;
+    overflow-y: auto !important;
+}
+
+/* Toggle switch */
+.toggle-switch {
+    position: relative !important;
+    display: inline-block !important;
+    width: 50px !important;
+    height: 26px !important;
+}
+
+.toggle-switch input {
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+.slider {
+    position: absolute !important;
+    cursor: pointer !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-color: #121824 !important;
+    border-radius: 26px !important;
+    transition: .3s !important;
+}
+
+.slider:before {
+    position: absolute !important;
+    content: "" !important;
+    height: 18px !important;
+    width: 18px !important;
+    left: 4px !important;
+    bottom: 4px !important;
+    background-color: #B0BEC5 !important;
+    border-radius: 50% !important;
+    transition: .3s !important;
+}
+
+input:checked + .slider {
+    background-color: #00BCD4 !important;
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px) !important;
+    background-color: white !important;
+}
+
+/* RTL support */
+body[dir="rtl"] .slider:before {
+    left: auto !important;
+    right: 4px !important;
+}
+
+body[dir="rtl"] input:checked + .slider:before {
+    transform: translateX(-24px) !important;
+}
+
+/* Toggle container */
+.toggle-container {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+/* Submit button */
+.btn-primary {
+    background-color: #00BCD4 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 0.75rem 2.5rem !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+}
+
+/* Fix for the specific sections in the screenshot */
+.access-groups-section .card-header,
+.email-settings-section .card-header {
+    text-align: right !important;
+    margin-bottom: 1.5rem !important;
+}
+
+/* Fix for the operation buttons */
+#edit + label {
+    border-radius: 30px !important;
+}
+
+#delete + label {
+    border-radius: 30px !important;
+}
+
+#add + label {
+    border-radius: 30px !important;
+} 
