@@ -1,71 +1,59 @@
-// Mobile Sidebar Fix
-
-// Wait for document to be ready
+// Fix for mobile sidebar toggle functionality
 document.addEventListener('DOMContentLoaded', function() {
-    // Force hide desktop sidebar on mobile devices
-    function hideSidebarOnMobile() {
-        if (window.innerWidth < 1024) {
-            // Hide desktop sidebar
-            const desktopSidebar = document.getElementById('sidebar');
-            if (desktopSidebar) {
-                desktopSidebar.style.display = 'none';
-            }
-        }
-    }
-    
-    // Run on page load
-    hideSidebarOnMobile();
-    
-    // Run when window is resized
-    window.addEventListener('resize', hideSidebarOnMobile);
-    
-    // Fix hamburger menu toggle functionality
+    const sidebar = document.getElementById('mobile-sidebar');
     const toggleButton = document.getElementById('toggle-menu');
-    const mobileSidebar = document.getElementById('mobile-sidebar');
     const menuIcon = document.getElementById('menu-icon');
     
-    if (toggleButton && mobileSidebar && menuIcon) {
-        let isSidebarOpen = false;
+    if (!sidebar || !toggleButton || !menuIcon) {
+        console.error('Mobile sidebar elements not found');
+        return;
+    }
+    
+    // Toggle sidebar when menu button is clicked
+    toggleButton.addEventListener('click', function() {
+        const isOpen = sidebar.classList.contains('translate-x-0');
         
-        // Initialize with hamburger icon (sidebar closed by default)
-        menuIcon.classList.remove('fa-times');
-        menuIcon.classList.add('fa-bars');
+        if (isOpen) {
+            // Close sidebar
+            sidebar.classList.remove('translate-x-0');
+            sidebar.classList.add('translate-x-full');
+            menuIcon.classList.remove('fa-times');
+            menuIcon.classList.add('fa-bars');
+        } else {
+            // Open sidebar
+            sidebar.classList.remove('translate-x-full');
+            sidebar.classList.add('translate-x-0');
+            menuIcon.classList.remove('fa-bars');
+            menuIcon.classList.add('fa-times');
+        }
+    });
+    
+    // Close sidebar when clicking outside
+    document.addEventListener('click', function(event) {
+        const isOpen = sidebar.classList.contains('translate-x-0');
+        const clickedOnToggle = toggleButton.contains(event.target);
+        const clickedInsideSidebar = sidebar.contains(event.target);
         
-        toggleButton.addEventListener('click', function() {
-            isSidebarOpen = !isSidebarOpen;
+        if (isOpen && !clickedOnToggle && !clickedInsideSidebar) {
+            sidebar.classList.remove('translate-x-0');
+            sidebar.classList.add('translate-x-full');
+            menuIcon.classList.remove('fa-times');
+            menuIcon.classList.add('fa-bars');
+        }
+    });
+    
+    // Handle exit button clicks for mobile
+    const exitBtnMobile = document.getElementById('exit-mb');
+    const exitModalMobile = document.getElementById('exitmodal-mb');
+    
+    if (exitBtnMobile && exitModalMobile) {
+        exitBtnMobile.addEventListener('click', function() {
+            exitModalMobile.classList.remove('hidden');
+            exitModalMobile.style.opacity = '1';
             
-            if (isSidebarOpen) {
-                // Opening the sidebar
-                mobileSidebar.style.transform = 'translateX(0)';
-                document.body.classList.add('overflow-hidden');
-                // Show close icon when sidebar is open
-                menuIcon.classList.remove('fa-bars');
-                menuIcon.classList.add('fa-times');
-                toggleButton.classList.remove('right-4');
-                toggleButton.classList.add('right-32');
-            } else {
-                // Closing the sidebar
-                mobileSidebar.style.transform = 'translateX(100%)';
-                document.body.classList.remove('overflow-hidden');
-                // Show hamburger icon when sidebar is closed
-                menuIcon.classList.remove('fa-times');
-                menuIcon.classList.add('fa-bars');
-                toggleButton.classList.remove('right-32');
-                toggleButton.classList.add('right-4');
-            }
-        });
-        
-        // Close sidebar when clicking outside
-        document.addEventListener('click', function(e) {
-            if (isSidebarOpen && e.target !== mobileSidebar && !mobileSidebar.contains(e.target) && e.target !== toggleButton) {
-                isSidebarOpen = false;
-                mobileSidebar.style.transform = 'translateX(100%)';
-                document.body.classList.remove('overflow-hidden');
-                // Show hamburger icon when sidebar is closed
-                menuIcon.classList.remove('fa-times');
-                menuIcon.classList.add('fa-bars');
-                toggleButton.classList.remove('right-32');
-                toggleButton.classList.add('right-4');
+            const modalContent = exitModalMobile.querySelector('.modal-content');
+            if (modalContent) {
+                modalContent.style.transform = 'scale(1)';
             }
         });
     }

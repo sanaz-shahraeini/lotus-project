@@ -409,10 +409,7 @@
         right: 0;
         width: 100%;
         height: 2px;
-        background: linear-gradient(90deg, 
-            var(--primary-color) 0%, 
-            var(--secondary-color) 50%, 
-            transparent 100%);
+        background: linear-gradient(90deg, #00BCD4 0%, #3F51B5 50%, transparent 100%);
         border-radius: 2px;
         opacity: 0.6;
     }
@@ -495,9 +492,7 @@
         left: 0;
         width: 100%;
         height: 3px;
-        background: linear-gradient(90deg, 
-            var(--primary-color), 
-            var(--secondary-color));
+        background: linear-gradient(90deg, #00BCD4, #3F51B5);
         border-radius: 2px;
         transform: scaleX(0);
         transform-origin: right;
@@ -518,7 +513,7 @@
     .quote-box {
         background: linear-gradient(135deg, 
             rgba(0, 188, 212, 0.08) 0%, 
-            rgba(38, 166, 154, 0.12) 100%);
+            rgba(63, 81, 181, 0.12) 100%);
         padding: var(--space-2xl);
         border-radius: var(--radius-xl);
         border: 2px solid rgba(0, 188, 212, 0.2);
@@ -547,9 +542,7 @@
         left: 0;
         width: 4px;
         height: 100%;
-        background: linear-gradient(180deg, 
-            var(--primary-color), 
-            var(--secondary-color));
+        background: linear-gradient(180deg, #00BCD4, #3F51B5);
         border-radius: 0 4px 4px 0;
     }
 
@@ -569,7 +562,7 @@
         margin-top: var(--space-2xl);
         background: linear-gradient(135deg, 
             rgba(0, 188, 212, 0.1) 0%, 
-            rgba(38, 166, 154, 0.15) 100%);
+            rgba(63, 81, 181, 0.15) 100%);
         padding: var(--space-2xl);
         border-radius: var(--radius-xl);
         border: 2px solid rgba(0, 188, 212, 0.3);
@@ -786,9 +779,7 @@
         left: 0;
         width: 100%;
         height: 4px;
-        background: linear-gradient(90deg, 
-            var(--primary-color), 
-            var(--secondary-color));
+        background: linear-gradient(90deg, #00BCD4, #3F51B5);
         transform: scaleX(0);
         transition: var(--transition-base);
     }
@@ -800,9 +791,7 @@
         right: 0;
         width: 4px;
         height: 100%;
-        background: linear-gradient(180deg, 
-            var(--primary-color), 
-            var(--secondary-color));
+        background: linear-gradient(180deg, #00BCD4, #3F51B5);
         transform: scaleY(0);
         transition: var(--transition-base);
     }
@@ -901,9 +890,7 @@
         left: 0;
         width: 100%;
         height: 2px;
-        background: linear-gradient(90deg, 
-            var(--primary-color), 
-            var(--primary-hover));
+        background: linear-gradient(90deg, #00BCD4, #3F51B5);
         transform: scaleX(0);
         transform-origin: right;
         transition: var(--transition-base);
@@ -935,10 +922,7 @@
         right: 0;
         width: 40%;
         height: 4px;
-        background: linear-gradient(90deg, 
-            transparent, 
-            var(--primary-color), 
-            var(--secondary-color));
+        background: linear-gradient(90deg, transparent, #00BCD4, #3F51B5);
         border-radius: 2px;
     }
 
@@ -1140,6 +1124,22 @@
             rgba(45, 55, 72, 0.6) 100%);
         border-color: var(--border-color);
         backdrop-filter: blur(20px);
+    }
+
+    /* Dark mode quote box specific styling */
+    html.dark .quote-box {
+        background: linear-gradient(135deg, 
+            rgba(13, 27, 42, 0.8) 0%, 
+            rgba(18, 18, 18, 0.6) 100%);
+        border-color: rgba(13, 27, 42, 0.8);
+    }
+
+    /* Dark mode announcement box specific styling */
+    html.dark .announcement-box {
+        background: linear-gradient(135deg, 
+            rgba(13, 27, 42, 0.7) 0%, 
+            rgba(18, 18, 18, 0.5) 100%);
+        border-color: rgba(13, 27, 42, 0.9);
     }
 
     html.dark .support-button {

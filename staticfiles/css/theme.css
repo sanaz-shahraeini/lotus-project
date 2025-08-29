@@ -5,30 +5,70 @@
     /* Primary Palette (Core UI Elements) */
     --primary-color: #00BCD4;       /* Lotus Aqua */
     --primary-hover: #29B6F6;       /* Sky Blue */
+    --primary-light: #80DEEA;       /* Soft Mint */
+    --primary-gradient: linear-gradient(to right, #00BCD4, #536DFE);
+    
+    /* Background and Content */
     --bg-color: #F5F7FA;            /* White Smoke */
+    --card-bg: white;
+    --secondary-color: #F5F7FA;     /* White Smoke */
+    --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    
+    /* Typography */
     --text-color: #37474F;          /* Dark Gray */
     --light-text: #90A4AE;          /* Medium Gray */
     --border-color: #CFD8DC;        /* Light Gray */
-    --secondary-color: #F5F7FA;     /* White Smoke */
-    --card-bg: white;
-    --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    
+    /* Additional UI Elements */
+    --input-bg: var(--secondary-color);
+    --input-border: var(--border-color);
+    --input-focus: var(--primary-color);
+    --button-primary-bg: var(--primary-color);
+    --button-primary-text: white;
+    --button-secondary-bg: #E0E0E0;
+    --button-secondary-text: var(--text-color);
+    
+    /* Accent Colors */
+    --accent-success: #4CAF50;
+    --accent-warning: #FFC107;
+    --accent-danger: #F44336;
+    --accent-info: #2196F3;
 }
 
 html.dark {
     /* Primary Palette (Core UI Elements) */
     --primary-color: #00BCD4;         /* Lotus Aqua */
     --primary-hover: #29B6F6;         /* Sky Blue */
-    --bg-color: #121212;              /* Dark Navy */
-    --text-color: #F5F7FA;            /* White Smoke */
-    --light-text: #CFD8DC;            /* Light Gray */
+    --primary-light: #80DEEA;         /* Soft Mint */
+    --primary-gradient: linear-gradient(135deg, #00BCD4, #536DFE);
     
-    /* UI elements */
-    --secondary-color: #0D1B2A;       /* Deep Indigo */
+    /* Background and Content */
+    --bg-color: #121212;              /* Dark Navy */
     --card-bg: #0D1B2A;               /* Deep Indigo */
-    --border-color: #37474F;          /* Dark Gray */
+    --secondary-color: #0D1B2A;       /* Deep Indigo */
     --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
     
-    /* Additional dark mode variables */
+    /* Typography */
+    --text-color: #F5F7FA;            /* White Smoke */
+    --light-text: #CFD8DC;            /* Light Gray */
+    --border-color: #37474F;          /* Dark Gray */
+    
+    /* Additional UI Elements */
+    --input-bg: #0D1B2A;              /* Deep Indigo */
+    --input-border: #37474F;          /* Dark Gray */
+    --input-focus: #00BCD4;           /* Lotus Aqua */
+    --button-primary-bg: #00BCD4;     /* Lotus Aqua */
+    --button-primary-text: #F5F7FA;   /* White Smoke */
+    --button-secondary-bg: #0D1B2A;   /* Deep Indigo */
+    --button-secondary-text: #F5F7FA; /* White Smoke */
+    
+    /* Accent Colors (slightly muted for dark theme) */
+    --accent-success: #66BB6A;
+    --accent-warning: #FFD54F;
+    --accent-danger: #EF5350;
+    --accent-info: #42A5F5;
+    
+    /* UI elements for dark theme */
     --sidebar-bg: #0D1B2A;            /* Deep Indigo */
     --header-bg: #0D1B2A;             /* Deep Indigo */
     --header-gradient: linear-gradient(135deg, #00BCD4, #536DFE);
@@ -43,17 +83,6 @@ html.dark {
     --table-header-bg: #0D1B2A;       /* Deep Indigo */
     --table-row-hover: rgba(255, 255, 255, 0.08);
     --table-border: #37474F;          /* Dark Gray */
-    
-    /* Form elements */
-    --input-bg: #0D1B2A;              /* Deep Indigo */
-    --input-border: #37474F;          /* Dark Gray */
-    --input-focus: #00BCD4;           /* Lotus Aqua */
-    
-    /* Button colors */
-    --button-primary-bg: #00BCD4;     /* Lotus Aqua */
-    --button-primary-text: #F5F7FA;   /* White Smoke */
-    --button-secondary-bg: #0D1B2A;   /* Deep Indigo */
-    --button-secondary-text: #F5F7FA; /* White Smoke */
 }
 
 /* Theme toggle styles */
@@ -96,18 +125,10 @@ html.dark {
     justify-content: center;
 }
 
-/* Dark mode specific toggle styles */
-/* html.dark .theme-toggle {
-    background: var(--card-bg);
-    border-color: var(--border-color);
-} */
-
 html.dark .theme-toggle:hover {
     background: var(--primary-color);
     color: white;
 }
-
-
 
 /* Dark mode scrollbar */
 html.dark ::-webkit-scrollbar {
@@ -126,4 +147,12 @@ html.dark ::-webkit-scrollbar-thumb {
 
 html.dark ::-webkit-scrollbar-thumb:hover {
     background: var(--light-text);
+}
+
+/* Consistent transitions for theme switching */
+body * {
+    transition: background-color 0.3s ease,
+                color 0.3s ease,
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
 }
