@@ -16,7 +16,18 @@
     <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'fonts/css/iransans.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/dist/styles.css' %}" rel="stylesheet" type="text/css">
-    <!-- Theme CSS with variables matching login page -->
+    
+    <!-- Shared CSS Components -->
+    <link href="{% static 'css/shared-variables.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/shared-layout.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/shared-theme-toggle.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/shared-cards.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/shared-forms.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/shared-buttons.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/shared-tables.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/shared-dashboard.css' %}" rel="stylesheet" type="text/css">
+    
+    <!-- Legacy/Specific CSS -->
     <link href="{% static 'css/theme.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/mobile-responsive-fix.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/dashboard-fix.css' %}" rel="stylesheet" type="text/css">
@@ -35,46 +46,7 @@
     <link href="{% static 'css/settings-page-fix.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/calendar.css' %}" rel="stylesheet" type="text/css">
   
-    <style>
-        /* Fix for responsive layout issues */
-        @media (max-width: 1023px) {
-            .main-content {
-                margin-left: 0 !important;
-                width: 100% !important;
-            }
-            
-            .content-wrapper {
-                padding-left: 0 !important;
-                padding-right: 0 !important;
-            }
-        }
-        
-        /* Ensure proper box-sizing */
-        * {
-            box-sizing: border-box;
-        }
-        
-        /* Fix for potential overflow issues */
-        html, body {
-            width: 100%;
-            overflow-x: hidden;
-            margin: 0;
-            padding: 0;
-        }
-        
-        /* Adjust spacing for forms and authentication pages */
-        .content-wrapper {
-            width: 100%;
-            box-sizing: border-box;
-        }
-        
-        /* Match sidebar width */
-        @media (min-width: 1024px) {
-            .main-content {
-                margin-right: 240px !important;
-            }
-        }
-    </style>
+
   
     {% block head_extra %}{% endblock %}
 </head>

@@ -1,0 +1,77 @@
+/* Shared Layout Components */
+
+/* Base RTL Layout */
+body {
+    direction: rtl;
+    text-align: right;
+    font-family: 'Vazir', system-ui, -apple-system, sans-serif;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    min-height: 100vh;
+    line-height: 1.6;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Ensure proper box-sizing */
+* {
+    box-sizing: border-box;
+}
+
+/* Fix for potential overflow issues */
+html, body {
+    width: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* Main Content Layout */
+.main-content {
+    margin-right: var(--sidebar-width);
+    margin-left: 0;
+    width: calc(100% - var(--sidebar-width));
+    padding: var(--main-padding);
+    background-color: var(--bg-color);
+    min-height: 100vh;
+}
+
+/* RTL Support */
+html[dir="ltr"] .main-content {
+    margin-right: 0;
+    margin-left: var(--sidebar-width);
+}
+
+/* Content wrapper */
+.content-wrapper {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Responsive Layout */
+@media (max-width: 1023px) {
+    .main-content {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        width: 100% !important;
+    }
+    
+    .content-wrapper {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        margin-right: 0;
+        margin-left: 0;
+        width: 100%;
+    }
+}
+
+/* Match sidebar width for desktop */
+@media (min-width: 1024px) {
+    .main-content {
+        margin-right: 240px !important;
+    }
+}

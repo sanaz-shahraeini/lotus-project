@@ -1,0 +1,135 @@
+/* Shared Form Components */
+
+/* Form Groups */
+.form-group {
+    margin-bottom: var(--space-xl);
+}
+
+/* Form Labels */
+.form-label {
+    display: block;
+    margin-bottom: var(--space-sm);
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+/* Form Inputs */
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+    padding: var(--form-element-padding);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    transition: var(--transition);
+    font-size: 0.9rem;
+    height: var(--form-element-height);
+}
+
+.form-textarea {
+    height: auto;
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* Form Input Focus States */
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
+}
+
+.form-input:hover,
+.form-select:hover,
+.form-textarea:hover {
+    border-color: var(--primary-light);
+}
+
+/* Select Styling */
+.form-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: left 0.5rem center;
+    background-size: 1rem;
+    padding-left: 2rem;
+    cursor: pointer;
+}
+
+/* Input Icon Wrapper */
+.input-icon-wrapper {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    right: var(--space-md);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--light-text);
+    pointer-events: none;
+}
+
+.input-icon-wrapper .form-input {
+    padding-right: 2.5rem;
+}
+
+/* Field Groups for Two-Column Layout */
+.field-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+}
+
+@media (min-width: 640px) {
+    .field-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.field-group {
+    margin-bottom: var(--space-md);
+}
+
+.field-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--light-text);
+    margin-bottom: var(--space-xs);
+}
+
+.field-value {
+    font-size: 0.875rem;
+    color: var(--text-color);
+    background-color: rgba(245, 247, 250, 0.5);
+    padding: 0.375rem 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    width: 100%;
+    min-height: 2rem;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.full-width .field-value {
+    min-height: 3rem;
+}
+
+/* Dark mode form adjustments */
+.dark .field-label {
+    color: var(--light-text);
+}
+
+.dark .field-value {
+    background-color: rgba(13, 27, 42, 0.8);
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
