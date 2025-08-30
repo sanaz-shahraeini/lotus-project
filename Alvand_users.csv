@@ -1,4 +1,0 @@
-id,active,online,extension,usersextension,name,username,lastname,groupname,picurl,email,email_verified_at,password,created_at,updated_at,group_id,profile_picture,needs_password_change
-1,TRUE,1,-1,,Admin,admin,Admin,supporter,avatar.jpg,admin@example.com,2025-05-13 20:58:23.297004+00,pbkdf2_sha256$870000$SiHFQayHs0e2RzHwQVdUj1$CGQ656YNsoVRT3Yj1eJpU2d8lcJvIDipmbD/J5pNpIw=,2025-08-17 00:00:00+00,2025-08-17 00:00:00+00,1,,TRUE
-2,TRUE,1,-1,,حاج آقا پوریا,supporter,حاجی آبادی!,supporter,avatar.jpg,hajagha_poorya@lotus.com,2025-05-13 20:58:38.454523+00,pbkdf2_sha256$870000$h4liF45yxD71pN6po2aDxe$MKvcEAQHWqV4eKQNi76BSrbE7r9AkHznh8XdKQXW08s=,2025-05-13 20:58:38.66503+00,,1,,TRUE
-3,TRUE,1,-1,,Test,test,Test,supporter,avatar.png,test@example.com,2025-05-13 20:59:24.375953+00,pbkdf2_sha256$870000$SHWlJxQ7e08kWKrBUHnPDy$/bre/c4jGcPQ6lMbqw72mL43PVbhl419iObUYrn9AU0=,2025-05-13 20:59:24.377463+00,,1,,TRUE
