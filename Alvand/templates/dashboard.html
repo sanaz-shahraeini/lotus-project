@@ -1075,7 +1075,7 @@
                     <!-- Left side with title -->
                     <div class="flex-1">
                         <h1 class="text-2xl md:text-3xl font-bold text-white">داشبورد لوتوس</h1>
-                        <p class="text-white opacity-80 mt-1 font-light">مدیریت و گزارش تماس‌ها  {{ now|date:"Y/m/d" }}</p>
+                        <p class="text-white opacity-80 mt-1 font-light">مدیریت و گزارش تماس‌ها  {{ now|date:"Y/m/d"|convertDatesToHijri }}</p>
                     </div>
                     
                     <!-- Right side with compact search -->
@@ -1381,16 +1381,16 @@
                     <table class="w-full min-w-full divide-y divide-slate-200" id="table" dir="rtl">
                         <thead class="bg-slate-50 dark:bg-transparent" style="background-color: var(--table-header-bg);">
                             <tr>
-                                <th class="w-16"><div class="flex items-center justify-center"><span class="text-xs font-medium" style="color: var(--light-text);">ردیف</span><button class="mr-1 text-slate-300 hover:text-slate-400 transition-colors"><i class="fa-solid fa-sort text-xs"></i></button></div></th>
+                                <th class="w-16"><div class="flex items-center justify-center"><span class="text-xs font-medium" style="color: var(--light-text);">ردیف</span><button class="mr-1 text-primary hover:text-primary-dark transition-colors sort-btn" data-column="0" data-type="number"><i class="fa-solid fa-sort text-xs"></i></button></div></th>
                                 <th class="min-w-[120px]"><div class="flex items-center justify-center"><span class="text-xs font-medium" style="color: var(--light-text);">تاریخ و زمان</span><button class="mr-1 text-primary hover:text-primary-dark transition-colors sort-btn" data-column="1" data-type="date"><i class="fa-solid fa-sort text-xs"></i></button></div></th>
-                                <th class="group"><div class="flex items-center justify-center"><span>ساعت</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"></button></div></th>
-                                <th class="group"><div class="flex items-center justify-center"><span>شماره مخاطب</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"></button></div></th>
-                                <th class="group"><div class="flex items-center justify-center"><span>شماره داخلی</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"></button></div></th>
-                                <th class="group"><div class="flex items-center justify-center"><span>خط شهری</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"></button></div></th>
+                                <th class="group"><div class="flex items-center justify-center"><span>ساعت</span><button class="ml-1 text-primary hover:text-primary-dark transition-colors sort-btn" data-column="2" data-type="time"><i class="fa-solid fa-sort text-xs"></i></button></div></th>
+                                <th class="group"><div class="flex items-center justify-center"><span>شماره مخاطب</span><button class="ml-1 text-primary hover:text-primary-dark transition-colors sort-btn" data-column="3" data-type="text"><i class="fa-solid fa-sort text-xs"></i></button></div></th>
+                                <th class="group"><div class="flex items-center justify-center"><span>شماره داخلی</span><button class="ml-1 text-primary hover:text-primary-dark transition-colors sort-btn" data-column="4" data-type="number"><i class="fa-solid fa-sort text-xs"></i></button></div></th>
+                                <th class="group"><div class="flex items-center justify-center"><span>خط شهری</span><button class="ml-1 text-primary hover:text-primary-dark transition-colors sort-btn" data-column="5" data-type="text"><i class="fa-solid fa-sort text-xs"></i></button></div></th>
                                 <th class="group"><div class="flex items-center justify-center"><span>مدت تماس</span><button class="mr-1 text-primary hover:text-primary-dark transition-colors sort-btn" data-column="6" data-type="number"><i class="fa-solid fa-sort text-xs"></i></button></div></th>
-                                <th class="group"><div class="flex items-center justify-center"><span>نوع تماس</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"></button></div></th>
-                                <th class="group"><div class="flex items-center justify-center"><span>زمان برق</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"></button></div></th>
-                                <th class="group"><div class="flex items-center justify-center"><span>انتقال</span><button class="ml-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"></button></div></th>
+                                <th class="group"><div class="flex items-center justify-center"><span>نوع تماس</span><button class="ml-1 text-primary hover:text-primary-dark transition-colors sort-btn" data-column="7" data-type="text"><i class="fa-solid fa-sort text-xs"></i></button></div></th>
+                                <th class="group"><div class="flex items-center justify-center"><span>زمان برق</span><button class="ml-1 text-primary hover:text-primary-dark transition-colors sort-btn" data-column="8" data-type="text"><i class="fa-solid fa-sort text-xs"></i></button></div></th>
+                                <th class="group"><div class="flex items-center justify-center"><span>انتقال</span><button class="ml-1 text-primary hover:text-primary-dark transition-colors sort-btn" data-column="9" data-type="text"><i class="fa-solid fa-sort text-xs"></i></button></div></th>
                                 <th class="group"><div class="flex items-center justify-center"><span>هزینه</span><button class="mr-1 text-primary hover:text-primary-dark transition-colors sort-btn" data-column="10" data-type="currency"><i class="fa-solid fa-sort text-xs"></i></button></div></th>
                             </tr>
                         </thead>
@@ -1399,7 +1399,7 @@
                                 {% for rec in dashPage.object_list %}
                                     <tr data-extline="{{ rec.extension }}" data-urbanline="{{ rec.urbanline|default:'-' }}" data-calltype="{{ rec.calltype }}">
                                         <td class="text-center"><span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 text-slate-700">{{ forloop.counter0|add:dashPage.start_index }}</span></td>
-                                        <td class="text-center" dir="ltr"><span class="font-medium">{{ rec.date|date:"Y-m-d" }}</span></td>
+                                        <td class="text-center" dir="ltr"><span class="font-medium">{{ rec.date|date:"Y-m-d"|convertDatesToHijri }}</span></td>
                                         <td class="text-center" dir="ltr"><span class="font-medium">{{ rec.hour }}</span></td>
                                         <td class="text-center"><span class="font-medium">{% if rec.contactnumber %}{% if "+" in rec.contactnumber %}{{ rec.contactnumber|cut:"+" }}<span class="text-red-500">+</span>{% else %}{{ rec.contactnumber }}{% endif %}{% else %}<span class="text-slate-400">-</span>{% endif %}</span></td>
                                         <td class="text-center"><span class="font-medium">{% if rec.extension|stringformat:'s'|slice:'0:1' == '9' %}{{ rec.extension|stringformat:'s'|slice:'1:4' }}{% else %}{{ rec.extension }}{% endif %}</span></td>
@@ -1440,7 +1440,7 @@
                                     <div class="mobile-card-header">
                                         <div class="flex items-center">
                                             <div class="w-8 h-8 rounded-full flex items-center justify-center {% if rec.calltype == 'ورودی' %}bg-green-100 text-green-600{% elif rec.calltype == 'خروجی' %}bg-blue-100 text-blue-600{% elif rec.calltype == 'بی‌پاسخ' %}bg-red-100 text-red-600{% else %}bg-slate-100 text-slate-600{% endif %}"><img src="{% static 'pic/' %}{{ rec.calltype|getCallTypeIcon }}" class="w-4 h-4"></div>
-                                            <div class="mr-3"><p class="text-sm font-medium text-slate-900">{{ rec.contactnumber|default:"شماره ناشناس" }}</p><p class="text-xs text-slate-500">{{ rec.date }} - {{ rec.hour }}</p></div>
+                                            <div class="mr-3"><p class="text-sm font-medium text-slate-900">{{ rec.contactnumber|default:"شماره ناشناس" }}</p><p class="text-xs text-slate-500">{{ rec.date|date:"Y-m-d"|convertDatesToHijri }} - {{ rec.hour }}</p></div>
                                         </div>
                                         <span class="text-sm font-medium text-slate-900">{{ rec.durationtime|default:"0" }} ثانیه</span>
                                     </div>
@@ -1458,15 +1458,15 @@
                     </ul>
                 </div>
                 <!-- Bottom-right actions under the table -->
-                <div class="px-2 py-2 flex flex-row sm:flex-row justify-center gap-3 bg-blue-600 hover:bg-blue-700">
+                <div class="px-2 py-2 flex flex-row sm:flex-row justify-center gap-3 bg-blue-600 hover:bg-blue-700 dark:bg-slate-700 dark:hover:bg-slate-600">
               
                     
-                    <button type="submit" form="dashboardFiltersForm" formmethod="get" formaction="{% url 'dashboard_export' %}" name="export" value="csv" class="px-4 py-2 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white text-sm">
+                    <button type="submit" form="dashboardFiltersForm" formmethod="get" formaction="{% url 'dashboard_export' %}" name="export" value="csv" class="px-4 py-2 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white text-sm dark:bg-slate-600 dark:hover:bg-slate-700 dark:text-slate-200">
                         <i class="fa-solid fa-file-csv ml-1"></i>
                         خروجی CSV
                     </button>
-                        <button type="button" id="exportExcelBtn" class="py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-sm transition-colors relative group hidden" title="دانلود نتایج فیلتر شده به صورت فایل Excel">
-                            <i class="fa-solid fa-file-excel ml-1"></i>
+                    <button type="submit" form="dashboardFiltersForm" formmethod="get" formaction="{% url 'dashboard_export' %}" name="export" value="excel" class="px-4 py-2 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white text-sm dark:bg-slate-600 dark:hover:bg-slate-700 dark:text-slate-200">
+                        <i class="fa-solid fa-file-excel ml-1"></i>
                             خروجی Excel
                            
                         </button>
@@ -1791,13 +1791,26 @@
                 let valA, valB;
                 
                 if (dataType === 'number') {
-                    // Duration column - first extract the text content of the cell
-                    const cellTextA = $(a).find('td').eq(columnIndex).text().trim();
-                    const cellTextB = $(b).find('td').eq(columnIndex).text().trim();
+                    // Number column - extract numeric values properly
+                    const cellA = $(a).find('td').eq(columnIndex);
+                    const cellB = $(b).find('td').eq(columnIndex);
                     
-                    // Extract just the numeric part
-                    valA = parseInt(cellTextA) || 0;
-                    valB = parseInt(cellTextB) || 0;
+                    // For duration column (column 6), get the span with font-medium class
+                    if (columnIndex === 6) {
+                        const durationTextA = cellA.find('span.font-medium').text().trim();
+                        const durationTextB = cellB.find('span.font-medium').text().trim();
+                        
+                        valA = parseInt(durationTextA) || 0;
+                        valB = parseInt(durationTextB) || 0;
+                    } else {
+                        // For other numeric columns, extract from full cell text
+                        const cellTextA = cellA.text().trim();
+                        const cellTextB = cellB.text().trim();
+                        
+                        // Extract just the numeric part
+                        valA = parseInt(cellTextA.replace(/[^\d]/g, '')) || 0;
+                        valB = parseInt(cellTextB.replace(/[^\d]/g, '')) || 0;
+                    }
                     
                 } else if (dataType === 'date') {
                     // Date column - find the span with the date in it
@@ -1807,11 +1820,12 @@
                     const dateTextA = cellA.find('span.font-medium').text().trim();
                     const dateTextB = cellB.find('span.font-medium').text().trim();
                     
-                    // Parse the date in YYYY-MM-DD format
+                    // Parse the date in Persian format YYYY/MM/DD
                     const parseDate = function(dateStr) {
                         if (!dateStr) return 0;
                         
-                        const parts = dateStr.split('-');
+                        // Handle both formats: YYYY/MM/DD (Persian) and YYYY-MM-DD (English)
+                        const parts = dateStr.split(/[-\/]/);
                         if (parts.length === 3) {
                             // Convert to numeric value for easy comparison
                             return (parseInt(parts[0]) * 10000) + 
@@ -1823,6 +1837,34 @@
                     
                     valA = parseDate(dateTextA);
                     valB = parseDate(dateTextB);
+                    
+                } else if (dataType === 'time') {
+                    // Time column - parse HH:MM format
+                    const cellA = $(a).find('td').eq(columnIndex);
+                    const cellB = $(b).find('td').eq(columnIndex);
+                    
+                    const timeTextA = cellA.find('span.font-medium').text().trim();
+                    const timeTextB = cellB.find('span.font-medium').text().trim();
+                    
+                    const parseTime = function(timeStr) {
+                        if (!timeStr) return 0;
+                        const parts = timeStr.split(':');
+                        if (parts.length >= 2) {
+                            return (parseInt(parts[0]) * 60) + parseInt(parts[1]);
+                        }
+                        return 0;
+                    };
+                    
+                    valA = parseTime(timeTextA);
+                    valB = parseTime(timeTextB);
+                    
+                } else if (dataType === 'text') {
+                    // Text column - simple text comparison
+                    const cellA = $(a).find('td').eq(columnIndex);
+                    const cellB = $(b).find('td').eq(columnIndex);
+                    
+                    valA = cellA.text().trim();
+                    valB = cellB.text().trim();
                     
                 } else if (dataType === 'currency') {
                     // Price column - find span with price
@@ -2458,7 +2500,7 @@
                     $wrapper.removeClass('focused');
                 });
 
-                // Add click ripple effect
+                // Add click ripple effect and fix calendar positioning
                 $input.on('click', function(e) {
                     const $ripple = $('<span class="ripple-effect"></span>');
                     $wrapper.append($ripple);
@@ -2477,10 +2519,64 @@
                     
                     setTimeout(() => {
                         $ripple.remove();
-                    }, 600);
+                    }, 0);
+                    
+                    // Fix calendar positioning after a short delay
+                    setTimeout(() => {
+                        positionCalendarBelowInput($input);
+                    }, 0);
                 });
             });
         }
+        
+        // Function to position calendar below the clicked input
+        function positionCalendarBelowInput($input) {
+            const $calendar = $('jdp-container');
+            if ($calendar.length > 0 && $input && $input.length > 0) {
+                const inputOffset = $input.offset();
+                const inputHeight = $input.outerHeight();
+                const inputWidth = $input.outerWidth();
+                
+                // Position calendar
+                $calendar.css({
+                    'position': 'absolute',
+                    'top': (inputOffset.top + inputHeight + 4) + 'px',
+                    'left': inputOffset.left + 'px',
+                    'z-index': '10002',
+                    'min-width': Math.max(inputWidth, 300) + 'px'
+                });
+            }
+        }
+        
+        // Observer to monitor calendar creation and reposition it
+        let currentActiveInput = null;
+        
+        // Store reference to clicked input
+        $(document).on('click', 'input[data-jdp]', function() {
+            currentActiveInput = $(this);
+        });
+        
+        // Monitor for calendar appearance
+        const calendarObserver = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.tagName === 'JDP-CONTAINER' || 
+                        (node.nodeType === 1 && $(node).find('jdp-container').length > 0)) {
+                        
+                        if (currentActiveInput) {
+                            // Quick positioning with minimal delay
+                            setTimeout(() => positionCalendarBelowInput(currentActiveInput), 10);
+                        }
+                    }
+                });
+            });
+        });
+        
+        // Start observing
+        calendarObserver.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
 
         // Enhanced Filter Dropdown Functionality
         function enhanceFilterDropdowns() {

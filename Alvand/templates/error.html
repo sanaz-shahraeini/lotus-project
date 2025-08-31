@@ -1885,6 +1885,89 @@
             link.click();
             document.body.removeChild(link);
         }
+        
+        // Calendar positioning fixes for error page
+        function enhanceCalendarInputs() {
+            $('input[data-jdp]').each(function() {
+                const $input = $(this);
+                const $wrapper = $input.closest('.filter-controls-single-line, .input-wrapper') || $input.parent();
+                
+                $input.on('click', function(e) {
+                    const $ripple = $('<span class="ripple-effect"></span>');
+                    $wrapper.append($ripple);
+                    
+                    const rect = e.target.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    $ripple.css({
+                        width: size + 'px',
+                        height: size + 'px',
+                        left: x + 'px',
+                        top: y + 'px'
+                    });
+                    
+                    setTimeout(() => {
+                        $ripple.remove();
+                    }, 600);
+                });
+            });
+        }
+        
+        // Function to position calendar below the clicked input
+        function positionCalendarBelowInput($input) {
+            const $calendar = $('jdp-container');
+            if ($calendar.length > 0 && $input && $input.length > 0) {
+                const inputOffset = $input.offset();
+                const inputHeight = $input.outerHeight();
+                const inputWidth = $input.outerWidth();
+                
+                // Position calendar
+                $calendar.css({
+                    'position': 'absolute',
+                    'top': (inputOffset.top + inputHeight + 4) + 'px',
+                    'left': inputOffset.left + 'px',
+                    'z-index': '10002',
+                    'min-width': Math.max(inputWidth, 300) + 'px'
+                });
+            }
+        }
+        
+        // Observer to monitor calendar creation and reposition it
+        let currentActiveInput = null;
+        
+        // Store reference to clicked input
+        $(document).on('click', 'input[data-jdp]', function() {
+            currentActiveInput = $(this);
+        });
+        
+        // Monitor for calendar appearance
+        const calendarObserver = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.tagName === 'JDP-CONTAINER' || 
+                        (node.nodeType === 1 && $(node).find('jdp-container').length > 0)) {
+                        
+                        if (currentActiveInput) {
+                            // Quick positioning with minimal delay
+                            setTimeout(() => positionCalendarBelowInput(currentActiveInput), 10);
+                        }
+                    }
+                });
+            });
+        });
+        
+        // Start observing
+        calendarObserver.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+        
+        // Initialize calendar enhancements
+        $(document).ready(function() {
+            enhanceCalendarInputs();
+        });
     });
 </script>
 {% endblock %}

@@ -53,10 +53,7 @@
 }
 
 .date-input-wrapper i.fa-regular.fa-calendar {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
+ 
     color: #00BCD4;
     font-size: 16px;
     pointer-events: none;
@@ -317,6 +314,34 @@
     }
 }
 
+
+
+/* Force calendar container to appear above all filter elements */
+jdp-container,
+.jalali-datepicker-container {
+    z-index: 10002 !important;
+    position: absolute !important;
+}
+
+/* Prevent filter cards from hiding calendar */
+.card {
+    overflow: visible !important;
+    z-index: auto !important;
+}
+
+/* Specific positioning fix for calendar in filter section */
+
+
+Ensure calendar appears relative to its input
+.date-input-wrapper jdp-container {
+    position: absolute !important;
+    top: calc(100% + 4px) !important;
+    left: 0 !important;
+    right: auto !important;
+    width: max-content !important;
+    min-width: 300px !important;
+}
+
 /* Dark Mode Support for Calendar */
 .dark .jalali-datepicker {
     background: #1e293b !important;
@@ -371,20 +396,54 @@
     animation: shake 0.5s ease-in-out;
 }
 
-@keyframes shake {
+/* @keyframes shake {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-5px); }
     75% { transform: translateX(5px); }
-}
+} */
 
-/* Calendar Z-Index Fix */
+/* Calendar Z-Index Fix - Higher than filter dropdowns */
 .jalali-datepicker {
-    z-index: 9999 !important;
+    z-index: 10000 !important;
 }
 
-/* Ripple Effect for Calendar Inputs */
+/* Ensure filter section allows calendar overflow */
+.search-filters-container,
+.search-filters-body,
+.search-filters-grid {
+    overflow: visible !important;
+    position: relative !important;
+}
+
+/* Specific fixes for filter groups containing date inputs */
+.search-filters-grid .col-span-1,
+.search-filters-grid .col-span-2,
+.search-filters-grid .lg\\:col-span-2 {
+    overflow: visible !important;
+    position: relative !important;
+}
+
+/* Ensure filter form doesn't clip calendar */
+#dashboardFiltersForm {
+    overflow: visible !important;
+    position: relative !important;
+}
+
+/* Ensure date input containers allow calendar positioning */
+.date-range-container {
+    position: relative !important;
+    overflow: visible !important;
+    z-index: 1 !important;
+}
+
 .date-input-wrapper {
-    position: relative;
+    position: relative !important;
+    overflow: visible !important;
+    z-index: 1 !important;
+}
+
+/* Ripple Effect for Calendar Inputs - Override for ripple only */
+.date-input-wrapper .ripple-effect {
     overflow: hidden;
 }
 
@@ -530,12 +589,12 @@
 
 /* --- Jalali Datepicker Custom Fixes from error.html --- */
 jdp-overlay {
-    z-index: 9998 !important;
+    z-index: 10001 !important;
     position: fixed !important;
 }
 
 jdp-container {
-    z-index: 9999 !important;
+    z-index: 10002 !important;
     position: absolute !important;
     display: block !important;
     direction: rtl !important;
