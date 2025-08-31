@@ -368,12 +368,6 @@
         gap: 2.5rem;
     }
 
-    @media (min-width: 1024px) {
-        .support-grid {
-            grid-template-columns: 1fr 1fr;
-        }
-    }
-
     .support-card {
         background: var(--card-bg);
         border-radius: 1rem;
@@ -907,91 +901,70 @@
         transform-origin: left;
     }
 
-    /* Premium Support Form Design */
+    /* Simple Support Form Design */
     .support-form {
         margin-top: var(--space-2xl);
-        padding-top: var(--space-2xl);
-        border-top: 2px solid var(--border-color);
+        padding: var(--space-2xl);
+        background: var(--card-bg);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--card-shadow);
+        border: 1px solid var(--border-color);
         position: relative;
-    }
-
-    .support-form::before {
-        content: '';
-        position: absolute;
-        top: -2px;
-        right: 0;
-        width: 40%;
-        height: 4px;
-        background: linear-gradient(90deg, transparent, #00BCD4, #3F51B5);
-        border-radius: 2px;
     }
 
     /* Modern Form Group Styling */
     .form-group {
-        margin-bottom: var(--space-xl);
+        margin-bottom: var(--space-2xl);
         position: relative;
     }
 
-    /* Enhanced Form Labels */
+    /* Name field width adjustment */
+    .form-group:first-child {
+        max-width: 60%;
+    }
+
+    /* Simple Form Labels */
     .form-label {
         display: block;
         font-size: 1rem;
-        font-weight: 700;
+        font-weight: 600;
         color: var(--text-primary);
         margin-bottom: var(--space-md);
-        transition: var(--transition-base);
-        position: relative;
     }
 
-    .form-label::after {
-        content: '*';
-        color: var(--accent-color);
-        margin-left: var(--space-xs);
-        font-weight: 800;
-    }
-
-    /* Premium Input Wrapper */
+    /* Premium Input Wrapper with Modern Effects */
     .form-input-wrapper {
         position: relative;
         margin-bottom: var(--space-sm);
     }
 
-    /* Modern Form Inputs with Glass Effect */
+    /* Simple Form Inputs */
     .form-input, .form-textarea {
         width: 100%;
-        padding: var(--space-lg) var(--space-lg) var(--space-lg) var(--space-2xl);
+        padding: var(--space-lg);
         border: 2px solid var(--border-color);
-        border-radius: var(--radius-lg);
-        font-size: 1.1rem;
+        border-radius: var(--radius-md);
+        font-size: 1rem;
+        font-weight: 400;
         transition: var(--transition-base);
-        background: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(10px);
+        background: var(--bg-primary);
         color: var(--text-primary);
         font-family: inherit;
-        font-weight: 500;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     }
 
     .form-input:focus, .form-textarea:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 6px rgba(0, 188, 212, 0.15);
         outline: none;
-        background: rgba(255, 255, 255, 0.95);
-        transform: translateY(-2px);
-    }
-
-    .form-input:hover, .form-textarea:hover {
-        border-color: var(--primary-light);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
     }
 
     .form-textarea {
         resize: vertical;
-        min-height: 12rem;
-        line-height: 1.7;
+        min-height: 6rem;
+        line-height: 1.6;
     }
 
-    /* Enhanced Form Icons */
+    /* Simple Form Icons */
     .form-icon {
         position: absolute;
         right: var(--space-lg);
@@ -999,14 +972,14 @@
         transform: translateY(-50%);
         color: var(--text-muted);
         transition: var(--transition-base);
-        font-size: 1.4rem;
+        font-size: 1.1rem;
         z-index: 5;
     }
 
     .form-input:focus + .form-icon,
     .form-textarea:focus + .form-icon {
-        color: var(--primary-color);
-        transform: translateY(-50%) scale(1.2);
+        opacity: 0;
+        visibility: hidden;
     }
 
     .form-textarea + .form-icon {
@@ -1014,84 +987,45 @@
         transform: translateY(0);
     }
 
-    .form-textarea:focus + .form-icon {
-        transform: translateY(0) scale(1.2);
-    }
-
-    /* Premium Submit Button */
+    /* Simple Submit Button */
     .support-button {
-        background: linear-gradient(135deg, #00BCD4 0%, #3F51B5 100%);
+        background: var(--primary-color);
         color: white;
-        padding: var(--space-lg) var(--space-xl);
-        border-radius: var(--radius-lg);
-        font-weight: 800;
-        font-size: 1.2rem;
+        padding: var(--space-md) var(--space-xl);
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        font-size: 1rem;
         transition: var(--transition-base);
         border: none;
         cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: var(--space-md);
-        width: 100%;
-        box-shadow: 0 12px 24px rgba(0, 188, 212, 0.4);
+        display: block;
+        margin: var(--space-lg) auto 0;
+        width: auto;
+        min-width: 160px;
+        text-align: center;
+        box-shadow: var(--card-shadow);
         position: relative;
-        overflow: hidden;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .support-button::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, 
-            transparent, 
-            rgba(255, 255, 255, 0.3), 
-            transparent);
-        transition: var(--transition-slow);
-    }
-
-    .support-button::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0;
-        height: 0;
-        background: rgba(255, 255, 255, 0.3);
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
-        transition: var(--transition-base);
     }
 
     .support-button:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 20px 40px rgba(0, 188, 212, 0.6);
-        background: linear-gradient(135deg, 
-            var(--primary-hover) 0%, 
-            var(--primary-color) 100%);
-    }
-
-    .support-button:hover::before {
-        left: 100%;
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: var(--card-shadow-hover);
     }
 
     .support-button:active {
-        transform: translateY(-2px);
+        transform: translateY(0);
     }
 
-    .support-button:active::after {
-        width: 200px;
-        height: 200px;
+    .support-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-sm);
     }
 
     .support-button i {
-        font-size: 1.1rem;
-        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+        font-size: 1rem;
     }
 
     /* Comprehensive Dark Mode Support */
@@ -1448,7 +1382,7 @@
                     <div class="form-group">
                         <label for="name" class="form-label">نام و نام خانوادگی</label>
                         <div class="form-input-wrapper">
-                            <input type="text" id="name" class="form-input" placeholder="نام خود را وارد کنید">
+                            <input type="text" id="name" class="form-input">
                             <i class="fas fa-user form-icon"></i>
                         </div>
                     </div>
@@ -1456,8 +1390,8 @@
                     <div class="form-group">
                         <label for="message" class="form-label">پیام شما</label>
                         <div class="form-input-wrapper">
-                            <textarea id="message" class="form-textarea" placeholder="پیام خود را بنویسید"></textarea>
-                            <i class="fas fa-comment form-icon rtl"></i>
+                            <textarea id="message" class="form-textarea" ></textarea>
+                            <i class="fas fa-comment form-icon"></i>
                         </div>
                     </div>
                     
