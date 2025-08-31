@@ -959,7 +959,7 @@
                     
                     <div class="field-group">
                         <label class="field-label">کد ملی</label>
-                        <div class="field-value">{{ user.username|getFieldOfInfo:"nationalcode" }}</div>
+                        <div class="field-value">{{ user.username|getFieldOfInfo:"nationalcode"|format_number }}</div>
                     </div>
                     
                     <div class="field-group">
@@ -1024,12 +1024,12 @@
                     
                     <div class="field-group">
                         <label class="field-label">شماره همراه</label>
-                        <div class="field-value">{{ user.username|getFieldOfInfo:"phonenumber" }}</div>
+                        <div class="field-value">{{ user.username|getFieldOfInfo:"phonenumber"|format_number }}</div>
                     </div>
                     
                     <div class="field-group">
                         <label class="field-label">تلفن ثابت</label>
-                        <div class="field-value">{{ user.username|getFieldOfInfo:"telephone" }}</div>
+                        <div class="field-value">{{ user.username|getFieldOfInfo:"telephone"|format_number }}</div>
                     </div>
                     
                     <div class="field-group">
@@ -1103,17 +1103,17 @@
                 <div class="field-container">
                     <div class="field-group">
                         <label class="field-label">شماره کارت</label>
-                        <div class="field-value">{{ user.username|getFieldOfInfo:"cardnumber" }}</div>
+                        <div class="field-value">{{ user.username|getFieldOfInfo:"cardnumber"|format_number }}</div>
                     </div>
                     
                     <div class="field-group">
                         <label class="field-label">شماره حساب</label>
-                        <div class="field-value">{{ user.username|getFieldOfInfo:"accountnumber" }}</div>
+                        <div class="field-value">{{ user.username|getFieldOfInfo:"accountnumber"|format_number }}</div>
                     </div>
                     
                     <div class="field-group full-width">
                         <label class="field-label">شماره شبا</label>
-                        <div class="field-value">{{ user.username|getFieldOfInfo:"accountnumbershaba" }}</div>
+                        <div class="field-value">{{ user.username|getFieldOfInfo:"accountnumbershaba"|format_number }}</div>
                     </div>
                     </div>
                 </div>

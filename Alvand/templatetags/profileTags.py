@@ -43,3 +43,31 @@ def getValueOfIndexes(index, name):
         result = getTupleIndex(PROVINCE, str(index))
     else: result = None
     return result
+
+@register.filter
+def format_number(value):
+    """Format large numbers to prevent scientific notation display"""
+    if value is None or value == "":
+        return ""
+    try:
+        # Handle string values that might contain numbers
+        if isinstance(value, str):
+            # Try to convert string to number first
+            try:
+                num_value = float(value)
+                # Format as integer if it's a whole number
+                if num_value.is_integer():
+                    return str(int(num_value))
+                else:
+                    return "{:.0f}".format(num_value)
+            except (ValueError, TypeError):
+                return value
+        elif isinstance(value, (int, float)):
+            # For numeric values, ensure no scientific notation
+            if isinstance(value, float) and value.is_integer():
+                return str(int(value))
+            else:
+                return "{:.0f}".format(float(value))
+        return str(value)
+    except (ValueError, TypeError):
+        return str(value) if value else ""
