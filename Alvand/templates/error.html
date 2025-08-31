@@ -610,40 +610,50 @@
     }
 
     /* Modal Styles */
+    /* Base modal styles */
+    /* Modal Styles */
     .modal {
         display: none;
         position: fixed;
-        z-index: 1000;
-        left: 0;
         top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
         background-color: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(5px);
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .modal.show {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 1;
     }
 
     .modal-content {
         background-color: var(--card-bg);
         color: var(--text-color);
-        margin: 0;
-        padding: 2.5rem;
+        padding: 2rem;
         border-radius: 16px;
-        width: 100%;
-     
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        animation: modalSlideIn 0.3s ease-out;
-        max-height: 80vh;
+        width: 90%;
+        max-width: 800px;
+        max-height: 90vh;
         overflow-y: auto;
+        position: relative;
+        transform: translateY(-50px);
+        transition: transform 0.3s ease;
     }
 
-    @keyframes modalSlideIn {
+    .modal.show .modal-content {
+        transform: translateY(0);
+    }
+
+    @keyframes modalFadeIn {
         from {
             opacity: 0;
-            transform: translateY(-50px);
+            transform: translateY(20px);
         }
         to {
             opacity: 1;
@@ -653,11 +663,45 @@
 
     .modal-header {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
         margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
+        padding: 1rem 2.5rem 1rem 1rem;
         border-bottom: 2px solid var(--primary-color);
+        position: relative;
+    }
+
+    .close {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        transition: opacity 0.2s ease;
+    }
+
+    .close::before,
+    .close::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: var(--text-color);
+    }
+
+    .close::before {
+        transform: rotate(45deg);
+    }
+
+    .close::after {
+        transform: rotate(-45deg);
+    }
+
+    .close:hover {
+        opacity: 0.8;
     }
 
     .modal-title {
@@ -665,27 +709,28 @@
         font-weight: 600;
         color: var(--primary-color);
         margin: 0;
+        text-align: center;
+        flex-grow: 1;
     }
 
-    .close {
-        color: #aaa;
-        font-size: 28px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: color 0.2s;
+    .excel-btn:hover {
+        background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
     }
 
-    .close:hover {
-        color: var(--primary-color);
+    .excel-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
     }
 
-    .modal-body {
-        line-height: 1.8;
+    .excel-btn i {
         font-size: 1.1rem;
+        transition: transform 0.3s ease;
     }
 
-    .modal-section {
-        margin-bottom: 2rem;
+    .excel-btn:hover i {
+        transform: scale(1.1);
     }
 
     .modal-section-title {
@@ -1061,11 +1106,15 @@
 
     /* Responsive adjustments */
     @media (max-width: 768px) {
+        .modal {
+            padding: 1rem;
+        }
         .modal-content {
             width: 95%;
-            max-width: 95%;
+            max-width: 100%;
             padding: 1.5rem;
-            max-height: 85vh;
+            max-height: 90vh;
+            margin: 1rem auto;
         }
         
         .modal-section-content {
@@ -1100,10 +1149,14 @@
     }
     
     @media (max-width: 480px) {
+        .modal {
+            padding: 0.5rem;
+        }
         .modal-content {
             width: 98%;
-            padding: 1rem;
-            max-height: 90vh;
+            padding: 1.25rem;
+            max-height: 95vh;
+            margin: 0.5rem auto;
         }
         
         .modal-title {
@@ -1234,13 +1287,13 @@
                         <td>{{ fault.persian_date|default:"تاریخ نامشخص" }}</td>
                         <td>{{ fault.persian_time|default:"زمان نامشخص" }}</td>
                         <td>{{ fault.errorcode }}</td>
-                        <td class="text-cell" data-content="{{ fault.errormessage|default:'عنوان خطا مشخص نیست'|escape }}" data-code="{{ fault.errorcode|escape }}" onclick="showDetailModal('errormessage', this.dataset.content, this.dataset.code)" title="کلیک کنید تا عنوان کامل خطا را مشاهده کنید">
+                        <td class="text-cell" data-type="errormessage" data-content="{{ fault.errormessage|default:'عنوان خطا مشخص نیست'|escape }}" data-code="{{ fault.errorcode|escape }}" title="کلیک کنید تا عنوان کامل خطا را مشاهده کنید">
                             <span class="clean-text">{{ fault.errormessage|default:"مشخص نیست" }}</span>
                         </td>
-                        <td class="text-cell" data-content="{{ fault.probablecause|default:'علت احتمالی مشخص نیست'|escape }}" data-code="{{ fault.errorcode|escape }}" onclick="showDetailModal('probablecause', this.dataset.content, this.dataset.code)" title="کلیک کنید تا علت کامل را مشاهده کنید">
+                        <td class="text-cell" data-type="probablecause" data-content="{{ fault.probablecause|default:'علت احتمالی مشخص نیست'|escape }}" data-code="{{ fault.errorcode|escape }}" title="کلیک کنید تا علت کامل را مشاهده کنید">
                             <span class="clean-text">{{ fault.probablecause|default:"مشخص نیست" }}</span>
                         </td>
-                        <td class="text-cell" data-content="{{ fault.solution|default:'راه حل پیشنهادی موجود نیست'|escape }}" data-code="{{ fault.errorcode|escape }}" onclick="showDetailModal('solution', this.dataset.content, this.dataset.code)" title="کلیک کنید تا راه حل کامل را مشاهده کنید">
+                        <td class="text-cell" data-type="solution" data-content="{{ fault.solution|default:'راه حل پیشنهادی موجود نیست'|escape }}" data-code="{{ fault.errorcode|escape }}" title="کلیک کنید تا راه حل کامل را مشاهده کنید">
                             <span class="clean-text">{{ fault.solution|default:"موجود نیست" }}</span>
                         </td>
                     </tr>
@@ -1257,11 +1310,10 @@
     <div class="modal-content">
         <div class="modal-header">
             <h3 class="modal-title" id="modalTitle">جزئیات خطا</h3>
-            <span class="close" onclick="closeModal()">&times;</span>
+            <span class="close" onclick="closeModal()"></span>
         </div>
         <div class="modal-body">
             <div class="modal-section">
-                <div class="modal-section-title" id="sectionTitle">محتوا</div>
                 <div class="modal-section-content" id="modalContent">
                     <!-- Content will be loaded here -->
                 </div>
@@ -1394,50 +1446,45 @@
 <script>
     // Modal functions
     function showDetailModal(type, content, errorCode) {
+        console.log('Opening modal for:', {type, errorCode});
         const modal = document.getElementById('detailModal');
         const modalTitle = document.getElementById('modalTitle');
-        const sectionTitle = document.getElementById('sectionTitle');
         const modalContent = document.getElementById('modalContent');
-        
-        // Set titles based on type
-        let title = '';
-        let sectionTitleText = '';
-        
-        switch(type) {
-            case 'solution':
-                title = `راه حل پیشنهادی - خطای ${errorCode}`;
-               
-                break;
-            case 'probablecause':
-                title = `علت احتمالی - خطای ${errorCode}`;
-              
-                break;
-            case 'errormessage':
-                title = `عنوان خطا - خطای ${errorCode}`;
-             
-                break;
+
+        if (!modal) {
+            console.error('Modal element not found!');
+            return;
         }
+        if (!modalTitle || !modalContent) {
+            console.error('Modal content elements not found!');
+            return;
+        }
+
+        // Set modal content based on type
+        const titles = {
+            'errormessage': 'عنوان خطا',
+            'probablecause': 'علت احتمالی',
+            'solution': 'راه حل پیشنهادی',
+            'default': 'جزئیات'
+        };
         
-        modalTitle.textContent = title;
-        sectionTitle.textContent = sectionTitleText;
+        const title = titles[type] || titles['default'];
         
-        // بهبود متن و حذف علامت سوال‌ها
-        let formattedContent = content
-            .replace(/\?/g, '') // حذف علامت سوال‌ها
-            .replace(/\s+/g, ' ') // حذف فاصله‌های اضافی
-            .replace(/\s*,\s*/g, ', ') // تمیز کردن کاماها
-            .replace(/\s*\.\s*/g, '. ') // تمیز کردن نقطه‌ها
-            .trim();
+        modalTitle.textContent = `خطای ${errorCode} - ${title}`;
+        // Use innerHTML to properly render HTML entities
+        modalContent.innerHTML = (content || 'محتوا موجود نیست').replace(/\?/g, '');
         
-        // تبدیل متن به فرمت بهتر
-        formattedContent = formatTextForModal(formattedContent);
-        
-        modalContent.innerHTML = formattedContent;
-        
-        modal.style.display = 'block';
+        // Show the modal
+        modal.style.display = 'flex';
+        // Force reflow
+        void modal.offsetHeight;
+        // Add show class
+        modal.classList.add('show');
         
         // Prevent body scroll
         document.body.style.overflow = 'hidden';
+        
+        console.log('Modal should be visible now');
     }
     
     // تابع برای فرمت کردن متن
@@ -1470,25 +1517,76 @@
     
     function closeModal() {
         const modal = document.getElementById('detailModal');
+        if (modal) {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+            document.body.style.overflow = 'auto';
+        }
+    }
+    
+    
+    
+    // Initialize modal state and event listeners
+    function initModal() {
+        // Initialize modal
+        const modal = document.getElementById('detailModal');
+        if (!modal) {
+            console.error('Modal element not found!');
+            return;
+        }
+        
+        // Hide modal initially
         modal.style.display = 'none';
         
-        // Restore body scroll
-        document.body.style.overflow = 'auto';
+        // Add close button handler
+        const closeBtn = modal.querySelector('.close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                closeModal();
+            });
+        }
+        
+        // Close modal when clicking outside content
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.classList.contains('show')) {
+                closeModal();
+            }
+        });
     }
     
-    // Close modal when clicking outside
-    window.onclick = function(event) {
-        const modal = document.getElementById('detailModal');
-        if (event.target === modal) {
-            closeModal();
+    // Initialize table cell click handlers
+    function initTableClickHandlers() {
+        // Add click handler for table cells using event delegation on the table container
+        const tableContainer = document.querySelector('.table-container');
+        if (tableContainer) {
+            tableContainer.addEventListener('click', function(e) {
+                const textCell = e.target.closest('.text-cell');
+                if (textCell) {
+                    e.preventDefault();
+                    const type = textCell.getAttribute('data-type') || 'errormessage';
+                    const content = textCell.getAttribute('data-content') || '';
+                    const code = textCell.getAttribute('data-code') || '';
+                    showDetailModal(type, content, code);
+                }
+            });
         }
     }
     
-    // Close modal with Escape key
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            closeModal();
-        }
+    // Initialize everything when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        initModal();
+        initTableClickHandlers();
     });
 
     // Initialize table and search functionality when document is ready
