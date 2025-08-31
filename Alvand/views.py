@@ -1062,13 +1062,16 @@ class dashboardPage(TemplateView, View):
 
 
 def dashboard_export(request):
-    """Export filtered dashboard records as CSV using the same filter logic as the dashboard page."""
+    """Export filtered dashboard records as CSV or Excel using the same filter logic as the dashboard page."""
     if not checkSession(request):
         messages.error(request, messagesTypes.notlogin)
         return redirect(reverse_lazy("login"))
     if not check_active(checkSession(request)):
         messages.error(request, messagesTypes.deAvtive)
         return redirect(reverse_lazy('logout' if checkSession(request) else 'login'))
+
+    # Get export format
+    export_format = request.GET.get('export', 'csv').lower()
 
     # Build filters identical to dashboardPage.get
     dateFrom = request.GET.get('dateFrom')
@@ -1122,53 +1125,155 @@ def dashboard_export(request):
         dashboardData(checkSession(request))
     )
 
-    # Prepare CSV response
-    response = HttpResponse(content_type='text/csv; charset=utf-8')
-    filename = f"dashboard_export_{timezone.now().strftime('%Y%m%d_%H%M%S')}.csv"
-    response['Content-Disposition'] = f'attachment; filename="{filename}"'
-    # Ensure correct encoding and Excel compatibility
-    response.charset = 'utf-8'
-    # Prepend UTF-8 BOM so Excel recognizes encoding
-    response.write('\ufeff')
+    # Get all records (no pagination limit)
+    all_records = list(base_qs)
 
-    writer = csv.writer(response, lineterminator='\r\n')
-    # Header row (Persian labels to match UI)
-    writer.writerow([
-        'تاریخ', 'ساعت', 'شماره مخاطب', 'شماره داخلی', 'خط شهری', 'مدت تماس', 'نوع تماس', 'زمان برق', 'انتقال', 'هزینه'
-    ])
-
-    # Write data rows
-    for rec in base_qs:
+    if export_format == 'excel':
+        # Excel export using openpyxl
         try:
-            # Compute price similar to calculateOnePrice template filter
-            price_val = '0'
-            if getattr(rec, 'durationtime', None) and getattr(rec, 'contactnumber', None):
-                calltype_kind = callTypeDetector(rec.contactnumber)
-                if calltype_kind is not None:
-                    unit_price = getPrice(calltype_kind)
-                    if unit_price is None:
-                        price_val = 'ندارد'
-                    else:
-                        calculated = calculatePrice(str(rec.durationtime), unit_price)
-                        price_val = str(calculated)
+            from openpyxl import Workbook
+            from openpyxl.styles import Font, PatternFill, Alignment
+            from openpyxl.utils import get_column_letter
+        except ImportError:
+            messages.error(request, "کتابخانه Excel نصب نشده است.")
+            return redirect('dashboard')
 
-            writer.writerow([
-                rec.date.strftime('%Y-%m-%d') if getattr(rec, 'date', None) else '',
-                getattr(rec, 'hour', '') or '',
-                getattr(rec, 'contactnumber', '') or '',
-                getattr(rec, 'extension', '') or '',
-                getattr(rec, 'urbanline', '') or '',
-                getattr(rec, 'durationtime', '0') or '0',
-                getattr(rec, 'calltype', '') or '',
-                getattr(rec, 'beepsnumber', 0) or 0,
-                'بله' if getattr(rec, 'transferring', False) else 'خیر',
-                price_val,
-            ])
-        except Exception:
-            # Skip problematic rows but continue export
-            continue
+        # Create workbook and worksheet
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "تماس‌ها"
 
-    return response
+        # Headers
+        headers = [
+            'ردیف', 'تاریخ', 'ساعت', 'شماره مخاطب', 'شماره داخلی', 
+            'خط شهری', 'مدت تماس (ثانیه)', 'نوع تماس', 'زمان برق', 'انتقال', 'هزینه (تومان)'
+        ]
+        
+        # Style headers
+        header_font = Font(bold=True, color="FFFFFF")
+        header_fill = PatternFill(start_color="00BCD4", end_color="00BCD4", fill_type="solid")
+        header_alignment = Alignment(horizontal="center", vertical="center")
+
+        # Add headers
+        for col, header in enumerate(headers, 1):
+            cell = ws.cell(row=1, column=col, value=header)
+            cell.font = header_font
+            cell.fill = header_fill
+            cell.alignment = header_alignment
+
+        # Add data rows
+        for row_idx, rec in enumerate(all_records, 2):
+            try:
+                # Calculate price
+                price_val = '0'
+                if getattr(rec, 'durationtime', None) and getattr(rec, 'contactnumber', None):
+                    calltype_kind = callTypeDetector(rec.contactnumber)
+                    if calltype_kind is not None:
+                        unit_price = getPrice(calltype_kind)
+                        if unit_price is None:
+                            price_val = 'ندارد'
+                        else:
+                            calculated = calculatePrice(str(rec.durationtime), unit_price)
+                            price_val = str(calculated)
+
+                # Convert date to Persian format
+                persian_date = ''
+                if getattr(rec, 'date', None):
+                    try:
+                        # Convert Gregorian date to Persian
+                        jdate = jdatetime.date.fromgregorian(date=rec.date)
+                        persian_date = jdate.strftime('%Y/%m/%d')
+                    except:
+                        persian_date = rec.date.strftime('%Y-%m-%d')
+
+                row_data = [
+                    row_idx - 1,  # Row number
+                    persian_date,
+                    getattr(rec, 'hour', '') or '',
+                    getattr(rec, 'contactnumber', '') or '',
+                    getattr(rec, 'extension', '') or '',
+                    getattr(rec, 'urbanline', '') or '',
+                    getattr(rec, 'durationtime', '0') or '0',
+                    getattr(rec, 'calltype', '') or '',
+                    getattr(rec, 'beepsnumber', 0) or 0,
+                    'بله' if getattr(rec, 'transferring', False) else 'خیر',
+                    price_val,
+                ]
+
+                for col, value in enumerate(row_data, 1):
+                    cell = ws.cell(row=row_idx, column=col, value=value)
+                    cell.alignment = Alignment(horizontal="center", vertical="center")
+
+            except Exception:
+                continue
+
+        # Auto-adjust column widths
+        for col in range(1, len(headers) + 1):
+            column_letter = get_column_letter(col)
+            ws.column_dimensions[column_letter].width = 15
+
+        # Prepare Excel response
+        response = HttpResponse(
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        filename = f"تماس‌های_لوتوس_{timezone.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        
+        wb.save(response)
+        return response
+
+    else:
+        # CSV export (existing functionality)
+        response = HttpResponse(content_type='text/csv; charset=utf-8')
+        filename = f"dashboard_export_{timezone.now().strftime('%Y%m%d_%H%M%S')}.csv"
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        response.charset = 'utf-8'
+        response.write('\ufeff')
+
+        writer = csv.writer(response, lineterminator='\r\n')
+        writer.writerow([
+            'تاریخ', 'ساعت', 'شماره مخاطب', 'شماره داخلی', 'خط شهری', 'مدت تماس', 'نوع تماس', 'زمان برق', 'انتقال', 'هزینه'
+        ])
+
+        for rec in all_records:
+            try:
+                price_val = '0'
+                if getattr(rec, 'durationtime', None) and getattr(rec, 'contactnumber', None):
+                    calltype_kind = callTypeDetector(rec.contactnumber)
+                    if calltype_kind is not None:
+                        unit_price = getPrice(calltype_kind)
+                        if unit_price is None:
+                            price_val = 'ندارد'
+                        else:
+                            calculated = calculatePrice(str(rec.durationtime), unit_price)
+                            price_val = str(calculated)
+
+                # Convert date to Persian format
+                persian_date = ''
+                if getattr(rec, 'date', None):
+                    try:
+                        # Convert Gregorian date to Persian
+                        jdate = jdatetime.date.fromgregorian(date=rec.date)
+                        persian_date = jdate.strftime('%Y/%m/%d')
+                    except:
+                        persian_date = rec.date.strftime('%Y-%m-%d')
+
+                writer.writerow([
+                    persian_date,
+                    getattr(rec, 'hour', '') or '',
+                    getattr(rec, 'contactnumber', '') or '',
+                    getattr(rec, 'extension', '') or '',
+                    getattr(rec, 'urbanline', '') or '',
+                    getattr(rec, 'durationtime', '0') or '0',
+                    getattr(rec, 'calltype', '') or '',
+                    getattr(rec, 'beepsnumber', 0) or 0,
+                    'بله' if getattr(rec, 'transferring', False) else 'خیر',
+                    price_val,
+                ])
+            except Exception:
+                continue
+
+        return response
 
 
 def support(request):

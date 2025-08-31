@@ -1894,9 +1894,6 @@
             
             // Recalculate totals after sorting
             calculateTotalCosts();
-            
-            // Toggle Excel button visibility after sorting
-            toggleExcelButton();
         });
         
         // Enhanced search functionality with better UX
@@ -2053,8 +2050,6 @@
             }
             calculateTotalCosts();
             
-            // Toggle Excel button visibility based on results
-            toggleExcelButton();
             
             // Hide filtering indicator
             hideFilteringIndicator();
@@ -2095,8 +2090,6 @@
             }
             calculateTotalCosts();
             
-            // Toggle Excel button visibility
-            toggleExcelButton();
         };
         
         $("#printbtn").on("click", function() {
@@ -2167,8 +2160,6 @@
         }
         loadSavedFilters();
         
-        // Initial toggle of Excel button
-        toggleExcelButton();
 
         // همه تماس ها checkbox functionality - check all other checkboxes when selected
         $('#call-type-1').on('change', function() {
@@ -2212,243 +2203,8 @@
             
             // For now, just clear fields and trigger search to show all table rows
             $('#searchBox').trigger('input'); 
-            
-            // Toggle Excel button visibility after reset
-            toggleExcelButton(); 
+ 
         });
-
-        // Excel Export functionality
-        $('#exportExcelBtn').on('click', function() {
-            exportToExcel();
-        });
-
-        // Function to show/hide Excel button based on data availability
-        function toggleExcelButton() {
-            const visibleRows = $('#tbody tr:visible');
-            const hasData = visibleRows.length > 0;
-            
-            if (hasData) {
-                $('#exportExcelBtn').removeClass('hidden');
-            } else {
-                $('#exportExcelBtn').addClass('hidden');
-            }
-        }
-
-        // Function to dynamically load SheetJS if not already loaded
-        function loadSheetJS() {
-            return new Promise((resolve, reject) => {
-                if (typeof XLSX !== 'undefined') {
-                    resolve();
-                    return;
-                }
-
-                const script = document.createElement('script');
-                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
-                script.onload = () => {
-                    console.log('SheetJS loaded dynamically');
-                    resolve();
-                };
-                script.onerror = () => {
-                    reject(new Error('Failed to load SheetJS'));
-                };
-                document.head.appendChild(script);
-            });
-        }
-
-        function exportToExcel() {
-            // Get visible rows (filtered results)
-            const visibleRows = $('#tbody tr:visible');
-            
-            if (visibleRows.length === 0) {
-                alert('هیچ داده‌ای برای دانلود وجود ندارد. لطفاً ابتدا فیلترها را اعمال کنید.');
-                return;
-            }
-
-            // Show loading state
-            const $btn = $('#exportExcelBtn');
-            const originalText = $btn.html();
-            $btn.html('<i class="fa-solid fa-spinner fa-spin ml-1"></i>در حال آماده‌سازی...');
-            $btn.prop('disabled', true);
-
-            try {
-                // Check if SheetJS is loaded
-                if (typeof XLSX === 'undefined') {
-                    // Try to load SheetJS dynamically
-                    console.log('SheetJS not loaded, attempting to load dynamically...');
-                    loadSheetJS().then(() => {
-                        exportToExcel(); // Retry after loading
-                    }).catch(error => {
-                        throw new Error('کتابخانه Excel بارگذاری نشده است. لطفاً صفحه را مجدداً بارگذاری کنید.');
-                    });
-                    return;
-                }
-
-                // Create workbook and worksheet
-                const wb = XLSX.utils.book_new();
-                const ws = XLSX.utils.aoa_to_sheet([]);
-
-                // Define headers in Persian
-                const headers = [
-                    'ردیف',
-                    'تاریخ و زمان',
-                    'ساعت',
-                    'شماره مخاطب',
-                    'شماره داخلی',
-                    'خط شهری',
-                    'مدت تماس (ثانیه)',
-                    'نوع تماس',
-                    'زمان برق',
-                    'انتقال',
-                    'هزینه (تومان)'
-                ];
-
-                // Add headers to worksheet
-                XLSX.utils.sheet_add_aoa(ws, [headers], { origin: 'A1' });
-
-                // Process each visible row
-                visibleRows.each(function(index, row) {
-                    const $row = $(row);
-                    const rowData = [];
-                    
-                    // Row number
-                    rowData.push(index + 1);
-                    
-                    // Date
-                    const dateText = $row.find('td').eq(1).find('span.font-medium').text().trim();
-                    rowData.push(dateText);
-                    
-                    // Hour
-                    const hourText = $row.find('td').eq(2).find('span.font-medium').text().trim();
-                    rowData.push(hourText);
-                    
-                    // Contact number
-                    const contactText = $row.find('td').eq(3).text().trim();
-                    rowData.push(contactText);
-                    
-                    // Extension
-                    const extensionText = $row.find('td').eq(4).find('span.font-medium').text().trim();
-                    rowData.push(extensionText);
-                    
-                    // Urban line
-                    const urbanText = $row.find('td').eq(5).text().trim();
-                    rowData.push(urbanText);
-                    
-                    // Duration
-                    const durationText = $row.find('td').eq(6).find('span.font-medium').text().trim();
-                    rowData.push(durationText);
-                    
-                    // Call type
-                    const callTypeText = $row.find('td').eq(7).find('img').attr('title') || '';
-                    rowData.push(callTypeText);
-                    
-                    // Beeps number
-                    const beepsText = $row.find('td').eq(8).text().trim();
-                    rowData.push(beepsText);
-                    
-                    // Transfer
-                    const transferText = $row.find('td').eq(9).text().trim();
-                    rowData.push(transferText);
-                    
-                    // Cost
-                    const costText = $row.find('td').eq(10).find('span.font-medium').text().trim();
-                    rowData.push(costText);
-                    
-                    // Add row data to worksheet
-                    XLSX.utils.sheet_add_aoa(ws, [rowData], { origin: `A${index + 2}` });
-                });
-
-                // Auto-size columns
-                const colWidths = [8, 15, 8, 15, 12, 12, 15, 15, 10, 10, 15];
-                ws['!cols'] = colWidths.map(width => ({ width }));
-
-                // Set RTL alignment for all cells (right-to-left for Persian text)
-                for (let row = 1; row <= visibleRows.length + 1; row++) {
-                    for (let col = 0; col < headers.length; col++) {
-                        const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
-                        if (!ws[cellAddress]) continue;
-                        
-                        // Set alignment to right-to-left
-                        ws[cellAddress].s = {
-                            alignment: {
-                                horizontal: 'right',
-                                vertical: 'center'
-                            }
-                        };
-                    }
-                }
-
-                // Add worksheet to workbook
-                XLSX.utils.book_append_sheet(wb, ws, 'تماس‌ها');
-
-                // Generate filename with current date
-                const now = new Date();
-                const dateStr = now.toLocaleDateString('fa-IR').replace(/\//g, '-');
-                const timeStr = now.toLocaleTimeString('fa-IR').replace(/:/g, '-');
-                const filename = `تماس‌های_لوتوس_${dateStr}_${timeStr}.xlsx`;
-
-                // Download the file
-                XLSX.writeFile(wb, filename);
-
-                // Show success message
-                setTimeout(() => {
-                    // Create a more user-friendly success notification
-                    const successDiv = $(`
-                        <div class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300 translate-x-full">
-                            <div class="flex items-center gap-2">
-                                <i class="fa-solid fa-check-circle"></i>
-                                <span>فایل Excel با موفقیت دانلود شد!</span>
-                            </div>
-                            <div class="text-sm mt-1 opacity-90">
-                                نام فایل: ${filename} | تعداد رکوردها: ${visibleRows.length}
-                            </div>
-                        </div>
-                    `);
-                    
-                    $('body').append(successDiv);
-                    
-                    // Animate in
-                    setTimeout(() => successDiv.removeClass('translate-x-full'), 100);
-                    
-                    // Auto-remove after 5 seconds
-                    setTimeout(() => {
-                        successDiv.addClass('translate-x-full');
-                        setTimeout(() => successDiv.remove(), 300);
-                    }, 5000);
-                }, 500);
-
-            } catch (error) {
-                console.error('Excel export error:', error);
-                
-                // Create a more user-friendly error notification
-                const errorDiv = $(`
-                    <div class="fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300 translate-x-full">
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-exclamation-triangle"></i>
-                            <span>خطا در ایجاد فایل Excel</span>
-                        </div>
-                        <div class="text-sm mt-1 opacity-90">
-                            ${error.message}
-                        </div>
-                    </div>
-                `);
-                
-                $('body').append(errorDiv);
-                
-                // Animate in
-                setTimeout(() => errorDiv.removeClass('translate-x-full'), 100);
-                
-                // Auto-remove after 8 seconds
-                setTimeout(() => {
-                    errorDiv.addClass('translate-x-full');
-                    setTimeout(() => errorDiv.remove(), 300);
-                }, 8000);
-                
-            } finally {
-                // Restore button state
-                $btn.html(originalText);
-                $btn.prop('disabled', false);
-            }
-        }
 
         // Always calculate call statistics client-side
         setTimeout(function() {
