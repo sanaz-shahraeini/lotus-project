@@ -684,6 +684,216 @@ class systemSettings(FormView, View):
         
         return render(request, self.template_name, context)
 
+
+def error_export(request):
+    """Export filtered error data as CSV or Excel"""
+    if not checkSession(request):
+        return JsonResponse({'error': 'Authentication required'}, status=401)
+    
+    # Get export format from request
+    export_format = request.GET.get('format', 'csv').lower()
+    
+    # Get the same filtered data as the error page
+    from django.db.models import Q
+    import re
+    
+    # Get SMDR records where dial_number contains 'ALM #' (Alarm messages)
+    smdr_qs = SMDRRecord.objects.filter(
+        dial_number__contains='ALM #'
+    )
+    
+    # Extract error codes and create error data
+    error_data = []
+    for record in smdr_qs:
+        try:
+            # Extract error code after ALM # sign
+            match = re.search(r'ALM #(\d+)', record.dial_number)
+            if match:
+                error_code = int(match.group(1))
+                
+                # Find corresponding error details
+                try:
+                    error_detail = Errors.objects.get(errorcodenum=error_code)
+                    
+                    # Combine date and time to create datetime
+                    error_datetime = datetime.datetime.combine(record.date, record.time)
+                    
+                    # Convert to Persian date for display
+                    persian_date = jdatetime.datetime.fromgregorian(datetime=error_datetime)
+                    
+                    error_data.append({
+                        'id': record.id,
+                        'errorcode': error_code,
+                        'errormessage': error_detail.errormessage,
+                        'probablecause': error_detail.probablecause,
+                        'solution': error_detail.solution,
+                        'date_time': error_datetime,
+                        'persian_date': persian_date.strftime('%Y/%m/%d'),
+                        'persian_time': persian_date.strftime('%H:%M'),
+                        'dial_number': record.dial_number,
+                    })
+                except Errors.DoesNotExist:
+                    continue
+        except (ValueError, AttributeError):
+            continue
+    
+    # Apply date filtering if provided
+    dateFrom = request.GET.get('dateFrom', '').strip()
+    dateTo = request.GET.get('dateTo', '').strip()
+    
+    if dateFrom and dateTo:
+        try:
+            # Clean and normalize date strings
+            dateFrom = dateFrom.replace('از', '').replace('تا', '').strip()
+            dateTo = dateTo.replace('از', '').replace('تا', '').strip()
+            
+            # Try parsing with different date formats
+            date_formats = [
+                "%Y-%m-%d",  # 1403-01-01
+                "%Y/%m/%d",  # 1403/01/01
+                "%Y %m %d",  # 1403 01 01
+            ]
+            
+            convFrom = None
+            convTo = None
+            
+            for fmt in date_formats:
+                try:
+                    convFrom = jdatetime.datetime.strptime(dateFrom, fmt).togregorian()
+                    convTo = jdatetime.datetime.strptime(dateTo, fmt).togregorian()
+                    break
+                except ValueError:
+                    continue
+            
+            if convFrom and convTo:
+                # Add one day to dateTo to include the entire end date
+                convTo = convTo + datetime.timedelta(days=1)
+                
+                # Filter error data by date range
+                filtered_error_data = []
+                for record_data in error_data:
+                    if convFrom <= record_data['date_time'] < convTo:
+                        filtered_error_data.append(record_data)
+                
+                error_data = filtered_error_data
+                
+        except Exception as e:
+            print(f"Error parsing dates in export: {e}")
+    
+    # Sort error data by date_time (newest first)
+    error_data.sort(key=lambda x: x['date_time'], reverse=True)
+    
+    if export_format == 'excel':
+        # Excel export
+        from openpyxl import Workbook
+        from openpyxl.styles import Font, Alignment, PatternFill
+        
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "گزارش خطاها"
+        
+        # Headers
+        headers = ['کد خطا', 'پیام خطا', 'علت احتمالی', 'راه حل', 'تاریخ و زمان']
+        ws.append(headers)
+        
+        # Style headers
+        header_font = Font(bold=True, color="FFFFFF")
+        header_fill = PatternFill(start_color="366092", end_color="366092", fill_type="solid")
+        header_alignment = Alignment(horizontal="center", vertical="center")
+        
+        for col_num, header in enumerate(headers, 1):
+            cell = ws.cell(row=1, column=col_num)
+            cell.font = header_font
+            cell.fill = header_fill
+            cell.alignment = header_alignment
+        
+        # Data rows
+        for record in error_data:
+            try:
+                # Convert datetime to Persian format for export
+                persian_datetime = jdatetime.datetime.fromgregorian(datetime=record['date_time'])
+                persian_date_time = persian_datetime.strftime('%Y/%m/%d %H:%M')
+            except:
+                persian_date_time = f"{record['persian_date']} {record['persian_time']}"
+            
+            row_data = [
+                record['errorcode'],
+                record['errormessage'],
+                record['probablecause'],
+                record['solution'],
+                persian_date_time
+            ]
+            ws.append(row_data)
+        
+        # Auto-adjust column widths
+        for column in ws.columns:
+            max_length = 0
+            column_letter = column[0].column_letter
+            for cell in column:
+                try:
+                    if len(str(cell.value)) > max_length:
+                        max_length = len(str(cell.value))
+                except:
+                    pass
+            adjusted_width = min(max_length + 2, 50)
+            ws.column_dimensions[column_letter].width = adjusted_width
+        
+        # Center align all data cells
+        for row in ws.iter_rows(min_row=2):
+            for cell in row:
+                cell.alignment = Alignment(horizontal="center", vertical="center")
+        
+        # Generate filename with Persian date
+        now = jdatetime.datetime.now()
+        filename = f"گزارش_خطاها_{now.strftime('%Y_%m_%d_%H_%M')}.xlsx"
+        
+        # Create response
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        
+        wb.save(response)
+        return response
+    
+    else:
+        # CSV export
+        response = HttpResponse(content_type='text/csv; charset=utf-8')
+        
+        # Generate filename with Persian date
+        now = jdatetime.datetime.now()
+        filename = f"گزارش_خطاها_{now.strftime('%Y_%m_%d_%H_%M')}.csv"
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        
+        # Add BOM for proper UTF-8 encoding in Excel
+        response.write('\ufeff')
+        
+        writer = csv.writer(response)
+        
+        # Headers
+        writer.writerow(['کد خطا', 'پیام خطا', 'علت احتمالی', 'راه حل', 'تاریخ و زمان'])
+        
+        # Data rows
+        for record in error_data:
+            try:
+                # Convert datetime to Persian format for export
+                persian_datetime = jdatetime.datetime.fromgregorian(datetime=record['date_time'])
+                persian_date_time = persian_datetime.strftime('%Y/%m/%d %H:%M')
+            except:
+                persian_date_time = f"{record['persian_date']} {record['persian_time']}"
+            
+            writer.writerow([
+                record['errorcode'],
+                record['errormessage'],
+                record['probablecause'],
+                record['solution'],
+                persian_date_time
+            ])
+        
+        return response
+
+
+class settingsPage(TemplateView, View):
+    template_name = "settings.html"
+
     def form_valid(self, form):
         if not checkSession(self.request):
             messages.error(self.request, messagesTypes.notlogin)

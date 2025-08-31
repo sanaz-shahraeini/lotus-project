@@ -15,6 +15,7 @@ urlpatterns = [
     path('settings/', views.systemSettings.as_view(), name='settings'),
     path('support/', views.support, name='support'),
     path('errors/', views.errorsPage.as_view(), name='errors'),
+    path('errors/export/', views.error_export, name='error_export'),
     path('user/', views.UserForm.as_view(), name='user'),
     path('get-user-data/', views.get_user_data, name='get_user_data'),
     path('userprofile/', views.userprofile_view, name='userprofile'),

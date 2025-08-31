@@ -570,17 +570,7 @@
         direction: ltr;
     }
 
-    /* وسط چین کردن ستون‌های خاص */
-    .table-modern th:nth-child(1),
-    .table-modern th:nth-child(2),
-    .table-modern th:nth-child(3),
-    .table-modern th:nth-child(4),
-    .table-modern td:nth-child(1),
-    .table-modern td:nth-child(2),
-    .table-modern td:nth-child(3),
-    .table-modern td:nth-child(4) {
-        text-align: center;
-    }
+ 
 
     /* استایل برای ستون‌های متن طولانی */
     .text-cell {
@@ -1259,10 +1249,32 @@
                 </div>
                 {% endif %}
                 
-                <button id='excelbtn' class="excel-btn-compact">
-                    <i class="fas fa-file-excel"></i>
-                  دانلود اکسل 
-                </button>
+                <form method="get" action="{% url 'error_export' %}" style="display: inline;">
+                    {% if request.GET.dateFrom %}
+                        <input type="hidden" name="dateFrom" value="{{ request.GET.dateFrom }}">
+                    {% endif %}
+                    {% if request.GET.dateTo %}
+                        <input type="hidden" name="dateTo" value="{{ request.GET.dateTo }}">
+                    {% endif %}
+                    <input type="hidden" name="format" value="excel">
+                    <button type="submit" class="excel-btn-compact">
+                        <i class="fas fa-file-excel"></i>
+                        دانلود اکسل 
+                    </button>
+                </form>
+                <form method="get" action="{% url 'error_export' %}" style="display: inline; margin-left: 10px;">
+                    {% if request.GET.dateFrom %}
+                        <input type="hidden" name="dateFrom" value="{{ request.GET.dateFrom }}">
+                    {% endif %}
+                    {% if request.GET.dateTo %}
+                        <input type="hidden" name="dateTo" value="{{ request.GET.dateTo }}">
+                    {% endif %}
+                    <input type="hidden" name="format" value="csv">
+                    <button type="submit" class="excel-btn-compact">
+                        <i class="fas fa-file-csv"></i>
+                        دانلود CSV
+                    </button>
+                </form>
             </div>
         </div>
 
@@ -1287,10 +1299,10 @@
                         <td>{{ fault.persian_date|default:"تاریخ نامشخص" }}</td>
                         <td>{{ fault.persian_time|default:"زمان نامشخص" }}</td>
                         <td>{{ fault.errorcode }}</td>
-                        <td class="text-cell" data-type="errormessage" data-content="{{ fault.errormessage|default:'عنوان خطا مشخص نیست'|escape }}" data-code="{{ fault.errorcode|escape }}" title="کلیک کنید تا عنوان کامل خطا را مشاهده کنید">
+                        <td class="text-cell text-center" data-type="errormessage" data-content="{{ fault.errormessage|default:'عنوان خطا مشخص نیست'|escape }}" data-code="{{ fault.errorcode|escape }}" title="کلیک کنید تا عنوان کامل خطا را مشاهده کنید">
                             <span class="clean-text">{{ fault.errormessage|default:"مشخص نیست" }}</span>
                         </td>
-                        <td class="text-cell" data-type="probablecause" data-content="{{ fault.probablecause|default:'علت احتمالی مشخص نیست'|escape }}" data-code="{{ fault.errorcode|escape }}" title="کلیک کنید تا علت کامل را مشاهده کنید">
+                        <td class="text-cell text-center" data-type="probablecause" data-content="{{ fault.probablecause|default:'علت احتمالی مشخص نیست'|escape }}" data-code="{{ fault.errorcode|escape }}" title="کلیک کنید تا علت کامل را مشاهده کنید">
                             <span class="clean-text">{{ fault.probablecause|default:"مشخص نیست" }}</span>
                         </td>
                         <td class="text-cell" data-type="solution" data-content="{{ fault.solution|default:'راه حل پیشنهادی موجود نیست'|escape }}" data-code="{{ fault.errorcode|escape }}" title="کلیک کنید تا راه حل کامل را مشاهده کنید">
@@ -1697,9 +1709,6 @@
 
 <script>
     $(document).ready(function () {
-        $("#excelbtn").on("click", function () {
-            downloadExcel();
-        });
 
         // پاک کردن علامت سوال و کوتاه کردن متن‌ها
         function cleanAndTruncateText() {
@@ -1730,161 +1739,6 @@
 
         // اجرای تابع پاک کردن علامت سوال و کوتاه کردن متن‌ها
         cleanAndTruncateText();
-
-        function downloadExcel() {
-            // نمایش loading
-            $("#excelbtn").html('<i class="fas fa-spinner fa-spin mr-2"></i>در حال دانلود...');
-            $("#excelbtn").prop('disabled', true);
-            
-            // دریافت تمام داده‌ها از سرور
-            let currentUrl = window.location.href;
-            let baseUrl = currentUrl.split('?')[0];
-            
-            // اضافه کردن پارامتر برای دریافت تمام داده‌ها
-            let downloadUrl = baseUrl + '?download_all=true';
-            
-            // اگر فیلتر تاریخ وجود دارد، آن را حفظ کن
-            let urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('dateFrom')) {
-                downloadUrl += '&dateFrom=' + urlParams.get('dateFrom');
-            }
-            if (urlParams.has('dateTo')) {
-                downloadUrl += '&dateTo=' + urlParams.get('dateTo');
-            }
-            if (urlParams.has('search')) {
-                downloadUrl += '&search=' + urlParams.get('search');
-            }
-            
-            // درخواست AJAX برای دریافت تمام داده‌ها
-            $.ajax({
-                url: downloadUrl,
-                method: 'GET',
-                success: function(response) {
-                    try {
-                        // اگر پاسخ JSON است
-                        if (typeof response === 'object') {
-                            createExcelFromData(response.data, response.headers);
-                        } else {
-                            // اگر پاسخ HTML است، از جدول فعلی استفاده کن
-                            createExcelFromCurrentTable();
-                        }
-                    } catch (e) {
-                        console.error('Error processing response:', e);
-                        createExcelFromCurrentTable();
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error downloading data:', error);
-                    // در صورت خطا، از جدول فعلی استفاده کن
-                    createExcelFromCurrentTable();
-                },
-                complete: function() {
-                    // بازگرداندن دکمه به حالت عادی
-                    $("#excelbtn").html('<i class="fas fa-file-excel mr-2"></i>دانلود اکسل');
-                    $("#excelbtn").prop('disabled', false);
-                }
-            });
-        }
-        
-        function createExcelFromData(data, headers) {
-            let excelData = [];
-            
-            // اضافه کردن header ها
-            if (headers && headers.length > 0) {
-                excelData.push(headers);
-            } else {
-                // استفاده از header های پیش‌فرض
-                $("#table th").each(function() {
-                    excelData.push([$(this).text().trim()]);
-                });
-            }
-            
-            // اضافه کردن داده‌ها
-            if (data && data.length > 0) {
-                data.forEach(function(row) {
-                    let rowData = [];
-                    if (Array.isArray(row)) {
-                        rowData = row;
-                    } else if (typeof row === 'object') {
-                        // اگر داده به صورت object است
-                        rowData = [
-                            row.row || '',
-                            row.date || '',
-                            row.time || '',
-                            row.errorcode || '',
-                            row.errormessage || '',
-                            row.probablecause || '',
-                            row.solution || ''
-                        ];
-                    }
-                    excelData.push(rowData);
-                });
-            }
-            
-            downloadCSV(excelData);
-        }
-        
-        function createExcelFromCurrentTable() {
-            let excelData = [];
-            
-            // اضافه کردن header ها
-            let headers = [];
-            $("#table th").each(function() {
-                headers.push($(this).text().trim());
-            });
-            excelData.push(headers);
-            
-            // اضافه کردن داده‌های جدول فعلی
-            $("#table tbody tr").each(function() {
-                let rowData = [];
-                $(this).find("td").each(function(index) {
-                    let cellText = $(this).text().trim();
-                    
-                    // برای ستون‌های متن طولانی، از onclick attribute استفاده کن
-                    if ($(this).hasClass('text-cell')) {
-                        let onclickAttr = $(this).attr('onclick');
-                        if (onclickAttr) {
-                            // استخراج متن کامل از onclick
-                            let match = onclickAttr.match(/showDetailModal\('.*?', '([^']+)',/);
-                            if (match && match[1]) {
-                                // decode HTML entities
-                                let decodedText = $('<div/>').html(match[1]).text();
-                                cellText = decodedText;
-                            }
-                        }
-                    }
-                    
-                    rowData.push(cellText);
-                });
-                excelData.push(rowData);
-            });
-            
-            downloadCSV(excelData);
-        }
-        
-        function downloadCSV(excelData) {
-            // تبدیل به CSV
-            let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
-            excelData.forEach(function(rowArray) {
-                let row = rowArray.map(function(cell) {
-                    // حذف کاراکترهای مشکل‌ساز برای CSV
-                    if (cell === null || cell === undefined) {
-                        cell = '';
-                    }
-                    return '"' + String(cell).replace(/"/g, '""').replace(/\n/g, ' ').replace(/\r/g, ' ') + '"';
-                }).join(",");
-                csvContent += row + "\r\n";
-            });
-            
-            // دانلود فایل
-            let encodedUri = encodeURI(csvContent);
-            let link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "گزارش_خطاها_کامل_" + new Date().toISOString().slice(0,10) + ".csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
         
         // Calendar positioning fixes for error page
         function enhanceCalendarInputs() {
