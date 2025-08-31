@@ -590,34 +590,17 @@
         max-width: 200px;
     }
     
-    .text-cell .clean-text {
-        display: block;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 100%;
-    }
-
-    .text-cell:hover {
+    /* Row hover effect */
+    .table-modern tbody tr:hover td {
         background-color: var(--hover-color) !important;
         color: var(--primary-color) !important;
-        border-radius: 8px;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 188, 212, 0.2);
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-
-    .text-cell::after {
-        content: "⋮";
-        position: absolute;
-        right: 5px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 18px;
-        color: var(--primary-color);
-        opacity: 0;
-        transition: all 0.3s ease;
-        font-weight: bold;
+    
+    /* Dark mode specific hover styles */
+    html.dark .table-modern tbody tr:hover td {
+        background-color: rgba(0, 188, 212, 0.1) !important;
+        color: #ffffff !important;
     }
 
     .text-cell:hover::after {
