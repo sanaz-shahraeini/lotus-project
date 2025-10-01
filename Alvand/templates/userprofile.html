@@ -1180,47 +1180,56 @@ label.required:after,
             </div>
         {% endif %}
         
-        <form method="post" id="form" enctype="multipart/form-data" novalidate>
-            {% csrf_token %}
-            
-
-            <!-- Password Reset Requests Section -->
-            {% if password_reset_requests %}
-            <div class="form-section">
-                <h2 class="text-lg font-semibold mb-4">درخواست‌های بازنشانی رمز عبور</h2>
-                <div class="alert alert-warning">
-                    <i class="fa-solid fa-triangle-exclamation"></i> 
-                    <strong>توجه:</strong> برای بازنشانی رمز عبور کاربر، نام کاربری را در قسمت ویرایش وارد کنید و سپس دکمه "بازنشانی رمز عبور" را بزنید.
-                </div>
+        {% if password_reset_requests %}
+        <div class="form-section password-reset-requests">
+            <h2 class="text-lg font-semibold mb-4">درخواست‌های بازنشانی رمز عبور</h2>
+            <div class="alert alert-warning">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <strong>توجه:</strong> با تأیید هر درخواست، رمز عبور کاربر به مقدار پیش‌فرض <strong>12345678</strong> تغییر خواهد کرد و کاربر ملزم به تغییر رمز پس از ورود است.
+            </div>
+            <div class="table-responsive" style="overflow-x: auto;">
                 <table style="width: 100%; margin-top: 1rem; border-collapse: collapse;">
                     <thead>
                         <tr>
                             <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border-color);">نام کاربری</th>
                             <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border-color);">نام و نام خانوادگی</th>
+                            <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border-color);">ایمیل</th>
                             <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border-color);">تاریخ درخواست</th>
                             <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border-color);">عملیات</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for request in password_reset_requests %}
+                        {% for reset_request in password_reset_requests %}
                         <tr>
-                            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border-color);">{{ request.user.username }}</td>
-                            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border-color);">{{ request.user.name }} {{ request.user.lastname }}</td>
-                            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border-color);">{{ request.created_at|date:"Y/m/d H:i" }}</td>
+                            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border-color);">{{ reset_request.user.username }}</td>
+                            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border-color);">{{ reset_request.user.name }} {{ reset_request.user.lastname }}</td>
+                            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border-color);">{{ reset_request.user.email|default:"—" }}</td>
+                            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border-color);">{{ reset_request.created_at|date:"Y/m/d H:i" }}</td>
                             <td style="padding: 0.75rem; border-bottom: 1px solid var(--border-color);">
-                                <button type="button" class="select-user-btn" 
-                                        data-username="{{ request.user.username }}" 
-                                        style="background-color: #00BCD4; color: white; padding: 0.25rem 0.75rem; border-radius: 4px; border: none; cursor: pointer;">
-                                    انتخاب
-                                </button>
+                                <form method="post" action="{% url 'resolve_password_reset_request' reset_request.pk %}" style="display: inline-flex; gap: 0.5rem; align-items: center;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="action-button password-reset resolve-reset-btn" data-username="{{ reset_request.user.username }}">
+                                        <i class="fa-solid fa-key"></i>
+                                        <span>بازنشانی به پیش‌فرض</span>
+                                    </button>
+                                </form>
                             </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" style="padding: 1rem; text-align: center; color: var(--light-text);">درخواستی برای بازنشانی رمز عبور ثبت نشده است.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
-            {% endif %}
-            
+        </div>
+        {% endif %}
+
+        <form method="post" id="form" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+
+
             <!-- Enhanced User Profile Image Section -->
             <div class="profile-section">
                 <div class="profile-image-container">

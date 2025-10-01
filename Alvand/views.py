@@ -1,7 +1,7 @@
 import datetime
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage, InvalidPage
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from .user_utils import getUserinfoByUsername, getTupleIndex
 from django.views.generic import TemplateView, View, FormView
@@ -2812,6 +2812,59 @@ class UserForm(FormView, View):
             return self.form_invalid(form)
 
 
+class ResolvePasswordResetRequestView(View):
+    """Handle supporter password reset requests from the management panel."""
+
+    default_password = "12345678"
+
+    def post(self, request, pk):
+        if not checkSession(request):
+            messages.error(request, messagesTypes.notlogin)
+            return redirect('login')
+
+        session_username = checkSession(request)
+        current_user = Users.objects.filter(username=session_username).first()
+
+        if not current_user or str(current_user.groupname).lower() not in ['supporter', 'superadmin']:
+            messages.error(request, messagesTypes.permissionsNotFound)
+            return redirect('user')
+
+        from .models import PasswordResetRequest
+
+        reset_request = get_object_or_404(
+            PasswordResetRequest.objects.select_related('user'),
+            pk=pk
+        )
+
+        if reset_request.resolved:
+            messages.warning(request, 'این درخواست بازنشانی قبلاً رسیدگی شده است.')
+            return redirect('user')
+
+        target_user = reset_request.user
+        target_user.password = make_password(self.default_password)
+        target_user.needs_password_change = True
+        target_user.save()
+
+        reset_request.resolved = True
+        reset_request.resolved_by = current_user
+        reset_request.resolved_at = timezone.now()
+        reset_request.save()
+
+        log(
+            request,
+            logErrCodes.userSettings,
+            f"رمز عبور کاربر {target_user.username} توسط {session_username} بازنشانی شد.",
+            session_username
+        )
+
+        messages.success(
+            request,
+            f"رمز عبور کاربر {target_user.username} با موفقیت به {self.default_password} تغییر یافت."
+        )
+
+        return redirect('user')
+
+
 def get_user_data(request):
     """AJAX endpoint to fetch user data for editing."""
     print(f"get_user_data called - Method: {request.method}")
@@ -3258,7 +3311,7 @@ def password_reset_request_count(request):
             groupname = user.groupname
     elif hasattr(request, 'user') and hasattr(request.user, 'groupname'):
         groupname = getattr(request.user, 'groupname', None)
-    if groupname and str(groupname).lower() in ['supporter', 'superadmin', 'admin']:
+    if groupname and str(groupname).lower() in ['supporter', 'superadmin']:
         count = PasswordResetRequest.objects.filter(resolved=False).count()
     return {'pending_password_reset_count': count}
 
