@@ -1958,7 +1958,15 @@ class UserForm(FormView, View):
         data['userform'] = self.form_class()
         data['infosform'] = InfosForm()
         data['permform'] = PermissionsForm()
-        getUser = getUserinfoByUsername(checkSession(self.request), "groupname")
+        
+        session_username = checkSession(self.request)
+        
+        # Get groupname directly from Users table
+        getUser = None
+        if session_username:
+            user_obj = Users.objects.filter(username__iexact=session_username).first()
+            if user_obj:
+                getUser = user_obj.groupname
         
         # Get the QuerySet based on user role
         if str(getUser).lower() in ["superadmin", "supporter"]:
@@ -2571,7 +2579,7 @@ class UserForm(FormView, View):
                     
                     # Mark any pending password reset requests as resolved
                     from .models import PasswordResetRequest
-                    current_user = Users.objects.filter(username=checkSession(request)).first()
+                    current_user = Users.objects.filter(username=checkSession(self.request)).first()
                     pending_requests = PasswordResetRequest.objects.filter(user=user, resolved=False)
                     
                     request_resolved = False
@@ -2584,12 +2592,12 @@ class UserForm(FormView, View):
                         request_resolved = True
                     
                     # Log the password reset
-                    log(request, logErrCodes.userSettings, f"رمز عبور کاربر {username} با موفقیت بازنشانی شد.", checkSession(request))
+                    log(self.request, logErrCodes.userSettings, f"رمز عبور کاربر {username} با موفقیت بازنشانی شد.", checkSession(self.request))
                     
                     if request_resolved:
-                        messages.success(request, f'رمز عبور کاربر {username} با موفقیت بازنشانی شد و به 12345678 تغییر یافت. درخواست بازنشانی ثبت شده برای این کاربر نیز به وضعیت حل شده تغییر یافت.')
+                        messages.success(self.request, f'رمز عبور کاربر {username} با موفقیت بازنشانی شد و به 12345678 تغییر یافت. درخواست بازنشانی ثبت شده برای این کاربر نیز به وضعیت حل شده تغییر یافت.')
                     else:
-                        messages.success(request, f'رمز عبور کاربر {username} با موفقیت بازنشانی شد و به 12345678 تغییر یافت.')
+                        messages.success(self.request, f'رمز عبور کاربر {username} با موفقیت بازنشانی شد و به 12345678 تغییر یافت.')
                 else:
                     messages.error(self.request, 'کاربر مورد نظر یافت نشد.')
             except Exception as e:
@@ -2790,9 +2798,9 @@ class UserForm(FormView, View):
                     else:
                         messages.success(request, f'رمز عبور کاربر {username} با موفقیت بازنشانی شد و به 12345678 تغییر یافت.')
                 else:
-                    messages.error(self.request, 'کاربر مورد نظر یافت نشد.')
+                    messages.error(request, 'کاربر مورد نظر یافت نشد.')
             except Exception as e:
-                messages.error(self.request, f'خطا در بازنشانی رمز عبور: {str(e)}')
+                messages.error(request, f'خطا در بازنشانی رمز عبور: {str(e)}')
             
             return redirect(self.success_url)
         

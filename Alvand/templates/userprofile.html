@@ -1156,10 +1156,8 @@ label.required:after,
 {% block main %}
 
 
-    <div class="user-card;margin-top:10px">
-        <div class="card-header">
+      
             <h1>تنظیمات کاربری</h1>
-        </div>
         
         <!-- Django Messages Display -->
         <style>
@@ -1180,38 +1178,87 @@ label.required:after,
             </div>
         {% endif %}
         
-        <form method="post" id="form" enctype="multipart/form-data" novalidate>
-            {% csrf_token %}
-            
-
-            <!-- Password Reset Requests Section -->
-            {% if password_reset_requests %}
-            <div class="form-section">
-                <h2 class="text-lg font-semibold mb-4">درخواست‌های بازنشانی رمز عبور</h2>
-                <div class="alert alert-warning">
-                    <i class="fa-solid fa-triangle-exclamation"></i> 
-                    <strong>توجه:</strong> برای بازنشانی رمز عبور کاربر، نام کاربری را در قسمت ویرایش وارد کنید و سپس دکمه "بازنشانی رمز عبور" را بزنید.
+    <!-- Password Reset Requests Section - Modern Design -->
+    {% if password_reset_requests %}
+    <div class="user-card" style="margin-top:10px; margin-bottom: 1.5rem; position: relative; z-index: 100; overflow: hidden;" id="passwordResetRequestsCard">
+        <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: space-between; border-radius: 1rem 1rem 0 0;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-key" style="color: #ffffff !important; font-size: 1.25rem;"></i>
                 </div>
-                <table style="width: 100%; margin-top: 1rem; border-collapse: collapse;">
+                <div>
+                    <h2 style="margin: 0; font-size: 1.125rem; font-weight: 600; color: #ffffff !important; display: flex; align-items: center; gap: 0.5rem;">
+                        درخواست‌های بازنشانی رمز عبور
+                        <span style="background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(10px); color: #ffffff !important; padding: 0.25rem 0.75rem; border-radius: 2rem; font-size: 0.875rem; font-weight: 700; border: 1px solid rgba(255, 255, 255, 0.3);">
+                            {{ password_reset_requests|length }}
+                        </span>
+                    </h2>
+                    <p style="margin: 0.25rem 0 0 0; font-size: 0.875rem; color: rgba(255, 255, 255, 0.95) !important;">مدیریت درخواست‌های فراموشی رمز عبور کاربران</p>
+                </div>
+            </div>
+            <button type="button" id="toggleResetRequests" style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 12px; width: 45px; height: 45px; color: #ffffff !important; cursor: pointer; font-size: 1.25rem; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center;" title="نمایش/مخفی کردن جزئیات" onmouseover="this.style.background='rgba(255, 255, 255, 0.25)'; this.style.transform='rotate(180deg)';" onmouseout="this.style.background='rgba(255, 255, 255, 0.15)'; this.style.transform='rotate(0deg)';">
+                <i class="fa-solid fa-chevron-down" style="color: #ffffff !important;"></i>
+            </button>
+        </div>
+        
+        <div id="resetRequestsContent" style="display: none; padding: 1.5rem; background: var(--card-bg);">
+            <div style="background: linear-gradient(135deg, rgba(103, 126, 234, 0.08), rgba(118, 75, 162, 0.08)); border-right: 4px solid #667eea; border-radius: 0.75rem; padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+                <div style="background: linear-gradient(135deg, #667eea, #764ba2); width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <i class="fa-solid fa-lightbulb" style="color: white; font-size: 1.125rem;"></i>
+                </div>
+                <div>
+                    <strong style="color: #667eea; font-size: 0.9375rem;">راهنما:</strong>
+                    <span style="color: var(--text-color); font-size: 0.9375rem;"> با کلیک روی دکمه "ریست پسورد"، رمز عبور کاربر به طور خودکار به <strong style="color: #667eea;">12345678</strong> تغییر می‌یابد.</span>
+                </div>
+            </div>
+            
+            <div style="overflow-x: auto; border-radius: 1rem; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);">
+                <table style="width: 100%; border-collapse: collapse; background: var(--card-bg);">
                     <thead>
-                        <tr>
-                            <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border-color);">نام کاربری</th>
-                            <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border-color);">نام و نام خانوادگی</th>
-                            <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border-color);">تاریخ درخواست</th>
-                            <th style="padding: 0.75rem; text-align: right; border-bottom: 2px solid var(--border-color);">عملیات</th>
+                        <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;">
+                            <th class="reset-table-header">
+                                <i class="fa-solid fa-user" style="margin-left: 0.5rem; opacity: 0.9;"></i><span>نام کاربری</span>
+                            </th>
+                            <th class="reset-table-header">
+                                <i class="fa-solid fa-id-card" style="margin-left: 0.5rem; opacity: 0.9;"></i><span>نام و نام خانوادگی</span>
+                            </th>
+                            <th class="reset-table-header">
+                                <i class="fa-solid fa-calendar-alt" style="margin-left: 0.5rem; opacity: 0.9;"></i><span>تاریخ درخواست</span>
+                            </th>
+                            <th class="reset-table-header" style="text-align: center;">
+                                <i class="fa-solid fa-cog" style="margin-left: 0.5rem; opacity: 0.9;"></i><span>عملیات</span>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for request in password_reset_requests %}
-                        <tr>
-                            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border-color);">{{ request.user.username }}</td>
-                            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border-color);">{{ request.user.name }} {{ request.user.lastname }}</td>
-                            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border-color);">{{ request.created_at|date:"Y/m/d H:i" }}</td>
-                            <td style="padding: 0.75rem; border-bottom: 1px solid var(--border-color);">
-                                <button type="button" class="select-user-btn" 
+                        <tr class="table-row-hover" style="border-bottom: 1px solid var(--border-color); transition: all 0.2s ease; position: relative;">
+                            <td style="padding: 1.25rem; color: var(--text-color); font-weight: 600; font-size: 0.9375rem;">
+                                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <div style="background: linear-gradient(135deg, #667eea, #764ba2); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                        <i class="fa-solid fa-user" style="color: white; font-size: 0.875rem;"></i>
+                                    </div>
+                                    <span style="color: #667eea; font-weight: 600;">{{ request.user.username }}</span>
+                                </div>
+                            </td>
+                            <td style="padding: 1.25rem; color: var(--text-color); font-size: 0.9375rem;">
+                                {{ request.user.name }} {{ request.user.lastname }}
+                            </td>
+                            <td style="padding: 1.25rem; color: var(--light-text); font-size: 0.875rem;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="fa-solid fa-clock" style="color: #667eea;"></i>
+                                    <span>{{ request.created_at|date:"Y/m/d H:i" }}</span>
+                                </div>
+                            </td>
+                            <td style="padding: 1.25rem; text-align: center;">
+                                <button type="button" class="reset-password-btn" 
                                         data-username="{{ request.user.username }}" 
-                                        style="background-color: #00BCD4; color: white; padding: 0.25rem 0.75rem; border-radius: 4px; border: none; cursor: pointer;">
-                                    انتخاب
+                                        data-request-id="{{ request.id }}"
+                                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.625rem 1.25rem; border-radius: 0.75rem; border: none; cursor: pointer; font-weight: 600; font-size: 0.875rem; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 6px rgba(102, 126, 234, 0.25); display: inline-flex; align-items: center; gap: 0.5rem;"
+                                        onmouseover="this.style.boxShadow='0 8px 12px rgba(102, 126, 234, 0.35)'; this.style.background='linear-gradient(135deg, #764ba2 0%, #667eea 100%)';"
+                                        onmouseout="this.style.boxShadow='0 4px 6px rgba(102, 126, 234, 0.25)'; this.style.background='linear-gradient(135deg, #667eea 0%, #764ba2 100%)';">
+                                    <i class="fa-solid fa-key"></i>
+                                    <span>ریست پسورد</span>
                                 </button>
                             </td>
                         </tr>
@@ -1219,7 +1266,93 @@ label.required:after,
                     </tbody>
                 </table>
             </div>
-            {% endif %}
+        </div>
+    </div>
+    
+    <style>
+        /* Theme-aware table header styles */
+        .reset-table-header {
+            padding: 1rem 1.25rem !important;
+            text-align: center !important;
+            color: var(--text-color) !important; /* Light mode readable */
+            font-weight: 600 !important;
+            font-size: 0.875rem !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+            border-bottom: 2px solid var(--border-color) !important;
+        }
+
+        .reset-table-header * {
+            color: inherit !important; /* Inherit from header */
+        }
+
+        /* Dark mode: keep headers white for contrast */
+        html.dark .reset-table-header,
+        html.dark .reset-table-header * {
+            color: #ffffff !important;
+        }
+        
+        /* Make table body cells align like headers */
+        #passwordResetRequestsCard table td {
+            text-align: center !important;
+            vertical-align: middle !important;
+        }
+
+        /* Center inner flex containers inside cells */
+        #passwordResetRequestsCard table td > div {
+            justify-content: center;
+        }
+        
+        /* Force white text in card header */
+        #passwordResetRequestsCard .card-header,
+        #passwordResetRequestsCard .card-header *,
+        #passwordResetRequestsCard .card-header h2,
+        #passwordResetRequestsCard .card-header p,
+        #passwordResetRequestsCard .card-header i,
+        #passwordResetRequestsCard .card-header span {
+            color: #ffffff !important;
+        }
+        
+        .table-row-hover:hover {
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.03) 0%, rgba(118, 75, 162, 0.03) 100%) !important;
+            transform: none !important; /* Avoid width/height change */
+            will-change: background-color;
+            /* Add a right-side accent without affecting layout */
+            background-image: linear-gradient(180deg, #667eea, #764ba2);
+            background-repeat: no-repeat;
+            background-position: right top;
+            background-size: 4px 100%;
+        }
+        
+        .table-row-hover:hover::before {
+            content: none; /* disable pseudo element to prevent scroll width changes */
+        }
+
+        /* Keep column widths stable */
+        #passwordResetRequestsCard table {
+            table-layout: fixed;
+        }
+
+        /* Don't move the button vertically on hover */
+        #passwordResetRequestsCard .reset-password-btn:hover {
+            transform: none !important;
+        }
+
+        /* Keep action button width stable */
+        #passwordResetRequestsCard .reset-password-btn {
+            white-space: nowrap;
+            min-width: 140px;
+        }
+    </style>
+    {% endif %}
+
+    <div class="user-card" style="margin-top:10px">
+        <div class="card-header">
+            <h1>تنظیمات کاربری</h1>
+        </div>
+        
+        <form method="post" id="form" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
             
             <!-- Enhanced User Profile Image Section -->
             <div class="profile-section">
@@ -1645,6 +1778,57 @@ label.required:after,
         // Call function when editOrAdd changes
         $('#id_editOrAdd').change(function() {
             setTimeout(updateRequiredFields, 50);
+        });
+    });
+    // Force white color on password reset table headers
+    $(document).ready(function() {
+        function forceWhiteHeaders() {
+            $('#passwordResetRequestsCard .card-header, #passwordResetRequestsCard .card-header *').css('color', '#ffffff');
+            $('#passwordResetRequestsCard thead th, #passwordResetRequestsCard thead th *').css('color', '#ffffff');
+            $('.reset-table-header, .reset-table-header *').css('color', '#ffffff');
+        }
+        forceWhiteHeaders();
+        setTimeout(forceWhiteHeaders, 100);
+        setTimeout(forceWhiteHeaders, 500);
+    });
+    
+    // Toggle password reset requests table
+    $(document).ready(function() {
+        $('#toggleResetRequests').on('click', function() {
+            const content = $('#resetRequestsContent');
+            const icon = $(this).find('i');
+            if (content.is(':visible')) {
+                content.slideUp(300);
+                icon.removeClass('fa-chevron-up').addClass('fa-chevron-down');
+            } else {
+                content.slideDown(300);
+                icon.removeClass('fa-chevron-down').addClass('fa-chevron-up');
+            }
+        });
+    });
+    
+    // Handle password reset button clicks
+    $(document).ready(function() {
+        $('.reset-password-btn').on('click', function() {
+            const username = $(this).data('username');
+            const requestId = $(this).data('request-id');
+            
+            // Confirm action with a styled confirmation
+            if (confirm(`آیا مطمئن هستید که می‌خواهید رمز عبور کاربر "${username}" را به 12345678 بازنشانی کنید?\n\nپس از بازنشانی، کاربر باید از رمز عبور جدید استفاده کند.`)) {
+                // Set username in the main form
+                $('#id_username').val(username);
+                
+                // Create a hidden input for ChangePassword action
+                const changePasswordInput = $('<input>').attr({
+                    type: 'hidden',
+                    name: 'ChangePassword',
+                    value: 'reset'
+                });
+                
+                // Add it to the form and submit
+                $('#form').append(changePasswordInput);
+                $('#form').submit();
+            }
         });
     });
 </script>
