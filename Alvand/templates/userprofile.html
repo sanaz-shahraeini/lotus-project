@@ -245,13 +245,36 @@
         color: var(--text-color);
         transition: var(--transition);
         font-size: 0.875rem;
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        -webkit-appearance: none; /* hide native arrow */
+        -moz-appearance: none;    /* hide native arrow */
+        appearance: none;         /* hide native arrow */
+        background-image: none !important; /* avoid duplicate chevrons; use ID-specific arrows below */
         background-repeat: no-repeat;
         background-position: right 0.5rem center;
         background-size: 1rem;
         padding-right: 2rem;
         height: 42px;
+    }
+
+    /* Hide the default arrow in legacy Edge/IE */
+    select::-ms-expand { display: none; }
+
+    /* Use only native arrow for all selects on this page to avoid duplicates */
+    .user-card select {
+        -webkit-appearance: auto !important;
+        -moz-appearance: auto !important;
+        appearance: auto !important;
+        background-image: none !important;
+        padding-right: 2rem; /* space for native chevron on left (RTL) */
+        padding-inline-start: 2rem; /* logical padding for RTL/LTR */
+    }
+
+    /* In dark mode, use ONLY the native arrow (avoid custom images) */
+    html.dark .user-card select {
+        -webkit-appearance: auto;
+        -moz-appearance: auto;
+        appearance: auto;
+        background-image: none !important;
     }
 
     .form-textarea {
@@ -944,16 +967,31 @@
     }
     
     #id_editOrAdd, #id_gender, #id_maritalstatus, 
-    #id_military, #id_educationdegree, #id_province, 
+    #id_military, #id_educationdegree, #id_educationfield, #id_province, #id_city,
     #id_groupname {
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        -webkit-appearance: auto; /* show native arrow */
+        -moz-appearance: auto;    /* show native arrow */
+        appearance: auto;         /* show native arrow */
+        background-image: none !important; /* prevent any custom chevron */
         background-repeat: no-repeat;
         background-position: left 0.5rem center;
         background-size: 1rem;
-        padding-left: 2rem;
+        padding-left: 0.75rem; /* normal padding without custom icon space */
         padding-right: 0.75rem;
         cursor: pointer;
+    }
+
+    /* Dark mode: rely solely on native arrow (no custom image) */
+    html.dark #id_editOrAdd,
+    html.dark #id_gender,
+    html.dark #id_maritalstatus,
+    html.dark #id_military,
+    html.dark #id_educationdegree,
+    html.dark #id_educationfield,
+    html.dark #id_province,
+    html.dark #id_city,
+    html.dark #id_groupname {
+        background-image: none !important;
     }
     
     /* Special styling for editOrAdd dropdown to make selection more visible */
