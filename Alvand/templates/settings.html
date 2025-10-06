@@ -224,9 +224,16 @@
     
     .form-label {
         display: block;
-        margin-bottom: 0.5rem;
         font-weight: 500;
         font-size: 0.9rem;
+        text-align: right; /* Default: Persian labels on the right */
+    }
+
+    /* Ensure left-aligned labels inside device sections, even in RTL */
+    #models_for_alvand .form-label,
+    #models_for_binalud .form-label {
+        text-align: left !important;
+        direction: ltr;
     }
     
     select, input:not([type="checkbox"]):not([type="radio"]) {
@@ -240,11 +247,19 @@
         font-size: 0.9rem;
         transition: border-color 0.2s, box-shadow 0.2s;
     }
-    
-    select:focus, input:focus {
-        outline: none;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px var(--primary-light);
+    /* Force left alignment and LTR for device inputs to display numbers/IPs nicely */
+    #models_for_alvand input[type="text"],
+    #models_for_alvand input[type="number"],
+    #models_for_alvand input[type="password"],
+    #models_for_alvand input[type="email"],
+    #models_for_alvand select,
+    #models_for_binalud input[type="text"],
+    #models_for_binalud input[type="number"],
+    #models_for_binalud input[type="password"],
+    #models_for_binalud input[type="email"],
+    #models_for_binalud select {
+        text-align: left !important;
+        direction: ltr !important;
     }
     
     /* Switch toggle styling */
@@ -356,6 +371,46 @@
     .dropdown-item:hover {
         background-color: var(--secondary-color);
     }
+
+    /* Access groups ext dropdown specific tweaks */
+    .ext-dropdown > button {
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid var(--border-color);
+        border-radius: 0.375rem;
+        background-color: var(--card-bg);
+        text-align: right;
+    }
+    .ext-dropdown .dropdown-menu {
+        right: 0; /* align under button in RTL */
+        left: auto;
+        min-width: 220px;
+        max-width: 320px;
+        width: auto;
+        z-index: 3000; /* stay above nearby cards/overlays */
+        overflow: hidden; /* inner wrapper handles scrolling */
+        box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+    }
+    .ext-dropdown .dropdown-menu .p-3 {
+        max-height: 240px;
+        overflow-y: auto;
+    }
+    .ext-dropdown .dropdown-item { padding: .25rem .75rem; }
+    .ext-dropdown .dropdown-item label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        width: 100%;
+        white-space: normal; /* allow wrapping to avoid cramped view */
+    }
+    body[dir="rtl"] .ext-checkbox {
+        margin-left: 0.5rem !important;
+        margin-right: 0 !important;
+    }
+
+    /* Selected extensions summary badges */
+    .ext-summary { display:flex; flex-wrap:wrap; gap:.35rem; margin-top:.5rem; }
+    .ext-badge { background: var(--primary-light); color:#0b3a4a; border-radius:999px; padding:.1rem .45rem; font-size:.75rem; }
     
     /* Button styling */
     .btn {
@@ -381,6 +436,39 @@
     
     .btn-primary:active {
         transform: translateY(0);
+    }
+
+    /* Coming soon styling for disabled sections */
+    .coming-soon {
+        position: relative;
+    }
+    .coming-soon .content-disabled {
+        pointer-events: none;
+        filter: blur(1px);
+        opacity: 0.6;
+    }
+    .coming-soon .overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        background: radial-gradient(ellipse at center, rgba(245,247,250,0.9) 0%, rgba(245,247,250,0.85) 45%, rgba(245,247,250,0.8) 100%);
+        border-radius: var(--card-radius);
+        border: 1px dashed var(--border-color);
+        text-align: center;
+        z-index: 2;
+    }
+    .overlay .soon-title {
+        font-weight: 700;
+        color: var(--primary-color);
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+    }
+    .overlay .soon-desc {
+        color: var(--light-text);
+        font-size: 0.85rem;
     }
     
     /* Radio button styling */
@@ -684,54 +772,63 @@
                             </div>
                         </div>
                         
-                        <!-- Email Settings Card -->
-                        <div class="settings-card">
+                        <!-- Email Settings Card (Disabled / Coming Soon) -->
+                        <div class="settings-card coming-soon">
                             <h2 class="card-header text-right">تنظیمات ایمیل</h2>
-                            
-                            <div class="flex flex-wrap -mx-2">
-                                <!-- Right side of email settings -->
-                                <div class="w-full md:w-1/2 px-2">
-                                    <div class="form-group text-right">
-                                        <label class="form-label">ایمیل مبداٰ:</label>
-                                        {{ emailSendingForm.collectionusername }}
+
+                            <div class="overlay">
+                                <div>
+                                    <div class="soon-title">به‌زودی فعال می‌شود</div>
+                                    <div class="soon-desc">این بخش در نسخه‌های آینده در دسترس خواهد بود.</div>
+                                </div>
+                            </div>
+
+                            <div class="content-disabled">
+                                <div class="flex flex-wrap -mx-2">
+                                    <!-- Right side of email settings -->
+                                    <div class="w-full md:w-1/2 px-2">
+                                        <div class="form-group text-right">
+                                            <label class="form-label">ایمیل مبداٰ:</label>
+                                            {{ emailSendingForm.collectionusername }}
+                                        </div>
+                                        
+                                        <div class="form-group text-right">
+                                            <label class="form-label">ایمیل مقصد:</label>
+                                            {{ emailSendingForm.emailtosend }}
+                                        </div>
                                     </div>
                                     
-                                    <div class="form-group text-right">
-                                        <label class="form-label">ایمیل مقصد:</label>
-                                        {{ emailSendingForm.emailtosend }}
-                                    </div>
-                                </div>
-                                
-                                <!-- Left side of email settings -->
-                                <div class="w-full md:w-1/2 px-2">
-                                    <div class="form-group text-right">
-                                        <label class="form-label">رمز ایمیل:</label>
-                                        {{ emailSendingForm.collectionpassword }}
+                                    <!-- Left side of email settings -->
+                                    <div class="w-full md:w-1/2 px-2">
+                                        <div class="form-group text-right">
+                                            <label class="form-label">رمز ایمیل:</label>
+                                            {{ emailSendingForm.collectionpassword }}
+                                        </div>
+                                        
+                                        <div class="form-group text-right">
+                                            <label class="form-label">تعداد خطاها برای ارسال:</label>
+                                            {{ emailSendingForm.lines }}
+                                        </div>
                                     </div>
                                     
-                                    <div class="form-group text-right">
-                                        <label class="form-label">تعداد خطاها برای ارسال:</label>
-                                        {{ emailSendingForm.lines }}
-                                    </div>
-                                </div>
-                                
-                                <!-- Errors dropdown (full width) -->
-                                <div class="w-full px-2 mt-4">
-                                    <div class="form-group text-right">
-                                        <label class="form-label">خطاها:</label>
-                                        <div class="dropdown">
-                                            <button id="errorsDropdownBtn" data-dropdown-toggle="errorsDropdownItems" type="button">
-                                                انتخاب خطاها
-                                                <i class="fa-regular fa-chevron-down"></i>
-                                            </button>
-                                            
-                                            <div id="errorsDropdownItems" class="dropdown-menu hidden">
-                                                <div class="p-3 space-y-3 text-gray-700 overflow-y-scroll h-[200px]">
-                                                    {% for error in emailSendingForm.errors %}
-                                                    <div class="flex items-center py-1">
-                                                        {{ error }}
+                                    <!-- Errors dropdown (full width) -->
+                                    <div class="w-full px-2 mt-4">
+                                        <div class="form-group text-right">
+                                            <label class="form-label">خطاها:</label>
+                                            <div class="dropdown">
+                                                <button id="errorsDropdownBtn" data-dropdown-toggle="errorsDropdownItems" type="button">
+                                                    انتخاب خطاها
+                                                    <i class="fa-regular fa-chevron-down"></i>
+                                                </button>
+                                                
+                                                <div id="errorsDropdownItems" class="dropdown-menu hidden">
+                                                    <div class="p-3 space-y-3 text-gray-700 overflow-y-scroll h-[200px]">
+                                                        {% for error in emailSendingForm.errors %}
+                                                        <div class="flex items-center py-1">
+                                                            {{ error }}
+                                                        </div>
+                                                        {% endfor %}
                                                     </div>
-                                                    {% endfor %}
                                                 </div>
                                             </div>
                                         </div>
@@ -757,12 +854,23 @@
 <script src="{% static 'js/jquery.js' %}"></script>
 
 <script type="text/javascript">
-    const groupnameData = JSON.parse(document.getElementById('groupname_json').textContent);
-    const costsData = JSON.parse(document.getElementById('costs_json').textContent);
-    const devicesData = JSON.parse(document.getElementById('devices_json').textContent);
-    const emailsetData = JSON.parse(document.getElementById('emailset_json').textContent);
-    const usersData = JSON.parse(document.getElementById('users_json').textContent);
-    const contactInfosData = JSON.parse(document.getElementById('contactInfos_json').textContent);
+    function safeJSON(id, defVal){
+        try{
+            const el = document.getElementById(id);
+            if(!el) return defVal;
+            const txt = (el.textContent || '').trim();
+            if(!txt) return defVal;
+            return JSON.parse(txt);
+        }catch(e){
+            return defVal;
+        }
+    }
+    const groupnameData = safeJSON('groupname_json', []);
+    const costsData = safeJSON('costs_json', []);
+    const devicesData = safeJSON('devices_json', []);
+    const emailsetData = safeJSON('emailset_json', []);
+    const usersData = safeJSON('users_json', []);
+    const contactInfosData = safeJSON('contactInfos_json', []);
 
     // Initialize datepicker
     jalaliDatepicker.startWatch({
@@ -782,16 +890,31 @@
         }
     });
 
-    // Cable type change handler
-    $("#id_cabel_types").change(function() {
-        if ($(this).val() === "rs-232c") {
-            $("#models_for_binalud").hide();
-            $("#models_for_alvand").show();
-        } else if($(this).val() === "ethernet") {
-            $("#models_for_binalud").show();
-            $("#models_for_alvand").hide();
-        }
-    });
+    // Helper functions to toggle sections (compatible with Tailwind 'hidden')
+    function showIPSection() {
+        $('#models_for_binalud').removeClass('hidden').show();
+        $('#models_for_alvand').addClass('hidden').hide();
+    }
+    function showSerialSection() {
+        $('#models_for_alvand').removeClass('hidden').show();
+        $('#models_for_binalud').addClass('hidden').hide();
+    }
+
+    function applyDeviceVisibility() {
+        try {
+            const el = document.getElementById('id_device');
+            if (!el) return;
+            const selected = (el.value || '').toString().trim().toUpperCase();
+            console.log('Device selected (init/apply):', selected);
+            if (selected === 'KX-TDE100' || selected.indexOf('TDE100') !== -1) {
+                showIPSection();
+            } else {
+                showSerialSection();
+            }
+        } catch(e) { /* no-op */ }
+    }
+
+    // Note: Do not change UI based on cable type selection per requirement.
     
     // Dropdown handlers
     function setupDropdown(btnSelector, menuSelector) {
@@ -827,7 +950,7 @@
 
         $('#id_label').off('change').on('change', function () {
             if($(this).val().toLowerCase() == "none") {
-                $("#dropdownDefaultCheckbox2 ul li input").each(function(){
+                $("#dropdownDefaultCheckbox2 .dropdown-item input").each(function(){
                     $(this).prop('checked', false)
                 })
             } else {
@@ -838,7 +961,7 @@
                         if (exts) {
                             exts = exts.map(String);
                             if(exts.length > 0){
-                                $("#dropdownDefaultCheckbox2 ul li input").each(function(){
+                                $("#dropdownDefaultCheckbox2 .dropdown-item input").each(function(){
                                     if(exts.includes($(this).val()))
                                         $(this).prop('checked', true)
                                     else
@@ -865,35 +988,26 @@
             const device = devicesData[0]; // Assuming devices is an array and we take the first item
             $('#id_device').val(device.device);
 
-            const panasonicDevices = ["KX-TDA30", "KX-TDA100", "KX-TDA100D", "KX-TDA100DBA", "KX-TDA200", "KX-TDA600", "KX-TEM824", "KX-TES824", "KX-TA308"];
-            if (panasonicDevices.includes(device.device)) {
-                $('#id_flow').val(device.flow);
-                $('#id_stopbits').val(device.stopbits);
-                $('#id_baudrate').val(device.baudrate);
-                $('#id_parity').val(device.parity);
-                $('#id_databits').val(device.databits);
-                $('#id_number_of_lines').val(device.number_of_lines);
-                $('#id_cabel_types').val(device.cabel_types);
-                $('#id_smdrip').val('192.163.1.10');
-                $('#id_smdrport').val('2300');
-                $('#id_smdrpassword').val('PCCSMDR');
-                
-                // Show/hide appropriate sections
-                $("#models_for_binalud").hide();
-                $("#models_for_alvand").show();
+            // Only two supported models: KX-TDE100 (IP) and others (Serial)
+            if ((device.device || '').toString().trim().toUpperCase() === 'KX-TDE100') {
+                // IP-based model: show IP section
+                $('#id_smdrip').val(device.smdrip || '192.163.1.10');
+                $('#id_smdrport').val(device.smdrport || '2300');
+                $('#id_smdrpassword').val(device.smdrpassword || 'PCCSMDR');
+
+                // Hide serial, show IP
+                showIPSection();
             } else {
-                $('#id_smdrip').val(device.smdrip);
-                $('#id_smdrport').val(device.smdrport);
-                $('#id_smdrpassword').val(device.smdrpassword);
-                $('#id_flow').val('None');
-                $('#id_stopbits').val('1');
-                $('#id_baudrate').val('9600');
-                $('#id_parity').val('None');
-                $('#id_databits').val('8');
-                
-                // Show/hide appropriate sections
-                $("#models_for_binalud").show();
-                $("#models_for_alvand").hide();
+                // Serial model: show serial section
+                $('#id_flow').val(device.flow || 'None');
+                $('#id_stopbits').val(device.stopbits || '1');
+                $('#id_baudrate').val(device.baudrate || '9600');
+                $('#id_parity').val(device.parity || 'None');
+                $('#id_databits').val(device.databits || '8');
+                $('#id_number_of_lines').val(device.number_of_lines);
+
+                // Hide IP, show serial
+                showSerialSection();
             }
         } else {
             $('#id_smdrip').val('192.163.1.10');
@@ -906,8 +1020,7 @@
             $('#id_databits').val('8');
             
             // Default visibility
-            $("#models_for_binalud").hide();
-            $("#models_for_alvand").show();
+            showSerialSection();
         }
 
         if (contactInfosData.length > 0) {
@@ -926,7 +1039,7 @@
 
             if (emset.errors && emset.errors.length > 0) {
                 let errors = emset.errors.map(String);
-                $("#errorsDropdownItems ul li input").each(function(){
+                $("#errorsDropdownItems .dropdown-item input").each(function(){
                     let value = $(this).val();
                     if(errors.includes(value)){
                         $(this).prop('checked', true);
@@ -960,6 +1073,26 @@
 
     $(document).ready(function() {
         updateData(); // Call updateData on initial load
+        // Also enforce correct visibility once DOM is ready
+        applyDeviceVisibility();
+        setTimeout(applyDeviceVisibility, 0);
+        setTimeout(applyDeviceVisibility, 200);
+
+        // Device model change toggles between two supported models
+        $(document).on('change', '#id_device', function () {
+            const selected = (($(this).val() || '').toString().trim().toUpperCase());
+            console.log('Device changed:', selected);
+            if (selected === 'KX-TDE100' || selected.indexOf('TDE100') !== -1) {
+                // IP model
+                showIPSection();
+            } else {
+                // Serial model
+                showSerialSection();
+            }
+        });
+        // Trigger once on load to sync UI with current selection
+        $('#id_device').trigger('change');
+        applyDeviceVisibility();
 
         // Radio button event handlers
         $('#edit').on('click', function () {

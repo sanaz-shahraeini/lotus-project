@@ -512,193 +512,215 @@
         box-shadow: 0 4px 8px rgba(255, 82, 82, 0.4);
     }
     
-    /* Enhanced Profile Image Styles */
+    /* Enhanced Profile Image Styles - Modern Redesign */
     .profile-section {
         background: var(--card-bg);
-        border-radius: 1rem;
-        padding: 2rem;
+        border-radius: 1.5rem;
+        padding: 2.5rem;
         margin-bottom: 1.5rem;
-        box-shadow: var(--card-shadow);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
         border: 1px solid var(--border-color);
         text-align: center;
-    }
-    
-    .profile-image-container {
         position: relative;
-        width: 180px;
-        height: 180px;
-        margin: 0 auto 1.5rem;
-        padding: 6px;
-        background: linear-gradient(135deg, #00BCD4, #536DFE);
-        border-radius: 50%;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        transition: all 0.3s ease;
+        overflow: hidden;
     }
     
-    .profile-image-container:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
-    }
-    
-    .user-image {
-        width: 168px;
-        height: 168px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 4px solid white;
-        box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-    }
-    
-    .photo-upload-overlay {
+    .profile-section::before {
+        content: '';
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.7);
+        height: 150px;
+        background: linear-gradient(135deg, #00BCD4 0%, #536DFE 100%);
+        opacity: 0.1;
+        z-index: 0;
+    }
+    
+    .profile-image-container {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        margin: 0 auto 1.5rem;
+        z-index: 1;
         border-radius: 50%;
+        padding: 5px;
+        background: linear-gradient(135deg, #00BCD4, #536DFE);
+        box-shadow: 0 10px 30px rgba(0, 188, 212, 0.3);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
+    }
+    
+    .profile-image-container:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 15px 40px rgba(0, 188, 212, 0.4);
+    }
+    
+    
+    .user-image {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        transition: all 0.3s ease;
+        display: block;
+    }
+    
+    .user-image.placeholder {
+        background: var(--card-bg);
+        color: var(--primary-color);
+        font-size: 3rem;
+        font-weight: 600;
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
-        opacity: 0;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        color: white;
-        font-size: 0.875rem;
-        font-weight: 500;
+        text-align: center;
+        padding: 1rem;
+        line-height: 1.2;
+        word-break: break-word;
     }
     
-    .profile-image-container:hover .photo-upload-overlay {
-        opacity: 1;
+    .user-image:not(.placeholder) {
+        background: transparent;
     }
     
-    .photo-upload-overlay i {
-        font-size: 1.5rem;
-        margin-bottom: 0.5rem;
+    .photo-upload-overlay {
+        display: none;
     }
     
-    .photo-upload-button {
-        position: absolute;
-        bottom: 8px;
-        right: 8px;
-        width: 50px;
-        height: 50px;
-        background: linear-gradient(135deg, #00BCD4, #29B6F6);
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        transition: all 0.3s ease;
-        border: 3px solid white;
-        font-size: 1.1rem;
-    }
-    
-    .photo-upload-button:hover {
-        transform: scale(1.1);
-        background: linear-gradient(135deg, #0097A7, #0288D1);
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-    }
     
     .photo-upload-zone {
-        margin-top: 1rem;
-        padding: 1.5rem;
-        border: 2px dashed var(--border-color);
-        border-radius: 0.75rem;
-        background: var(--input-bg);
+        margin-top: 2rem;
+        padding: 2.5rem 2rem;
+        border: 3px dashed var(--border-color);
+        border-radius: 1.25rem;
+        background: linear-gradient(135deg, rgba(0, 188, 212, 0.03), rgba(83, 109, 254, 0.03));
         transition: all 0.3s ease;
         cursor: pointer;
         position: relative;
+        z-index: 1;
     }
     
     .photo-upload-zone:hover {
         border-color: var(--primary-color);
-        background: rgba(0, 188, 212, 0.05);
-        transform: translateY(-1px);
+        background: linear-gradient(135deg, rgba(0, 188, 212, 0.08), rgba(83, 109, 254, 0.08));
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 188, 212, 0.15);
     }
     
     .photo-upload-zone.drag-over {
         border-color: var(--primary-color);
-        background: rgba(0, 188, 212, 0.1);
+        border-style: solid;
+        background: linear-gradient(135deg, rgba(0, 188, 212, 0.15), rgba(83, 109, 254, 0.15));
         transform: scale(1.02);
+        box-shadow: 0 10px 30px rgba(0, 188, 212, 0.25);
     }
     
     .upload-instructions {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0.75rem;
+        gap: 1rem;
         color: var(--text-color);
     }
     
     .upload-icon {
-        width: 48px;
-        height: 48px;
-        background: linear-gradient(135deg, #00BCD4, #29B6F6);
-        border-radius: 50%;
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, #00BCD4, #536DFE);
+        border-radius: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
-        font-size: 1.5rem;
+        font-size: 2rem;
         margin-bottom: 0.5rem;
+        box-shadow: 0 8px 20px rgba(0, 188, 212, 0.3);
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
     }
     
     .upload-text {
-        font-weight: 600;
-        font-size: 1rem;
+        font-weight: 700;
+        font-size: 1.125rem;
         margin-bottom: 0.25rem;
+        background: linear-gradient(135deg, #00BCD4, #536DFE);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
     
     .upload-subtext {
-        font-size: 0.875rem;
+        font-size: 0.9375rem;
         color: var(--light-text);
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.75rem;
+        line-height: 1.5;
     }
     
     .file-types {
-        font-size: 0.75rem;
-        color: var(--light-text);
-        background: rgba(0, 188, 212, 0.1);
-        padding: 0.25rem 0.75rem;
-        border-radius: 1rem;
+        font-size: 0.8125rem;
+        color: var(--primary-color);
+        background: rgba(0, 188, 212, 0.15);
+        padding: 0.5rem 1.25rem;
+        border-radius: 2rem;
         display: inline-block;
+        font-weight: 600;
+        border: 1px solid rgba(0, 188, 212, 0.2);
     }
     
     .upload-button {
-        background: linear-gradient(135deg, #00BCD4, #29B6F6);
+        background: linear-gradient(135deg, #00BCD4, #536DFE);
         color: white;
         border: none;
-        padding: 0.75rem 1.5rem;
-        border-radius: 0.5rem;
-        font-size: 0.875rem;
-        font-weight: 600;
+        padding: 0.875rem 2rem;
+        border-radius: 0.75rem;
+        font-size: 0.9375rem;
+        font-weight: 700;
         cursor: pointer;
-        transition: all 0.3s ease;
-        margin-top: 0.75rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        margin-top: 1rem;
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.75rem;
+        box-shadow: 0 6px 20px rgba(0, 188, 212, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
     
     .upload-button:hover {
-        background: linear-gradient(135deg, #0097A7, #0288D1);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3);
+        background: linear-gradient(135deg, #0097A7, #4C5FD5);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(0, 188, 212, 0.4);
+    }
+    
+    .upload-button:active {
+        transform: translateY(0);
     }
     
     .file-preview {
         display: none;
-        margin-top: 1rem;
-        padding: 1rem;
-        background: rgba(40, 167, 69, 0.1);
-        border: 1px solid rgba(40, 167, 69, 0.3);
-        border-radius: 0.5rem;
+        margin-top: 1.5rem;
+        padding: 1.25rem;
+        background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(56, 193, 114, 0.1));
+        border: 2px solid rgba(40, 167, 69, 0.3);
+        border-radius: 1rem;
         color: #28a745;
+        animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
     
     .file-preview.show {
@@ -708,12 +730,13 @@
     .file-info {
         display: flex;
         align-items: center;
-        gap: 0.75rem;
-        font-size: 0.875rem;
+        gap: 1rem;
+        font-size: 0.9375rem;
     }
     
     .file-info i {
-        font-size: 1.25rem;
+        font-size: 1.5rem;
+        color: #28a745;
     }
     
     .file-details {
@@ -721,88 +744,106 @@
     }
     
     .file-name {
-        font-weight: 600;
+        font-weight: 700;
         margin-bottom: 0.25rem;
+        color: #28a745;
     }
     
     .file-size {
         color: rgba(40, 167, 69, 0.8);
-        font-size: 0.75rem;
+        font-size: 0.8125rem;
     }
     
     .remove-file {
-        background: none;
-        border: none;
+        background: rgba(220, 53, 69, 0.1);
+        border: 2px solid rgba(220, 53, 69, 0.3);
         color: #dc3545;
         cursor: pointer;
-        font-size: 1.25rem;
-        padding: 0.25rem;
-        border-radius: 0.25rem;
+        font-size: 1rem;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
         transition: all 0.2s ease;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     .remove-file:hover {
-        background: rgba(220, 53, 69, 0.1);
-        transform: scale(1.1);
+        background: rgba(220, 53, 69, 0.2);
+        border-color: #dc3545;
+        transform: scale(1.1) rotate(90deg);
     }
     
     /* Dark mode adjustments */
     .dark .profile-section {
         background: var(--card-bg);
         border-color: var(--border-color);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .dark .profile-section::before {
+        opacity: 0.05;
     }
     
     .dark .profile-image-container {
         background: linear-gradient(135deg, #00ACC1, #5C6BC0);
     }
     
-    .dark .user-image {
-        border-color: var(--card-bg);
+    
+    .dark .user-image.placeholder {
+        background: var(--card-bg);
     }
     
-    .dark .photo-upload-button {
-        border-color: var(--card-bg);
-    }
     
     .dark .photo-upload-zone {
-        background: var(--input-bg);
+        background: linear-gradient(135deg, rgba(0, 188, 212, 0.05), rgba(83, 109, 254, 0.05));
         border-color: var(--border-color);
     }
     
     .dark .photo-upload-zone:hover {
-        background: rgba(0, 188, 212, 0.08);
+        background: linear-gradient(135deg, rgba(0, 188, 212, 0.1), rgba(83, 109, 254, 0.1));
     }
     
     .dark .file-types {
-        background: rgba(0, 188, 212, 0.15);
+        background: rgba(0, 188, 212, 0.2);
+        border-color: rgba(0, 188, 212, 0.3);
     }
     
     /* Mobile responsive */
     @media (max-width: 768px) {
-        .profile-image-container {
-            width: 150px;
-            height: 150px;
+        .profile-section {
+            padding: 2rem 1.5rem;
         }
         
-        .user-image {
-            width: 138px;
-            height: 138px;
+        .profile-image-container {
+            width: 160px;
+            height: 160px;
         }
         
         .photo-upload-button {
-            width: 45px;
-            height: 45px;
-            font-size: 1rem;
+            width: 48px;
+            height: 48px;
+            font-size: 1.1rem;
         }
         
         .photo-upload-zone {
-            padding: 1.25rem;
+            padding: 2rem 1.5rem;
         }
         
         .upload-icon {
-            width: 40px;
-            height: 40px;
-            font-size: 1.25rem;
+            width: 56px;
+            height: 56px;
+            font-size: 1.75rem;
+        }
+        
+        .upload-text {
+            font-size: 1rem;
+        }
+        
+        .upload-subtext {
+            font-size: 0.875rem;
         }
     }
     
@@ -1392,18 +1433,15 @@ label.required:after,
         <form method="post" id="form" enctype="multipart/form-data" novalidate>
             {% csrf_token %}
             
-            <!-- Enhanced User Profile Image Section -->
+            <!-- Enhanced User Profile Image Section - Modern Redesign -->
             <div class="profile-section">
                 <div class="profile-image-container">
-                    <img id="id_picurl" src="" class="user-image">
+                    <img id="id_picurl" src="" class="user-image placeholder" alt="Profile Picture">
                     <div class="photo-upload-overlay">
                         <i class="fa-solid fa-camera"></i>
-                        <span>تغییر عکس</span>
+                        <span>تغییر عکس پروفایل</span>
                     </div>
-                    <input type="file" id="upload" class="hidden" name="uploadPhoto" accept="image/*">
-                    <label for="upload" class="photo-upload-button">
-                        <i class="fa-solid fa-camera"></i>
-                    </label>
+                    <input type="file" id="upload" class="hidden" name="uploadPhoto" accept="image/jpeg,image/png,image/gif,image/webp">
                 </div>
                 
                 <div class="profile-name-display">
@@ -1412,15 +1450,15 @@ label.required:after,
                 </div>
                 
                 <!-- Enhanced Photo Upload Zone -->
-                <div class="photo-upload-zone" id="photoUploadZone">
+                <div class="photo-upload-zone" id="photoUploadZone" onclick="document.getElementById('upload').click()">
                     <div class="upload-instructions">
                         <div class="upload-icon">
-                            <i class="fa-solid fa-cloud-upload-alt"></i>
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
                         </div>
                         <div class="upload-text">انتخاب یا کشیدن عکس پروفایل</div>
                         <div class="upload-subtext">عکس پروفایل خود را انتخاب کنید یا در این ناحیه رها کنید</div>
                         <div class="file-types">JPG, PNG, GIF - حداکثر 5MB</div>
-                        <button type="button" class="upload-button" onclick="document.getElementById('upload').click()">
+                        <button type="button" class="upload-button" onclick="event.stopPropagation(); document.getElementById('upload').click()">
                             <i class="fa-solid fa-folder-open"></i>
                             انتخاب فایل
                         </button>
@@ -1430,13 +1468,13 @@ label.required:after,
                 <!-- File Preview -->
                 <div class="file-preview" id="filePreview">
                     <div class="file-info">
-                        <i class="fa-solid fa-file-image"></i>
+                        <i class="fa-solid fa-circle-check"></i>
                         <div class="file-details">
                             <div class="file-name" id="fileName"></div>
                             <div class="file-size" id="fileSize"></div>
                         </div>
-                        <button type="button" class="remove-file" id="removeFile">
-                            <i class="fa-solid fa-times"></i>
+                        <button type="button" class="remove-file" id="removeFile" title="حذف فایل">
+                            <i class="fa-solid fa-xmark"></i>
                         </button>
                     </div>
                 </div>
