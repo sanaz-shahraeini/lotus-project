@@ -685,6 +685,101 @@ class systemSettings(FormView, View):
         return render(request, self.template_name, context)
 
 
+    def post(self, request, *args, **kwargs):
+        """Handle Apply action for Access Groups section.
+        Saves/updates an `Extensionsgroups` record based on operation and updates the selected user's `Permissions`.
+        """
+        if not checkSession(request):
+            messages.error(request, messagesTypes.notlogin)
+            return redirect(reverse_lazy('login'))
+        if not check_active(checkSession(request)):
+            messages.error(request, messagesTypes.deAvtive)
+            return redirect(reverse_lazy('logout' if checkSession(request) else 'login'))
+
+        # Extract fields from the access groups card
+        operation = (request.POST.get('operation') or '').strip()
+        label = (request.POST.get('label') or '').strip()
+        exts = request.POST.getlist('exts')  # from settings.html checkboxes name="exts"
+        selected_username = (request.POST.get('users') or '').strip()
+        errorsreport_val = request.POST.get('errorsreport')  # 'on' if checked
+
+        # Normalize data
+        try:
+            exts_int = [int(x) for x in exts if str(x).strip() != '']
+        except Exception:
+            exts_int = []
+
+        # Current admin user
+        current_user = Users.objects.filter(username__iexact=checkSession(request)).first()
+
+        # Process operation on Extensionsgroups
+        if operation in ['اضافه', 'ویرایش', 'حذف']:
+            if operation == 'اضافه':
+                if not label:
+                    messages.error(request, 'نام گروه را وارد کنید.')
+                    return redirect(self.success_url)
+                grp, created = Extensionsgroups.objects.get_or_create(
+                    label=label,
+                    defaults={'exts': exts_int, 'modifyby': current_user}
+                )
+                if not created:
+                    grp.exts = exts_int
+                    grp.modifyby = current_user
+                    grp.updated_at = timezone.now()
+                    grp.save()
+                messages.success(request, f'گروه "{label}" با موفقیت {"ایجاد" if created else "بروزرسانی"} شد.')
+
+            elif operation == 'ویرایش':
+                if not label:
+                    messages.error(request, 'برای ویرایش، نام گروه را انتخاب کنید.')
+                    return redirect(self.success_url)
+                grp = Extensionsgroups.objects.filter(label=label).first()
+                if not grp:
+                    messages.error(request, 'گروه مورد نظر یافت نشد.')
+                else:
+                    grp.exts = exts_int
+                    grp.modifyby = current_user
+                    grp.updated_at = timezone.now()
+                    grp.save()
+                    messages.success(request, f'گروه "{label}" بروزرسانی شد.')
+
+            elif operation == 'حذف':
+                if not label:
+                    messages.error(request, 'برای حذف، نام گروه را انتخاب کنید.')
+                    return redirect(self.success_url)
+                deleted, _ = Extensionsgroups.objects.filter(label=label).delete()
+                if deleted:
+                    messages.success(request, f'گروه "{label}" حذف شد.')
+                else:
+                    messages.error(request, 'گروهی برای حذف یافت نشد.')
+
+        # Update selected user's permissions if a user is chosen
+        if selected_username and selected_username.lower() != 'none':
+            user = Users.objects.filter(username__iexact=selected_username).first()
+            if not user:
+                messages.error(request, 'کاربر انتخاب‌شده یافت نشد.')
+            else:
+                perm, _ = Permissions.objects.get_or_create(user=user)
+                # Toggle errors report permission
+                perm.errorsreport = bool(errorsreport_val)
+
+                # Maintain exts_label list based on operation and label
+                try:
+                    labels = list(perm.exts_label or [])
+                except Exception:
+                    labels = []
+                if label:
+                    if operation in ['اضافه', 'ویرایش'] and label not in labels:
+                        labels.append(label)
+                    if operation == 'حذف' and label in labels:
+                        labels.remove(label)
+                perm.exts_label = labels
+                perm.updated_at = timezone.now()
+                perm.save()
+                messages.success(request, f'دسترسی‌های کاربر "{selected_username}" ذخیره شد.')
+
+        return redirect(self.success_url)
+
 def error_export(request):
     """Export filtered error data as CSV or Excel"""
     if not checkSession(request):

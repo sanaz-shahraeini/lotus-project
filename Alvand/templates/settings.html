@@ -381,28 +381,66 @@
         background-color: var(--card-bg);
         text-align: right;
     }
-    .ext-dropdown .dropdown-menu {
+    .access-groups-section .ext-dropdown .dropdown-menu {
         right: 0; /* align under button in RTL */
         left: auto;
-        min-width: 220px;
-        max-width: 320px;
+        min-width: 240px;
+        max-width: 340px;
         width: auto;
         z-index: 3000; /* stay above nearby cards/overlays */
         overflow: hidden; /* inner wrapper handles scrolling */
         box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+        border-radius: 10px;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
     }
-    .ext-dropdown .dropdown-menu .p-3 {
-        max-height: 240px;
+    .access-groups-section .ext-dropdown .dropdown-menu .p-3 {
+        padding: 0; /* remove inner padding to match flush list */
+        max-height: 260px;
         overflow-y: auto;
     }
-    .ext-dropdown .dropdown-item { padding: .25rem .75rem; }
-    .ext-dropdown .dropdown-item label {
-        display: inline-flex;
-        align-items: center;
+    .access-groups-section .ext-dropdown .dropdown-item { padding: 0; position: relative; }
+    .access-groups-section .ext-dropdown .dropdown-item::before,
+    .access-groups-section .ext-dropdown .dropdown-item::after { content: none !important; }
+    .access-groups-section .ext-dropdown .dropdown-item label {
+        display: flex !important;
+        align-items: center !important;
+        flex-direction: row-reverse; /* checkbox on the right in RTL */
         gap: 0.5rem;
         width: 100%;
-        white-space: normal; /* allow wrapping to avoid cramped view */
+        padding: 10px 14px; /* taller rows like screenshot */
+        min-height: 44px;
+        border-bottom: 1px solid var(--gray-light);
+        background: var(--card-bg);
+        line-height: 1.2;
+        quotes: "" ""; /* neutralize quotes */
     }
+    /* Remove any decorative pseudo-elements coming from global styles */
+    .access-groups-section .ext-dropdown .dropdown-item label::before,
+    .access-groups-section .ext-dropdown .dropdown-item label::after { content: none !important; }
+    .access-groups-section .ext-dropdown .dropdown-item:last-child label { border-bottom: none; }
+    .access-groups-section .ext-dropdown .dropdown-item span {
+        flex: 1;
+        direction: ltr; /* numbers look correct */
+        text-align: left;
+        color: var(--text-color);
+        quotes: "" ""; /* neutralize quotes */
+        position: relative;
+    }
+    .access-groups-section .ext-dropdown .dropdown-item span::before,
+    .access-groups-section .ext-dropdown .dropdown-item span::after { content: none !important; }
+    .access-groups-section .ext-dropdown .dropdown-item input[type="checkbox"]{
+        width: 18px;
+        height: 18px;
+        accent-color: var(--primary-color);
+        flex: 0 0 auto;
+        margin: 0 0 0 8px !important; /* space between checkbox and text when row-reverse */
+    }
+    .access-groups-section .ext-dropdown .dropdown-item:hover label { background: var(--secondary-color); }
+    /* Thin scrollbar like screenshot */
+    .access-groups-section .ext-dropdown .dropdown-menu .p-3::-webkit-scrollbar { width: 6px; }
+    .access-groups-section .ext-dropdown .dropdown-menu .p-3::-webkit-scrollbar-track { background: transparent; }
+    .access-groups-section .ext-dropdown .dropdown-menu .p-3::-webkit-scrollbar-thumb { background-color: var(--gray-light); border-radius: 999px; }
     body[dir="rtl"] .ext-checkbox {
         margin-left: 0.5rem !important;
         margin-right: 0 !important;
@@ -437,6 +475,112 @@
     .btn-primary:active {
         transform: translateY(0);
     }
+
+    /* User-management like dropdown styles */
+    .dropdown-btn {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        color: var(--text-color);
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        height: 42px;
+        width: 100%;
+    }
+    .dropdown-content {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem;
+        box-shadow: var(--card-shadow);
+        max-height: 240px;
+        overflow-y: auto;
+        z-index: 1000;
+        width: 100%;
+        margin-top: 0.25rem;
+    }
+    .dropdown-content.hidden{ display:none; }
+    .dropdown-content .dropdown-item { padding: 0; }
+    .dropdown-content .dropdown-item label{
+        display:flex; align-items:center; justify-content:space-between; gap:.5rem; width:100%;
+        padding:10px 14px; min-height:44px; border-bottom:1px solid var(--gray-light);
+        position: relative;
+    }
+    .dropdown-content .dropdown-item:last-child label{ border-bottom:none; }
+    .dropdown-content .dropdown-item span{ flex:1; direction:ltr; text-align:left; }
+    .access-groups-section .dropdown-content .dropdown-item::before,
+    .access-groups-section .dropdown-content .dropdown-item::after { content:none !important; background:none !important; border:none !important; }
+    .access-groups-section .dropdown-content .dropdown-item span { background-image:none !important; font-family: inherit !important; }
+    /* Neutralize any decorative pseudo elements from global CSS that add quotes/arrows/lines */
+    .access-groups-section .dropdown-content .dropdown-item label::before,
+    .access-groups-section .dropdown-content .dropdown-item label::after,
+    .access-groups-section .dropdown-content .dropdown-item span::before,
+    .access-groups-section .dropdown-content .dropdown-item span::after{ content: none !important; }
+    /* Also neutralize patterns that draw custom checkboxes using sibling selectors */
+    .access-groups-section .dropdown-content .dropdown-item input[type="checkbox"] + span::before,
+    .access-groups-section .dropdown-content .dropdown-item input[type="checkbox"] + span::after { content: none !important; box-shadow: none !important; background: none !important; }
+    /* Force native checkbox look (prevent custom pseudo-element checkboxes) */
+    .access-groups-section .dropdown-content .dropdown-item input[type="checkbox"]{
+        width:18px; height:18px; accent-color: var(--primary-color);
+        appearance: auto !important; -webkit-appearance: checkbox !important; -moz-appearance: checkbox !important;
+        background: none !important; box-shadow: none !important; outline: none !important;
+        position: relative !important; margin: 0 0 0 8px;
+    }
+
+    /* Ultra-strong reset inside the new extensions menu to avoid duplicated symbols/checkboxes */
+    #extSelectMenu *,
+    #extSelectMenu *::before,
+    #extSelectMenu *::after {
+        text-shadow: none !important;
+        box-shadow: none !important;
+        list-style: none !important;
+    }
+    #extSelectMenu { quotes: "" ""; }
+    #extSelectMenu label::before,
+    #extSelectMenu label::after,
+    #extSelectMenu span::before,
+    #extSelectMenu span::after,
+    #extSelectMenu input[type="checkbox"]::before,
+    #extSelectMenu input[type="checkbox"]::after {
+        content: none !important;
+        background: none !important;
+        border: none !important;
+    }
+    #extSelectMenu .ext-checkbox::before,
+    #extSelectMenu .ext-checkbox::after { content: none !important; }
+    #extSelectMenu input[type="checkbox"]{
+        -webkit-appearance: checkbox !important;
+        appearance: checkbox !important;
+        background-image: none !important;
+        border: initial !important;
+        outline: none !important;
+    }
+
+    /* Nuclear local reset: remove inherited custom styles and rebuild layout */
+    #extSelectMenu .dropdown-item label { all: unset; display:flex; align-items:center; justify-content:space-between; width:100%; padding:10px 14px; min-height:44px; border-bottom:1px solid var(--gray-light); cursor:pointer; }
+    #extSelectMenu .dropdown-item:last-child label { border-bottom:none; }
+    #extSelectMenu .dropdown-item span { all: unset; flex:1; direction:ltr; text-align:left; color: var(--text-color); }
+    #extSelectMenu .dropdown-item input[type="checkbox"] { all: unset; -webkit-appearance: checkbox !important; appearance: checkbox !important; width:18px; height:18px; accent-color: var(--primary-color); margin-left:8px; }
+    #extSelectMenu .dropdown-item label::before,
+    #extSelectMenu .dropdown-item label::after,
+    #extSelectMenu .dropdown-item span::before,
+    #extSelectMenu .dropdown-item span::after,
+    #extSelectMenu .dropdown-item input[type="checkbox"]::before,
+    #extSelectMenu .dropdown-item input[type="checkbox"]::after { content:none !important; }
+
+    /* Clean, dedicated styles for the redesigned UL/LI options to prevent stray characters */
+    #extSelectMenu .ext-list { list-style:none; margin:0; padding:0; }
+    #extSelectMenu .ext-row { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; min-height:44px; border-bottom:1px solid var(--gray-light); }
+    #extSelectMenu .ext-row:last-child { border-bottom:none; }
+    #extSelectMenu .ext-row::before,
+    #extSelectMenu .ext-row::after { content:none !important; background:none !important; border:none !important; }
+    #extSelectMenu .ext-row .ext-label { flex:1; direction:ltr; text-align:left; color: var(--text-color); quotes: "" ""; }
+    #extSelectMenu .ext-row .ext-label::before,
+    #extSelectMenu .ext-row .ext-label::after { content:none !important; }
+    #extSelectMenu .ext-row .ext-check { -webkit-appearance: checkbox !important; appearance: checkbox !important; width:18px; height:18px; accent-color: var(--primary-color); margin-left:8px; background:none !important; box-shadow:none !important; }
 
     /* Coming soon styling for disabled sections */
     .coming-soon {
@@ -671,29 +815,23 @@
                                 <!-- Left side of access groups -->
                                 <div class="access-groups-column">
                                     <div class="form-group text-right">
-                                        <label class="form-label">داخلی ها:</label>
-                                        <div class="dropdown ext-dropdown">
-                                            <button id="dropdownCheckboxButton2" data-dropdown-toggle="dropdownDefaultCheckbox2"
-                                                    type="button">
-                                                انتخاب داخلی
-                                                <i class="fa-regular fa-chevron-down"></i>
-                                            </button>
-                                            
-                                            <div id="dropdownDefaultCheckbox2" class="dropdown-menu hidden">
-                                                <div class="p-3 space-y-3 overflow-y-auto max-h-[200px]">
-                                                    {% for ext in extGroup.exts %}
-                                                    <div class="dropdown-item">
-                                                        <label class="flex items-center w-full cursor-pointer">
-                                                            <input type="checkbox" class="ext-checkbox mr-2" value="{{ext.value|default:ext}}" {% if ext.checked %}checked{% endif %}>
-                                                            <span>{{ext.label|default:ext}}</span>
-                                                        </label>
-                                                    </div>
-                                                    {% endfor %}
-                                                </div>
-                                            </div>
+                                        <label class="form-label">دسترسی به داخلی:</label>
+                                        <button id="extSelectBtn" type="button" class="dropdown-btn">
+                                            انتخاب دسترسی
+                                            <i class="fa-regular fa-chevron-down"></i>
+                                        </button>
+                                        <div id="extSelectMenu" class="dropdown-content hidden ext-clean">
+                                            <ul class="ext-list">
+                                                {% for ext in extGroup.exts %}
+                                                <li class="ext-row">
+                                                    <span class="ext-label">{{ext.label|default:ext}}</span>
+                                                    <input type="checkbox" name="exts" class="ext-check" value="{{ext.value|default:ext}}" {% if ext.checked %}checked{% endif %}>
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group text-right">
                                         <label class="form-label">دسترسی گزارش خطاها:</label>
                                         <label for="{{ userAccessToErrorsPageForm.errorsreport.id_for_label }}" class="toggle-switch">
@@ -900,6 +1038,70 @@
         $('#models_for_binalud').addClass('hidden').hide();
     }
 
+    // Select the placeholder option like "-----" for a given <select>
+    function selectPlaceholderOption($select){
+        if(!$select || $select.length === 0) return;
+        const sel = $select.get(0);
+        // Prefer an option with empty value
+        let idx = Array.from(sel.options).findIndex(o => (o.value ?? '').trim() === '');
+        if(idx === -1){
+            // Try value 'none'
+            idx = Array.from(sel.options).findIndex(o => (o.value ?? '').trim().toLowerCase() === 'none');
+        }
+        if(idx === -1){
+            // Try option whose text contains only dashes
+            idx = Array.from(sel.options).findIndex(o => /-+/.test((o.text || '').trim()));
+        }
+        if(idx === -1){
+            // No placeholder found; prepend one
+            const opt = new Option('-----', '');
+            // Insert at the top
+            sel.add(opt, 0);
+            idx = 0;
+        }
+        sel.selectedIndex = idx;
+        $select.trigger('change');
+    }
+
+    // Reset all device-related fields to placeholder/empty
+    function resetDeviceFields(){
+        console.log('Resetting device fields to placeholders');
+        // Right side common fields
+        // number_of_lines might be a number input; clear its value
+        const $nol = $('#id_number_of_lines');
+        if($nol.is('select')){
+            selectPlaceholderOption($nol);
+        } else {
+            $nol.val('');
+        }
+        const $cable = $('#id_cable_type');
+        if($cable.length){
+            // Explicitly clear then try placeholder
+            $cable.val('');
+            selectPlaceholderOption($cable);
+        }
+
+        // Serial section fields
+        ['#id_baudrate','#id_parity','#id_databits','#id_stopbits','#id_flow'].forEach(function(sel){
+            const $s = $(sel);
+            if($s.length){
+                $s.val('');
+                selectPlaceholderOption($s);
+            }
+        });
+
+        // IP section fields
+        $('#id_smdrip').val('');
+        $('#id_smdrport').val('');
+        $('#id_smdrpassword').val('');
+    }
+
+    // Decide whether device fields should be reset (only when no user is selected)
+    function shouldResetDevice(){
+        const v = (($('#id_users').val() || '').toString()).trim().toLowerCase();
+        return v === '' || v === 'none';
+    }
+
     function applyDeviceVisibility() {
         try {
             const el = document.getElementById('id_device');
@@ -935,10 +1137,11 @@
     
     // Setup all dropdowns
     setupDropdown('#errorsDropdownBtn', '#errorsDropdownItems');
-    setupDropdown('#dropdownCheckboxButton2', '#dropdownDefaultCheckbox2');
+    setupDropdown('#extSelectBtn', '#extSelectMenu');
     
     // Form data update function
-    function updateData(){
+    // syncDevice: whether to populate device fields from saved data
+    function updateData(syncDevice = true){
         let optionsHtml = '<option value="none"> ------ </option>';
         groupnameData.forEach(function(ext) {
             optionsHtml += `<option value="${ext.label}"> ${ext.label} </option>`;
@@ -984,43 +1187,41 @@
             $('#id_rightel').val(cost.rightel);
         }
 
-        if (devicesData.length > 0) {
-            const device = devicesData[0]; // Assuming devices is an array and we take the first item
-            $('#id_device').val(device.device);
+        if (syncDevice) {
+            if (devicesData.length > 0) {
+                const device = devicesData[0]; // Assuming devices is an array and we take the first item
+                $('#id_device').val(device.device);
 
-            // Only two supported models: KX-TDE100 (IP) and others (Serial)
-            if ((device.device || '').toString().trim().toUpperCase() === 'KX-TDE100') {
-                // IP-based model: show IP section
-                $('#id_smdrip').val(device.smdrip || '192.163.1.10');
-                $('#id_smdrport').val(device.smdrport || '2300');
-                $('#id_smdrpassword').val(device.smdrpassword || 'PCCSMDR');
+                // Only two supported models: KX-TDE100 (IP) and others (Serial)
+                if ((device.device || '').toString().trim().toUpperCase() === 'KX-TDE100') {
+                    // IP-based model: show IP section
+                    $('#id_smdrip').val(device.smdrip || '');
+                    $('#id_smdrport').val(device.smdrport || '');
+                    $('#id_smdrpassword').val(device.smdrpassword || '');
 
-                // Hide serial, show IP
-                showIPSection();
+                    // Hide serial, show IP
+                    showIPSection();
+                } else {
+                    // Serial model: show serial section
+                    $('#id_flow').val(device.flow || '');
+                    $('#id_stopbits').val(device.stopbits || '');
+                    $('#id_baudrate').val(device.baudrate || '');
+                    $('#id_parity').val(device.parity || '');
+                    $('#id_databits').val(device.databits || '');
+                    $('#id_number_of_lines').val(device.number_of_lines || '');
+
+                    // Hide IP, show serial
+                    showSerialSection();
+                }
             } else {
-                // Serial model: show serial section
-                $('#id_flow').val(device.flow || 'None');
-                $('#id_stopbits').val(device.stopbits || '1');
-                $('#id_baudrate').val(device.baudrate || '9600');
-                $('#id_parity').val(device.parity || 'None');
-                $('#id_databits').val(device.databits || '8');
-                $('#id_number_of_lines').val(device.number_of_lines);
-
-                // Hide IP, show serial
+                // No saved device: ensure placeholders
+                resetDeviceFields();
                 showSerialSection();
             }
         } else {
-            $('#id_smdrip').val('192.163.1.10');
-            $('#id_smdrport').val('2300');
-            $('#id_smdrpassword').val('PCCSMDR');
-            $('#id_flow').val('None');
-            $('#id_stopbits').val('1');
-            $('#id_baudrate').val('9600');
-            $('#id_parity').val('None');
-            $('#id_databits').val('8');
-            
-            // Default visibility
-            showSerialSection();
+            // Skipping device sync (e.g., when switching access group operation);
+            // keep device section at placeholders
+            resetDeviceFields();
         }
 
         if (contactInfosData.length > 0) {
@@ -1072,7 +1273,11 @@
     }
 
     $(document).ready(function() {
-        updateData(); // Call updateData on initial load
+        updateData(true); // Call updateData on initial load
+        // After data binding, reset fields to placeholder on first load only if no user selected
+        if(shouldResetDevice()){
+            resetDeviceFields();
+        }
         // Also enforce correct visibility once DOM is ready
         applyDeviceVisibility();
         setTimeout(applyDeviceVisibility, 0);
@@ -1082,6 +1287,8 @@
         $(document).on('change', '#id_device', function () {
             const selected = (($(this).val() || '').toString().trim().toUpperCase());
             console.log('Device changed:', selected);
+            // On any model selection, reset all related fields to placeholder/empty
+            resetDeviceFields();
             if (selected === 'KX-TDE100' || selected.indexOf('TDE100') !== -1) {
                 // IP model
                 showIPSection();
@@ -1092,19 +1299,28 @@
         });
         // Trigger once on load to sync UI with current selection
         $('#id_device').trigger('change');
+        if(shouldResetDevice()){
+            resetDeviceFields();
+        }
         applyDeviceVisibility();
 
         // Radio button event handlers
         $('#edit').on('click', function () {
             $('#add').prop('checked', false);
             $('#delete').prop('checked', false);
-            updateData();
+            updateData(false);
+            if(shouldResetDevice()){
+                resetDeviceFields();
+            }
         });
 
         $('#delete').on('click', function(){
             $("#edit").prop('checked', false);
             $("#add").prop('checked', false);
-            updateData();
+            updateData(false);
+            if(shouldResetDevice()){
+                resetDeviceFields();
+            }
         });
 
         $('#add').on('click', function(){
@@ -1112,6 +1328,10 @@
             $('#delete').prop('checked', false);
             $('#id_label').replaceWith(`
                 <input type="text" id="id_label" name='label' class="w-full form-control">`);
+            updateData(false);
+            if(shouldResetDevice()){
+                resetDeviceFields();
+            }
         });
         
         // Initial styling
@@ -1129,4 +1349,4 @@
 <script id="users_json" type="application/json">{{ users|json_script:"users_json" }}</script>
 <script id="contactInfos_json" type="application/json">{{ contactInfos|json_script:"contactInfos_json" }}</script>
 
-{% endblock %}
+{% endblock %} 
