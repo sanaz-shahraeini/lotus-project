@@ -247,6 +247,27 @@
         font-size: 0.9rem;
         transition: border-color 0.2s, box-shadow 0.2s;
     }
+    /* Unified select caret: hide native and draw a single down-arrow like other menus */
+    .settings-card select {
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        background-repeat: no-repeat !important;
+        background-size: 12px 12px !important;
+        background-position: right 12px center !important; /* default RTL position */
+        padding-right: 2rem !important;
+        /* light mode arrow */
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2390A4AE' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>") !important;
+    }
+    /* Position for LTR pages if any */
+    html[dir="ltr"] .settings-card select {
+        background-position: left 12px center !important;
+        padding-left: 2rem !important;
+        padding-right: 0.75rem !important;
+    }
+    /* Dark mode arrow color */
+    html.dark .settings-card select {
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2380DEEA' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>") !important;
+    }
     /* Force left alignment and LTR for device inputs to display numbers/IPs nicely */
     #models_for_alvand input[type="text"],
     #models_for_alvand input[type="number"],
@@ -491,6 +512,29 @@
         height: 42px;
         width: 100%;
     }
+    /* Unify caret of the access-group dropdown button with selects */
+    .access-groups-section .dropdown-btn {
+        position: relative;
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        background-repeat: no-repeat !important;
+        background-size: 12px 12px !important;
+        background-position: right 12px center !important; /* RTL */
+        padding-right: 2rem !important;
+        /* light mode arrow */
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2390A4AE' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>") !important;
+    }
+    html[dir="ltr"] .access-groups-section .dropdown-btn {
+        background-position: left 12px center !important;
+        padding-left: 2rem !important;
+        padding-right: 0.75rem !important;
+    }
+    html.dark .access-groups-section .dropdown-btn {
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2380DEEA' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>") !important;
+    }
+    /* Neutralize any global pseudo-element arrows on the button */
+    #agExtSelectBtn::before,
+    #agExtSelectBtn::after { content: none !important; }
     .dropdown-content {
         background-color: var(--card-bg);
         border: 1px solid var(--border-color);
@@ -531,27 +575,27 @@
     }
 
     /* Ultra-strong reset inside the new extensions menu to avoid duplicated symbols/checkboxes */
-    #extSelectMenu *,
-    #extSelectMenu *::before,
-    #extSelectMenu *::after {
+    #agExtSelectMenu *,
+    #agExtSelectMenu *::before,
+    #agExtSelectMenu *::after {
         text-shadow: none !important;
         box-shadow: none !important;
         list-style: none !important;
     }
-    #extSelectMenu { quotes: "" ""; }
-    #extSelectMenu label::before,
-    #extSelectMenu label::after,
-    #extSelectMenu span::before,
-    #extSelectMenu span::after,
-    #extSelectMenu input[type="checkbox"]::before,
-    #extSelectMenu input[type="checkbox"]::after {
+    #agExtSelectMenu { quotes: "" ""; }
+    #agExtSelectMenu label::before,
+    #agExtSelectMenu label::after,
+    #agExtSelectMenu span::before,
+    #agExtSelectMenu span::after,
+    #agExtSelectMenu input[type="checkbox"]::before,
+    #agExtSelectMenu input[type="checkbox"]::after {
         content: none !important;
         background: none !important;
         border: none !important;
     }
-    #extSelectMenu .ext-checkbox::before,
-    #extSelectMenu .ext-checkbox::after { content: none !important; }
-    #extSelectMenu input[type="checkbox"]{
+    #agExtSelectMenu .ext-checkbox::before,
+    #agExtSelectMenu .ext-checkbox::after { content: none !important; }
+    #agExtSelectMenu input[type="checkbox"]{
         -webkit-appearance: checkbox !important;
         appearance: checkbox !important;
         background-image: none !important;
@@ -560,27 +604,27 @@
     }
 
     /* Nuclear local reset: remove inherited custom styles and rebuild layout */
-    #extSelectMenu .dropdown-item label { all: unset; display:flex; align-items:center; justify-content:space-between; width:100%; padding:10px 14px; min-height:44px; border-bottom:1px solid var(--gray-light); cursor:pointer; }
-    #extSelectMenu .dropdown-item:last-child label { border-bottom:none; }
-    #extSelectMenu .dropdown-item span { all: unset; flex:1; direction:ltr; text-align:left; color: var(--text-color); }
-    #extSelectMenu .dropdown-item input[type="checkbox"] { all: unset; -webkit-appearance: checkbox !important; appearance: checkbox !important; width:18px; height:18px; accent-color: var(--primary-color); margin-left:8px; }
-    #extSelectMenu .dropdown-item label::before,
-    #extSelectMenu .dropdown-item label::after,
-    #extSelectMenu .dropdown-item span::before,
-    #extSelectMenu .dropdown-item span::after,
-    #extSelectMenu .dropdown-item input[type="checkbox"]::before,
-    #extSelectMenu .dropdown-item input[type="checkbox"]::after { content:none !important; }
+    #agExtSelectMenu .dropdown-item label { all: unset; display:flex; align-items:center; justify-content:space-between; width:100%; padding:10px 14px; min-height:44px; border-bottom:1px solid var(--gray-light); cursor:pointer; }
+    #agExtSelectMenu .dropdown-item:last-child label { border-bottom:none; }
+    #agExtSelectMenu .dropdown-item span { all: unset; flex:1; direction:ltr; text-align:left; color: var(--text-color); }
+    #agExtSelectMenu .dropdown-item input[type="checkbox"] { all: unset; -webkit-appearance: checkbox !important; appearance: checkbox !important; width:18px; height:18px; accent-color: var(--primary-color); margin-left:8px; }
+    #agExtSelectMenu .dropdown-item label::before,
+    #agExtSelectMenu .dropdown-item label::after,
+    #agExtSelectMenu .dropdown-item span::before,
+    #agExtSelectMenu .dropdown-item span::after,
+    #agExtSelectMenu .dropdown-item input[type="checkbox"]::before,
+    #agExtSelectMenu .dropdown-item input[type="checkbox"]::after { content:none !important; }
 
     /* Clean, dedicated styles for the redesigned UL/LI options to prevent stray characters */
-    #extSelectMenu .ext-list { list-style:none; margin:0; padding:0; }
-    #extSelectMenu .ext-row { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; min-height:44px; border-bottom:1px solid var(--gray-light); }
-    #extSelectMenu .ext-row:last-child { border-bottom:none; }
-    #extSelectMenu .ext-row::before,
-    #extSelectMenu .ext-row::after { content:none !important; background:none !important; border:none !important; }
-    #extSelectMenu .ext-row .ext-label { flex:1; direction:ltr; text-align:left; color: var(--text-color); quotes: "" ""; }
-    #extSelectMenu .ext-row .ext-label::before,
-    #extSelectMenu .ext-row .ext-label::after { content:none !important; }
-    #extSelectMenu .ext-row .ext-check { -webkit-appearance: checkbox !important; appearance: checkbox !important; width:18px; height:18px; accent-color: var(--primary-color); margin-left:8px; background:none !important; box-shadow:none !important; }
+    #agExtSelectMenu .ext-list { list-style:none; margin:0; padding:0; }
+    #agExtSelectMenu .ext-row { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; min-height:44px; border-bottom:1px solid var(--gray-light); }
+    #agExtSelectMenu .ext-row:last-child { border-bottom:none; }
+    #agExtSelectMenu .ext-row::before,
+    #agExtSelectMenu .ext-row::after { content:none !important; background:none !important; border:none !important; }
+    #agExtSelectMenu .ext-row .ext-label { flex:1; direction:ltr; text-align:left; color: var(--text-color); quotes: "" ""; }
+    #agExtSelectMenu .ext-row .ext-label::before,
+    #agExtSelectMenu .ext-row .ext-label::after { content:none !important; }
+    #agExtSelectMenu .ext-row .ext-check { -webkit-appearance: checkbox !important; appearance: checkbox !important; width:18px; height:18px; accent-color: var(--primary-color); margin-left:8px; background:none !important; box-shadow:none !important; }
 
     /* Coming soon styling for disabled sections */
     .coming-soon {
@@ -604,6 +648,14 @@
         text-align: center;
         z-index: 2;
     }
+    /* Dark theme override for the translucent overlay (prevents bright washout) */
+    html.dark .coming-soon .overlay {
+        background: radial-gradient(ellipse at center,
+            rgba(13, 27, 42, 0.75) 0%,
+            rgba(13, 27, 42, 0.7) 45%,
+            rgba(13, 27, 42, 0.65) 100%);
+        border-color: var(--gray-light);
+    }
     .overlay .soon-title {
         font-weight: 700;
         color: var(--primary-color);
@@ -614,6 +666,9 @@
         color: var(--light-text);
         font-size: 0.85rem;
     }
+    /* Ensure readable text on dark overlay */
+    html.dark .overlay .soon-title { color: #80DEEA; }
+    html.dark .overlay .soon-desc { color: var(--gray); }
     
     /* Radio button styling */
     .radio-group {
@@ -688,6 +743,19 @@
             margin-right: 0 !important;
         }
     }
+    
+    /* CRITICAL FIX: Ensure text input for group label is editable */
+    input#ag_label[type="text"] {
+        background-image: none !important;
+        appearance: auto !important;
+        -webkit-appearance: auto !important;
+        cursor: text !important;
+        pointer-events: auto !important;
+        user-select: text !important;
+        -webkit-user-select: text !important;
+        padding-left: 0.75rem !important;
+        height: 38px !important;
+    }
 </style>
 {% endblock %}
 
@@ -702,6 +770,7 @@
             
             <form method="post">
                 {% csrf_token %}
+                <input type="hidden" name="operation_fallback" id="operation_fallback" value="">
                 
                 <div class="settings-grid">
                     <!-- Right Column -->
@@ -792,7 +861,7 @@
                                         <label for="delete">حذف</label>
                                     </div>
                                     <div class="radio-item" role="radio" aria-checked="false">
-                                        <input type="radio" id="add" name="operation" value="اضافه">
+                                        <input type="radio" id="add" name="operation" value="اضافه" checked>
                                         <label for="add">اضافه</label>
                                     </div>
                                 </div>
@@ -803,7 +872,8 @@
                                 <div class="access-groups-column">
                                     <div class="form-group text-right">
                                         <label class="form-label">نام گروه:</label>
-                                        {{extGroup.label}}
+                                        <!-- Single-field container; JS will render input or select inside -->
+                                        <div id="groupLabelField"></div>
                                     </div>
                                     
                                     <div class="form-group text-right">
@@ -816,16 +886,16 @@
                                 <div class="access-groups-column">
                                     <div class="form-group text-right">
                                         <label class="form-label">دسترسی به داخلی:</label>
-                                        <button id="extSelectBtn" type="button" class="dropdown-btn">
+                                        <button id="agExtSelectBtn" type="button" class="dropdown-btn">
                                             انتخاب دسترسی
                                             <i class="fa-regular fa-chevron-down"></i>
                                         </button>
-                                        <div id="extSelectMenu" class="dropdown-content hidden ext-clean">
+                                        <div id="agExtSelectMenu" class="dropdown-content hidden ext-clean">
                                             <ul class="ext-list">
                                                 {% for ext in extGroup.exts %}
                                                 <li class="ext-row">
-                                                    <span class="ext-label">{{ext.label|default:ext}}</span>
-                                                    <input type="checkbox" name="exts" class="ext-check" value="{{ext.value|default:ext}}" {% if ext.checked %}checked{% endif %}>
+                                                    <span class="ext-label">{{ ext.choice_label }}</span>
+                                                    {{ ext.tag }}
                                                 </li>
                                                 {% endfor %}
                                             </ul>
@@ -954,12 +1024,12 @@
                                         <div class="form-group text-right">
                                             <label class="form-label">خطاها:</label>
                                             <div class="dropdown">
-                                                <button id="errorsDropdownBtn" data-dropdown-toggle="errorsDropdownItems" type="button">
+                                                <button id="emailErrorsBtn" data-dropdown-toggle="emailErrorsMenu" type="button">
                                                     انتخاب خطاها
                                                     <i class="fa-regular fa-chevron-down"></i>
                                                 </button>
                                                 
-                                                <div id="errorsDropdownItems" class="dropdown-menu hidden">
+                                                <div id="emailErrorsMenu" class="dropdown-menu hidden">
                                                     <div class="p-3 space-y-3 text-gray-700 overflow-y-scroll h-[200px]">
                                                         {% for error in emailSendingForm.errors %}
                                                         <div class="flex items-center py-1">
@@ -979,54 +1049,46 @@
                 
                 <!-- Submit Button -->
                 <div class="flex justify-center mt-4 mb-6">
-                    <input type="submit" id="apply" class="hidden">
-                    <label for="apply" id="btn" class="btn btn-primary">
+                    <button type="submit" id="applyBtn" class="btn btn-primary">
                         اعمال
-                    </label>
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<script src="{% static 'js/jquery.js' %}"></script>
-
-<script type="text/javascript">
+<script type="text/plain" data-disabled="moved-to-js_extra">
+    // Settings page script
     function safeJSON(id, defVal){
         try{
             const el = document.getElementById(id);
-            if(!el) return defVal;
+            if(!el) {
+                console.warn('safeJSON: element not found:', id);
+                return defVal;
+            }
             const txt = (el.textContent || '').trim();
-            if(!txt) return defVal;
-            return JSON.parse(txt);
+            if(!txt) {
+                console.warn('safeJSON: element empty:', id);
+                return defVal;
+            }
+            const result = JSON.parse(txt);
+            console.log('safeJSON: parsed', id, '- items:', Array.isArray(result) ? result.length : 'N/A');
+            return result;
         }catch(e){
+            console.error('safeJSON: parse error for', id, ':', e);
             return defVal;
         }
     }
-    const groupnameData = safeJSON('groupname_json', []);
-    const costsData = safeJSON('costs_json', []);
-    const devicesData = safeJSON('devices_json', []);
-    const emailsetData = safeJSON('emailset_json', []);
-    const usersData = safeJSON('users_json', []);
-    const contactInfosData = safeJSON('contactInfos_json', []);
+    // Declare globals; assign after DOM is fully parsed (inside $(document).ready)
+    let groupnameData = [];
+    let costsData = [];
+    let devicesData = [];
+    let emailsetData = [];
+    let usersData = [];
+    let contactInfosData = [];
 
-    // Initialize datepicker
-    jalaliDatepicker.startWatch({
-        minDate: "attr",
-        maxDate: "today",
-        hideAfterChange: true,
-        autoHide: true,
-        showTodayBtn: true,
-        showEmptyBtn: true,
-        persianDigits: true,
-        topSpace: 10,
-        bottomSpace: 30,
-        dayRendering(opt, input) {
-            return {
-                isHollyDay: opt.day == 1
-            }
-        }
-    });
+    // Datepicker already started in base.html
 
     // Helper functions to toggle sections (compatible with Tailwind 'hidden')
     function showIPSection() {
@@ -1036,6 +1098,26 @@
     function showSerialSection() {
         $('#models_for_alvand').removeClass('hidden').show();
         $('#models_for_binalud').addClass('hidden').hide();
+    }
+
+    // Normalize and dedupe IDs for extension checkboxes rendered by Django
+    function dedupeExtIds(){
+        try {
+            const inputs = document.querySelectorAll("input[type='checkbox'][name='exts']");
+            let i = 0;
+            inputs.forEach(function(el){
+                const oldId = el.id || '';
+                const newId = 'ag_exts_' + (i++);
+                if (oldId && typeof CSS !== 'undefined' && CSS.escape) {
+                    document.querySelectorAll("label[for='" + CSS.escape(oldId) + "']").forEach(function(lb){ lb.setAttribute('for', newId); });
+                } else if (oldId) {
+                    // Fallback: update nearest associated label in the same row
+                    const row = el.closest('li, .dropdown-item, .ext-row');
+                    if (row) row.querySelectorAll('label').forEach(function(lb){ if(lb.htmlFor === oldId){ lb.htmlFor = newId; }});
+                }
+                el.id = newId;
+            });
+        } catch(e) { /* no-op */ }
     }
 
     // Select the placeholder option like "-----" for a given <select>
@@ -1136,48 +1218,70 @@
     }
     
     // Setup all dropdowns
-    setupDropdown('#errorsDropdownBtn', '#errorsDropdownItems');
-    setupDropdown('#extSelectBtn', '#extSelectMenu');
+    setupDropdown('#emailErrorsBtn', '#emailErrorsMenu');
+    setupDropdown('#agExtSelectBtn', '#agExtSelectMenu');
     
     // Form data update function
     // syncDevice: whether to populate device fields from saved data
     function updateData(syncDevice = true){
-        let optionsHtml = '<option value="none"> ------ </option>';
-        groupnameData.forEach(function(ext) {
-            optionsHtml += `<option value="${ext.label}"> ${ext.label} </option>`;
-        });
-        $('#id_label').replaceWith(`
-            <select id="id_label" name="label" class="w-full h-5 text-gray-600 text-xs appearance-none py-[2px]">
-                ${optionsHtml}
-            </select>`);
+        const selectedOp = ($('input[name="operation"]:checked').val() || '').toString().trim();
+        const isDelete = selectedOp === 'حذف';
+        const isTextOp = selectedOp === 'اضافه' || selectedOp === 'ویرایش';
 
-        $('#id_label').off('change').on('change', function () {
-            if($(this).val().toLowerCase() == "none") {
-                $("#dropdownDefaultCheckbox2 .dropdown-item input").each(function(){
-                    $(this).prop('checked', false)
-                })
-            } else {
-                const selectedLabel = $(this).val().toLowerCase();
-                groupnameData.forEach(function(ext) {
-                    if (selectedLabel === ext.label.toLowerCase()) {
-                        let exts = ext.exts_from_groups; // Assuming getExtsFromExtGroups is exposed in JSON as 'exts_from_groups'
-                        if (exts) {
-                            exts = exts.map(String);
-                            if(exts.length > 0){
-                                $("#dropdownDefaultCheckbox2 .dropdown-item input").each(function(){
-                                    if(exts.includes($(this).val()))
-                                        $(this).prop('checked', true)
-                                    else
-                                        $(this).prop('checked', false)
-                                })
-                            }
-                        }
-                    }
+        const $container = $('#groupLabelField');
+        const datalistId = 'group_labels_datalist';
+
+        // Debug log to check operation detection
+        console.log('updateData called - Operation:', selectedOp, '| isTextOp:', isTextOp, '| isDelete:', isDelete);
+        console.log('$container found:', $container.length, '| exists:', $container.length > 0);
+        
+        // If container not found, exit early
+        if ($container.length === 0) {
+            console.error('CRITICAL: #groupLabelField not found in DOM! Cannot update group label field.');
+            return;
+        }
+
+        // Helper to sync exts by group label
+        function syncExtsForLabelVal(val){
+            const key = (val || '').toString().trim().toLowerCase();
+            if (!key || key === 'none') { $('#agExtSelectMenu .ext-check').prop('checked', false); return; }
+            const grp = (Array.isArray(groupnameData) ? groupnameData : []).find(g => (g.label || '').toLowerCase() === key);
+            if (grp && Array.isArray(grp.exts)) {
+                const extsVals = grp.exts.map(String);
+                $('#agExtSelectMenu .ext-check').each(function(){
+                    const v = (($(this).val() || '').toString());
+                    $(this).prop('checked', extsVals.includes(v));
                 });
             }
-        });
+        }
 
-        if (costsData.length > 0) {
+        // Determine previous value to preserve across re-render
+        const prevVal = ($('#ag_label').length ? $('#ag_label').val() : '') || '';
+
+        if (isTextOp) {
+            // Render a plain text input (no datalist) to ensure exactly one field
+            $container.html(`
+                <input type="text" id="ag_label" name="label" class="w-full h-5 text-gray-600 text-xs" value="${prevVal}" placeholder="نام گروه را وارد کنید">
+            `);
+            $('#ag_label').on('input change blur', function(){ syncExtsForLabelVal($(this).val()); });
+        } else {
+            // Render a select (default and delete)
+            let optionsHtml = '<option value="none"> ------ </option>';
+            if (Array.isArray(groupnameData) && groupnameData.length > 0) {
+                groupnameData.forEach(function(g){ optionsHtml += `<option value="${g.label}">${g.label}</option>`; });
+            } else {
+                optionsHtml += '<option value="" disabled>— گروهی موجود نیست —</option>';
+            }
+            $container.html(`
+                <select id="ag_label" name="label" class="w-full h-5 text-gray-600 text-xs appearance-none py-[2px]">
+                    ${optionsHtml}
+                </select>
+            `);
+            if (prevVal) { $('#ag_label').val(prevVal); }
+            $('#ag_label').on('change', function(){ syncExtsForLabelVal($(this).val()); });
+        }
+
+        if (Array.isArray(costsData) && costsData.length > 0) {
             const cost = costsData[0]; // Assuming costs is an array and we take the first item
             $('#id_provincial').val(cost.provincial);
             $('#id_outofprovincial').val(cost.outofprovincial);
@@ -1188,7 +1292,7 @@
         }
 
         if (syncDevice) {
-            if (devicesData.length > 0) {
+            if (Array.isArray(devicesData) && devicesData.length > 0) {
                 const device = devicesData[0]; // Assuming devices is an array and we take the first item
                 $('#id_device').val(device.device);
 
@@ -1240,7 +1344,7 @@
 
             if (emset.errors && emset.errors.length > 0) {
                 let errors = emset.errors.map(String);
-                $("#errorsDropdownItems .dropdown-item input").each(function(){
+                $("#emailErrorsMenu .dropdown-item input").each(function(){
                     let value = $(this).val();
                     if(errors.includes(value)){
                         $(this).prop('checked', true);
@@ -1273,6 +1377,26 @@
     }
 
     $(document).ready(function() {
+        // Document ready
+        // Now that json_script tags are parsed, read JSON blobs
+        groupnameData = safeJSON('groupname_json', []);
+        console.log('groupnameData loaded:', groupnameData.length, 'groups');
+        // Coerce and sanitize
+        if (!Array.isArray(groupnameData)) { groupnameData = []; }
+        groupnameData = groupnameData.filter(function(g){
+            return g && typeof g.label === 'string' && g.label.trim() !== '';
+        });
+        console.log('groupnameData after filter:', groupnameData.length, 'groups');
+        costsData = safeJSON('costs_json', []);
+        devicesData = safeJSON('devices_json', []);
+        emailsetData = safeJSON('emailset_json', []);
+        usersData = safeJSON('users_json', []);
+        contactInfosData = safeJSON('contactInfos_json', []);
+        // Default to 'اضافه' if no operation chosen yet so a text input appears for نام گروه
+        if ($("input[name='operation']:checked").length === 0) {
+            $('#add').prop('checked', true);
+            $('#operation_fallback').val('اضافه');
+        }
         updateData(true); // Call updateData on initial load
         // After data binding, reset fields to placeholder on first load only if no user selected
         if(shouldResetDevice()){
@@ -1282,6 +1406,10 @@
         applyDeviceVisibility();
         setTimeout(applyDeviceVisibility, 0);
         setTimeout(applyDeviceVisibility, 200);
+        // Ensure unique IDs on extension checkboxes
+        dedupeExtIds();
+        
+        // Verify container exists silently
 
         // Device model change toggles between two supported models
         $(document).on('change', '#id_device', function () {
@@ -1305,9 +1433,13 @@
         applyDeviceVisibility();
 
         // Radio button event handlers
+        // Attach radio button handlers
         $('#edit').on('click', function () {
+            console.log('>>> EDIT radio clicked');
+            $('#edit').prop('checked', true);
             $('#add').prop('checked', false);
             $('#delete').prop('checked', false);
+            $('#operation_fallback').val('ویرایش');
             updateData(false);
             if(shouldResetDevice()){
                 resetDeviceFields();
@@ -1315,8 +1447,11 @@
         });
 
         $('#delete').on('click', function(){
+            console.log('>>> DELETE radio clicked');
+            $("#delete").prop('checked', true);
             $("#edit").prop('checked', false);
             $("#add").prop('checked', false);
+            $('#operation_fallback').val('حذف');
             updateData(false);
             if(shouldResetDevice()){
                 resetDeviceFields();
@@ -1324,16 +1459,16 @@
         });
 
         $('#add').on('click', function(){
+            console.log('>>> ADD radio clicked');
+            $('#add').prop('checked', true);
             $('#edit').prop('checked', false);
             $('#delete').prop('checked', false);
-            $('#id_label').replaceWith(`
-                <input type="text" id="id_label" name='label' class="w-full form-control">`);
+            $('#operation_fallback').val('اضافه');
             updateData(false);
             if(shouldResetDevice()){
                 resetDeviceFields();
             }
         });
-        
         // Initial styling
         $('select, input[type="text"], input[type="password"], input[type="number"], input[type="email"]').addClass('form-control');
         
@@ -1342,11 +1477,51 @@
     });
 </script>
 
-<script id="groupname_json" type="application/json">{{ groupname|json_script:"groupname_json" }}</script>
-<script id="costs_json" type="application/json">{{ costs|json_script:"costs_json" }}</script>
-<script id="devices_json" type="application/json">{{ devices|json_script:"devices_json" }}</script>
-<script id="emailset_json" type="application/json">{{ emailset|json_script:"emailset_json" }}</script>
-<script id="users_json" type="application/json">{{ users|json_script:"users_json" }}</script>
-<script id="contactInfos_json" type="application/json">{{ contactInfos|json_script:"contactInfos_json" }}</script>
+{{ groupname|json_script:"groupname_json" }}
+{{ costs|json_script:"costs_json" }}
+{{ devices|json_script:"devices_json" }}
+{{ emailset|json_script:"emailset_json" }}
+{{ users|json_script:"users_json" }}
+{{ contactInfos|json_script:"contactInfos_json" }}
 
 {% endblock %} 
+
+{% block js_extra %}
+<script>
+  $(function(){
+    function renderLabelField(){
+      var op = ($('input[name="operation"]:checked').val() || '').toString().trim();
+      var $c = $('#groupLabelField');
+      if(!$c.length) return;
+      var prev = $('#ag_label').length ? $('#ag_label').val() : '';
+      if(op === 'اضافه'){
+        $c.html('<input type="text" id="ag_label" name="label" class="w-full h-5 text-gray-600 text-xs" placeholder="نام گروه را وارد کنید">');
+        if(prev) $('#ag_label').val(prev);
+      } else {
+        var options = '<option value="none"> ------ </option>';
+        try{
+          var el = document.getElementById('groupname_json');
+          if(el){
+            var data = JSON.parse((el.textContent||'').trim());
+            if(Array.isArray(data)){
+              data.forEach(function(g){ if(g && g.label){ options += '<option value="'+g.label+'">'+g.label+'</option>'; }});
+            }
+          }
+        }catch(e){}
+        $c.html('<select id="ag_label" name="label" class="w-full h-5 text-gray-600 text-xs appearance-none py-[2px]">'+options+'</select>');
+        if(prev) $('#ag_label').val(prev);
+      }
+    }
+
+    if($("input[name='operation']:checked").length === 0){
+      $('#add').prop('checked', true);
+      $('#operation_fallback').val('اضافه');
+    }
+    $('input[name="operation"]').on('change', function(){
+      $('#operation_fallback').val($(this).val());
+      renderLabelField();
+    });
+    renderLabelField();
+  });
+</script>
+{% endblock %}

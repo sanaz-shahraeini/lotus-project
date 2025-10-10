@@ -290,7 +290,8 @@ body[dir="rtl"] .radio-item input[type="radio"] {
 }
 
 /* Fix for select elements in the access groups section */
-#id_label, #id_users {
+/* Only apply dropdown arrow to select elements, not text inputs */
+select#id_label, #id_users {
     height: 38px;
     appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2337474F' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
@@ -299,7 +300,13 @@ body[dir="rtl"] .radio-item input[type="radio"] {
     padding-left: 2rem;
 }
 
-.dark #id_label, .dark #id_users {
+input#id_label {
+    height: 38px;
+    background-image: none !important;
+    padding-left: 0.75rem;
+}
+
+.dark select#id_label, .dark #id_users {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23F5F7FA' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
 }
 

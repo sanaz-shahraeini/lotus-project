@@ -211,6 +211,8 @@ class emailSendingForm(forms.ModelForm):
 class extGroups(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(extGroups, self).__init__(*args, **kwargs)
+        # Disable auto-generated IDs to avoid duplicate DOM ids if rendered multiple times
+        self.auto_id = False
         self.fields['label'].required = False
         
         user_choices = [(user.extension, user.extension) for user in Users.objects.all()]
@@ -218,9 +220,15 @@ class extGroups(forms.ModelForm):
         ext = list({val[0]: val for val in (user_choices + recs)}.values())
 
         ext = sorted(ext, key=lambda x: x[0])
-        self.fields['exts'] = forms.MultipleChoiceField(choices=ext, required=False,
-                                       widget=forms.CheckboxSelectMultiple(attrs={'class':
-                                                                                      'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500'}))
+        self.fields['exts'] = forms.MultipleChoiceField(
+            choices=ext,
+            required=False,
+            widget=forms.CheckboxSelectMultiple(
+                attrs={'class': 'ext-check w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500'}
+            )
+        )
+        # Ensure no 'id' attribute is present on the widget; without IDs, Chrome won't warn about duplicates
+        self.fields['exts'].widget.attrs.pop('id', None)
 
     exts = forms.MultipleChoiceField(choices=[], required=False)
 
