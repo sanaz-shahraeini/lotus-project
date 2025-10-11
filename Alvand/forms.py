@@ -142,6 +142,20 @@ class DeviceForm(forms.ModelForm):
         else:
             # For other models, show all cable type options
             self.fields['cable_type'].choices = [('', '------')] + list(CABLE_TYPES)
+        
+        # Set default cable type to RS232C
+        if not self.instance.pk:  # Only set default for new instances
+            self.fields['cable_type'].initial = 'rs-232c'
+            # Set default values for RS232C fields
+            self.fields['baudrate'].initial = 19200
+            self.fields['parity'].initial = 'None'
+            self.fields['flow'].initial = 'None'
+            self.fields['stopbits'].initial = 1
+            self.fields['databits'].initial = 8
+            # Set default values for Ethernet fields
+            self.fields['smdrip'].initial = '127.0.0.1'
+            self.fields['smdrport'].initial = 2300
+            self.fields['smdrpassword'].initial = 'PCCSMDR'
 
     class Meta:
         model = Device
