@@ -40,6 +40,22 @@ def getUserCanPerm(username):
     return json.dumps({x: y for x, y in perm.values('can_view', 'can_write', 'can_modify', 'can_delete').first().items()})
 
 @register.filter
+def hasErrorsAccess(username):
+    """Return True if the user has permission to view the errors report page."""
+    if not isinstance(username, str):
+        return False
+    user = Users.objects.filter(username__iexact=username).first()
+    if not user:
+        return False
+    
+    # Supporter users have full access - bypass permission checks
+    if user.groupname.lower() == "supporter":
+        return True
+    
+    perm = Permissions.objects.filter(user=user).first()
+    return bool(perm and getattr(perm, 'errorsreport', False))
+
+@register.filter
 def getUserInfo(username, value):
     getInfo = getUserinfoByUsername(username, value)
     return getInfo if getInfo else ""

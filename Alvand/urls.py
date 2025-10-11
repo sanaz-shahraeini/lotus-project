@@ -18,6 +18,7 @@ urlpatterns = [
     path('errors/export/', views.error_export, name='error_export'),
     path('user/', views.UserForm.as_view(), name='user'),
     path('get-user-data/', views.get_user_data, name='get_user_data'),
+    path('get-cable-types/', views.get_cable_types, name='get_cable_types'),
     path('userprofile/', views.userprofile_view, name='userprofile'),
     path('change-password/', views.ChangePasswordView.as_view(), name='change_password'),
     path('forgot-password/', views.ForgotPasswordView.as_view(), name='forgot_password'),

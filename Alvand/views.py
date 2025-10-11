@@ -633,7 +633,12 @@ class systemSettings(FormView, View):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["pageTitle"] = 'تنظیمات سیستمی'
-        context["deviceform"] = self.form_class
+        
+        # Get existing device data to initialize form properly
+        existing_device = Device.objects.all().first() if Device.objects.all().exists() else None
+        device_initial = {'device': existing_device.device} if existing_device else {}
+        
+        context["deviceform"] = self.form_class(initial=device_initial)
         context["contactInfo"] = ContactInfoForm()
         context['costForm'] = costsForm()
         context["extGroup"] = extGroups()
@@ -673,10 +678,42 @@ class systemSettings(FormView, View):
             pass
             
         context = self.get_context_data()
-        
+
         # Convert QuerySets to lists for JSON serialization
         context['groupname'] = list(context['groupname'].values()) if context['groupname'] else None
-        context['users'] = list(context['users'].values()) if context['users'] else None
+
+        # Enrich users with permissions info so the UI can filter by group label
+        users_qs = context['users'] if context.get('users') is not None else Users.objects.none()
+        users_list = []
+        try:
+            for u in users_qs:
+                # When context['users'] is a queryset of Users
+                if hasattr(u, 'id'):
+                    perm = Permissions.objects.filter(user=u).first()
+                    users_list.append({
+                        'id': u.id,
+                        'username': u.username,
+                        'name': u.name,
+                        'lastname': u.lastname,
+                        'groupname': u.groupname,
+                        'exts_label': list(perm.exts_label) if perm and perm.exts_label else [],
+                        'errorsreport': bool(perm.errorsreport) if perm else False,
+                    })
+                else:
+                    # If it's already a dict (values()), best-effort fetch by username
+                    username = u.get('username')
+                    model_u = Users.objects.filter(username__iexact=username).first() if username else None
+                    perm = Permissions.objects.filter(user=model_u).first() if model_u else None
+                    ud = dict(u)
+                    ud['exts_label'] = list(perm.exts_label) if perm and perm.exts_label else []
+                    ud['errorsreport'] = bool(perm.errorsreport) if perm else False
+                    users_list.append(ud)
+        except Exception:
+            # Fallback to plain values if anything goes wrong
+            users_list = list(users_qs.values()) if hasattr(users_qs, 'values') else []
+
+        context['users'] = users_list
+
         context['emailset'] = list(context['emailset'].values()) if context['emailset'] else None
         context['contactInfos'] = list(context['contactInfos'].values()) if context['contactInfos'] else None
         context['devices'] = list(context['devices'].values()) if context['devices'] else None
@@ -3024,6 +3061,27 @@ def get_user_data(request):
             return JsonResponse({'success': False, 'error': str(e)})
     
     return JsonResponse({'success': False, 'error': 'Invalid request'})
+
+
+def get_cable_types(request):
+    """AJAX endpoint to get cable type options based on device model."""
+    if request.method == 'GET':
+        device_model = request.GET.get('device', '').strip()
+        
+        if device_model in ['KX-TA308', 'KX-TES824', 'KX-TEM824']:
+            # For these models, only show RS232C option
+            cable_types = [{'value': '', 'label': '------'}, {'value': 'rs-232c', 'label': 'RS-232C'}]
+        else:
+            # For other models, show all cable type options
+            cable_types = [
+                {'value': '', 'label': '------'},
+                {'value': 'rs-232c', 'label': 'RS-232C'},
+                {'value': 'ethernet', 'label': 'ETHERNET'}
+            ]
+        
+        return JsonResponse({'success': True, 'cable_types': cable_types})
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
 
 def index(request):

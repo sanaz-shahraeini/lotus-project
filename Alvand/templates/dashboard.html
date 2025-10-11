@@ -4,102 +4,13 @@
 
 {% block head_extra %}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<!-- Consolidated CSS files -->
-<link rel="stylesheet" href="{% static 'css/dashboard-fix.css' %}" />
-<link rel="stylesheet" href="{% static 'css/dashboard-width-fix.css' %}" />
-<link rel="stylesheet" href="{% static 'css/direct-layout-fix.css' %}" />
-<link rel="stylesheet" href="{% static 'css/dashboard-content.css' %}" />
 
 <!-- SheetJS library for Excel export -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <!-- Modern dashboard styles --> 
 <style>
-    :root {
-        /* Match theme.css variables */
-        --primary-color: #00BCD4;       /* Lotus Aqua */
-        --primary-hover: #29B6F6;       /* Sky Blue */
-        --secondary-color: #F5F7FA;     /* White Smoke */
-        --text-color: #37474F;          /* Dark Gray */
-        --light-text: #90A4AE;          /* Medium Gray */
-        --border-color: #CFD8DC;        /* Light Gray */
-        --bg-color: #F5F7FA;            /* White Smoke */
-        --card-bg: white;
-        --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-        
-        /* Dashboard-specific variables */
-        --primary: var(--primary-color);
-        --primary-dark: #0097A7;        /* Darker Aqua */
-        --primary-light: #80DEEA;       /* Soft Mint */
-        --secondary: #26A69A;           /* Emerald Green */
-        --warning: #FF7043;             /* Sunset Orange */
-        --danger: #FF5252;              /* Bright Red */
-        --light: #F5F7FA;               /* White Smoke */
-        --dark: #0D1B2A;                /* Deep Indigo */
-        --gray: #90A4AE;                /* Medium Gray */
-        --gray-light: #CFD8DC;          /* Light Gray */
-        --transition: all 0.3s ease;
-    }
-    
-    /* Fix for theme toggle icons in navbar */
-    .theme-toggle-btn i,
-    .dark-mode-toggle i,
-    .light-mode-toggle i,
-    [data-theme-toggle] i,
-    .theme-switch i,
-    #themeToggle i,
-    .navbar .fa-moon,
-    .navbar .fa-sun,
-    header .fa-moon,
-    header .fa-sun,
-    .nav .fa-moon,
-    .nav .fa-sun,
-    .theme-toggle-icon {
-        color: #00BCD4 !important;     /* Lotus Aqua */
-        font-size: 1.25rem !important;
-        filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2)) !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-        transition: all 0.2s ease !important;
-    }
-    
-    .dark .theme-toggle-btn i,
-    .dark .dark-mode-toggle i,
-    .dark .light-mode-toggle i,
-    .dark [data-theme-toggle] i,
-    .dark .theme-switch i,
-    .dark #themeToggle i,
-    .dark .navbar .fa-moon,
-    .dark .navbar .fa-sun,
-    .dark header .fa-moon,
-    .dark header .fa-sun,
-    .dark .nav .fa-moon, 
-    .dark .nav .fa-sun,
-    .dark .theme-toggle-icon {
-        color: #80DEEA !important;    /* Soft Mint */
-    }
-    
-    /* Specific styles for sun/moon icons to ensure visibility */
-    .fa-moon {
-        color: #00BCD4 !important;    /* Lotus Aqua */
-    }
-    
-    .dark .fa-moon {
-        color: #80DEEA !important;    /* Soft Mint */
-    }
-    
-    .fa-sun {
-        color: #FF7043 !important;    /* Sunset Orange */
-    }
-    
-    .dark .fa-sun {
-        color: #FF9E80 !important;    /* Lighter Sunset Orange */
-    }
-    
-    /* Show correct icon based on theme */
-    .fa-sun {
-        display: none !important;
-    }
+    /* Shared variables and theme toggle moved to shared CSS files */
     
     /* Enhanced search functionality styles */
     .search-indicator {

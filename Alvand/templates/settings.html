@@ -2,173 +2,12 @@
 {% load static settingsTags %}
 {% block head_extra %}
 <!-- Modern UI CSS with better visual hierarchy and components -->
-<link rel="stylesheet" href="{% static 'css/dashboard-fix.css' %}" />
-<link rel="stylesheet" href="{% static 'css/dashboard-width-fix.css' %}" />
-<link rel="stylesheet" href="{% static 'css/direct-layout-fix.css' %}" />
-<link rel="stylesheet" href="{% static 'css/header-optimize.css' %}" />
-<link rel="stylesheet" href="{% static 'css/dashboard-content.css' %}" />
-<!-- Access Groups Section Styling -->
-<link rel="stylesheet" href="{% static 'css/access-groups-fix.css' %}" />
-<link rel="stylesheet" href="{% static 'css/access-groups-mobile-fix.css' %}" />
-<link rel="stylesheet" href="{% static 'css/dropdown-layer-fix.css' %}" />
+<link rel="stylesheet" href="{% static 'css/pages/settings.css' %}" />
 <!-- Temporarily disabled problematic JavaScript files -->
 <!-- <script src="{% static 'js/settings-page-forms-fix.js' %}"></script> -->
 <!-- <script src="{% static 'js/access-groups-fix.js' %}"></script> -->
 <style>
-    /* Root variables to match global sidebar/navbar color scheme */
-      :root {
-        /* Match theme.css variables */
-        --primary-color: #00BCD4;       /* Lotus Aqua */
-        --primary-hover: #29B6F6;       /* Sky Blue */
-        --secondary-color: #F5F7FA;     /* White Smoke */
-        --text-color: #37474F;          /* Dark Gray */
-        --light-text: #90A4AE;          /* Medium Gray */
-        --border-color: #CFD8DC;        /* Light Gray */
-        --bg-color: #F5F7FA;            /* White Smoke */
-        --card-bg: white;
-        --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-        
-        /* Dashboard-specific variables */
-        --primary: var(--primary-color);
-        --primary-dark: #0097A7;        /* Darker Aqua */
-        --primary-light: #80DEEA;       /* Soft Mint */
-        --secondary: #26A69A;           /* Emerald Green */
-        --warning: #FF7043;             /* Sunset Orange */
-        --danger: #FF5252;              /* Bright Red */
-        --light: #F5F7FA;               /* White Smoke */
-        --dark: #0D1B2A;                /* Deep Indigo */
-        --gray: #90A4AE;                /* Medium Gray */
-        --gray-light: #CFD8DC;          /* Light Gray */
-        --transition: all 0.3s ease;
-    }
-    
-    /* Dark mode variables to match theme.css */
-    html.dark {
-        --primary-color: #00BCD4;         /* Lotus Aqua */
-        --primary-hover: #29B6F6;         /* Sky Blue */
-        --secondary-color: #0D1B2A;       /* Deep Indigo */
-        --text-color: #F5F7FA;            /* White Smoke */
-        --light-text: #CFD8DC;            /* Light Gray */
-        --border-color: #37474F;          /* Dark Gray */
-        --bg-color: #121212;              /* Dark Navy */
-        --card-bg: #0D1B2A;               /* Deep Indigo */
-        --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        
-        /* Update dashboard-specific dark mode variables */
-        --primary: var(--primary-color);
-        --primary-dark: var(--primary-hover);
-        --light: var(--text-color);
-        --dark: var(--bg-color);
-        --gray: var(--light-text);
-        --gray-light: var(--border-color);
-    }
-    
-     /* Fix for theme toggle icons in navbar */
-     .theme-toggle-btn i,
-    .dark-mode-toggle i,
-    .light-mode-toggle i,
-    [data-theme-toggle] i,
-    .theme-switch i,
-    #themeToggle i,
-    .navbar .fa-moon,
-    .navbar .fa-sun,
-    header .fa-moon,
-    header .fa-sun,
-    .nav .fa-moon,
-    .nav .fa-sun,
-    .theme-toggle-icon {
-        color: #00BCD4 !important;     /* Lotus Aqua */
-        font-size: 1.25rem !important;
-        filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2)) !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-        transition: all 0.2s ease !important;
-    }
-    
-    .dark .theme-toggle-btn i,
-    .dark .dark-mode-toggle i,
-    .dark .light-mode-toggle i,
-    .dark [data-theme-toggle] i,
-    .dark .theme-switch i,
-    .dark #themeToggle i,
-    .dark .navbar .fa-moon,
-    .dark .navbar .fa-sun,
-    .dark header .fa-moon,
-    .dark header .fa-sun,
-    .dark .nav .fa-moon, 
-    .dark .nav .fa-sun,
-    .dark .theme-toggle-icon {
-        color: #80DEEA !important;    /* Soft Mint */
-    }
-    
-    /* Specific styles for sun/moon icons to ensure visibility */
-    .fa-moon {
-        color: #00BCD4 !important;    /* Lotus Aqua */
-    }
-    
-    .dark .fa-moon {
-        color: #80DEEA !important;    /* Soft Mint */
-    }
-    
-    .fa-sun {
-        color: #FF7043 !important;    /* Sunset Orange */
-    }
-    
-    .dark .fa-sun {
-        color: #FF9E80 !important;    /* Lighter Sunset Orange */
-    }
-    
-    /* Show correct icon based on theme */
-    .fa-sun {
-        display: none !important;
-    }
-    
-    .fa-moon {
-        display: inline-block !important;
-    }
-    
-    .dark .fa-sun {
-        display: inline-block !important;
-    }
-    
-    .dark .fa-moon {
-        display: none !important;
-    }
-    
-    
-    .main-content {
-        margin-right: var(--sidebar-width);
-        margin-left: 0;
-        margin-top: 10px;
-        width: calc(100% - var(--sidebar-width));
-        padding: var(--main-padding);
-        background-color: var(--bg-color);
-        min-height: 100vh;
-    }
-    
-    /* RTL Support */
-    html[dir="ltr"] .main-content {
-        margin-right: 0;
-        margin-left: var(--sidebar-width);
-    }
-    
-    @media (max-width: 768px) {
-        .main-content {
-            margin-right: 0;
-            margin-left: 0;
-            width: 100%;
-        }
-    }
-    body {
-        direction: rtl;
-        text-align: right;
-        font-family: 'Vazir', system-ui, -apple-system, sans-serif;
-        color: var(--text-color);
-        background-color: var(--bg-color);
-        min-height: 100vh;
-        line-height: 1.6;
-        transition: background-color 0.3s, color 0.3s;
-    }
+    /* Shared tokens (variables, theme toggle, layout) moved to static/css/shared-*.css */
     body[dir="rtl"] .settings-container {
         padding-right: 1rem !important;
     }
@@ -471,31 +310,7 @@
     .ext-summary { display:flex; flex-wrap:wrap; gap:.35rem; margin-top:.5rem; }
     .ext-badge { background: var(--primary-light); color:#0b3a4a; border-radius:999px; padding:.1rem .45rem; font-size:.75rem; }
     
-    /* Button styling */
-    .btn {
-        padding: 0.6rem 1.5rem;
-        border-radius: 0.375rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: background-color 0.2s, transform 0.1s;
-        text-align: center;
-        display: inline-block;
-        border: none;
-    }
-    
-    .btn-primary {
-        background-color: var(--primary-color);
-        color: white;
-    }
-    
-    .btn-primary:hover {
-        background-color: var(--primary-hover);
-        transform: translateY(-1px);
-    }
-    
-    .btn-primary:active {
-        transform: translateY(0);
-    }
+    /* Buttons rely on shared-buttons.css */
 
     /* User-management like dropdown styles */
     .dropdown-btn {
@@ -529,9 +344,16 @@
         padding-left: 2rem !important;
         padding-right: 0.75rem !important;
     }
+    /* In dark mode, match other selects: right-side caret and teal color */
     html.dark .access-groups-section .dropdown-btn {
         background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2380DEEA' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>") !important;
+        background-position: right 12px center !important; /* RTL */
+        padding-right: 2rem !important;
     }
+    /* Hide inline icon only in dark to avoid duplicate with background arrow */
+    html.dark #agExtSelectBtn i { display: none !important; }
+    html.dark #agExtSelectBtn::before,
+    html.dark #agExtSelectBtn::after { content: none !important; }
     /* Neutralize any global pseudo-element arrows on the button */
     #agExtSelectBtn::before,
     #agExtSelectBtn::after { content: none !important; }
@@ -617,14 +439,41 @@
 
     /* Clean, dedicated styles for the redesigned UL/LI options to prevent stray characters */
     #agExtSelectMenu .ext-list { list-style:none; margin:0; padding:0; }
-    #agExtSelectMenu .ext-row { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; min-height:44px; border-bottom:1px solid var(--gray-light); }
+    /* Modern RTL row: checkbox on the right, text on the left but aligned right */
+    #agExtSelectMenu .ext-row {
+        display:flex;
+        flex-direction: row-reverse; /* put checkbox at the far right */
+        align-items:center;
+        gap:.75rem;
+        padding:12px 16px;
+        min-height:44px;
+        border-bottom:1px solid var(--gray-light);
+        background: var(--card-bg);
+        transition: background-color .15s ease-in-out;
+    }
+    #agExtSelectMenu .ext-row:hover { background: var(--secondary-color); }
     #agExtSelectMenu .ext-row:last-child { border-bottom:none; }
     #agExtSelectMenu .ext-row::before,
     #agExtSelectMenu .ext-row::after { content:none !important; background:none !important; border:none !important; }
-    #agExtSelectMenu .ext-row .ext-label { flex:1; direction:ltr; text-align:left; color: var(--text-color); quotes: "" ""; }
+    #agExtSelectMenu .ext-row .ext-label {
+        flex:1;
+        direction: rtl; /* Persian numbers/text */
+        text-align: right;
+        color: var(--text-color);
+        quotes: "" "";
+        line-height: 1.25;
+    }
     #agExtSelectMenu .ext-row .ext-label::before,
     #agExtSelectMenu .ext-row .ext-label::after { content:none !important; }
-    #agExtSelectMenu .ext-row .ext-check { -webkit-appearance: checkbox !important; appearance: checkbox !important; width:18px; height:18px; accent-color: var(--primary-color); margin-left:8px; background:none !important; box-shadow:none !important; }
+    /* Style native checkbox; target input directly to avoid relying on a class */
+    #agExtSelectMenu .ext-row input[type="checkbox"]{
+        -webkit-appearance: checkbox !important;
+        appearance: checkbox !important;
+        width:18px; height:18px; accent-color: var(--primary-color);
+        margin: 0; /* no stray margins in RTL */
+        background:none !important; box-shadow:none !important; outline:none !important;
+        flex: 0 0 auto;
+    }
 
     /* Coming soon styling for disabled sections */
     .coming-soon {
@@ -1176,6 +1025,12 @@
         $('#id_smdrip').val('');
         $('#id_smdrport').val('');
         $('#id_smdrpassword').val('');
+        
+        // Update cable type options based on current device selection
+        const currentDevice = $('#id_device').val();
+        if (currentDevice) {
+            updateCableTypeOptions(currentDevice.toUpperCase());
+        }
     }
 
     // Decide whether device fields should be reset (only when no user is selected)
@@ -1196,6 +1051,55 @@
                 showSerialSection();
             }
         } catch(e) { /* no-op */ }
+    }
+
+    // Update cable type options based on device model
+    function updateCableTypeOptions(deviceModel) {
+        try {
+            const $cableTypeSelect = $('#id_cable_type');
+            if (!$cableTypeSelect.length) return;
+            
+            // Clear current options
+            $cableTypeSelect.empty();
+            
+            // Show loading state
+            $cableTypeSelect.append('<option value="">در حال بارگذاری...</option>');
+            
+            // Make AJAX request to get cable type options
+            $.get('/get-cable-types/', {device: deviceModel})
+                .done(function(response) {
+                    if (response.success) {
+                        // Clear loading option
+                        $cableTypeSelect.empty();
+                        
+                        // Add options from server
+                        response.cable_types.forEach(function(option) {
+                            $cableTypeSelect.append('<option value="' + option.value + '">' + option.label + '</option>');
+                        });
+                        
+                        // Reset to placeholder
+                        $cableTypeSelect.val('');
+                        console.log('Cable type options updated for device:', deviceModel);
+                    } else {
+                        console.error('Server error:', response.error);
+                        // Fallback to default options
+                        $cableTypeSelect.empty();
+                        $cableTypeSelect.append('<option value="">------</option>');
+                        $cableTypeSelect.append('<option value="rs-232c">RS-232C</option>');
+                        $cableTypeSelect.append('<option value="ethernet">ETHERNET</option>');
+                    }
+                })
+                .fail(function(xhr, status, error) {
+                    console.error('AJAX request failed:', error);
+                    // Fallback to default options
+                    $cableTypeSelect.empty();
+                    $cableTypeSelect.append('<option value="">------</option>');
+                    $cableTypeSelect.append('<option value="rs-232c">RS-232C</option>');
+                    $cableTypeSelect.append('<option value="ethernet">ETHERNET</option>');
+                });
+        } catch(e) {
+            console.error('Error updating cable type options:', e);
+        }
     }
 
     // Note: Do not change UI based on cable type selection per requirement.
@@ -1241,7 +1145,7 @@
             return;
         }
 
-        // Helper to sync exts by group label
+        // Helper to sync exts by group label and filter users list
         function syncExtsForLabelVal(val){
             const key = (val || '').toString().trim().toLowerCase();
             if (!key || key === 'none') { $('#agExtSelectMenu .ext-check').prop('checked', false); return; }
@@ -1253,6 +1157,25 @@
                     $(this).prop('checked', extsVals.includes(v));
                 });
             }
+
+            // Filter users dropdown so only users of this group label appear when editing/deleting
+            try {
+                const op = ($('input[name="operation"]:checked').val() || '').trim();
+                const $usersSel = $('#id_users');
+                if (!$usersSel.length) return;
+                // Build option list: when adding, allow all users; when editing/deleting, show only users in label
+                const isEditOrDelete = (op === 'ویرایش' || op === 'حذف');
+                let optionsHtml = '<option value="none"> ------ </option>';
+                const filtered = (Array.isArray(usersData) ? usersData : []).filter(function(u){
+                    if (!isEditOrDelete) return true; // in add: show all users
+                    const labels = Array.isArray(u.exts_label) ? u.exts_label.map(String) : [];
+                    return labels.map(s => s.toLowerCase()).includes(key);
+                });
+                filtered.forEach(function(u){ optionsHtml += '<option value="'+ (u.username || '') +'">'+ (u.username || '') +'</option>'; });
+                const prev = $usersSel.val();
+                $usersSel.html(optionsHtml);
+                if (prev && $usersSel.find('option[value="'+prev+'"]').length) { $usersSel.val(prev); }
+            } catch(e) { /* no-op */ }
         }
 
         // Determine previous value to preserve across re-render
@@ -1317,6 +1240,15 @@
                     // Hide IP, show serial
                     showSerialSection();
                 }
+                
+                // Update cable type options after setting device value
+                setTimeout(function() {
+                    const deviceModel = $('#id_device').val();
+                    if (deviceModel) {
+                        console.log('Updating cable type after device data load:', deviceModel);
+                        updateCableTypeOptions(deviceModel.toUpperCase());
+                    }
+                }, 50);
             } else {
                 // No saved device: ensure placeholders
                 resetDeviceFields();
@@ -1424,6 +1356,9 @@
                 // Serial model
                 showSerialSection();
             }
+            
+            // Update cable type options based on device model
+            updateCableTypeOptions(selected);
         });
         // Trigger once on load to sync UI with current selection
         $('#id_device').trigger('change');
@@ -1431,6 +1366,15 @@
             resetDeviceFields();
         }
         applyDeviceVisibility();
+        
+        // Initialize cable type options based on current device selection
+        setTimeout(function() {
+            const currentDevice = $('#id_device').val();
+            if (currentDevice) {
+                console.log('Initializing cable type for device:', currentDevice);
+                updateCableTypeOptions(currentDevice.toUpperCase());
+            }
+        }, 100);
 
         // Radio button event handlers
         // Attach radio button handlers
@@ -1444,6 +1388,9 @@
             if(shouldResetDevice()){
                 resetDeviceFields();
             }
+            // Re-filter users for the current label after operation change
+            try { var lbl = $('#ag_label').val() || ''; } catch(e){ var lbl = ''; }
+            if (typeof syncExtsForLabelVal === 'function') { syncExtsForLabelVal(lbl); }
         });
 
         $('#delete').on('click', function(){
@@ -1456,6 +1403,9 @@
             if(shouldResetDevice()){
                 resetDeviceFields();
             }
+            // Re-filter users for the current label after operation change
+            try { var lbl = $('#ag_label').val() || ''; } catch(e){ var lbl = ''; }
+            if (typeof syncExtsForLabelVal === 'function') { syncExtsForLabelVal(lbl); }
         });
 
         $('#add').on('click', function(){
@@ -1468,6 +1418,9 @@
             if(shouldResetDevice()){
                 resetDeviceFields();
             }
+            // Re-filter users for the current label after operation change (in add: show all)
+            try { var lbl = $('#ag_label').val() || ''; } catch(e){ var lbl = ''; }
+            if (typeof syncExtsForLabelVal === 'function') { syncExtsForLabelVal(lbl); }
         });
         // Initial styling
         $('select, input[type="text"], input[type="password"], input[type="number"], input[type="email"]').addClass('form-control');
@@ -1489,6 +1442,26 @@
 {% block js_extra %}
 <script>
   $(function(){
+    // Load minimal data for filtering from JSON script tags
+    function readJSON(id){ try{ var el=document.getElementById(id); return el? JSON.parse((el.textContent||'').trim()||'[]') : []; }catch(e){ return []; } }
+    var usersDataLite = readJSON('users_json'); // has exts_label enriched in view
+
+    function filterUsersByLabel(currentLabel){
+      var op = ($('input[name="operation"]:checked').val()||'').toString().trim();
+      var $sel = $('#id_users'); if(!$sel.length) return;
+      var key = (currentLabel||'').toString().trim().toLowerCase();
+      var isEditOrDelete = (op === 'ویرایش' || op === 'حذف');
+      var list = Array.isArray(usersDataLite) ? usersDataLite : [];
+      var out = '<option value="none"> ------ </option>';
+      list.filter(function(u){
+        if(!isEditOrDelete) return true; // adding → show all
+        var labels = Array.isArray(u.exts_label)? u.exts_label : [];
+        return labels.map(function(s){return (s||'').toString().toLowerCase();}).includes(key);
+      }).forEach(function(u){ out += '<option value="'+(u.username||'')+'">'+(u.username||'')+'</option>'; });
+      var prev = $sel.val();
+      $sel.html(out);
+      if(prev && $sel.find('option[value="'+prev+'"]').length){ $sel.val(prev); }
+    }
     function renderLabelField(){
       var op = ($('input[name="operation"]:checked').val() || '').toString().trim();
       var $c = $('#groupLabelField');
@@ -1497,6 +1470,7 @@
       if(op === 'اضافه'){
         $c.html('<input type="text" id="ag_label" name="label" class="w-full h-5 text-gray-600 text-xs" placeholder="نام گروه را وارد کنید">');
         if(prev) $('#ag_label').val(prev);
+        filterUsersByLabel($('#ag_label').val());
       } else {
         var options = '<option value="none"> ------ </option>';
         try{
@@ -1510,6 +1484,7 @@
         }catch(e){}
         $c.html('<select id="ag_label" name="label" class="w-full h-5 text-gray-600 text-xs appearance-none py-[2px]">'+options+'</select>');
         if(prev) $('#ag_label').val(prev);
+        filterUsersByLabel($('#ag_label').val());
       }
     }
 
@@ -1520,8 +1495,33 @@
     $('input[name="operation"]').on('change', function(){
       $('#operation_fallback').val($(this).val());
       renderLabelField();
+      // Also re-filter users according to current label/op change
+      try{ filterUsersByLabel($('#ag_label').val()); }catch(e){}
     });
     renderLabelField();
+
+    // Keep users list in sync with label value
+    $(document).on('change input blur', '#ag_label', function(){
+      filterUsersByLabel($(this).val());
+    });
+
+    // Initialize dropdowns (access extensions, and email errors if present)
+    $(document).on('click', '#agExtSelectBtn', function(e){
+      e.preventDefault();
+      $('#agExtSelectMenu').toggleClass('hidden');
+    });
+    $(document).on('click', function(e){
+      var $menu = $('#agExtSelectMenu');
+      if(!$menu.length) return;
+      if(!$menu.hasClass('hidden') && !$(e.target).closest('#agExtSelectBtn, #agExtSelectMenu').length){
+        $menu.addClass('hidden');
+      }
+    });
+    // Optional: email errors dropdown inside the disabled card
+    $(document).on('click', '#emailErrorsBtn', function(e){
+      e.preventDefault();
+      $('#emailErrorsMenu').toggleClass('hidden');
+    });
   });
 </script>
 {% endblock %}

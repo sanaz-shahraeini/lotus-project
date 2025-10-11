@@ -125,6 +125,23 @@ class DeviceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DeviceForm, self).__init__(*args, **kwargs)
         self.fields['device'].required = False
+        
+        # Get the selected device from POST data or initial data
+        device_value = None
+        if 'data' in kwargs:
+            device_value = kwargs['data'].get('device')
+        elif 'initial' in kwargs:
+            device_value = kwargs['initial'].get('device')
+        elif self.instance and self.instance.pk:
+            device_value = self.instance.device
+        
+        # Filter cable type choices based on device model
+        if device_value in ['KX-TA308', 'KX-TES824', 'KX-TEM824']:
+            # For these models, only show RS232C option
+            self.fields['cable_type'].choices = [('', '------'), ('rs-232c', 'RS-232C')]
+        else:
+            # For other models, show all cable type options
+            self.fields['cable_type'].choices = [('', '------')] + list(CABLE_TYPES)
 
     class Meta:
         model = Device
