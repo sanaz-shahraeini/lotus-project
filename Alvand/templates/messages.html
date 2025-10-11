@@ -1,16 +1,16 @@
 {% if messages %}
     <div id="toast-container" class="fixed bottom-5 right-5 flex flex-col gap-2 z-50" dir="rtl">
         {% for message in messages %}
-            <div id="toast" class="bg-white shadow-lg rounded-xl p-4 w-80 border border-gray-200 relative overflow-hidden animate-fadeIn transition-opacity duration-500"
+            <div id="toast" class="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-4 w-80 border border-gray-200 dark:border-gray-600 relative overflow-hidden animate-fadeIn transition-opacity duration-500"
                  data-timeout="5000">
                 <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}circle-exclamation text-red-600{% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}circle-check text-green-600{% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}warning text-orange-600{% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}circle-info text-blue-600{% endif %}"></i>
+                    <i class="fa-solid fa-{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}circle-exclamation text-red-600 dark:text-red-400{% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}circle-check text-green-600 dark:text-green-400{% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}warning text-orange-600 dark:text-orange-400{% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}circle-info text-blue-600 dark:text-blue-400{% endif %}"></i>
                     <div>
-                        <h3 class="font-semibold text-gray-900">{% if message.tags == "success" %}
+                        <h3 class="font-semibold text-gray-900 dark:text-gray-100">{% if message.tags == "success" %}
                             موفقیت{% elif message.tags == "error" %}خطا{% elif message.tags == "warning" %}هشدار{% else %}پیام{% endif %}</h3>
-                        <p class="text-sm text-gray-600">{{ message|linebreaksbr|safe }}</p>
+                        <p class="text-sm text-gray-800 dark:text-gray-300 font-medium">{{ message|linebreaksbr|safe }}</p>
                     </div>
-                    <button onclick="hideToast(this)" class="mr-auto hover:text-gray-600">
+                    <button onclick="hideToast(this)" class="mr-auto hover:text-gray-600 dark:hover:text-gray-300 text-gray-500 dark:text-gray-400">
                         <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                              stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -18,7 +18,7 @@
                         </svg>
                     </button>
                 </div>
-                <div class="absolute bottom-0 left-0 h-1 {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}bg-red-600{% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}bg-green-600{% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}bg-orange-600{% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}bg-blue-600{% endif %} animate-progress"></div>
+                <div class="absolute bottom-0 left-0 h-1 {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}bg-red-600 dark:bg-red-400{% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}bg-green-600 dark:bg-green-400{% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}bg-orange-600 dark:bg-orange-400{% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}bg-blue-600 dark:bg-blue-400{% endif %} animate-progress"></div>
             </div>
         {% endfor %}
     </div>
@@ -36,6 +36,61 @@
 
     .animate-progress {
         animation: progress 5s linear forwards;
+    }
+
+    /* Dark mode toast improvements */
+    .dark #toast {
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .dark #toast:hover {
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Ensure proper contrast for all text elements */
+    .dark #toast h3 {
+        color: #f3f4f6 !important;
+    }
+
+    .dark #toast p {
+        color: #d1d5db !important;
+    }
+
+    /* Light mode text improvements */
+    #toast h3 {
+        color: #1f2937 !important; /* Darker gray for better contrast */
+    }
+
+    #toast p {
+        color: #374151 !important; /* Darker gray for better readability */
+        font-weight: 500;
+    }
+
+    /* Ensure icons have good contrast too */
+    #toast .fa-circle-exclamation {
+        color: #dc2626 !important; /* Red-600 */
+    }
+
+    #toast .fa-circle-check {
+        color: #16a34a !important; /* Green-600 */
+    }
+
+    #toast .fa-warning {
+        color: #ea580c !important; /* Orange-600 */
+    }
+
+    #toast .fa-circle-info {
+        color: #2563eb !important; /* Blue-600 */
+    }
+
+    /* Toast container positioning for RTL */
+    #toast-container {
+        direction: rtl;
+    }
+
+    /* Smooth transitions for theme changes */
+    #toast {
+        transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     }
 </style>
 

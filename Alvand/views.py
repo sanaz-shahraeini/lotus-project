@@ -1000,10 +1000,28 @@ def error_export(request):
         except (ValueError, AttributeError):
             continue
     
-    # Apply date filtering if provided
+    # Apply filtering if provided
     dateFrom = request.GET.get('dateFrom', '').strip()
     dateTo = request.GET.get('dateTo', '').strip()
+    errorNumber = request.GET.get('search', '').strip()  # Get error number from search parameter
     
+    # Apply error number filtering first
+    if errorNumber:
+        try:
+            error_code = int(errorNumber)
+            # Filter error data by error code
+            filtered_error_data = []
+            for record_data in error_data:
+                if record_data['errorcode'] == error_code:
+                    filtered_error_data.append(record_data)
+            
+            error_data = filtered_error_data
+            
+        except ValueError:
+            # If error number is invalid, return empty data
+            error_data = []
+    
+    # Apply date filtering if provided
     if dateFrom and dateTo:
         try:
             # Clean and normalize date strings
@@ -2096,11 +2114,38 @@ class errorsPage(TemplateView, View):
         
         error_records = [ErrorRecord(data) for data in error_data]
         
-        # Apply date filtering if provided
+        # Apply filtering if provided
         if request.GET:
             dateFrom = request.GET.get('dateFrom', '').strip()
             dateTo = request.GET.get('dateTo', '').strip()
+            errorNumber = request.GET.get('search', '').strip()  # Get error number from search parameter
             
+            print(f"DEBUG: Request GET parameters: {dict(request.GET)}")
+            print(f"DEBUG: Error number from search: '{errorNumber}'")
+            
+            # Apply error number filtering first
+            if errorNumber:
+                try:
+                    error_code = int(errorNumber)
+                    print(f"DEBUG: Converting error number to int: {error_code}")
+                    # Filter error records by error code
+                    filtered_error_data = []
+                    for record in error_records:
+                        if record.errorcode == error_code:
+                            filtered_error_data.append(record)
+                    
+                    error_records = filtered_error_data
+                    print(f"After error number filtering: {len(error_records)} records")
+                    
+                    if not error_records:
+                        messages.error(request, f"خطای شماره {errorNumber} پیدا نشد.")
+                        
+                except ValueError as e:
+                    print(f"DEBUG: ValueError when converting error number: {e}")
+                    messages.error(request, "شماره خطا باید عدد باشد.")
+                    return redirect(request.path)
+            
+            # Apply date filtering if provided
             if dateFrom and dateTo:
                 try:
                     # Clean and normalize date strings
@@ -2353,11 +2398,10 @@ class UserForm(FormView, View):
         # Check which action to perform - check direct POST values first, then fallback to form data
         deleteUser = fieldReq.get('deleteUser')
         saveUser = fieldReq.get('saveUser')
-        deleteProfile = fieldReq.get('deleteProfile')
         uploadPhoto = self.request.FILES.get('uploadPhoto')
         changePassword = fieldReq.get('ChangePassword')
         
-        print(f"Action: editOrAdd={editOrAdd}, saveUser={saveUser}, deleteUser={deleteUser}, deleteProfile={deleteProfile}, changePassword={changePassword}")
+        print(f"Action: editOrAdd={editOrAdd}, saveUser={saveUser}, deleteUser={deleteUser}, changePassword={changePassword}")
         print(f"Files in request: {list(self.request.FILES.keys())}")
         print(f"uploadPhoto received: {uploadPhoto is not None}")
         if uploadPhoto:
@@ -2808,24 +2852,6 @@ class UserForm(FormView, View):
             except Exception as e:
                 messages.error(self.request, f'خطا در حذف کاربر: {str(e)}')
         
-        elif deleteProfile:
-            # Process delete profile (info only) request
-            try:
-                user = Users.objects.filter(username=username).first()
-                if user:
-                    if not hasAccessToUser(self.request, user):
-                        messages.error(self.request, messagesTypes.permissionsNotFound)
-                        return redirect(self.success_url)
-                    
-                    # Delete info only
-                    Infos.objects.filter(user=user).delete()
-                    
-                    messages.success(self.request, f'پروفایل کاربر {username} با موفقیت حذف شد.')
-                else:
-                    messages.error(self.request, 'کاربر مورد نظر یافت نشد.')
-            except Exception as e:
-                messages.error(self.request, f'خطا در حذف پروفایل کاربر: {str(e)}')
-        
         elif changePassword:
             # Process change password request
             try:
@@ -2998,28 +3024,6 @@ class UserForm(FormView, View):
                     messages.error(request, 'کاربر مورد نظر یافت نشد.')
             except Exception as e:
                 messages.error(request, f'خطا در حذف کاربر: {str(e)}')
-            
-            return redirect(self.success_url)
-        elif 'deleteProfile' in request.POST:
-            # Handle direct profile delete
-            username = request.POST.get('username')
-            print(f"Direct deleteProfile action detected for username: {username}")
-            
-            try:
-                user = Users.objects.filter(username=username).first()
-                if user:
-                    if not hasAccessToUser(request, user):
-                        messages.error(request, messagesTypes.permissionsNotFound)
-                        return redirect(self.success_url)
-                    
-                    # Delete info only
-                    Infos.objects.filter(user=user).delete()
-                    
-                    messages.success(request, f'پروفایل کاربر {username} با موفقیت حذف شد.')
-                else:
-                    messages.error(request, 'کاربر مورد نظر یافت نشد.')
-            except Exception as e:
-                messages.error(request, f'خطا در حذف پروفایل کاربر: {str(e)}')
             
             return redirect(self.success_url)
         elif 'ChangePassword' in request.POST:

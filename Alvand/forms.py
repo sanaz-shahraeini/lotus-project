@@ -25,12 +25,11 @@ class userProfileForm(forms.ModelForm):
             self.fields['editOrAdd'].initial = 'none'
             
         user_choices = [(user.extension, user.extension) for user in Users.objects.all()]
-        extgps = [(extgp.label, extgp.label) for extgp in Extensionsgroups.objects.all()]
         recs = [(int(rec.extension), int(rec.extension)) for rec in Records.objects.all()]
         exts = list({val[0]: val for val in (user_choices + recs)}.values())
 
         exts = sorted(exts, key=lambda x: x[0])
-        CHOICES = extgps + exts
+        CHOICES = exts
         self.fields['usersextension'] = forms.MultipleChoiceField(choices=CHOICES, required=False,  # دسترسی به دفاتر - backend validates this
                                                 widget=forms.CheckboxSelectMultiple(attrs={
                                                     'class': 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500'}))

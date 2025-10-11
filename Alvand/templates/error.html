@@ -965,19 +965,19 @@
         <div class="filter-section">
             <div class="filter-controls-single-line">
                 <!-- Compact form elements -->
-                <form id="filterForm" method="get" style="display: contents;">
+                <form id="filterForm" method="get" style="display: flex; gap: 10px; align-items: center;">
                     <input id="dateFrom" data-jdp placeholder="از تاریخ" name="dateFrom" class="input-field-compact"
                         value="{{ request.GET.dateFrom|default:'' }}" />
                     <input id="dateTo" data-jdp placeholder="تا تاریخ" name="dateTo" class="input-field-compact"
                         value="{{ request.GET.dateTo|default:'' }}" />
-                    <button type="button" id="applyFilterBtn" class="btn-compact btn-primary">
+                    <input type="search" id="search" name="search" placeholder="شماره خطا"
+                        class="input-field-compact search-compact" value="{{ request.GET.search|default:'' }}" 
+                        style="background-color: #fff; border: 2px solid #00BCD4; min-width: 150px;" />
+                    <button type="submit" id="applyFilterBtn" class="btn-compact btn-primary">
                         <i class="fas fa-filter"></i>
                         فیلتر
                     </button>
                 </form>
-                
-                <input type="search" id="search" name="search-box" placeholder="شماره خطا"
-                    class="input-field-compact search-compact" />
                     
                 <button id="up" class="sort-btn-compact">
                     <i class="fa-regular fa-arrow-up"></i>
@@ -985,12 +985,12 @@
 
                 {% if pages %}
                 <div class="pagination-compact">
-                    <a href="{% if pages.has_next %}?p={{ pages.next_page_number }}{% if request.GET.dateFrom %}&dateFrom={{ request.GET.dateFrom }}{% endif %}{% if request.GET.dateTo %}&dateTo={{ request.GET.dateTo }}{% endif %}{% else %}#{% endif %}"
+                    <a href="{% if pages.has_next %}?p={{ pages.next_page_number }}{% if request.GET.dateFrom %}&dateFrom={{ request.GET.dateFrom }}{% endif %}{% if request.GET.dateTo %}&dateTo={{ request.GET.dateTo }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% else %}#{% endif %}"
                         class="nav-btn {% if not pages.has_next %}disabled{% endif %}">
                         <i class="fas fa-chevron-right"></i>
                     </a>
                     <span class="page-info">{{ pages.number }}/{{ pages.paginator.num_pages }}</span>
-                    <a href="{% if pages.has_previous %}?p={{ pages.previous_page_number }}{% if request.GET.dateFrom %}&dateFrom={{ request.GET.dateFrom }}{% endif %}{% if request.GET.dateTo %}&dateTo={{ request.GET.dateTo }}{% endif %}{% else %}#{% endif %}"
+                    <a href="{% if pages.has_previous %}?p={{ pages.previous_page_number }}{% if request.GET.dateFrom %}&dateFrom={{ request.GET.dateFrom }}{% endif %}{% if request.GET.dateTo %}&dateTo={{ request.GET.dateTo }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% else %}#{% endif %}"
                         class="nav-btn {% if not pages.has_previous %}disabled{% endif %}">
                         <i class="fas fa-chevron-left"></i>
                     </a>
@@ -1004,6 +1004,9 @@
                     {% if request.GET.dateTo %}
                         <input type="hidden" name="dateTo" value="{{ request.GET.dateTo }}">
                     {% endif %}
+                    {% if request.GET.search %}
+                        <input type="hidden" name="search" value="{{ request.GET.search }}">
+                    {% endif %}
                     <input type="hidden" name="format" value="excel">
                     <button type="submit" class="excel-btn-compact">
                         <i class="fas fa-file-excel"></i>
@@ -1016,6 +1019,9 @@
                     {% endif %}
                     {% if request.GET.dateTo %}
                         <input type="hidden" name="dateTo" value="{{ request.GET.dateTo }}">
+                    {% endif %}
+                    {% if request.GET.search %}
+                        <input type="hidden" name="search" value="{{ request.GET.search }}">
                     {% endif %}
                     <input type="hidden" name="format" value="csv">
                     <button type="submit" class="excel-btn-compact">
@@ -1361,20 +1367,117 @@
         let $tableRows = $table.find("tbody tr");
         let $originalTableRows = $table.find("tbody tr"); // Keep reference to all original rows
         
-        // Handle filter form submission
-        $applyFilterBtn.on("click", function(e) {
+        // Real-time filtering function
+        function performRealTimeFilter() {
+            const searchValue = $("#search").val().trim();
+            const dateFrom = $("#dateFrom").val();
+            const dateTo = $("#dateTo").val();
+            
+            console.log("Real-time filtering with search:", searchValue);
+            
+            let visibleCount = 0;
+            
+            // Filter by error number first
+            $originalTableRows.each(function() {
+                const $row = $(this);
+                const errorCodeCell = $row.find('td:nth-child(4)'); // Error number column
+                const errorCodeText = errorCodeCell.text().trim();
+                
+                let showRow = true;
+                
+                // Filter by error number if search value exists
+                if (searchValue) {
+                    showRow = errorCodeText.includes(searchValue);
+                }
+                
+                // Additional date filtering can be added here if needed
+                // For now, we'll focus on error number filtering
+                
+                $row.toggle(showRow);
+                if (showRow) visibleCount++;
+            });
+            
+            // Update visible rows reference
+            $tableRows = $table.find("tbody tr:visible");
+            
+            // Update pagination info
+            updatePaginationInfo();
+            
+            // Add visual feedback
+            if (searchValue) {
+                $searchInput.css('background-color', '#e8f5e8'); // Light green when filtering
+                $searchInput.attr('title', `فیلتر فعال: ${visibleCount} نتیجه پیدا شد`);
+            } else {
+                $searchInput.css('background-color', '#fff'); // White when no filter
+                $searchInput.attr('title', 'جستجوی شماره خطا');
+            }
+        }
+        
+        // Debounced filtering function
+        let filterTimeout;
+        function debouncedFilter() {
+            clearTimeout(filterTimeout);
+            filterTimeout = setTimeout(performRealTimeFilter, 300); // 300ms delay
+        }
+        
+        // Update pagination info based on visible rows
+        function updatePaginationInfo() {
+            const visibleRows = $table.find("tbody tr:visible").length;
+            const totalRows = $originalTableRows.length;
+            
+            // Update page info if pagination exists
+            const pageInfo = $('.page-info');
+            if (pageInfo.length) {
+                if (visibleRows === totalRows) {
+                    pageInfo.text(`${visibleRows} نتیجه`);
+                } else {
+                    pageInfo.text(`${visibleRows} از ${totalRows} نتیجه`);
+                }
+            }
+            
+            // Show/hide pagination controls based on filtering
+            const paginationContainer = $('.pagination-compact');
+            if (paginationContainer.length) {
+                if (visibleRows < totalRows) {
+                    // When filtering, hide pagination arrows since we're showing all filtered results
+                    paginationContainer.find('.nav-btn').hide();
+                    pageInfo.show();
+                } else {
+                    // When not filtering, show normal pagination
+                    paginationContainer.find('.nav-btn').show();
+                }
+            }
+        }
+        
+        // Handle filter form submission (for date filtering)
+        $filterForm.on("submit", function(e) {
             e.preventDefault();
             const dateFrom = $("#dateFrom").val();
             const dateTo = $("#dateTo").val();
             
+            console.log("Form submitted for date filtering");
+            console.log("DateFrom:", dateFrom);
+            console.log("DateTo:", dateTo);
+            
             // Validate dates if needed
             if (dateFrom && dateTo && new Date(dateFrom) > new Date(dateTo)) {
                 alert("تاریخ شروع نباید از تاریخ پایان بزرگتر باشد");
-                return;
+                return false;
             }
             
-            // Submit the form
-            $filterForm.submit();
+            // For date filtering, we'll use server-side filtering
+            // Build URL with parameters
+            let url = new URL(window.location);
+            url.searchParams.set('dateFrom', dateFrom);
+            url.searchParams.set('dateTo', dateTo);
+            if ($("#search").val()) {
+                url.searchParams.set('search', $("#search").val());
+            } else {
+                url.searchParams.delete('search');
+            }
+            
+            // Redirect to the same page with filter parameters
+            window.location.href = url.toString();
         });
         
         // Sort functionality
@@ -1398,48 +1501,36 @@
             $tableRows = $table.find("tbody tr:visible");
         });
         
-        // Search functionality
-        function performSearch() {
-            const searchText = $searchInput.val().toLowerCase().trim();
-            
-            if (!searchText) {
-                // If search is empty, show all original rows
-                $originalTableRows.show();
-                $tableRows = $originalTableRows;
-                return;
-            }
-            
-            // Search through all original rows (not just visible ones)
-            $originalTableRows.each(function() {
-                const $row = $(this);
-                
-                // Get text only from the error code column (4th column - شماره خطا)
-                const errorCodeCell = $row.find('td:nth-child(4)');
-                const errorCodeText = errorCodeCell.text().toLowerCase();
-                
-                // Show/hide row based on search match in error code column only
-                $row.toggle(errorCodeText.indexOf(searchText) > -1);
-            });
-            
-            // Update the visible rows reference
-            $tableRows = $table.find("tbody tr:visible");
-        }
-        
-        // Handle search input events
+        // Handle search input - real-time filtering
         $searchInput.on({
             'input keyup paste': function(e) {
-                // Search as user types, including backspace
-                performSearch();
+                console.log("Search input changed:", $(this).val());
+                debouncedFilter(); // Use debounced filtering for real-time updates
+            },
+            'keypress': function(e) {
+                if (e.which === 13) { // Enter key
+                    e.preventDefault();
+                    console.log("Enter key pressed - performing immediate filter");
+                    clearTimeout(filterTimeout); // Cancel debounced filter
+                    performRealTimeFilter(); // Immediate filter
+                }
             },
             'search': function() {
                 // This event fires when the user clicks the clear (x) button
-                performSearch();
+                console.log("Search cleared");
+                debouncedFilter();
             }
         });
         
         // Initial setup
         $tableRows = $table.find("tbody tr");
         $originalTableRows = $table.find("tbody tr");
+        
+        // Initialize filtering if there's already a search value (from URL)
+        if ($searchInput.val()) {
+            console.log("Initializing with existing search value:", $searchInput.val());
+            performRealTimeFilter();
+        }
 
         // Add toggle functionality for mobile view to show/hide columns
         if (window.innerWidth <= 768) {

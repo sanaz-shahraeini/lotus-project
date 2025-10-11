@@ -334,16 +334,6 @@
         box-shadow: 0 4px 8px rgba(255, 152, 0, 0.4);
     }
     
-    .action-button.delete-profile {
-        background-color: #FF7043;
-        color: white;
-        box-shadow: 0 2px 6px rgba(255, 112, 67, 0.3);
-    }
-    
-    .action-button.delete-profile:hover {
-        background-color: #E64A19;
-        box-shadow: 0 4px 8px rgba(255, 112, 67, 0.4);
-    }
     
     .action-button.delete-user {
         background-color: #FF5252;
@@ -1073,6 +1063,26 @@ label.required:after,
     font-size: 1.2em;
     margin-right: 5px;
 }
+
+/* Fix date picker positioning - ensure calendar appears below the input field */
+#id_birthdate {
+    position: relative;
+}
+
+/* Override date picker calendar positioning */
+.datepicker-container,
+.jalali-datepicker-container,
+[class*="datepicker"] {
+    position: fixed !important;
+    z-index: 9999 !important;
+}
+
+/* Ensure proper positioning for the calendar popup */
+body .datepicker-container,
+body .jalali-datepicker-container {
+    transform: none !important;
+    margin-top: 0 !important;
+}
 </style>
 {% endblock %}
 
@@ -1082,24 +1092,6 @@ label.required:after,
       
             <h1>تنظیمات کاربری</h1>
         
-        <!-- Django Messages Display -->
-        <style>
-            .messages-container { margin-bottom: 20px; margin-top: 10px;}
-            .alert { padding: 15px; margin-bottom: 10px; border-radius: 1rem; }
-            .alert-error { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
-            .alert-success { background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
-            .alert-warning { background-color: #fff3cd; border: 1px solid #ffeaa7; color: #856404; }
-        </style>
-        {% if messages %}
-            <div class="messages-container">
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">
-                        <strong>{% if message.tags == 'error' %}خطا:{% elif message.tags == 'success' %}موفق:{% elif message.tags == 'warning' %}هشدار:{% endif %}</strong>
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
         
     <!-- Password Reset Requests Section - Modern Design -->
     {% if password_reset_requests %}
@@ -1542,10 +1534,6 @@ label.required:after,
                     <span>بازنگاری رمز عبور</span>
                 </button>
                 
-                <button type="submit" name="deleteProfile" value="delete" class="action-button delete-profile">
-                    <i class="fa-solid fa-id-card"></i>
-                    <span>حذف پروفایل</span>
-                </button>
                 
                 <button type="submit" name="deleteUser" value="delete" class="action-button delete-user">
                     <i class="fa-solid fa-user-slash"></i>
@@ -1591,23 +1579,6 @@ label.required:after,
         </div>
     </div>
     
-    <!-- Modal: Delete Profile -->
-    <div id="delpro" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class="modal-icon">
-                    <i class="fa-solid fa-triangle-exclamation text-3xl"></i>
-                </div>
-                <h3 class="modal-title">هشدار حذف پروفایل</h3>
-                <p class="modal-text">آیا از انجام عملیات حذف پروفایل کاربر اطمینان دارید؟</p>
-            </div>
-            <div class="modal-footer">
-                <button id="cancelDelPro" class="btn btn-sm">لغو</button>
-                <input type="submit" id="confirmDelPro" class="hidden">
-                <label for="confirmDelPro" class="btn btn-danger btn-sm">تایید</label>
-            </div>
-        </div>
-    </div>
 
 
 {% endblock %}
@@ -1750,6 +1721,75 @@ label.required:after,
                 $('#form').submit();
             }
         });
+    });
+    
+    // Fix date picker positioning for birth date field
+    $(document).ready(function() {
+        // Function to fix date picker position
+        function fixDatePickerPosition() {
+            const birthdateInput = document.getElementById('id_birthdate');
+            if (!birthdateInput) return;
+            
+            // Add click listener to birthdate input
+            birthdateInput.addEventListener('click', function() {
+                // Wait for the date picker to appear
+                setTimeout(function() {
+                    // Find all possible date picker containers
+                    const datepickers = document.querySelectorAll('.datepicker-container, .jalali-datepicker-container, [class*="datepicker"]');
+                    
+                    datepickers.forEach(function(datepicker) {
+                        // Skip if it's the input itself
+                        if (datepicker.tagName === 'INPUT') return;
+                        
+                        // Get the position of the input field
+                        const inputRect = birthdateInput.getBoundingClientRect();
+                        
+                        // Position the date picker below the input
+                        datepicker.style.position = 'fixed';
+                        datepicker.style.top = (inputRect.bottom + 5) + 'px';
+                        datepicker.style.left = inputRect.left + 'px';
+                        datepicker.style.zIndex = '9999';
+                        datepicker.style.transform = 'none';
+                        datepicker.style.marginTop = '0';
+                    });
+                }, 50);
+            });
+            
+            // Also monitor for dynamically added date pickers
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeType === 1) { // Element node
+                            // Check if it's a date picker or contains one
+                            if (node.classList && (node.classList.contains('datepicker-container') || 
+                                node.classList.contains('jalali-datepicker-container') ||
+                                node.className.includes('datepicker'))) {
+                                
+                                const inputRect = birthdateInput.getBoundingClientRect();
+                                node.style.position = 'fixed';
+                                node.style.top = (inputRect.bottom + 5) + 'px';
+                                node.style.left = inputRect.left + 'px';
+                                node.style.zIndex = '9999';
+                                node.style.transform = 'none';
+                                node.style.marginTop = '0';
+                            }
+                        }
+                    });
+                });
+            });
+            
+            // Start observing the document body for added date pickers
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        }
+        
+        // Initialize the fix
+        fixDatePickerPosition();
+        
+        // Re-apply after a delay to ensure all scripts are loaded
+        setTimeout(fixDatePickerPosition, 1000);
     });
 </script>
 {% endblock %}
