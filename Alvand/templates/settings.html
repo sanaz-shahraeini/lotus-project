@@ -631,17 +631,17 @@
                                 <!-- Right side of device settings -->
                                 <div class="w-full md:w-1/2 px-2">
                                     <div class="form-group text-right">
-                                        <label class="form-label">مدل دستگاه:</label>
+                                        <label class="form-label">مدل دستگاه: <span style="color: red;">*</span></label>
                                         {{ deviceform.device }}
                                     </div>
                                     
                                     <div class="form-group text-right">
-                                        <label class="form-label">تعداد خطوط شهری:</label>
+                                        <label class="form-label">تعداد خطوط شهری: <span style="color: red;">*</span></label>
                                         {{ deviceform.number_of_lines }}
                                     </div>
                                     
                                     <div class="form-group text-right">
-                                        <label class="form-label" id="Cable_label">نوع کابل:</label>
+                                        <label class="form-label" id="Cable_label">نوع کابل: <span style="color: red;">*</span></label>
                                         {{ deviceform.cable_type }}
                                     </div>
                                 </div>
@@ -649,27 +649,27 @@
                                 <!-- Alvand model specific settings (left side) -->
                                 <div id="models_for_alvand" class="w-full md:w-1/2 px-2">
                                     <div class="form-group">
-                                        <label class="form-label text-left">BuadRate</label>
+                                        <label class="form-label text-left">BuadRate <span style="color: red;">*</span></label>
                                         {{ deviceform.baudrate }}
                                     </div>
                                     
                                     <div class="form-group">
-                                        <label class="form-label text-left">Parity</label>
+                                        <label class="form-label text-left">Parity <span style="color: red;">*</span></label>
                                         {{ deviceform.parity }}
                                     </div>
                                     
                                     <div class="form-group">
-                                        <label class="form-label text-left">Databits</label>
+                                        <label class="form-label text-left">Databits <span style="color: red;">*</span></label>
                                         {{ deviceform.databits }}
                                     </div>
                                     
                                     <div class="form-group">
-                                        <label class="form-label text-left">Stopbits</label>
+                                        <label class="form-label text-left">Stopbits <span style="color: red;">*</span></label>
                                         {{ deviceform.stopbits }}
                                     </div>
                                     
                                     <div class="form-group">
-                                        <label class="form-label text-left">Flow</label>
+                                        <label class="form-label text-left">Flow <span style="color: red;">*</span></label>
                                         {{ deviceform.flow }}
                                     </div>
                                 </div>
@@ -677,17 +677,17 @@
                                 <!-- Binalud model specific settings -->
                                 <div id="models_for_binalud" class="w-full md:w-1/2 px-2 hidden">
                                     <div class="form-group">
-                                        <label class="form-label">Ip</label>
+                                        <label class="form-label">Ip <span style="color: red;">*</span></label>
                                         {{ deviceform.smdrip }}
                                     </div>
                                     
                                     <div class="form-group">
-                                        <label class="form-label">Port</label>
+                                        <label class="form-label">Port <span style="color: red;">*</span></label>
                                         {{ deviceform.smdrport }}
                                     </div>
                                     
                                     <div class="form-group">
-                                        <label class="form-label">Password</label>
+                                        <label class="form-label">Password <span style="color: red;">*</span></label>
                                         {{ deviceform.smdrpassword}}
                                     </div>
                                 </div>

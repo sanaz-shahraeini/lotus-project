@@ -124,7 +124,10 @@ class PermissionsForm(forms.ModelForm):
 class DeviceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DeviceForm, self).__init__(*args, **kwargs)
-        self.fields['device'].required = False
+        # Make all device fields required
+        self.fields['device'].required = True
+        self.fields['number_of_lines'].required = True
+        self.fields['cable_type'].required = True
         
         # Get the selected device from POST data or initial data
         device_value = None
@@ -153,7 +156,7 @@ class DeviceForm(forms.ModelForm):
             self.fields['stopbits'].initial = 1
             self.fields['databits'].initial = 8
             # Set default values for Ethernet fields
-            self.fields['smdrip'].initial = '127.0.0.1'
+            self.fields['smdrip'].initial = '192.168.0.101'
             self.fields['smdrport'].initial = 2300
             self.fields['smdrpassword'].initial = 'PCCSMDR'
 
@@ -161,17 +164,17 @@ class DeviceForm(forms.ModelForm):
         model = Device
         fields = ("device", "flow", "stopbits", "baudrate", "parity", "databits", "number_of_lines", "smdrip", "smdrport", "smdrpassword", "cable_type")
         widgets = {
-            'device': forms.Select(attrs={'class': 'w-full h-5  text-gray-600 text-xs ltr appearance-none py-0'}),
-            'flow': forms.Select(attrs={'class': 'w-full h-5  text-gray-600 text-xs appearance-none py-0'}),
-            'stopbits': forms.Select(attrs={'class': 'w-full h-5  text-gray-600 text-xs appearance-none py-0'}),
-            'baudrate': forms.Select(attrs={'class': 'w-full h-5  text-gray-600 text-xs appearance-none py-0'}),
-            'parity': forms.Select(attrs={'class': 'w-full h-5  text-gray-600 text-xs appearance-none py-0'}),
-            'databits': forms.Select(attrs={'class': 'w-full h-5  text-gray-600 text-xs appearance-none py-0'}),
-            'number_of_lines': forms.NumberInput(attrs={'class': 'w-full h-5  text-gray-600 text-xs ltr'}),
-            'smdrip': forms.TextInput(attrs={'class': 'w-full h-5  text-gray-600 text-xs appearance-none py-0'}),
-            'smdrport': forms.TextInput(attrs={'class': 'w-full h-5  text-gray-600 text-xs appearance-none py-0'}),
-            'smdrpassword': forms.TextInput(attrs={'class': 'w-full h-5  text-gray-600 text-xs appearance-none py-0'}),
-            'cable_type': forms.Select(attrs={'class': 'w-full h-5  text-gray-600 text-xs ltr py-0 my-2'}),
+            'device': forms.Select(attrs={'class': 'w-full h-5  text-gray-600 text-xs ltr appearance-none py-0', 'required': 'required'}),
+            'flow': forms.Select(attrs={'class': 'w-full h-5  text-gray-600 text-xs appearance-none py-0', 'required': 'required'}),
+            'stopbits': forms.Select(attrs={'class': 'w-full h-5  text-gray-600 text-xs appearance-none py-0', 'required': 'required'}),
+            'baudrate': forms.Select(attrs={'class': 'w-full h-5  text-gray-600 text-xs appearance-none py-0', 'required': 'required'}),
+            'parity': forms.Select(attrs={'class': 'w-full h-5  text-gray-600 text-xs appearance-none py-0', 'required': 'required'}),
+            'databits': forms.Select(attrs={'class': 'w-full h-5  text-gray-600 text-xs appearance-none py-0', 'required': 'required'}),
+            'number_of_lines': forms.NumberInput(attrs={'class': 'w-full h-5  text-gray-600 text-xs ltr', 'required': 'required'}),
+            'smdrip': forms.TextInput(attrs={'class': 'w-full h-5  text-gray-600 text-xs appearance-none py-0', 'required': 'required'}),
+            'smdrport': forms.TextInput(attrs={'class': 'w-full h-5  text-gray-600 text-xs appearance-none py-0', 'required': 'required'}),
+            'smdrpassword': forms.TextInput(attrs={'class': 'w-full h-5  text-gray-600 text-xs appearance-none py-0', 'required': 'required'}),
+            'cable_type': forms.Select(attrs={'class': 'w-full h-5  text-gray-600 text-xs ltr py-0 my-2', 'required': 'required'}),
 
         }
 
@@ -195,10 +198,22 @@ class ContactInfoForm(forms.ModelForm):
 class costsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(costsForm, self).__init__(*args, **kwargs)
+        
+        # Set default values if no instance exists
+        if not self.instance.pk:
+            self.initial['provincial'] = 45
+            self.initial['outofprovincial'] = 330
+            self.initial['international'] = 3400
+            self.initial['irancell'] = 65
+            self.initial['hamrahaval'] = 65
+            self.initial['rightel'] = 65
+        
         for field in self.fields.keys():
             self.fields[field].required = False
+            # Set placeholder based on field
+            placeholder = '45' if field == 'provincial' else '330' if field == 'outofprovincial' else '65'
             self.fields[field].widget.attrs.update(
-                {'class': 'w-full h-5  text-gray-600 text-xs text-center ltr', 'step': '0.1', 'placeholder': '0.0'})
+                {'class': 'w-full h-5  text-gray-600 text-xs text-center ltr', 'step': '0.1', 'placeholder': placeholder})
 
     class Meta:
         model = Costs

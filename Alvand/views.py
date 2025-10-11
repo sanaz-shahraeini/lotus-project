@@ -723,8 +723,11 @@ class systemSettings(FormView, View):
 
 
     def post(self, request, *args, **kwargs):
-        """Handle Apply action for Access Groups section.
-        Saves/updates an `Extensionsgroups` record based on operation and updates the selected user's `Permissions`.
+        """Handle Apply action for all settings sections:
+        - Device Settings
+        - Access Groups  
+        - Contact Info
+        - Call Costs
         """
         if not checkSession(request):
             messages.error(request, messagesTypes.notlogin)
@@ -733,108 +736,150 @@ class systemSettings(FormView, View):
             messages.error(request, messagesTypes.deAvtive)
             return redirect(reverse_lazy('logout' if checkSession(request) else 'login'))
 
-        # Extract fields from the access groups card
-        operation = (request.POST.get('operation') or request.POST.get('operation_fallback') or '').strip()
-        label = (request.POST.get('label') or '').strip()
-        exts = request.POST.getlist('exts')  # from settings.html checkboxes name="exts"
-        selected_username = (request.POST.get('users') or '').strip()
-        errorsreport_val = request.POST.get('errorsreport')  # 'on' if checked
-
-        # Normalize data
-        try:
-            exts_int = [int(x) for x in exts if str(x).strip() != '']
-        except Exception:
-            exts_int = []
-
+        msgs = []  # List to collect success messages
+        
         # Current admin user
         current_user = Users.objects.filter(username__iexact=checkSession(request)).first()
         if not current_user:
-            # Fallback to a privileged user (supporter) for development/testing
             current_user = (
                 Users.objects.filter(group__enname__iexact='supporter').first()
                 or Users.objects.filter(groupname__iexact='supporter').first()
                 or Users.objects.first()
             )
             if not current_user:
-                messages.error(request, 'کاربری برای ثبت تغییرات یافت نشد. ابتدا حداقل یک کاربر ایجاد کنید.')
+                messages.error(request, 'کاربری برای ثبت تغییرات یافت نشد.')
                 return redirect(self.success_url)
 
-        # Quick debug info to help diagnose posting issues (visible once per request)
-        try:
-            messages.info(request, f"عملیات: {operation or 'نامشخص'} | گروه: {label or '—'} | تعداد داخلی انتخابی: {len(exts_int)}")
-        except Exception:
-            pass
+        # ==================== DEVICE SETTINGS ====================
+        device = request.POST.get('device', '').strip()
+        if device:
+            try:
+                cable_type = request.POST.get('cable_type', '').strip().lower()
+                number_of_lines = request.POST.get('number_of_lines', '').strip()
+                
+                isEthernet = (cable_type == 'ethernet')
+                
+                dev = Device.objects.all()
+                if isEthernet:
+                    # Ethernet connection
+                    if dev.exists():
+                        dev.update(
+                            device=device,
+                            cable_type=cable_type,
+                            number_of_lines=number_of_lines,
+                            smdrip=request.POST.get('smdrip', ''),
+                            smdrport=request.POST.get('smdrport', ''),
+                            smdrpassword=request.POST.get('smdrpassword', ''),
+                            flow=None, stopbits=None, baudrate=None, parity=None, databits=None
+                        )
+                    else:
+                        Device.objects.create(
+                            device=device,
+                            cable_type=cable_type,
+                            number_of_lines=number_of_lines,
+                            smdrip=request.POST.get('smdrip', ''),
+                            smdrport=request.POST.get('smdrport', ''),
+                            smdrpassword=request.POST.get('smdrpassword', '')
+                        )
+                    log(request, logErrCodes.systemSettings, 
+                        logMessages.updatedSettings.format('تنظیمات دستگاه') if dev.exists() else logMessages.createdSettings.format('تنظیمات دستگاه'),
+                        checkSession(request))
+                    msgs.append('تنظیمات دستگاه (Ethernet)')
+                else:
+                    # Serial connection
+                    if dev.exists():
+                        dev.update(
+                            device=device,
+                            cable_type=cable_type,
+                            number_of_lines=number_of_lines,
+                            baudrate=request.POST.get('baudrate', ''),
+                            parity=request.POST.get('parity', ''),
+                            databits=request.POST.get('databits', ''),
+                            stopbits=request.POST.get('stopbits', ''),
+                            flow=request.POST.get('flow', ''),
+                            smdrip=None, smdrport=None, smdrpassword=None
+                        )
+                    else:
+                        Device.objects.create(
+                            device=device,
+                            cable_type=cable_type,
+                            number_of_lines=number_of_lines,
+                            baudrate=request.POST.get('baudrate', ''),
+                            parity=request.POST.get('parity', ''),
+                            databits=request.POST.get('databits', ''),
+                            stopbits=request.POST.get('stopbits', ''),
+                            flow=request.POST.get('flow', '')
+                        )
+                    log(request, logErrCodes.systemSettings,
+                        logMessages.updatedSettings.format('تنظیمات دستگاه') if dev.exists() else logMessages.createdSettings.format('تنظیمات دستگاه'),
+                        checkSession(request))
+                    msgs.append('تنظیمات دستگاه (Serial)')
+            except Exception as e:
+                messages.error(request, f'خطا در ذخیره تنظیمات دستگاه: {e}')
 
-        # Process operation on Extensionsgroups
+        # ==================== ACCESS GROUPS ====================
+        operation = (request.POST.get('operation') or request.POST.get('operation_fallback') or '').strip()
+        label = (request.POST.get('label') or '').strip()
+        exts = request.POST.getlist('exts')
+        selected_username = (request.POST.get('users') or '').strip()
+        errorsreport_val = request.POST.get('errorsreport')
+
+        try:
+            exts_int = [int(x) for x in exts if str(x).strip() != '']
+        except Exception:
+            exts_int = []
+
         if operation in ['اضافه', 'ویرایش', 'حذف']:
             try:
                 if operation == 'اضافه':
-                    if not label:
-                        messages.error(request, 'نام گروه را وارد کنید.')
-                        return redirect(self.success_url)
-                    grp, created = Extensionsgroups.objects.get_or_create(
-                        label=label,
-                        defaults={'exts': exts_int, 'modifyby': current_user}
-                    )
-                    if not created:
-                        grp.exts = exts_int
-                        grp.modifyby = current_user
-                        grp.updated_at = timezone.now()
-                        grp.save()
-                    messages.success(request, f'گروه "{label}" با موفقیت {"ایجاد" if created else "بروزرسانی"} شد.')
+                    if label:
+                        grp, created = Extensionsgroups.objects.get_or_create(
+                            label=label,
+                            defaults={'exts': exts_int, 'modifyby': current_user}
+                        )
+                        if not created:
+                            grp.exts = exts_int
+                            grp.modifyby = current_user
+                            grp.updated_at = timezone.now()
+                            grp.save()
+                        msgs.append(f'گروه دسترسی "{label}" {"ایجاد" if created else "بروزرسانی"} شد')
 
                 elif operation == 'ویرایش':
-                    if not label:
-                        messages.error(request, 'برای ویرایش، نام گروه را انتخاب کنید.')
-                        return redirect(self.success_url)
-                    grp = Extensionsgroups.objects.filter(label__iexact=label).first()
-                    if not grp:
-                        messages.error(request, 'گروه مورد نظر یافت نشد.')
-                    else:
-                        grp.exts = exts_int
-                        grp.modifyby = current_user
-                        grp.updated_at = timezone.now()
-                        grp.save()
-                        messages.success(request, f'گروه "{label}" بروزرسانی شد.')
+                    if label:
+                        grp = Extensionsgroups.objects.filter(label__iexact=label).first()
+                        if grp:
+                            grp.exts = exts_int
+                            grp.modifyby = current_user
+                            grp.updated_at = timezone.now()
+                            grp.save()
+                            msgs.append(f'گروه دسترسی "{label}" بروزرسانی شد')
 
                 elif operation == 'حذف':
-                    if not label:
-                        messages.error(request, 'برای حذف، نام گروه را انتخاب کنید.')
-                        return redirect(self.success_url)
-                    # Delete the group
-                    deleted, _ = Extensionsgroups.objects.filter(label__iexact=label).delete()
-                    if deleted:
-                        # Clean up label references from all users' permissions
-                        perms = Permissions.objects.filter(exts_label__contains=[label])
-                        for perm in perms:
-                            try:
-                                labels = list(perm.exts_label or [])
-                            except Exception:
-                                labels = []
-                            if label in labels:
-                                labels.remove(label)
-                                perm.exts_label = labels
-                                perm.updated_at = timezone.now()
-                                perm.save()
-                        messages.success(request, f'گروه "{label}" حذف شد.')
-                    else:
-                        messages.error(request, 'گروهی برای حذف یافت نشد.')
+                    if label:
+                        deleted, _ = Extensionsgroups.objects.filter(label__iexact=label).delete()
+                        if deleted:
+                            perms = Permissions.objects.filter(exts_label__contains=[label])
+                            for perm in perms:
+                                try:
+                                    labels = list(perm.exts_label or [])
+                                except Exception:
+                                    labels = []
+                                if label in labels:
+                                    labels.remove(label)
+                                    perm.exts_label = labels
+                                    perm.updated_at = timezone.now()
+                                    perm.save()
+                            msgs.append(f'گروه دسترسی "{label}" حذف شد')
             except Exception as e:
                 messages.error(request, f'خطا هنگام ثبت تغییرات گروه: {e}')
-                return redirect(self.success_url)
 
-        # Update selected user's permissions if a user is chosen
+        # Update user permissions
         if selected_username and selected_username.lower() != 'none':
             try:
                 user = Users.objects.filter(username__iexact=selected_username).first()
-                if not user:
-                    messages.error(request, 'کاربر انتخاب‌شده یافت نشد.')
-                else:
+                if user:
                     perm, _ = Permissions.objects.get_or_create(user=user)
-                    # Toggle errors report permission
                     perm.errorsreport = bool(errorsreport_val)
-
-                    # Maintain exts_label list based on operation and label
                     try:
                         labels = list(perm.exts_label or [])
                     except Exception:
@@ -847,10 +892,60 @@ class systemSettings(FormView, View):
                     perm.exts_label = labels
                     perm.updated_at = timezone.now()
                     perm.save()
-                    messages.success(request, f'دسترسی‌های کاربر "{selected_username}" ذخیره شد.')
+                    msgs.append(f'دسترسی‌های کاربر "{selected_username}" ذخیره شد')
             except Exception as e:
-                messages.error(request, f'خطا هنگام ذخیره دسترسی‌های کاربر: {e}')
+                messages.error(request, f'خطا هنگام ذخیره دسترسی کاربر: {e}')
 
+        # ==================== CONTACT INFO ====================
+        province = request.POST.get('province', '').strip()
+        phone_number = request.POST.get('phone_number', '').strip()
+        
+        if province and phone_number:
+            try:
+                conInfo = ContactInfo.objects.all()
+                if conInfo.exists():
+                    conInfo.update(province=province, phone_number=phone_number, user=current_user)
+                    log(request, logErrCodes.systemSettings, logMessages.updatedSettings.format('اطلاعات تماس'), checkSession(request))
+                else:
+                    ContactInfo.objects.create(province=province, phone_number=phone_number, user=current_user)
+                    log(request, logErrCodes.systemSettings, logMessages.createdSettings.format('اطلاعات تماس'), checkSession(request))
+                msgs.append('اطلاعات تماس')
+            except Exception as e:
+                messages.error(request, f'خطا در ذخیره اطلاعات تماس: {e}')
+
+        # ==================== CALL COSTS ====================
+        hamrahaval = request.POST.get('hamrahaval', '').strip()
+        irancell = request.POST.get('irancell', '').strip()
+        rightel = request.POST.get('rightel', '').strip()
+        provincial = request.POST.get('provincial', '').strip()
+        international = request.POST.get('international', '').strip()
+        outofprovincial = request.POST.get('outofprovincial', '').strip()
+        
+        if any([hamrahaval, irancell, rightel, provincial, international, outofprovincial]):
+            try:
+                costs = Costs.objects.all()
+                if costs.exists():
+                    costs.update(
+                        hamrahaval=hamrahaval, irancell=irancell, rightel=rightel,
+                        provincial=provincial, international=international,
+                        outofprovincial=outofprovincial, updated_at=timezone.now()
+                    )
+                    log(request, logErrCodes.systemSettings, logMessages.updatedSettings.format('هزینه های تماس'), checkSession(request))
+                else:
+                    Costs.objects.create(
+                        hamrahaval=hamrahaval, irancell=irancell, rightel=rightel,
+                        provincial=provincial, international=international,
+                        outofprovincial=outofprovincial, created_at=timezone.now()
+                    )
+                    log(request, logErrCodes.systemSettings, logMessages.createdSettings.format('هزینه های تماس'), checkSession(request))
+                msgs.append('هزینه های تماس')
+            except Exception as e:
+                messages.error(request, f'خطا در ذخیره هزینه‌های تماس: {e}')
+
+        # Show success message
+        if msgs:
+            messages.success(request, 'تنظیمات زیر با موفقیت ذخیره شد:\n' + '\n'.join(msgs))
+        
         return redirect(self.success_url)
 
 def error_export(request):
