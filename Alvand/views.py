@@ -1257,6 +1257,128 @@ def error_export(request):
         return response
 
 
+def error_search_ajax(request):
+    """AJAX endpoint for real-time error number search across all database records"""
+    if not checkSession(request):
+        return JsonResponse({'error': 'Authentication required'}, status=401)
+    
+    # Get search parameter
+    search_query = request.GET.get('search', '').strip()
+    dateFrom = request.GET.get('dateFrom', '').strip()
+    dateTo = request.GET.get('dateTo', '').strip()
+    
+    # Get all error records from SMDR
+    from django.db.models import Q
+    import re
+    
+    # Get SMDR records where dial_number contains 'ALM #' (Alarm messages)
+    smdr_qs = SMDRRecord.objects.filter(dial_number__contains='ALM #')
+    
+    # Extract error codes and create error data
+    error_data = []
+    for record in smdr_qs:
+        try:
+            # Extract error code after ALM # sign
+            match = re.search(r'ALM #(\d+)', record.dial_number)
+            if match:
+                error_code = int(match.group(1))
+                
+                # Find corresponding error details
+                try:
+                    error_detail = Errors.objects.get(errorcodenum=error_code)
+                    
+                    # Combine date and time to create datetime
+                    error_datetime = datetime.datetime.combine(record.date, record.time)
+                    
+                    # Convert to Persian date for display
+                    persian_date = jdatetime.datetime.fromgregorian(datetime=error_datetime)
+                    
+                    error_data.append({
+                        'id': record.id,
+                        'errorcode': error_code,
+                        'errormessage': error_detail.errormessage or 'مشخص نیست',
+                        'probablecause': error_detail.probablecause or 'مشخص نیست',
+                        'solution': error_detail.solution or 'موجود نیست',
+                        'date_time': error_datetime,
+                        'persian_date': persian_date.strftime('%Y/%m/%d'),
+                        'persian_time': persian_date.strftime('%H:%M'),
+                    })
+                except Errors.DoesNotExist:
+                    continue
+        except (ValueError, AttributeError):
+            continue
+    
+    # Apply error number filtering if search query exists
+    if search_query:
+        filtered_error_data = []
+        for record_data in error_data:
+            # Convert error code to string and check if search query is contained in it
+            if search_query in str(record_data['errorcode']):
+                filtered_error_data.append(record_data)
+        error_data = filtered_error_data
+    
+    # Apply date filtering if provided
+    if dateFrom and dateTo:
+        try:
+            # Clean and normalize date strings
+            dateFrom = dateFrom.replace('از', '').replace('تا', '').strip()
+            dateTo = dateTo.replace('از', '').replace('تا', '').strip()
+            
+            # Try parsing with different date formats
+            date_formats = [
+                "%Y-%m-%d",  # 1403-01-01
+                "%Y/%m/%d",  # 1403/01/01
+                "%Y %m %d",  # 1403 01 01
+            ]
+            
+            convFrom = None
+            convTo = None
+            
+            for fmt in date_formats:
+                try:
+                    convFrom = jdatetime.datetime.strptime(dateFrom, fmt).togregorian()
+                    convTo = jdatetime.datetime.strptime(dateTo, fmt).togregorian()
+                    break
+                except ValueError:
+                    continue
+            
+            if convFrom and convTo:
+                # Add one day to dateTo to include the entire end date
+                convTo = convTo + datetime.timedelta(days=1)
+                
+                # Filter error data by date range
+                filtered_error_data = []
+                for record_data in error_data:
+                    if convFrom <= record_data['date_time'] < convTo:
+                        filtered_error_data.append(record_data)
+                
+                error_data = filtered_error_data
+        except Exception as e:
+            print(f"Error parsing dates in AJAX search: {e}")
+    
+    # Sort error data by date_time (newest first)
+    error_data.sort(key=lambda x: x['date_time'], reverse=True)
+    
+    # Return results as JSON
+    results = []
+    for idx, record in enumerate(error_data, start=1):
+        results.append({
+            'index': idx,
+            'errorcode': record['errorcode'],
+            'errormessage': record['errormessage'],
+            'probablecause': record['probablecause'],
+            'solution': record['solution'],
+            'persian_date': record['persian_date'],
+            'persian_time': record['persian_time'],
+        })
+    
+    return JsonResponse({
+        'success': True,
+        'count': len(results),
+        'results': results
+    })
+
+
 class settingsPage(TemplateView, View):
     template_name = "settings.html"
 

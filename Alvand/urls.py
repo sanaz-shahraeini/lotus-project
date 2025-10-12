@@ -16,6 +16,7 @@ urlpatterns = [
     path('support/', views.support, name='support'),
     path('errors/', views.errorsPage.as_view(), name='errors'),
     path('errors/export/', views.error_export, name='error_export'),
+    path('errors/search/', views.error_search_ajax, name='error_search_ajax'),
     path('user/', views.UserForm.as_view(), name='user'),
     path('get-user-data/', views.get_user_data, name='get_user_data'),
     path('get-cable-types/', views.get_cable_types, name='get_cable_types'),

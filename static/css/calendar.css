@@ -344,7 +344,7 @@
 jdp-container,
 .jalali-datepicker-container {
     z-index: 10002 !important;
-    position: absolute !important;
+    position: fixed !important;
 }
 
 /* Prevent filter cards from hiding calendar */
@@ -619,7 +619,7 @@ jdp-overlay {
 
 jdp-container {
     z-index: 10002 !important;
-    position: absolute !important;
+    position: fixed !important;
     display: block !important;
     direction: rtl !important;
     font-family: inherit !important;
@@ -630,6 +630,8 @@ jdp-container {
     border: 2px solid rgba(0, 188, 212, 0.1) !important;
     padding: 0 !important;
     overflow: hidden !important;
+    transform: none !important;
+    margin: 0 !important;
 }
 
 /* Redesigned Header Section */

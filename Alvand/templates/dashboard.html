@@ -1664,10 +1664,17 @@
         let sortState = {}; // To store sort state for each column
 
         // Enhanced sorting function for table columns
-        $('.sort-btn').on('click', function() {
+        $('.sort-btn').on('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            console.log('Sort button clicked!');
+            
             // Get column info from data attributes
             const columnIndex = parseInt($(this).data('column'));
             const dataType = $(this).data('type');
+            
+            console.log('Column:', columnIndex, 'Type:', dataType);
             
             // Get current sort direction from icon
             const $icon = $(this).find('i');

@@ -1366,51 +1366,144 @@
         const $applyFilterBtn = $("#applyFilterBtn");
         let $tableRows = $table.find("tbody tr");
         let $originalTableRows = $table.find("tbody tr"); // Keep reference to all original rows
+        let ajaxRequest = null; // Store current AJAX request for cancellation
         
-        // Real-time filtering function
+        // Real-time filtering function using AJAX
         function performRealTimeFilter() {
             const searchValue = $("#search").val().trim();
             const dateFrom = $("#dateFrom").val();
             const dateTo = $("#dateTo").val();
             
-            console.log("Real-time filtering with search:", searchValue);
+            console.log("Real-time AJAX filtering with search:", searchValue);
             
-            let visibleCount = 0;
-            
-            // Filter by error number first
-            $originalTableRows.each(function() {
-                const $row = $(this);
-                const errorCodeCell = $row.find('td:nth-child(4)'); // Error number column
-                const errorCodeText = errorCodeCell.text().trim();
-                
-                let showRow = true;
-                
-                // Filter by error number if search value exists
-                if (searchValue) {
-                    showRow = errorCodeText.includes(searchValue);
-                }
-                
-                // Additional date filtering can be added here if needed
-                // For now, we'll focus on error number filtering
-                
-                $row.toggle(showRow);
-                if (showRow) visibleCount++;
-            });
-            
-            // Update visible rows reference
-            $tableRows = $table.find("tbody tr:visible");
-            
-            // Update pagination info
-            updatePaginationInfo();
-            
-            // Add visual feedback
-            if (searchValue) {
-                $searchInput.css('background-color', '#e8f5e8'); // Light green when filtering
-                $searchInput.attr('title', `فیلتر فعال: ${visibleCount} نتیجه پیدا شد`);
-            } else {
-                $searchInput.css('background-color', '#fff'); // White when no filter
-                $searchInput.attr('title', 'جستجوی شماره خطا');
+            // Cancel previous AJAX request if it exists
+            if (ajaxRequest) {
+                ajaxRequest.abort();
             }
+            
+            // If search is empty and no date filters, don't make AJAX call
+            if (!searchValue && !dateFrom && !dateTo) {
+                console.log("No filters applied, skipping AJAX call");
+                $searchInput.css('background-color', '#fff');
+                $searchInput.attr('title', 'جستجوی شماره خطا');
+                return;
+            }
+            
+            // Show loading indicator
+            $searchInput.css('background-color', '#fff3cd'); // Light yellow for loading
+            $searchInput.attr('title', 'در حال جستجو...');
+            
+            // Build URL parameters
+            const params = {};
+            if (searchValue) params.search = searchValue;
+            if (dateFrom) params.dateFrom = dateFrom;
+            if (dateTo) params.dateTo = dateTo;
+            
+            // Make AJAX request to search endpoint
+            ajaxRequest = $.ajax({
+                url: '{% url "error_search_ajax" %}',
+                method: 'GET',
+                data: params,
+                dataType: 'json',
+                success: function(response) {
+                    console.log("AJAX search successful:", response);
+                    
+                    if (response.success) {
+                        // Clear current table body
+                        $tableBody.empty();
+                        
+                        // Populate table with results
+                        if (response.results && response.results.length > 0) {
+                            response.results.forEach(function(record) {
+                                const row = `
+                                    <tr>
+                                        <td>${record.index}</td>
+                                        <td>${record.persian_date}</td>
+                                        <td>${record.persian_time}</td>
+                                        <td>${record.errorcode}</td>
+                                        <td class="text-cell text-center" data-type="errormessage" 
+                                            data-content="${escapeHtml(record.errormessage)}" 
+                                            data-code="${record.errorcode}" 
+                                            title="کلیک کنید تا عنوان کامل خطا را مشاهده کنید">
+                                            <span class="clean-text">${truncateText(record.errormessage, 50)}</span>
+                                        </td>
+                                        <td class="text-cell text-center" data-type="probablecause" 
+                                            data-content="${escapeHtml(record.probablecause)}" 
+                                            data-code="${record.errorcode}" 
+                                            title="کلیک کنید تا علت کامل را مشاهده کنید">
+                                            <span class="clean-text">${truncateText(record.probablecause, 50)}</span>
+                                        </td>
+                                        <td class="text-cell" data-type="solution" 
+                                            data-content="${escapeHtml(record.solution)}" 
+                                            data-code="${record.errorcode}" 
+                                            title="کلیک کنید تا راه حل کامل را مشاهده کنید">
+                                            <span class="clean-text">${truncateText(record.solution, 50)}</span>
+                                        </td>
+                                    </tr>
+                                `;
+                                $tableBody.append(row);
+                            });
+                            
+                            // Update visible rows reference
+                            $tableRows = $table.find("tbody tr");
+                            $originalTableRows = $tableRows;
+                            
+                            // Update pagination info
+                            updatePaginationInfo(response.count);
+                            
+                            // Success feedback
+                            $searchInput.css('background-color', '#d4edda'); // Light green for success
+                            $searchInput.attr('title', `${response.count} نتیجه پیدا شد`);
+                        } else {
+                            // No results found
+                            $tableBody.html(`
+                                <tr>
+                                    <td colspan="7" style="text-align: center; padding: 2rem; color: #666;">
+                                        نتیجه‌ای یافت نشد
+                                    </td>
+                                </tr>
+                            `);
+                            
+                            $searchInput.css('background-color', '#f8d7da'); // Light red for no results
+                            $searchInput.attr('title', 'نتیجه‌ای یافت نشد');
+                            
+                            updatePaginationInfo(0);
+                        }
+                    }
+                },
+                error: function(xhr, status, error) {
+                    if (status !== 'abort') {
+                        console.error("AJAX search error:", error);
+                        $searchInput.css('background-color', '#f8d7da'); // Light red for error
+                        $searchInput.attr('title', 'خطا در جستجو');
+                    }
+                },
+                complete: function() {
+                    ajaxRequest = null;
+                }
+            });
+        }
+        
+        // Helper function to escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Helper function to truncate text
+        function truncateText(text, maxLength) {
+            if (!text) return 'مشخص نیست';
+            text = text.replace(/\?/g, '').replace(/\s+/g, ' ').trim();
+            if (text.length > maxLength) {
+                let truncated = text.substring(0, maxLength);
+                let lastSpace = truncated.lastIndexOf(' ');
+                if (lastSpace > maxLength * 0.7) {
+                    truncated = truncated.substring(0, lastSpace);
+                }
+                return truncated;
+            }
+            return text;
         }
         
         // Debounced filtering function
@@ -1421,25 +1514,23 @@
         }
         
         // Update pagination info based on visible rows
-        function updatePaginationInfo() {
-            const visibleRows = $table.find("tbody tr:visible").length;
-            const totalRows = $originalTableRows.length;
-            
-            // Update page info if pagination exists
+        function updatePaginationInfo(count) {
             const pageInfo = $('.page-info');
             if (pageInfo.length) {
-                if (visibleRows === totalRows) {
-                    pageInfo.text(`${visibleRows} نتیجه`);
+                if (count !== undefined) {
+                    pageInfo.text(`${count} نتیجه`);
                 } else {
-                    pageInfo.text(`${visibleRows} از ${totalRows} نتیجه`);
+                    const visibleRows = $table.find("tbody tr:visible").length;
+                    pageInfo.text(`${visibleRows} نتیجه`);
                 }
             }
             
-            // Show/hide pagination controls based on filtering
+            // Hide pagination controls when filtering
             const paginationContainer = $('.pagination-compact');
             if (paginationContainer.length) {
-                if (visibleRows < totalRows) {
-                    // When filtering, hide pagination arrows since we're showing all filtered results
+                const searchValue = $("#search").val().trim();
+                if (searchValue) {
+                    // When filtering, hide pagination arrows
                     paginationContainer.find('.nav-btn').hide();
                     pageInfo.show();
                 } else {
@@ -1454,30 +1545,45 @@
             e.preventDefault();
             const dateFrom = $("#dateFrom").val();
             const dateTo = $("#dateTo").val();
+            const searchValue = $("#search").val().trim();
             
-            console.log("Form submitted for date filtering");
+            console.log("Form submitted");
             console.log("DateFrom:", dateFrom);
             console.log("DateTo:", dateTo);
+            console.log("Search:", searchValue);
             
-            // Validate dates if needed
-            if (dateFrom && dateTo && new Date(dateFrom) > new Date(dateTo)) {
-                alert("تاریخ شروع نباید از تاریخ پایان بزرگتر باشد");
+            // If only search value is provided (no dates), use AJAX
+            if (searchValue && !dateFrom && !dateTo) {
+                console.log("Only search value provided, using AJAX");
+                performRealTimeFilter();
                 return false;
             }
             
-            // For date filtering, we'll use server-side filtering
-            // Build URL with parameters
-            let url = new URL(window.location);
-            url.searchParams.set('dateFrom', dateFrom);
-            url.searchParams.set('dateTo', dateTo);
-            if ($("#search").val()) {
-                url.searchParams.set('search', $("#search").val());
-            } else {
-                url.searchParams.delete('search');
+            // If dates are provided, validate them
+            if (dateFrom && dateTo) {
+                // Validate dates if needed
+                if (new Date(dateFrom) > new Date(dateTo)) {
+                    alert("تاریخ شروع نباید از تاریخ پایان بزرگتر باشد");
+                    return false;
+                }
+                
+                // For date filtering, we'll use server-side filtering
+                // Build URL with parameters
+                let url = new URL(window.location);
+                url.searchParams.set('dateFrom', dateFrom);
+                url.searchParams.set('dateTo', dateTo);
+                if (searchValue) {
+                    url.searchParams.set('search', searchValue);
+                } else {
+                    url.searchParams.delete('search');
+                }
+                
+                // Redirect to the same page with filter parameters
+                window.location.href = url.toString();
+            } else if (searchValue) {
+                // Only search value, use AJAX
+                performRealTimeFilter();
             }
-            
-            // Redirect to the same page with filter parameters
-            window.location.href = url.toString();
         });
         
         // Sort functionality
@@ -1504,8 +1610,19 @@
         // Handle search input - real-time filtering
         $searchInput.on({
             'input keyup paste': function(e) {
-                console.log("Search input changed:", $(this).val());
-                debouncedFilter(); // Use debounced filtering for real-time updates
+                const searchValue = $(this).val().trim();
+                console.log("Search input changed:", searchValue);
+                
+                // If search is cleared, reload the page to show original pagination
+                if (searchValue === '') {
+                    console.log("Search cleared, reloading page");
+                    // Remove search parameter from URL and reload
+                    const url = new URL(window.location);
+                    url.searchParams.delete('search');
+                    window.location.href = url.toString();
+                } else {
+                    debouncedFilter(); // Use debounced filtering for real-time updates
+                }
             },
             'keypress': function(e) {
                 if (e.which === 13) { // Enter key
@@ -1517,8 +1634,16 @@
             },
             'search': function() {
                 // This event fires when the user clicks the clear (x) button
-                console.log("Search cleared");
-                debouncedFilter();
+                console.log("Search cleared via X button");
+                const searchValue = $(this).val().trim();
+                if (searchValue === '') {
+                    // Reload page without search parameter
+                    const url = new URL(window.location);
+                    url.searchParams.delete('search');
+                    window.location.href = url.toString();
+                } else {
+                    debouncedFilter();
+                }
             }
         });
         
