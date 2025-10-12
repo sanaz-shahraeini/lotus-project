@@ -15,20 +15,20 @@
 
     /* Modern Support Page Layout */
     .support-container {
-        max-width: 1400px;
+        max-width: 1200px;
         margin: 0 auto;
-        padding: var(--space-xl) var(--space-lg);
+        padding: var(--space-lg) var(--space-md);
         position: relative;
     }
 
     /* Revolutionary Hero Section with Advanced Effects */
     .support-hero {
         background: linear-gradient(135deg, #00BCD4 0%, #3F51B5 100%);
-        padding: var(--space-3xl) var(--space-xl);
+        padding: var(--space-xl) var(--space-lg);
         position: relative;
         overflow: hidden;
-        border-radius: var(--radius-2xl);
-        margin-bottom: var(--space-2xl);
+        border-radius: var(--radius-xl);
+        margin-bottom: var(--space-lg);
         box-shadow: var(--card-shadow-large);
         isolation: isolate;
     }
@@ -104,9 +104,9 @@
     }
 
     .support-hero-title {
-        font-size: clamp(2.5rem, 5vw, 4rem);
-        font-weight: 900;
-        margin-bottom: var(--space-xl);
+        font-size: clamp(1.8rem, 4vw, 2.5rem);
+        font-weight: 800;
+        margin-bottom: var(--space-md);
         text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         background: linear-gradient(135deg, #ffffff 20%, #f1f5f9 80%);
         background-clip: text;
@@ -129,9 +129,9 @@
     }
 
     .support-hero-subtitle {
-        font-size: clamp(1.2rem, 3vw, 1.8rem);
+        font-size: clamp(1rem, 2.5vw, 1.3rem);
         opacity: 0.95;
-        margin-bottom: var(--space-2xl);
+        margin-bottom: var(--space-lg);
         font-weight: 500;
         line-height: 1.6;
         max-width: 600px;
@@ -155,13 +155,13 @@
     .support-hero-button {
         display: inline-flex;
         align-items: center;
-        gap: var(--space-md);
+        gap: var(--space-sm);
         background: rgba(255, 255, 255, 0.95);
         color: var(--primary-color);
-        padding: var(--space-lg) var(--space-2xl);
+        padding: var(--space-md) var(--space-xl);
         border-radius: 9999px;
         font-weight: 700;
-        font-size: 1.2rem;
+        font-size: 1rem;
         transition: var(--transition-base);
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         text-decoration: none;
@@ -216,13 +216,13 @@
     .support-grid {
         display: grid;
         grid-template-columns: 1fr;
-        gap: 2.5rem;
+        gap: 1.5rem;
     }
 
     .support-card {
         background: var(--card-bg);
-        border-radius: 1rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         transition: all 0.3s ease;
         overflow: hidden;
         border: 1px solid var(--border-color);
@@ -230,21 +230,21 @@
     }
 
     .support-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     }
 
     .support-card-content {
-        padding: 2.5rem;
+        padding: 1.5rem;
     }
 
     /* Elegant Section Headers with Modern Typography */
     .section-header {
         display: flex;
         align-items: center;
-        margin-bottom: var(--space-2xl);
+        margin-bottom: var(--space-lg);
         position: relative;
-        gap: var(--space-lg);
+        gap: var(--space-md);
     }
 
     .section-header::after {
@@ -262,10 +262,10 @@
     /* Premium Icon Design */
     .section-icon-wrapper {
         background: linear-gradient(135deg, #00BCD4 0%, #3F51B5 100%);
-        padding: var(--space-lg);
-        border-radius: var(--radius-lg);
+        padding: var(--space-md);
+        border-radius: var(--radius-md);
         transition: var(--transition-base);
-        box-shadow: 0 8px 16px rgba(0, 188, 212, 0.3);
+        box-shadow: 0 4px 8px rgba(0, 188, 212, 0.3);
         position: relative;
         overflow: hidden;
     }
@@ -294,15 +294,15 @@
 
     .section-icon {
         color: white;
-        font-size: 2rem;
+        font-size: 1.3rem;
         position: relative;
         z-index: 2;
         filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
     }
 
     .section-title {
-        font-size: clamp(1.5rem, 4vw, 2rem);
-        font-weight: 800;
+        font-size: clamp(1.2rem, 3vw, 1.5rem);
+        font-weight: 700;
         color: var(--text-primary);
         position: relative;
         letter-spacing: -0.01em;
@@ -314,10 +314,10 @@
     }
 
     .about-content p {
-        font-size: 1.125rem;
-        line-height: 1.9;
+        font-size: 1rem;
+        line-height: 1.7;
         color: var(--text-secondary);
-        margin-bottom: var(--space-xl);
+        margin-bottom: var(--space-md);
         font-weight: 450;
     }
 
@@ -359,10 +359,10 @@
         background: linear-gradient(135deg, 
             rgba(0, 188, 212, 0.08) 0%, 
             rgba(63, 81, 181, 0.12) 100%);
-        padding: var(--space-2xl);
-        border-radius: var(--radius-xl);
+        padding: var(--space-lg);
+        border-radius: var(--radius-lg);
         border: 2px solid rgba(0, 188, 212, 0.2);
-        margin: var(--space-2xl) 0;
+        margin: var(--space-lg) 0;
         position: relative;
         backdrop-filter: blur(20px);
         box-shadow: var(--card-shadow);
@@ -371,9 +371,9 @@
     .quote-box::before {
         content: '"';
         position: absolute;
-        top: -var(--space-lg);
-        right: var(--space-xl);
-        font-size: 5rem;
+        top: -var(--space-md);
+        right: var(--space-lg);
+        font-size: 3rem;
         color: var(--primary-color);
         opacity: 0.15;
         font-family: 'Georgia', serif;
@@ -394,9 +394,9 @@
     .quote-text {
         color: var(--text-primary);
         font-style: italic;
-        font-size: 1.4rem;
+        font-size: 1.05rem;
         font-weight: 600;
-        line-height: 1.8;
+        line-height: 1.7;
         position: relative;
         z-index: 2;
     }
@@ -404,12 +404,12 @@
     /* Dynamic Announcement Box */
     .announcement-box {
         text-align: center;
-        margin-top: var(--space-2xl);
+        margin-top: var(--space-lg);
         background: linear-gradient(135deg, 
             rgba(0, 188, 212, 0.1) 0%, 
             rgba(63, 81, 181, 0.15) 100%);
-        padding: var(--space-2xl);
-        border-radius: var(--radius-xl);
+        padding: var(--space-lg);
+        border-radius: var(--radius-lg);
         border: 2px solid rgba(0, 188, 212, 0.3);
         position: relative;
         overflow: hidden;
@@ -441,8 +441,8 @@
     }
 
     .announcement-text {
-        font-size: clamp(1.2rem, 3vw, 1.6rem);
-        font-weight: 800;
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
+        font-weight: 700;
         color: var(--primary-color);
         position: relative;
         z-index: 2;
@@ -451,7 +451,7 @@
 
     /* Premium Company Image Section */
     .company-image {
-        height: 18rem;
+        height: 12rem;
         background: linear-gradient(135deg, #00BCD4 0%, #3F51B5 100%);
         position: relative;
         overflow: hidden;
@@ -520,8 +520,8 @@
 
     /* Premium Lotus Logo with Advanced Effects */
     .lotus-logo {
-        width: 140px;
-        height: 140px;
+        width: 100px;
+        height: 100px;
         display: block;
         margin: 0 auto;
         position: relative;
@@ -543,8 +543,8 @@
         position: absolute;
         top: 50%;
         left: 50%;
-        width: 180px;
-        height: 180px;
+        width: 130px;
+        height: 130px;
         background: radial-gradient(circle, 
             rgba(0, 188, 212, 0.8) 0%, 
             rgba(38, 166, 154, 0.4) 40%, 
@@ -560,8 +560,8 @@
         position: absolute;
         top: 50%;
         left: 50%;
-        width: 220px;
-        height: 220px;
+        width: 160px;
+        height: 160px;
         background: conic-gradient(from 0deg, 
             transparent, 
             rgba(0, 188, 212, 0.3), 
@@ -597,8 +597,8 @@
     /* Premium Contact Methods Grid */
     .contact-methods {
         display: grid;
-        gap: var(--space-lg);
-        margin-bottom: var(--space-2xl);
+        gap: var(--space-md);
+        margin-bottom: var(--space-lg);
     }
 
     /* Modern Contact Item Design */
@@ -606,8 +606,8 @@
         background: linear-gradient(135deg, 
             var(--card-bg) 0%, 
             rgba(0, 188, 212, 0.02) 100%);
-        border-radius: var(--radius-lg);
-        padding: var(--space-xl);
+        border-radius: var(--radius-md);
+        padding: var(--space-md) var(--space-lg);
         transition: var(--transition-base);
         border: 2px solid var(--border-color);
         display: flex;
@@ -658,12 +658,12 @@
     /* Premium Contact Icon Design */
     .contact-icon-wrapper {
         background: linear-gradient(135deg, #00BCD4 0%, #3F51B5 100%);
-        padding: var(--space-lg);
+        padding: var(--space-md);
         border-radius: var(--radius-md);
         color: white;
-        margin-left: var(--space-lg);
+        margin-left: var(--space-md);
         transition: var(--transition-base);
-        box-shadow: 0 8px 20px rgba(0, 188, 212, 0.4);
+        box-shadow: 0 4px 10px rgba(0, 188, 212, 0.4);
         position: relative;
         overflow: hidden;
     }
@@ -699,7 +699,7 @@
     }
 
     .contact-icon-wrapper i {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         position: relative;
         z-index: 2;
     }
@@ -710,9 +710,9 @@
     }
 
     .contact-details h4 {
-        font-size: 0.9rem;
+        font-size: 0.8rem;
         color: var(--text-muted);
-        margin-bottom: var(--space-sm);
+        margin-bottom: 0.25rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.5px;
@@ -722,7 +722,7 @@
         color: var(--primary-color);
         font-weight: 700;
         text-decoration: none;
-        font-size: 1.2rem;
+        font-size: 1rem;
         transition: var(--transition-base);
         position: relative;
         display: inline-block;
@@ -754,10 +754,10 @@
 
     /* Simple Support Form Design */
     .support-form {
-        margin-top: var(--space-2xl);
-        padding: var(--space-2xl);
+        margin-top: var(--space-lg);
+        padding: var(--space-lg);
         background: var(--card-bg);
-        border-radius: var(--radius-lg);
+        border-radius: var(--radius-md);
         box-shadow: var(--card-shadow);
         border: 1px solid var(--border-color);
         position: relative;
@@ -765,7 +765,7 @@
 
     /* Modern Form Group Styling */
     .form-group {
-        margin-bottom: var(--space-2xl);
+        margin-bottom: var(--space-lg);
         position: relative;
     }
 
@@ -792,10 +792,10 @@
     /* Simple Form Inputs */
     .form-input, .form-textarea {
         width: 100%;
-        padding: var(--space-lg);
+        padding: var(--space-md);
         border: 2px solid var(--border-color);
         border-radius: var(--radius-md);
-        font-size: 1rem;
+        font-size: 0.95rem;
         font-weight: 400;
         transition: var(--transition-base);
         background: var(--bg-primary);
@@ -811,7 +811,7 @@
 
     .form-textarea {
         resize: vertical;
-        min-height: 6rem;
+        min-height: 5rem;
         line-height: 1.6;
     }
 
@@ -947,42 +947,47 @@
     /* Enhanced Responsive Design with Mobile-First Approach */
     @media (max-width: 768px) {
         .support-container {
-            padding: var(--space-lg) var(--space-md);
+            padding: var(--space-md);
         }
         
         .support-hero {
-            padding: var(--space-2xl) var(--space-lg);
-            border-radius: var(--radius-lg);
+            padding: var(--space-lg) var(--space-md);
+            border-radius: var(--radius-md);
         }
         
         .support-hero-title {
-            font-size: clamp(2rem, 6vw, 3rem);
-            margin-bottom: var(--space-lg);
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            margin-bottom: var(--space-sm);
         }
         
         .support-hero-subtitle {
-            font-size: clamp(1rem, 4vw, 1.4rem);
-            margin-bottom: var(--space-xl);
+            font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+            margin-bottom: var(--space-md);
         }
         
         .support-hero-button {
-            padding: var(--space-lg) var(--space-xl);
-            font-size: 1.1rem;
+            padding: var(--space-sm) var(--space-lg);
+            font-size: 0.95rem;
         }
         
         .support-card-content {
-            padding: var(--space-xl);
+            padding: var(--space-md);
         }
         
         .section-header {
             flex-direction: column;
             text-align: center;
-            gap: var(--space-md);
-            margin-bottom: var(--space-xl);
+            gap: var(--space-sm);
+            margin-bottom: var(--space-md);
         }
         
         .section-icon-wrapper {
             margin: 0;
+            padding: var(--space-sm);
+        }
+        
+        .section-icon {
+            font-size: 1.1rem;
         }
         
         .section-header::after {
@@ -993,8 +998,8 @@
         .contact-item {
             flex-direction: column;
             text-align: center;
-            padding: var(--space-xl) var(--space-lg);
-            gap: var(--space-lg);
+            padding: var(--space-md);
+            gap: var(--space-md);
         }
         
         .contact-item::before {
@@ -1016,106 +1021,107 @@
         }
         
         .quote-box {
-            padding: var(--space-xl);
-        }
-        
-        .quote-text {
-            font-size: 1.2rem;
-        }
-        
-        .announcement-text {
-            font-size: clamp(1.1rem, 4vw, 1.4rem);
-        }
-        
-        .company-image {
-            height: 15rem;
-        }
-        
-        .lotus-logo {
-            width: 100px;
-            height: 100px;
-        }
-    }
-
-    /* Ultra-Small Screens Optimization */
-    @media (max-width: 480px) {
-        .support-container {
             padding: var(--space-md);
         }
         
-        .support-hero {
-            padding: var(--space-xl) var(--space-md);
+        .quote-text {
+            font-size: 0.95rem;
         }
         
-        .support-hero-title {
-            font-size: clamp(1.8rem, 8vw, 2.5rem);
-            line-height: 1.1;
+        .announcement-text {
+            font-size: clamp(0.95rem, 3.5vw, 1.1rem);
         }
         
-        .support-hero-subtitle {
-            font-size: clamp(0.9rem, 5vw, 1.2rem);
-        }
-        
-        .support-hero-button {
-            width: 100%;
-            justify-content: center;
-            padding: var(--space-md) var(--space-lg);
-        }
-        
-        .support-card-content {
-            padding: var(--space-lg);
-        }
-        
-        .section-title {
-            font-size: clamp(1.3rem, 5vw, 1.8rem);
-        }
-        
-        .contact-item {
-            padding: var(--space-lg) var(--space-md);
-        }
-        
-        .form-input, .form-textarea {
-            font-size: 1rem;
-            padding: var(--space-md) var(--space-md) var(--space-md) var(--space-xl);
-        }
-        
-        .support-button {
-            font-size: 1rem;
-            padding: var(--space-md) var(--space-lg);
+        .company-image {
+            height: 10rem;
         }
         
         .lotus-logo {
             width: 80px;
             height: 80px;
         }
+    }
+
+    /* Ultra-Small Screens Optimization */
+    @media (max-width: 480px) {
+        .support-container {
+            padding: var(--space-sm);
+        }
+        
+        .support-hero {
+            padding: var(--space-md);
+        }
+        
+        .support-hero-title {
+            font-size: clamp(1.4rem, 7vw, 1.8rem);
+            line-height: 1.1;
+        }
+        
+        .support-hero-subtitle {
+            font-size: clamp(0.85rem, 4vw, 1rem);
+        }
+        
+        .support-hero-button {
+            width: 100%;
+            justify-content: center;
+            padding: var(--space-sm) var(--space-md);
+            font-size: 0.9rem;
+        }
+        
+        .support-card-content {
+            padding: var(--space-sm) var(--space-md);
+        }
+        
+        .section-title {
+            font-size: clamp(1.1rem, 4.5vw, 1.4rem);
+        }
+        
+        .contact-item {
+            padding: var(--space-sm) var(--space-md);
+        }
+        
+        .form-input, .form-textarea {
+            font-size: 0.9rem;
+            padding: var(--space-sm);
+        }
+        
+        .support-button {
+            font-size: 0.9rem;
+            padding: var(--space-sm) var(--space-md);
+        }
+        
+        .lotus-logo {
+            width: 70px;
+            height: 70px;
+        }
         
         .company-image {
-            height: 12rem;
+            height: 9rem;
         }
     }
 
     /* Large Desktop Screens Enhancement */
     @media (min-width: 1440px) {
         .support-container {
-            max-width: 1600px;
-            padding: var(--space-3xl) var(--space-2xl);
+            max-width: 1400px;
+            padding: var(--space-xl) var(--space-lg);
         }
         
         .support-hero {
-            padding: 5rem var(--space-3xl);
+            padding: var(--space-2xl) var(--space-xl);
         }
         
         .support-card-content {
-            padding: var(--space-3xl);
+            padding: var(--space-xl);
         }
         
         .company-image {
-            height: 20rem;
+            height: 14rem;
         }
         
         .lotus-logo {
-            width: 160px;
-            height: 160px;
+            width: 110px;
+            height: 110px;
         }
     }
 </style>
