@@ -96,29 +96,41 @@ def format_duration(duration):
 
 @register.filter
 def format_phone_number(number):
-    """Format phone number for better readability"""
+    """Normalize phone number display to +98 format"""
     if not number:
         return ''
         
     # Clean the number
     number = str(number).replace(' ', '')
     
-    # Check if it's an international number
-    if number.startswith('+'):
-        # Format international number
-        if len(number) > 10:
-            return f"{number[:4]} {number[4:7]} {number[7:10]} {number[10:]}"
-        else:
-            return number
-    # Check if it's an extension
-    elif len(number) <= 4 and number.isdigit():
-        return number
-    # Otherwise format as local number
-    else:
-        if len(number) >= 10:
-            return f"{number[:3]} {number[3:6]} {number[6:8]} {number[8:]}"
-        else:
-            return number
+    # Normalize all formats to +98
+    if number.startswith('+9800098'):
+        # +9800098XXXXXXXXX → +98XXXXXXXXX (حذف 98000)
+        number = '+98' + number[8:]
+    elif number.startswith('+98000'):
+        # +980009XXXXXXXXX → +989XXXXXXXXX (حذف 000)
+        number = '+98' + number[6:]
+    elif number.startswith('9800098'):
+        # 9800098XXXXXXXXX → +98XXXXXXXXX
+        number = '+98' + number[7:]
+    elif number.startswith('98000'):
+        # 980009XXXXXXXXX → +989XXXXXXXXX (حذف 000)
+        number = '+98' + number[5:]
+    elif number.startswith('+98'):
+        # Already in +98 format, keep it
+        pass
+    elif number.startswith('0098'):
+        # 00989XXXXXXXXX → +989XXXXXXXXX
+        number = '+98' + number[4:]
+    elif number.startswith('98') and len(number) >= 12:
+        # 989XXXXXXXXX → +989XXXXXXXXX
+        number = '+98' + number[2:]
+    elif number.startswith('0') and len(number) >= 10:
+        # 09XXXXXXXXX → +989XXXXXXXXX
+        number = '+98' + number[1:]
+    
+    # Return the normalized number
+    return number
 
 @register.simple_tag
 def is_active_filter(request, param, value):

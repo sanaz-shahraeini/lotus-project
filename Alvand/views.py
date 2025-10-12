@@ -147,12 +147,12 @@ def isInternational(prefix):
     return False
 
 
-def calculatePrice(duration: str, price: int) -> int:
+def calculatePrice(duration: str, price: int) -> float:
     if not duration or price is None or price <= 0: return 0
     hour, minute, second = map(int, duration.split(":"))
     toSeconds = (hour * 3600) + (minute * 60) + second
-    toMinutes = math.ceil(toSeconds / 60)
-    return toMinutes * price
+    # محاسبه بر اساس ثانیه: (ثانیه / 60) × قیمت هر دقیقه
+    return (toSeconds / 60) * price
 
 
 def persianCallTypeToEnglish(ct):
@@ -290,30 +290,115 @@ def callTypeDetector(number):
     number = str(number)
     if len(number) < 5:
         return None
-    if number[0:3] == "+98":
+    
+    # Normalize international formats
+    # Handle +9800098 format first (special case)
+    if number[0:8] == "+9800098":
+        number = "0" + number[8:]
+    elif number[0:7] == "9800098":
+        number = "0" + number[7:]
+    # Handle +98000 format
+    elif number[0:6] == "+98000":
+        number = "0" + number[6:]
+    elif number[0:5] == "98000":
+        number = "0" + number[5:]
+    # Handle standard +98 format
+    elif number[0:3] == "+98":
         number = number.replace("+98", "0")
-    if number[0:3] == "000":
-        number = number[3:]
-    if number[0:2] == "98":
+    elif number[0:4] == "0098":
+        number = "0" + number[4:]
+    elif number[0:2] == "98":
         if number[2:4] != "09":
             number = "09" + number[4:]
         else:
             number = "0" + number[2:]
-    if number[0:4] == "0098":
-        number = "0" + number[4:]
-    hamrahaval = ["0910", "0910", "0912", "0913", "0914", "0915", "0916", "0917", "0918", "0919", "0991", "0990",
+    
+    # Handle 000 prefix
+    if number[0:3] == "000":
+        number = number[3:]
+    
+    # Mobile operators
+    hamrahaval = ["0910", "0912", "0913", "0914", "0915", "0916", "0917", "0918", "0919", "0991", "0990",
                   "0992", "0993", "0996"]
     irancell = ["0900", "0901", "0902", "0903", "0904", "0905", "0930", "0933", "0935", "0936", "0937", "0938", "0939",
                 "0941"]
     rightel = ["0921", "0922", "0923", "0920"]
-    outofprovincial = ["041", "044", "045", "031", "084", "077", "021", "038", "051", "056", "058", "061", "024", "023",
-                       "054", "071", "026", "025", "028", "087", "034", "083", "074", "017", "013", "066", "011", "086",
-                       "076", "081", "035"]
-    return "irancell" if number[0:4] in irancell else "hamrahaval" if number[
-                                                                      0:4] in hamrahaval else "rightel" if number[
-                                                                                                           0:4] in rightel else "international" if isInternational(
-        number[0:3]) else "provincial" if int(number[0]) in range(1, 9) else "outofprovincial" if number[
-                                                                                                  0:3] in outofprovincial else None
+    
+    # Check mobile operators first
+    if number[0:4] in irancell:
+        return "irancell"
+    if number[0:4] in hamrahaval:
+        return "hamrahaval"
+    if number[0:4] in rightel:
+        return "rightel"
+    
+    # Check international
+    if isInternational(number[0:3]):
+        return "international"
+    
+    # Provincial codes mapping (based on PROVINCE choices)
+    PROVINCE_CODES = {
+        '0': ['041'],      # آذربایجان شرقی - تبریز
+        '1': ['044'],      # آذربایجان غربی - ارومیه
+        '2': ['045'],      # اردبیل
+        '3': ['031'],      # اصفهان
+        '4': ['026'],      # البرز - کرج
+        '5': ['084'],      # ایلام
+        '6': ['077'],      # بوشهر
+        '7': ['021'],      # تهران
+        '8': ['038'],      # چهارمحال و بختیاری - شهرکرد
+        '9': ['056'],      # خراسان جنوبی - بیرجند
+        '10': ['051'],     # خراسان رضوی - مشهد
+        '11': ['058'],     # خراسان شمالی - بجنورد
+        '12': ['061'],     # خوزستان - اهواز
+        '13': ['024'],     # زنجان
+        '14': ['023'],     # سمنان
+        '15': ['054'],     # سیستان و بلوچستان - زاهدان
+        '16': ['071'],     # فارس - شیراز
+        '17': ['028'],     # قزوین
+        '18': ['025'],     # قم
+        '19': ['087'],     # کردستان - سنندج
+        '20': ['034'],     # کرمان
+        '21': ['083'],     # کرمانشاه
+        '22': ['074'],     # کهگیلویه و بویراحمد - یاسوج
+        '23': ['017'],     # گلستان - گرگان
+        '24': ['013'],     # گیلان - رشت
+        '25': ['066'],     # لرستان - خرم آباد
+        '26': ['011'],     # مازندران - ساری
+        '27': ['086'],     # مرکزی - اراک
+        '28': ['076'],     # هرمزگان - بندرعباس
+        '29': ['081'],     # همدان
+        '30': ['035'],     # یزد
+    }
+    
+    # Get selected province from ContactInfo
+    try:
+        contact_info = ContactInfo.objects.first()
+        selected_province = contact_info.province if contact_info else None
+    except:
+        selected_province = None
+    
+    # Check if it's a landline number (starts with 0 and has area code)
+    if number[0] == "0" and len(number) >= 10:
+        area_code = number[0:3]
+        
+        # If we have a selected province, check if this number is from the same province
+        if selected_province and selected_province in PROVINCE_CODES:
+            province_codes = PROVINCE_CODES[selected_province]
+            if area_code in province_codes:
+                return "provincial"  # داخل استانی
+            else:
+                # Check if it's a valid area code from other provinces
+                all_area_codes = [code for codes in PROVINCE_CODES.values() for code in codes]
+                if area_code in all_area_codes:
+                    return "outofprovincial"  # خارج استانی
+        else:
+            # If no province selected, use the old logic
+            all_area_codes = [code for codes in PROVINCE_CODES.values() for code in codes]
+            if area_code in all_area_codes:
+                return "outofprovincial"
+    
+    return None
 
 
 def isfloat(value):
