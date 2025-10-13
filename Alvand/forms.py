@@ -203,9 +203,9 @@ class costsForm(forms.ModelForm):
             self.initial['provincial'] = 45
             self.initial['outofprovincial'] = 330
             self.initial['international'] = 3400
-            self.initial['irancell'] = 65
-            self.initial['hamrahaval'] = 65
-            self.initial['rightel'] = 65
+            self.initial['irancell'] = 625
+            self.initial['hamrahaval'] = 625
+            self.initial['rightel'] = 625
         
         for field in self.fields.keys():
             self.fields[field].required = False
@@ -299,4 +299,23 @@ class userAccessToErrorsPageForm(forms.ModelForm):
         fields = ("errorsreport", 'users')
         widgets = {
             "errorsreport": forms.CheckboxInput(attrs={'class': 'sr-only peer'})
+        }
+
+
+class SupportMessageForm(forms.ModelForm):
+    class Meta:
+        model = SupportMessage
+        fields = ('name', 'message')
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-input',
+                'id': 'name',
+                'placeholder': 'نام و نام خانوادگی خود را وارد کنید'
+            }),
+            'message': forms.Textarea(attrs={
+                'class': 'form-textarea',
+                'id': 'message',
+                'placeholder': 'پیام خود را بنویسید...',
+                'rows': 4
+            })
         }

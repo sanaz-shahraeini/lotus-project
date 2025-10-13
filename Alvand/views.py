@@ -1975,7 +1975,21 @@ def dashboard_export(request):
 
 
 def support(request):
-    return render(request, 'support.html', context={'pageTitle': 'پشتیبانی'})
+    from django.contrib import messages
+    from .forms import SupportMessageForm
+    
+    if request.method == 'POST':
+        form = SupportMessageForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'پیام شما با موفقیت ارسال شد. به زودی با شما تماس خواهیم گرفت.')
+            return redirect('support')
+        else:
+            messages.error(request, 'لطفا تمام فیلدها را به درستی پر کنید.')
+    else:
+        form = SupportMessageForm()
+    
+    return render(request, 'support.html', context={'pageTitle': 'پشتیبانی', 'form': form})
 
 def checkSession(request):
     if 'user' in request.session:

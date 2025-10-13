@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import SMDRRecord, Users, Groups, Infos, Permissions, ContactInfo, Log, lices
+from .models import SMDRRecord, Users, Groups, Infos, Permissions, ContactInfo, Log, lices, SupportMessage
 
 @admin.register(Users)
 class UsersAdmin(admin.ModelAdmin):
@@ -52,3 +52,15 @@ class SMDRRecordAdmin(admin.ModelAdmin):
     list_filter = ('date', 'call_type', 'is_incoming', 'is_outgoing', 'is_internal', 'is_system_message')
     search_fields = ('ext', 'co', 'dial_number')
     date_hierarchy = 'date'
+
+@admin.register(SupportMessage)
+class SupportMessageAdmin(admin.ModelAdmin):
+    list_display = ('name', 'message_preview', 'created_at', 'is_read')
+    list_filter = ('is_read', 'created_at')
+    search_fields = ('name', 'message')
+    readonly_fields = ('created_at',)
+    date_hierarchy = 'created_at'
+    
+    def message_preview(self, obj):
+        return obj.message[:50] + '...' if len(obj.message) > 50 else obj.message
+    message_preview.short_description = 'پیام'

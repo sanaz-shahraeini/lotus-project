@@ -1235,21 +1235,42 @@
                     </div>
                 </div>
                 
-                <form class="support-form">
+                {% if messages %}
+                    <div class="messages-container" style="margin-bottom: var(--space-lg);">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}" style="padding: var(--space-md); border-radius: var(--radius-md); margin-bottom: var(--space-sm); {% if message.tags == 'success' %}background: linear-gradient(135deg, rgba(0, 188, 212, 0.1) 0%, rgba(63, 81, 181, 0.15) 100%); border: 2px solid rgba(0, 188, 212, 0.3); color: var(--primary-color);{% else %}background: rgba(239, 68, 68, 0.1); border: 2px solid rgba(239, 68, 68, 0.3); color: #dc2626;{% endif %}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+                <form class="support-form" method="post" action="{% url 'support' %}">
+                    {% csrf_token %}
                     <div class="form-group">
-                        <label for="name" class="form-label">نام و نام خانوادگی</label>
+                        <label for="id_name" class="form-label">نام و نام خانوادگی</label>
                         <div class="form-input-wrapper">
-                            <input type="text" id="name" class="form-input">
+                            {{ form.name }}
                             <i class="fas fa-user form-icon"></i>
                         </div>
+                        {% if form.name.errors %}
+                            <div class="error-message" style="color: #dc2626; font-size: 0.875rem; margin-top: 0.25rem;">
+                                {{ form.name.errors.0 }}
+                            </div>
+                        {% endif %}
                     </div>
                     
                     <div class="form-group">
-                        <label for="message" class="form-label">پیام شما</label>
+                        <label for="id_message" class="form-label">پیام شما</label>
                         <div class="form-input-wrapper">
-                            <textarea id="message" class="form-textarea" ></textarea>
+                            {{ form.message }}
                             <i class="fas fa-comment form-icon"></i>
                         </div>
+                        {% if form.message.errors %}
+                            <div class="error-message" style="color: #dc2626; font-size: 0.875rem; margin-top: 0.25rem;">
+                                {{ form.message.errors.0 }}
+                            </div>
+                        {% endif %}
                     </div>
                     
                     <button type="submit" class="support-button">

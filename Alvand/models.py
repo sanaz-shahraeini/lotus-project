@@ -436,3 +436,18 @@ class SMDRRecord(models.Model):
         verbose_name = "گزارش SMDR"
         verbose_name_plural = "گزارش های SMDR"
         ordering = ['-date', '-time']
+
+
+class SupportMessage(models.Model):
+    name = models.CharField(max_length=200, verbose_name='نام و نام خانوادگی')
+    message = models.TextField(verbose_name='پیام')
+    created_at = models.DateTimeField(default=timezone.now, verbose_name='تاریخ ایجاد')
+    is_read = models.BooleanField(default=False, verbose_name='خوانده شده')
+    
+    def __str__(self):
+        return f"{self.name} - {self.created_at.strftime('%Y-%m-%d %H:%M')}"
+    
+    class Meta:
+        verbose_name = "پیام پشتیبانی"
+        verbose_name_plural = "پیام های پشتیبانی"
+        ordering = ['-created_at']
