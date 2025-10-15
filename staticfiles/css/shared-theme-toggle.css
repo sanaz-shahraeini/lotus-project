@@ -1,0 +1,61 @@
+/* Shared Theme Toggle Styles */
+
+/* Fix for theme toggle icons in navbar - comprehensive selector coverage */
+.theme-toggle-btn i,
+.dark-mode-toggle i,
+.light-mode-toggle i,
+[data-theme-toggle] i,
+.theme-switch i,
+#themeToggle i,
+.navbar .fa-moon,
+.navbar .fa-sun,
+header .fa-moon,
+header .fa-sun,
+.nav .fa-moon,
+.nav .fa-sun,
+.theme-toggle-icon {
+    color: var(--primary-color) !important;
+    font-size: 1.25rem !important;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2)) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transition: var(--transition-base) !important;
+}
+
+/* Dark mode theme toggle adjustments */
+.dark .theme-toggle-btn i,
+.dark .dark-mode-toggle i,
+.dark .light-mode-toggle i,
+.dark [data-theme-toggle] i,
+.dark .theme-switch i,
+.dark #themeToggle i,
+.dark .navbar .fa-moon,
+.dark .navbar .fa-sun,
+.dark header .fa-moon,
+.dark header .fa-sun,
+.dark .nav .fa-moon, 
+.dark .nav .fa-sun,
+.dark .theme-toggle-icon {
+    color: var(--primary-light) !important;
+}
+
+/* Theme-specific icon visibility - Light Mode */
+.fa-moon {
+    color: var(--primary-color) !important;
+    display: inline-block !important;
+}
+
+.fa-sun {
+    color: var(--warning) !important;
+    display: none !important;
+}
+
+/* Theme-specific icon visibility - Dark Mode */
+.dark .fa-sun {
+    display: inline-block !important;
+    color: #FF9E80 !important;
+}
+
+.dark .fa-moon {
+    display: none !important;
+}

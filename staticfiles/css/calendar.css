@@ -33,6 +33,30 @@
     box-sizing: border-box;
 }
 
+/* Dark mode styling for date inputs */
+.dark .date-input-wrapper input[data-jdp] {
+    background: #1e293b !important;
+    border-color: #475569 !important;
+    color: #e2e8f0 !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark .date-input-wrapper input[data-jdp]:hover {
+    border-color: #80DEEA !important;
+    background: #334155 !important;
+    box-shadow: 0 3px 10px rgba(128, 222, 234, 0.15) !important;
+}
+
+.dark .date-input-wrapper input[data-jdp]:focus {
+    border-color: #80DEEA !important;
+    background: #334155 !important;
+    box-shadow: 0 0 0 3px rgba(128, 222, 234, 0.1) !important;
+}
+
+.dark .date-input-wrapper input[data-jdp]::placeholder {
+    color: #94a3b8 !important;
+}
+
 .date-input-wrapper input[data-jdp]:hover {
     border-color: #00BCD4;
     box-shadow: 0 3px 10px rgba(0, 188, 212, 0.15);
@@ -320,7 +344,7 @@
 jdp-container,
 .jalali-datepicker-container {
     z-index: 10002 !important;
-    position: absolute !important;
+    position: fixed !important;
 }
 
 /* Prevent filter cards from hiding calendar */
@@ -595,7 +619,7 @@ jdp-overlay {
 
 jdp-container {
     z-index: 10002 !important;
-    position: absolute !important;
+    position: fixed !important;
     display: block !important;
     direction: rtl !important;
     font-family: inherit !important;
@@ -606,6 +630,8 @@ jdp-container {
     border: 2px solid rgba(0, 188, 212, 0.1) !important;
     padding: 0 !important;
     overflow: hidden !important;
+    transform: none !important;
+    margin: 0 !important;
 }
 
 /* Redesigned Header Section */

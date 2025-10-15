@@ -68,7 +68,7 @@ celerybeat.pid
 # Database backups
 *.bak 
 password.txt
-
+venv
 # Django
 *.log
 *.pot

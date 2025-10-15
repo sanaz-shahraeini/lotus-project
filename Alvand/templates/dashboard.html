@@ -976,12 +976,11 @@
 {% block main %}
 <div class="min-h-screen relative" style="background-color: var(--bg-color); transition: background-color 0.3s;">
     <!-- Main Content Area -->
-    <main class="container mx-auto px-4 py-6">
-
+    <main class="px-4 py-6 max-w-full">
         <!-- Dashboard Content -->
         <div class="space-y-6">
             <!-- Dashboard Header with Gradient Background -->
-            <div class="dashboard-header p-6 md:p-8 card">
+            <div class="dashboard-header p-6 md:p-8 card max-w-[1400px] mx-auto" style="max-width: 1400px; margin-left: auto; margin-right: auto;">
                 <div class="relative z-10 flex items-center justify-between">
                     <!-- Left side with title -->
                     <div class="flex-1">
@@ -1008,7 +1007,7 @@
             </div>
 
             <!-- Stats Cards - Modern UI -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6" id="statsCards">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6 mb-6 md:mb-8" id="statsCards">
                 <div class="stat-card total card bg-white p-6 hover:border-blue-200">
                     <div class="flex items-center justify-between mb-4">
                         <div class="w-14 h-14 stat-icon bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
@@ -1118,12 +1117,15 @@
                     </div>
                 </div>
             </div>
-            
+
+            <!-- Spacer to separate cards and filters -->
+            <div class="h-6 md:h-8"></div>
+
             <!-- Aggregate extras: total duration and top extensions -->
 
 
             <!-- Filter Bar - Redesigned -->
-            <form id="dashboardFiltersForm" method="get" class="search-filters-container">
+            <form id="dashboardFiltersForm" method="get" class="search-filters-container mt-6 md:mt-8 max-w-[1200px] mx-auto" style="margin-top: 1.5rem; max-width: 1200px; margin-left: auto; margin-right: auto;">
                 <div class="search-filters-header">
                     <div class="search-filters-title">
                         <i class="fas fa-filter"></i>
@@ -1279,7 +1281,7 @@
             </form>
 
             <!-- Calls Card -->
-            <div class="card overflow-hidden">
+            <div class="card overflow-hidden max-w-[1200px] mx-auto" style="max-width: 1200px; margin-left: auto; margin-right: auto;">
                 <div class="p-4 border-b border-slate-200 flex items-center justify-between">
                     <h3 class="font-medium text-slate-800">لیست تماس‌ها</h3>
                     <div class="flex items-center gap-2">
@@ -1386,7 +1388,7 @@
             </div>
 
             <!-- Footer with pagination -->
-            <div class="card p-5">
+            <div class="card p-5 max-w-[1200px] mx-auto" style="max-width: 1200px; margin-left: auto; margin-right: auto;">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div class="flex flex-wrap items-center gap-3">
                         <div class="px-6 py-2.5 bg-blue-50 rounded-lg"><div class="flex items-center gap-2"><i class="fa-solid fa-list text-blue-500"></i><div><span class="text-sm font-medium text-slate-700">تعداد کل:</span><span class="text-sm text-blue-600 font-semibold">{{ dashPage.paginator.count }}</span></div></div></div>

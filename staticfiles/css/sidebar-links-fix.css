@@ -50,18 +50,18 @@
 /* Adjust sidebar width for better text display */
 @media (min-width: 1024px) {
     #sidebar {
-        width: 160px !important;
+        width: 220px !important;
     }
     
     /* Adjust main content to accommodate wider sidebar */
     .lg\:pr-\[135px\] {
-        padding-right: 160px !important;
+        padding-right: 0 !important;
     }
 }
 
 /* Fix main content positioning to prevent sidebar overlap */
 .main-content {
-    padding-right: 160px !important;
+    padding-right: 0 !important;
     transition: padding-right 0.3s ease !important;
 }
 
@@ -73,7 +73,7 @@
 
 /* Fix mobile sidebar width */
 #mobile-sidebar {
-    width: 160px !important;
+    width: 220px !important;
 }
 
 /* Fix toggle button position when sidebar is open */

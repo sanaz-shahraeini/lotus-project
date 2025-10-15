@@ -542,9 +542,9 @@ body {
 }
 
 .main-content {
-    margin-right: 135px;
+    margin-right: 260px;
     margin-left: 0;
-    width: calc(100% - 135px);
+    width: auto;
     padding: 1rem;
     background-color: var(--bg-color);
     min-height: 100vh;

@@ -18,13 +18,34 @@
         overflow: hidden;
     }
 
+    /* Right-side user info card */
+    .profile-info-card {
+        background: linear-gradient(135deg, rgba(0, 188, 212, 0.06), rgba(83, 109, 254, 0.06));
+        border: 1px solid var(--border-color);
+        border-radius: 0.75rem;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .profile-info-card .profile-name-display {
+        text-align: center;
+        align-items: center;
+    }
+
+    .profile-info-card .profile-username {
+        align-self: center;
+    }
+
     .user-card:hover {
         box-shadow: var(--shadow-lg);
     }
 
     .card-header {
         
-      background: linear-gradient(135deg, #00BCD4, #536DFE); /* Lotus Aqua to Electric Violet */
+      background: linear-gradient(135deg, #00BCD4, #7B9EFF); /* Lotus Aqua to Light Purple in light mode */
         color: white;
         margin-top: 10px;
         padding: 1.25rem 1.5rem;
@@ -354,18 +375,16 @@
         margin-bottom: 1.5rem;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         border: 1px solid var(--border-color);
-        text-align: center;
         position: relative;
         overflow: hidden;
-        display: flex;
-        align-items: flex-start;
+        display: grid;
+        grid-template-columns: 1fr 320px;
         gap: 1.25rem;
-        flex-wrap: wrap;
-        justify-content: center;
+        align-items: start;
     }
     
     .profile-section > *:not(.file-preview) {
-        align-self: center;
+        align-self: stretch;
     }
     
     .profile-section::before {
@@ -374,13 +393,13 @@
     
     .profile-image-container {
         position: relative;
-        width: 120px;
-        height: 120px;
+        width: 84px;
+        height: 84px;
         margin: 0;
         z-index: 1;
         border-radius: 50%;
-        padding: 4px;
-        background: linear-gradient(135deg, #00BCD4, #536DFE);
+        padding: 3px;
+        background: linear-gradient(135deg, #00BCD4, #7B9EFF);
         box-shadow: 0 4px 12px rgba(0, 188, 212, 0.25);
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         overflow: hidden;
@@ -435,7 +454,7 @@
     .photo-upload-zone {
         flex: 1;
         min-width: 280px;
-        padding: 1.5rem;
+        padding: 1.75rem;
         border: 2px dashed var(--border-color);
         border-radius: 0.75rem;
         background: linear-gradient(135deg, rgba(0, 188, 212, 0.03), rgba(83, 109, 254, 0.03));
@@ -446,6 +465,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        height: 100%;
     }
     
     .photo-upload-zone:hover {
@@ -474,7 +494,7 @@
     .upload-icon {
         width: 48px;
         height: 48px;
-        background: linear-gradient(135deg, #00BCD4, #536DFE);
+        background: linear-gradient(135deg, #00BCD4, #7B9EFF);
         border-radius: 12px;
         display: flex;
         align-items: center;
@@ -511,7 +531,7 @@
     }
     
     .upload-button {
-        background: linear-gradient(135deg, #00BCD4, #536DFE);
+        background: linear-gradient(135deg, #00BCD4, #7B9EFF);
         color: white;
         border: none;
         padding: 0.625rem 1.25rem;
@@ -628,8 +648,20 @@
         opacity: 0.05;
     }
     
+    .dark .card-header {
+        background: linear-gradient(135deg, #00BCD4, #536DFE); /* Vibrant purple for dark mode */
+    }
+    
     .dark .profile-image-container {
-        background: linear-gradient(135deg, #00ACC1, #5C6BC0);
+        background: linear-gradient(135deg, #00BCD4, #536DFE); /* Vibrant purple for dark mode */
+    }
+    
+    .dark .upload-icon {
+        background: linear-gradient(135deg, #00BCD4, #536DFE); /* Vibrant purple for dark mode */
+    }
+    
+    .dark .upload-button {
+        background: linear-gradient(135deg, #00BCD4, #536DFE); /* Vibrant purple for dark mode */
     }
     
     
@@ -656,35 +688,24 @@
     @media (max-width: 768px) {
         .profile-section {
             padding: 1.25rem;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: 1fr;
             gap: 1.25rem;
         }
-        
         .profile-image-container {
-            width: 100px;
-            height: 100px;
+            width: 88px;
+            height: 88px;
         }
-        
-        .profile-name-display {
-            text-align: center;
-            align-items: center;
-        }
-        
-        .profile-username {
-            align-self: center;
-        }
-        
         .photo-upload-zone {
             padding: 1.25rem;
             min-width: 100%;
+            min-height: 180px;
         }
-        
         .upload-icon {
             width: 40px;
             height: 40px;
             font-size: 1.25rem;
         }
-        
         .upload-text {
             font-size: 0.875rem;
         }
@@ -1160,7 +1181,7 @@ body jdp-container {
         
     <!-- Password Reset Requests Section - Modern Design -->
     {% if password_reset_requests %}
-    <div class="user-card" style="margin-top:10px; margin-bottom: 1.5rem; position: relative; z-index: 100; overflow: hidden;" id="passwordResetRequestsCard">
+    <div style="margin-top:10px; margin-bottom: 1.5rem; position: relative; z-index: 100; overflow: hidden;" id="passwordResetRequestsCard">
         <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: space-between; border-radius: 1rem 1rem 0 0;">
             <div style="display: flex; align-items: center; gap: 0.75rem;">
                 <div style="background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
@@ -1254,22 +1275,16 @@ body jdp-container {
         .reset-table-header {
             padding: 1rem 1.25rem !important;
             text-align: center !important;
-            color: var(--text-color) !important; /* Light mode readable */
+            color: #ffffff !important; /* White text for both light and dark mode */
             font-weight: 600 !important;
             font-size: 0.875rem !important;
             text-transform: uppercase !important;
             letter-spacing: 0.5px !important;
-            border-bottom: 2px solid var(--border-color) !important;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important;
         }
 
         .reset-table-header * {
-            color: inherit !important; /* Inherit from header */
-        }
-
-        /* Dark mode: keep headers white for contrast */
-        html.dark .reset-table-header,
-        html.dark .reset-table-header * {
-            color: #ffffff !important;
+            color: #ffffff !important; /* White text for all child elements */
         }
         
         /* Make table body cells align like headers */
@@ -1326,7 +1341,7 @@ body jdp-container {
     </style>
     {% endif %}
 
-    <div class="user-card" style="margin-top: 1.5rem;">
+    <div style="margin-top: 1.5rem;">
         <div class="card-header">
             <h2 style="margin: 0; font-size: 1.25rem; font-weight: 600;">اطلاعات کاربر</h2>
         </div>
@@ -1336,21 +1351,7 @@ body jdp-container {
             
             <!-- Enhanced User Profile Image Section - Modern Redesign -->
             <div class="profile-section">
-                <div class="profile-image-container">
-                    <img id="id_picurl" src="" class="user-image placeholder" alt="Profile Picture">
-                    <div class="photo-upload-overlay">
-                        <i class="fa-solid fa-camera"></i>
-                        <span>تغییر عکس پروفایل</span>
-                    </div>
-                    <input type="file" id="upload" class="hidden" name="uploadPhoto" accept="image/jpeg,image/png,image/gif,image/webp">
-                </div>
-                
-                <div class="profile-name-display">
-                    <div id="profileNameDisplay" class="profile-name">انتخاب کاربر</div>
-                    <div id="profileUsernameDisplay" class="profile-username">نام کاربری</div>
-                </div>
-                
-                <!-- Enhanced Photo Upload Zone -->
+                <!-- Left: Upload Zone -->
                 <div class="photo-upload-zone" id="photoUploadZone" onclick="document.getElementById('upload').click()">
                     <div class="upload-instructions">
                         <div class="upload-icon">
@@ -1365,7 +1366,23 @@ body jdp-container {
                         </button>
                     </div>
                 </div>
-                
+
+                <!-- Right: Profile info card with avatar & names -->
+                <div class="profile-info-card">
+                    <div class="profile-image-container">
+                        <img id="id_picurl" src="" class="user-image placeholder" alt="Profile Picture">
+                        <div class="photo-upload-overlay">
+                            <i class="fa-solid fa-camera"></i>
+                            <span>تغییر عکس پروفایل</span>
+                        </div>
+                        <input type="file" id="upload" class="hidden" name="uploadPhoto" accept="image/jpeg,image/png,image/gif,image/webp">
+                    </div>
+                    <div class="profile-name-display">
+                        <div id="profileNameDisplay" class="profile-name">انتخاب کاربر</div>
+                        <div id="profileUsernameDisplay" class="profile-username">نام کاربری</div>
+                    </div>
+                </div>
+
                 <!-- File Preview -->
                 <div class="file-preview" id="filePreview">
                     <div class="file-info">

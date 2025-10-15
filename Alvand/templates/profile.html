@@ -231,16 +231,20 @@
     .profile-name {
         font-size: 1.75rem;
         font-weight: 700;
-        color: var(--text-color);
+        color: #1a1a1a; /* Dark color for light mode visibility */
         margin-bottom: 0;
         text-align: center;
         text-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
     
+    .dark .profile-name {
+        color: #F5F7FA; /* Light color for dark mode */
+    }
+    
     .profile-username {
         display: inline-block;
         background-color: rgba(0, 188, 212, 0.2);
-        color: #0097A7;
+        color: #006064; /* Darker cyan for better visibility in light mode */
         padding: 0.5rem 1.25rem;
         border-radius: 0.5rem;
         font-size: 1.125rem;
@@ -257,7 +261,7 @@
     }
     
     .profile-detail {
-        color: var(--text-color);
+        color: #37474F; /* Dark gray for light mode visibility */
         font-size: 0.875rem;
         margin-bottom: 1rem;
         background-color: rgba(41, 182, 246, 0.1);
@@ -271,7 +275,7 @@
     }
     
     .profile-detail i {
-        color: #00BCD4;
+        color: #00838F; /* Darker cyan for better visibility in light mode */
         font-size: 0.75rem;
     }
     
