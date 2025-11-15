@@ -19,15 +19,12 @@ class successSent:
 
 @shared_task
 def checkCOMPorts():
-    # print("CALLED checkCOMPorts")
-    if True: return
     previous_ports = cache.get("com_ports", {})
     current_ports = {port.device: port.description for port in serial.tools.list_ports.comports()}
     new_ports = set(current_ports) - set(previous_ports)
     removed_ports = set(previous_ports) - set(current_ports)
     portConnected = cache.get("portConnected", {})
-    # print("CURRENT PORTS:", current_ports)
-    # print("NEW PORTS:", new_ports)
+
     if new_ports:
         for port in new_ports:
             if "modem" not in current_ports[port].lower() and port not in portConnected:
@@ -67,14 +64,17 @@ def checkNetworkStatus():
 @shared_task
 def connectToDevice():
     print("CALLED SELAM connectToDevice")
-    if True: return
     portConnected = cache.get("portConnected", {})
     telLogin = cache.get("telLogin", False)
-    serialPort = cache.get("serialPort")
+    serialPort = None
 
     canConnectTo = {k: v for k, v in portConnected.items() if "ethernet" in k.lower() or "COM" in k}
+    getNetInfo = Device.objects.all()
+    cable_type = None
+    if getNetInfo.exists():
+        cable_type = getNetInfo.first().cable_type.lower() if getNetInfo.first().cable_type else None
     print("CAN CONNECTED TO:", canConnectTo)
-    if any("ethernet" in key.lower() for key in canConnectTo.keys()):
+    if cable_type == 'ethernet':
         getNetInfo = Device.objects.all()
         if getNetInfo.exists():
             if getNetInfo.first().smdrip and getNetInfo.first().smdrport:
@@ -111,20 +111,49 @@ def connectToDevice():
         else:
             cache.set("telLogin", False)
 
-    elif any("COM" in key for key in canConnectTo.keys()):
+    elif cable_type == 'rs-232c':
         if serialPort and serialPort.is_open:
             serialPort.close()
 
         canConnectTo = [key for key in canConnectTo if "COM" in key]
-        flow = portConnected[canConnectTo[0]].get("flow") or ""
+        if not canConnectTo:
+            return "noCOMPort"
+        port_name = canConnectTo[0]
+        flow = portConnected[port_name].get("flow") or ""
         flow = flow.lower().replace("/", "")
 
+        # Normalize pyserial args
+        parity_val = portConnected[port_name]["parity"]
+        if isinstance(parity_val, str):
+            pmap = {
+                'none': serial.PARITY_NONE,
+                'odd': serial.PARITY_ODD,
+                'even': serial.PARITY_EVEN,
+                'mark': serial.PARITY_MARK,
+                'space': serial.PARITY_SPACE,
+            }
+            parity_val = pmap.get(parity_val.lower(), serial.PARITY_NONE)
+
+        databits_val = portConnected[port_name]["databits"]
+        smap = {5: serial.FIVEBITS, 6: serial.SIXBITS, 7: serial.SEVENBITS, 8: serial.EIGHTBITS}
+        databits_val = smap.get(int(databits_val), serial.EIGHTBITS)
+
+        stopbits_val = portConnected[port_name]["stopbits"]
+        stopbits_val = float(stopbits_val) if stopbits_val is not None else 1
+        if stopbits_val == 1:
+            stopbits_val = serial.STOPBITS_ONE
+        elif stopbits_val == 1.5:
+            stopbits_val = serial.STOPBITS_ONE_POINT_FIVE
+        else:
+            stopbits_val = serial.STOPBITS_TWO
+
         serial_args = {
-            "port": canConnectTo[0],
-            "baudrate": portConnected[canConnectTo[0]]["baudrate"],
-            "bytesize": portConnected[canConnectTo[0]]["databits"],
-            "parity": portConnected[canConnectTo[0]]["parity"],
-            "stopbits": portConnected[canConnectTo[0]]["stopbits"]
+            "port": port_name,
+            "baudrate": int(portConnected[port_name]["baudrate"]),
+            "bytesize": databits_val,
+            "parity": parity_val,
+            "stopbits": stopbits_val,
+            "timeout": 1,
         }
 
         if flow == "rtscts":
@@ -134,13 +163,17 @@ def connectToDevice():
         elif flow == "xonxoff":
             serial_args["xonxoff"] = True
 
-        serialPort = serial.Serial(**serial_args)
-        cache.set("serialPort", serialPort)
+        try:
+            serialPort = serial.Serial(**serial_args)
+        except Exception as err:
+            cache.set("serial_error", str(err))
+            return f"serialError: {err}"
 
         while serialPort:
             if serialPort.in_waiting > 0:
                 data = serialPort.readline().decode("utf-8").strip()
                 if checkIfValidData(data):
+                    processToCheckEverything(data)
                     cache.set("last_received_data", data)
     return "connectToDevice"
 
@@ -183,6 +216,7 @@ def sendErrorReport(email, faults):
     for fault in faults:
         errorsSent.objects.create(fault=fault, success=successSent.success if res else successSent.unsuccess)
 
+@shared_task
 def sendInfos():
     try:
         ip = socket.gethostbyname("lotusiot.ir")

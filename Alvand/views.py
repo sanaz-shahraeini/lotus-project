@@ -842,6 +842,7 @@ class systemSettings(FormView, View):
                 cable_type = request.POST.get('cable_type', '').strip().lower()
                 number_of_lines = request.POST.get('number_of_lines', '').strip()
                 
+                # Decide Ethernet mode only based on selected cable type
                 isEthernet = (cable_type == 'ethernet')
                 
                 dev = Device.objects.all()
@@ -1404,20 +1405,13 @@ class settingsPage(TemplateView, View):
             if getVersion() == 'alvand':
                 systemSettingsConfiguration(field, fieldRequest, self.request, self.success_url, form, False)
             elif getVersion == 'binalud':
-                isEthernet = False
-                if field.get('device') in ['KX-TDA30','KX-TDA100','KX-TDA100D','KX-TDA100DBA','KX-TDA200','KX-TDA600']:
-                    isEthernet = False
-                elif field.get('device') in ['KX-NS300', 'KX-NS500', 'KX-NS700', 'KX-NS1000', 'KX-HTS32', 'KX-HTS824']:
-                    isEthernet = True
-                else:
-                    cable = field.get('cable_type')
-                    if not cable or cable.lower() == 'none':
-                        messages.error(self.request, 'لطفا یکی از انواع کابل هارا انتخاب کنید.')
-                        return redirect(self.success_url)
-                    elif cable.lower() == 'rs232c':
-                        isEthernet = False
-                    else:
-                        isEthernet = True
+                # Decide Ethernet mode only based on selected cable type, not device model
+                cable = field.get('cable_type')
+                if not cable or cable.lower() in ['none', '']:
+                    messages.error(self.request, 'لطفا یکی از انواع کابل هارا انتخاب کنید.')
+                    return redirect(self.success_url)
+
+                isEthernet = (cable.lower() == 'ethernet')
 
                 systemSettingsConfiguration(field, fieldRequest, self.request, self.success_url, form, isEthernet)
 
@@ -3386,19 +3380,13 @@ def get_user_data(request):
 def get_cable_types(request):
     """AJAX endpoint to get cable type options based on device model."""
     if request.method == 'GET':
-        device_model = request.GET.get('device', '').strip()
-        
-        if device_model in ['KX-TA308', 'KX-TES824', 'KX-TEM824']:
-            # For these models, only show RS232C option
-            cable_types = [{'value': '', 'label': '------'}, {'value': 'rs-232c', 'label': 'RS-232C'}]
-        else:
-            # For other models, show all cable type options
-            cable_types = [
-                {'value': '', 'label': '------'},
-                {'value': 'rs-232c', 'label': 'RS-232C'},
-                {'value': 'ethernet', 'label': 'ETHERNET'}
-            ]
-        
+        # Always return all cable type options; decision logic is handled elsewhere
+        cable_types = [
+            {'value': '', 'label': '------'},
+            {'value': 'rs-232c', 'label': 'RS-232C'},
+            {'value': 'ethernet', 'label': 'ETHERNET'}
+        ]
+
         return JsonResponse({'success': True, 'cable_types': cable_types})
     
     return JsonResponse({'success': False, 'error': 'Invalid request method'})

@@ -128,28 +128,14 @@ class DeviceForm(forms.ModelForm):
         self.fields['number_of_lines'].required = True
         self.fields['cable_type'].required = True
         
-        # Get the selected device from POST data or initial data
-        device_value = None
-        if 'data' in kwargs:
-            device_value = kwargs['data'].get('device')
-        elif 'initial' in kwargs:
-            device_value = kwargs['initial'].get('device')
-        elif self.instance and self.instance.pk:
-            device_value = self.instance.device
-        
-        # Filter cable type choices based on device model
-        if device_value in ['KX-TA308', 'KX-TES824', 'KX-TEM824']:
-            # For these models, only show RS232C option
-            self.fields['cable_type'].choices = [('', '------'), ('rs-232c', 'RS-232C')]
-        else:
-            # For other models, show all cable type options
-            self.fields['cable_type'].choices = [('', '------')] + list(CABLE_TYPES)
+        # Always show all cable type options regardless of device model
+        self.fields['cable_type'].choices = [('', '------')] + list(CABLE_TYPES)
         
         # Set default cable type to RS232C
         if not self.instance.pk:  # Only set default for new instances
             self.fields['cable_type'].initial = 'rs-232c'
             # Set default values for RS232C fields
-            self.fields['baudrate'].initial = 19200
+            self.fields['baudrate'].initial = 9600
             self.fields['parity'].initial = 'None'
             self.fields['flow'].initial = 'None'
             self.fields['stopbits'].initial = 1

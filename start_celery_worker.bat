@@ -8,6 +8,6 @@ set DJANGO_SETTINGS_MODULE=lotus.settings
 call venv\Scripts\activate.bat
 
 :: Start Celery worker
-celery -A lotus worker --loglevel=info --logfile=celery/celery_worker.log --pidfile=celery/celery_worker.pid
+celery -A lotus worker -P solo --loglevel=info --logfile=celery/celery_worker.log --pidfile=celery/celery_worker.pid
 
-pause 
+pause

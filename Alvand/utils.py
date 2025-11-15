@@ -37,7 +37,16 @@ class SocketReader:
 
 
 def parseDate(date_str):
-    parts = list(map(int, date_str.split('/')))
+    # Normalize and safely parse date strings like "1/ 3/05" or with extra spaces.
+    # If parsing fails, fall back to today's date instead of raising ValueError.
+    if not isinstance(date_str, str):
+        return datetime.date.today()
+    # Split, strip, and drop empty segments
+    raw_parts = [p.strip() for p in date_str.split('/') if p.strip()]
+    try:
+        parts = list(map(int, raw_parts))
+    except (TypeError, ValueError):
+        return datetime.date.today()
     if len(parts) != 3:
         return datetime.date.today()
     valid_options = []
@@ -105,16 +114,22 @@ def processToCheckEverything(string: str):
     if isinstance(string, bytes):
         string = string.decode("utf-8")
     string = string.replace("-", "")
-    path = os.path.join("records")
+    path = os.path.join("logs", "records")
     os.makedirs(path, exist_ok=True)
     with open(f"{path}/{datetime.datetime.now().strftime('%Y-%m')}.txt", 'a+', encoding="utf-8") as file:
         file.write(f"record ~> {string}\n")
     spliting = string.split()
     spliting[0] = parseDate(spliting[0])
     spliting[1] = parseTime(spliting[1].lower().replace("pm", "").replace("am", ""))
-    mixDateTime = timezone.make_aware(datetime.datetime.strptime(f"{spliting[0].year}/{spliting[0].month}/{spliting[0].day} {spliting[1].hour}:{spliting[1].minute}", "%Y/%m/%d %H:%M"), timezone.get_current_timezone())
-    mixDate = timezone.make_aware(spliting[0], timezone.get_current_timezone())
-    mixTime = timezone.make_aware(spliting[1], timezone.get_current_timezone())
+    mixDateTime = timezone.make_aware(
+        datetime.datetime.strptime(
+            f"{spliting[0].year}/{spliting[0].month}/{spliting[0].day} {spliting[1].hour}:{spliting[1].minute}",
+            "%Y/%m/%d %H:%M"
+        ),
+        timezone.get_current_timezone()
+    )
+    recDate = spliting[0]
+    recTime = spliting[1]
     if string.find("ALM") != -1:
         Faults.objects.create(date_time=mixDateTime, errorcode=int(string[26:29]))
         print("Error:", string)
@@ -134,13 +149,13 @@ def processToCheckEverything(string: str):
                 if check.exists():
                     check.update(calltype=callType, beepsnumber=beep, durationtime=duration, updated_at=timezone.now())
                 else:
-                    Records.objects.create(date=mixDate, hour=mixTime, extension=spliting[2],
+                    Records.objects.create(date=recDate, hour=recTime, extension=spliting[2],
                                            contactnumber=returnNumber(spliting[4]), calltype=callType,
                                            urbanline=spliting[3], beepsnumber=beep, durationtime=duration)
                 print("NA:", string)
             elif string.find("RC") != -1:
                 callType = 'incomingRC'
-                Records.objects.create(date=mixDate, hour=mixTime, extension=spliting[2],
+                Records.objects.create(date=recDate, hour=recTime, extension=spliting[2],
                                        contactnumber=returnNumber(spliting[4]), calltype=callType,
                                        urbanline=spliting[3], beepsnumber=None, durationtime=None)
 
@@ -152,7 +167,7 @@ def processToCheckEverything(string: str):
                 if check.exists():
                     check.update(calltype=callType, beepsnumber=beep, updated_at=timezone.now())
                 else:
-                    Records.objects.create(date=mixDate, hour=mixTime, extension=spliting[2],
+                    Records.objects.create(date=recDate, hour=recTime, extension=spliting[2],
                                            contactnumber=returnNumber(spliting[4]), calltype=callType,
                                            urbanline=spliting[3], beepsnumber=beep, durationtime=duration)
                 print("CHECK AN:", check)
@@ -167,14 +182,14 @@ def processToCheckEverything(string: str):
                         default=ArrayAppend(F('transferring'), Value(spliting[2]))
                     ), durationtime=duration, calltype=callType)
                 else:
-                    Records.objects.create(date=mixDate, hour=mixTime, extension=spliting[2],
+                    Records.objects.create(date=recDate, hour=recTime, extension=spliting[2],
                                            contactnumber=returnNumber(spliting[4]), calltype=callType,
                                            urbanline=spliting[3], beepsnumber=beep, durationtime=duration)
                     print(check)
                 print("Transferring call from {} to {}".format(check[0][0] if check else None, spliting[2]))
             elif string.find("D0") != -1:
                 callType = "incomingDISA"
-                Records.objects.create(date=mixDate, hour=mixTime, extension=spliting[2],
+                Records.objects.create(date=recDate, hour=recTime, extension=spliting[2],
                                        contactnumber=returnNumber(spliting[4]), calltype=callType,
                                        urbanline=spliting[3], beepsnumber=beep, durationtime=duration)
                 print("Incoming DISA:", string)
@@ -185,7 +200,7 @@ def processToCheckEverything(string: str):
                 if check.exists():
                     check.update(calltype=callType, beepsnumber=beep, durationtime=duration, updated_at=timezone.now())
                 else:
-                    Records.objects.create(date=mixDate, hour=mixTime, extension=spliting[2],
+                    Records.objects.create(date=recDate, hour=recTime, extension=spliting[2],
                                            contactnumber=returnNumber(spliting[4]), calltype=callType,
                                            urbanline=spliting[3], beepsnumber=beep, durationtime=duration)
                 print("Incoming hangup with anwser:", string)
@@ -204,7 +219,7 @@ def processToCheckEverything(string: str):
                         default=ArrayAppend(F('transferring'), Value(val))
                     ))
                 else:
-                    Records.objects.create(date=mixDate, hour=mixTime, extension=spliting[2],
+                    Records.objects.create(date=recDate, hour=recTime, extension=spliting[2],
                                            calltype=callType,
                                            urbanline=spliting[3], beepsnumber=beep, durationtime=duration, internal=val)
                 print("Extension:", string)
@@ -212,7 +227,7 @@ def processToCheckEverything(string: str):
                 duration = isDuration(spliting[6]) if len(spliting) - 1 >= 6 else None
                 callType = 'outGoing'
                 print("Out:", string)
-                Records.objects.create(date=mixDate, hour=mixTime, extension=spliting[2],
+                Records.objects.create(date=recDate, hour=recTime, extension=spliting[2],
                                        contactnumber=returnNumber(spliting[4]), calltype=callType,
                                        urbanline=spliting[3], beepsnumber=None, durationtime=duration)
     return True
