@@ -70,29 +70,32 @@ def format_duration(duration):
     """Format duration in a more readable way"""
     if not duration or duration == '0:00' or duration == '0':
         return '00:00:00'
-    
+
+    s = str(duration).strip()
+    if not any(ch.isdigit() for ch in s):
+        return '00:00:00'
+
+    s = s.replace("'", ":").replace('"', "")
+    filtered = "".join(ch for ch in s if ch.isdigit() or ch == ":")
+    if not filtered:
+        return '00:00:00'
+
     try:
-        # Try to parse the duration string
-        if ':' in duration:
-            parts = duration.split(':')
-            if len(parts) == 2:
-                minutes, seconds = parts
-                hours = '00'
-            elif len(parts) == 3:
-                hours, minutes, seconds = parts
-            else:
-                return duration
-                
-            # Ensure each part has two digits
-            hours = hours.zfill(2)
-            minutes = minutes.zfill(2)
-            seconds = seconds.zfill(2)
-            
-            return f"{hours}:{minutes}:{seconds}"
+        parts = filtered.split(":")
+        if len(parts) == 2:
+            hours = '00'
+            minutes, seconds = parts
+        elif len(parts) == 3:
+            hours, minutes, seconds = parts
         else:
-            return duration
-    except:
-        return duration
+            return '00:00:00'
+
+        hours = hours.zfill(2)
+        minutes = minutes.zfill(2)
+        seconds = seconds.zfill(2)
+        return f"{hours}:{minutes}:{seconds}"
+    except Exception:
+        return '00:00:00'
 
 @register.filter
 def format_phone_number(number):

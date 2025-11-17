@@ -97,8 +97,12 @@ def parseDate(date_str):
     return best_date
 
 def parseTime(time_str):
-    parts = list(map(int, time_str.split(":")))
     ntime = datetime.datetime.now().time()
+    try:
+        parts = list(map(int, time_str.split(":")))
+    except (TypeError, ValueError):
+        # Fallback to current time if parsing fails
+        return datetime.time(ntime.hour, ntime.minute)
     if len(parts) != 2:
         return datetime.time(ntime.hour, ntime.minute)
     return datetime.time(parts[0], parts[1])
@@ -128,7 +132,42 @@ def isEthernetPort(name):
 
 
 def isDuration(string):
-    return string.replace("'", ":") if len(string.split("'")[0]) != 1 else None
+    """Normalize SMDR duration tokens.
+
+    Examples:
+    - "00:00'19"    -> "00:00:19"
+    - "00:00'15\"" -> "00:00:15"
+    - "...."         -> None (invalid placeholder)
+    """
+    if not isinstance(string, str):
+        return None
+
+    # Quickly reject obvious placeholders without any digits
+    if not any(ch.isdigit() for ch in string):
+        return None
+
+    # Replace apostrophes with ':' and drop quotes/spaces
+    s = string.strip().replace("'", ":").replace('"', "")
+
+    # Keep only digits and ':'
+    filtered = "".join(ch for ch in s if ch.isdigit() or ch == ":")
+    if not filtered:
+        return None
+
+    parts = filtered.split(":")
+    # Support MM:SS or HH:MM:SS
+    try:
+        if len(parts) == 2:
+            m, sec = map(int, parts)
+            h = 0
+        elif len(parts) == 3:
+            h, m, sec = map(int, parts)
+        else:
+            return None
+    except ValueError:
+        return None
+
+    return f"{h:02d}:{m:02d}:{sec:02d}"
 
 
 def isBeep(string):
@@ -144,6 +183,13 @@ def processToCheckEverything(string: str):
     with open(f"{path}/{datetime.datetime.now().strftime('%Y-%m')}.txt", 'a+', encoding="utf-8") as file:
         file.write(f"record ~> {string}\n")
     spliting = string.split()
+    # Normalize RS232 date/time like "1/ 6/05   1:18AM" where the date is split into two tokens.
+    # Example tokens: ['1/', '6/05', '1:18AM', '107', '01', '09155150730', "00:00'15\"", ...]
+    # Merge the first two tokens into a proper date string before parsing.
+    if len(spliting) >= 3 and "/" in spliting[0] and "/" in spliting[1] and ":" in spliting[2]:
+        merged_date = f"{spliting[0]}{spliting[1]}"  # "1/" + "6/05" -> "1/6/05"
+        spliting[0] = merged_date
+        del spliting[1]
     spliting[0] = parseDate(spliting[0])
     spliting[1] = parseTime(spliting[1].lower().replace("pm", "").replace("am", ""))
     mixDateTime = timezone.make_aware(
@@ -255,13 +301,30 @@ def processToCheckEverything(string: str):
                                            urbanline=spliting[3], beepsnumber=beep, durationtime=duration, internal=val)
                 print("Extension:", string)
             else:
-                # Outgoing calls usually don't have a separate beep field; the last token is the duration
-                # Example: 06/01/11 15:11 101 01 09338665005 00:00'39
-                duration = isDuration(spliting[-1]) if len(spliting) >= 6 else None
-                callType = 'outGoing'
-                print("Out:", string)
+                # Handle special RS232 lines that show "<    incoming    >" instead of a dialed number.
+                # These are incoming calls without CLI; treat them as incoming hangups so they appear
+                # correctly as incoming in the dashboard.
+                normalized = string.lower().replace(" ", "")
+                if "<incoming>" in normalized:
+                    # For these records, duration is usually the token before the trailing placeholder
+                    # Example: 1/ 6/05   1:55AM 107  01   <    incoming    >                  00:00'45" ....
+                    duration = isDuration(spliting[-2]) if len(spliting) >= 7 else None
+                    callType = 'incomingHangUp'
+                    contact_number = None
+                    print("Incoming (no CLI):", string)
+                else:
+                    # Outgoing calls usually don't have a separate beep field; the last token is the duration
+                    # Example: 06/01/11 15:11 101 01 09338665005 00:00'39
+                    candidate = spliting[-1] if len(spliting) >= 6 else None
+                    if candidate is not None and not any(ch.isdigit() for ch in candidate) and len(spliting) >= 7:
+                        candidate = spliting[-2]
+                    duration = isDuration(candidate) if candidate is not None else None
+                    callType = 'outGoing'
+                    contact_number = returnNumber(spliting[4])
+                    print("Out:", string)
+
                 Records.objects.create(date=recDate, hour=recTime, extension=spliting[2],
-                                       contactnumber=returnNumber(spliting[4]), calltype=callType,
+                                       contactnumber=contact_number, calltype=callType,
                                        urbanline=spliting[3], beepsnumber=None, durationtime=duration)
     return True
 

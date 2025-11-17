@@ -149,9 +149,44 @@ def isInternational(prefix):
 
 
 def calculatePrice(duration: str, price: int) -> float:
-    if not duration or price is None or price <= 0: return 0
-    hour, minute, second = map(int, duration.split(":"))
-    toSeconds = (hour * 3600) + (minute * 60) + second
+    if not duration or price is None or price <= 0:
+        return 0
+
+    # Normalize various SMDR duration formats and legacy values.
+    # Examples:
+    #   "00:00:19"      -> 00:00:19
+    #   "00:00'19"      -> 00:00:19
+    #   "00:00'15\""   -> 00:00:15
+    #   "...."           -> 0 (invalid placeholder)
+    if not isinstance(duration, str):
+        return 0
+
+    # Quick reject of obvious placeholders without any digits
+    if not any(ch.isdigit() for ch in duration):
+        return 0
+
+    # Replace SMDR apostrophes with ':' and drop quotes/spaces
+    s = duration.strip().replace("'", ":").replace('"', "")
+    # Keep only digits and ':' to avoid trailing markers
+    filtered = "".join(ch for ch in s if ch.isdigit() or ch == ":")
+    if not filtered:
+        return 0
+
+    parts = filtered.split(":")
+    try:
+        if len(parts) == 2:
+            # MM:SS
+            h = 0
+            m, sec = map(int, parts)
+        elif len(parts) == 3:
+            # HH:MM:SS
+            h, m, sec = map(int, parts)
+        else:
+            return 0
+    except ValueError:
+        return 0
+
+    toSeconds = (h * 3600) + (m * 60) + sec
     # محاسبه بر اساس ثانیه: (ثانیه / 60) × قیمت هر دقیقه
     return (toSeconds / 60) * price
 

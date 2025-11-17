@@ -1317,7 +1317,7 @@
                                         <td class="text-center" dir="ltr"><span class="font-medium">{% if rec.contactnumber %}{{ rec.contactnumber|format_phone_number }}{% else %}<span class="text-slate-400">-</span>{% endif %}</span></td>
                                         <td class="text-center"><span class="font-medium">{% if rec.extension|stringformat:'s'|slice:'0:1' == '9' %}{{ rec.extension|stringformat:'s'|slice:'1:4' }}{% else %}{{ rec.extension }}{% endif %}</span></td>
                                         <td class="text-center">{% if rec.urbanline %}{{ rec.urbanline }}{% else %}<span class="text-slate-400">-</span>{% endif %}</td>
-                                        <td class="text-center"><span class="font-medium">{% if rec.durationtime %}{{ rec.durationtime }}{% else %}0{% endif %}</span><span class="text-xs text-slate-400 mr-1">ثانیه</span></td>
+                                        <td class="text-center"><span class="font-medium">{{ rec.durationtime|format_duration }}</span><span class="text-xs text-slate-400 mr-1">ثانیه</span></td>
                                         <td class="text-center img-print-cell">
                                             <div class="call-type-icon-container">
                                                 <img src="{% static 'pic/' %}{{ rec.calltype|getCallTypeIcon }}" class="w-6 h-6 call-type-icon" title="{{ rec.calltype|getRealCallType }}" alt="{{ rec.calltype|getRealCallType }}">
@@ -1359,7 +1359,7 @@
                                             <div class="w-8 h-8 rounded-full flex items-center justify-center {% if rec.calltype == 'ورودی' %}bg-green-100 text-green-600{% elif rec.calltype == 'خروجی' %}bg-blue-100 text-blue-600{% elif rec.calltype == 'بی‌پاسخ' %}bg-red-100 text-red-600{% else %}bg-slate-100 text-slate-600{% endif %}"><img src="{% static 'pic/' %}{{ rec.calltype|getCallTypeIcon }}" class="w-4 h-4"></div>
                                             <div class="mr-3"><p class="text-sm font-medium text-slate-900">{{ rec.contactnumber|format_phone_number|default:"شماره ناشناس" }}</p><p class="text-xs text-slate-500">{{ rec.date|date:"Y-m-d"|convertDatesToHijri }} - {{ rec.hour }}</p></div>
                                         </div>
-                                        <span class="text-sm font-medium text-slate-900">{{ rec.durationtime|default:"0" }} ثانیه</span>
+                                        <span class="text-sm font-medium text-slate-900">{{ rec.durationtime|format_duration }}</span>
                                     </div>
                                     <div class="mobile-card-body">
                                         <div><span class="font-medium">خط داخلی:</span> {{ rec.extension }}</div>
