@@ -1327,13 +1327,17 @@
                                         <td class="text-center">{% if rec.beepsnumber %}{{ rec.beepsnumber }}{% else %}0{% endif %}</td>
                                         <td class="text-center">{% if rec.transferring %}<span class="inline-flex px-2 py-1 text-xs font-semibold leading-none text-green-800 bg-green-100 rounded-full">بله</span>{% else %}<span class="inline-flex px-2 py-1 text-xs font-semibold leading-none text-red-800 bg-red-100 rounded-full">خیر</span>{% endif %}</td>
                                         <td class="cost text-center">
-                                            {% with price=rec.durationtime|calculateOnePrice:rec.contactnumber %}
-                                                {% if price == 'ندارد' %}
-                                                    <span class="font-medium">ندارد</span>
-                                                {% else %}
-                                                    <span class="font-medium">{{ price }}</span><span class="text-xs text-slate-400 mr-1">تومان</span>
-                                                {% endif %}
-                                            {% endwith %}
+                                            {% if rec.calltype == 'outGoing' %}
+                                                {% with price=rec.durationtime|calculateOnePrice:rec.contactnumber %}
+                                                    {% if price == 'ندارد' %}
+                                                        <span class="font-medium">ندارد</span>
+                                                    {% else %}
+                                                        <span class="font-medium">{{ price }}</span><span class="text-xs text-slate-400 mr-1">تومان</span>
+                                                    {% endif %}
+                                                {% endwith %}
+                                            {% else %}
+                                                <span class="font-medium">0</span><span class="text-xs text-slate-400 mr-1">تومان</span>
+                                            {% endif %}
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -1360,7 +1364,13 @@
                                     <div class="mobile-card-body">
                                         <div><span class="font-medium">خط داخلی:</span> {{ rec.extension }}</div>
                                         <div><span class="font-medium">خط شهری:</span> {{ rec.urbanline|default:"-" }}</div>
-                                        <div><span class="font-medium">هزینه:</span> {{ rec.durationtime|calculateOnePrice:rec.contactnumber|default:"0" }} تومان</div>
+                                        <div><span class="font-medium">هزینه:</span>
+                                            {% if rec.calltype == 'outGoing' %}
+                                                {{ rec.durationtime|calculateOnePrice:rec.contactnumber|default:"0" }} تومان
+                                            {% else %}
+                                                0 تومان
+                                            {% endif %}
+                                        </div>
                                         <div><span class="font-medium">انتقال:</span> {% if rec.transferring %}<span class="text-green-600">بله</span>{% else %}<span class="text-red-600">خیر</span>{% endif %}</div>
                                     </div>
                                 </li>

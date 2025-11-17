@@ -142,7 +142,7 @@ class DeviceForm(forms.ModelForm):
             self.fields['databits'].initial = 8
             # Set default values for Ethernet fields
             self.fields['smdrip'].initial = '192.168.0.101'
-            self.fields['smdrport'].initial = 2300
+            self.fields['smdrport'].initial = 23
             self.fields['smdrpassword'].initial = 'PCCSMDR'
 
     class Meta:

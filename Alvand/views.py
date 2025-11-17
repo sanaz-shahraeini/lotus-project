@@ -20,6 +20,7 @@ from django.db import models
 from .models import Users
 from .templatetags.userProfileTags import getListOfExtsGroups, getUserCanPerm, getUserInfo, getObjectOfInfo
 import csv
+from .utils import start_smdr_stream, stop_smdr_stream
 
 upload = os.path.join("Alvand/static/upload")
 os.makedirs(upload, exist_ok=True)
@@ -870,6 +871,16 @@ class systemSettings(FormView, View):
                     log(request, logErrCodes.systemSettings, 
                         logMessages.updatedSettings.format('تنظیمات دستگاه') if dev.exists() else logMessages.createdSettings.format('تنظیمات دستگاه'),
                         checkSession(request))
+                    # Start SMDR TCP reader based on settings
+                    try:
+                        host = (request.POST.get('smdrip') or '').strip()
+                        port_val = (request.POST.get('smdrport') or '').strip()
+                        port = int(port_val) if port_val else 2300
+                        password = (request.POST.get('smdrpassword') or 'PCCSMDR').strip()
+                        if host:
+                            start_smdr_stream(host, port, password)
+                    except Exception:
+                        pass
                     msgs.append('تنظیمات دستگاه (Ethernet)')
                 else:
                     # Serial connection
@@ -899,6 +910,11 @@ class systemSettings(FormView, View):
                     log(request, logErrCodes.systemSettings,
                         logMessages.updatedSettings.format('تنظیمات دستگاه') if dev.exists() else logMessages.createdSettings.format('تنظیمات دستگاه'),
                         checkSession(request))
+                    # Ensure any running SMDR reader is stopped for serial mode
+                    try:
+                        stop_smdr_stream()
+                    except Exception:
+                        pass
                     msgs.append('تنظیمات دستگاه (Serial)')
             except Exception as e:
                 messages.error(request, f'خطا در ذخیره تنظیمات دستگاه: {e}')

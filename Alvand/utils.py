@@ -1,24 +1,49 @@
 import socket, time, os, datetime, itertools
+import telnetlib
 from django.utils import timezone
 from django.db.models import F, Case, When, Value
 from .models import Faults, Records, ArrayAppend
+import threading
 
 
 def telnetConnection(attempts=3, port: int = 2300, network_id: str = "192.168.1.100"):
-    port = port
+    """Open a TCP socket to the PBX SMDR port with limited retries.
+
+    Returns a connected socket object on success, or None on failure.
+    This function must NEVER block indefinitely.
+    """
     ip = network_id
-    try:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect((ip, port))
-        return sock
-    except Exception as err:
-        if attempts > 0:
-            attempts -= 1
-        else:
-            attempts = 3
-        if err != "[WinError 10061] No connection could be made because the target machine actively refused it":
+    last_err = None
+
+    # Ensure we always have at least one attempt
+    max_tries = attempts if isinstance(attempts, int) and attempts > 0 else 3
+
+    for _ in range(max_tries):
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            # Avoid hanging forever if host/port is unreachable
+            sock.settimeout(3)
+            sock.connect((ip, int(port)))
+            # Restore blocking mode for normal reads afterwards
+            sock.settimeout(None)
+            return sock
+        except OSError as err:
+            last_err = err
+            # For actively refused connections, additional retries usually do not help
+            if getattr(err, "errno", None) in (10061, 111):
+                break
             time.sleep(3)
-            return telnetConnection(attempts - 1, port=port, network_id=ip)
+        except Exception as err:  # Fallback for any unexpected exception type
+            last_err = err
+            time.sleep(3)
+
+    # All attempts failed
+    try:
+        print(f"telnetConnection: could not connect to {ip}:{port} -> {last_err}")
+    except Exception:
+        # Avoid raising from logging
+        pass
+    return None
 
 
 class SocketReader:
@@ -194,12 +219,18 @@ def processToCheckEverything(string: str):
                                        urbanline=spliting[3], beepsnumber=beep, durationtime=duration)
                 print("Incoming DISA:", string)
             else:
-                callType = 'incomingHangUp'
                 check = Records.objects.filter(extension=spliting[2], urbanline=spliting[3],
-                                               contactnumber=returnNumber(spliting[4]), calltype=callType)
+                                               contactnumber=returnNumber(spliting[4])).order_by('-id')
                 if check.exists():
-                    check.update(calltype=callType, beepsnumber=beep, durationtime=duration, updated_at=timezone.now())
+                    rec_obj = check.first()
+                    if beep is not None:
+                        rec_obj.beepsnumber = beep
+                    if duration is not None:
+                        rec_obj.durationtime = duration
+                    rec_obj.updated_at = timezone.now()
+                    rec_obj.save(update_fields=['beepsnumber', 'durationtime', 'updated_at'])
                 else:
+                    callType = 'incomingHangUp'
                     Records.objects.create(date=recDate, hour=recTime, extension=spliting[2],
                                            contactnumber=returnNumber(spliting[4]), calltype=callType,
                                            urbanline=spliting[3], beepsnumber=beep, durationtime=duration)
@@ -224,10 +255,214 @@ def processToCheckEverything(string: str):
                                            urbanline=spliting[3], beepsnumber=beep, durationtime=duration, internal=val)
                 print("Extension:", string)
             else:
-                duration = isDuration(spliting[6]) if len(spliting) - 1 >= 6 else None
+                # Outgoing calls usually don't have a separate beep field; the last token is the duration
+                # Example: 06/01/11 15:11 101 01 09338665005 00:00'39
+                duration = isDuration(spliting[-1]) if len(spliting) >= 6 else None
                 callType = 'outGoing'
                 print("Out:", string)
                 Records.objects.create(date=recDate, hour=recTime, extension=spliting[2],
                                        contactnumber=returnNumber(spliting[4]), calltype=callType,
                                        urbanline=spliting[3], beepsnumber=None, durationtime=duration)
     return True
+
+
+class PanasonicNS500:
+    def __init__(self, host, port=23):
+        self.host = host
+        self.port = port
+        self.connection = None
+
+    def connect(self, username, password):
+        try:
+            self.connection = telnetlib.Telnet(self.host, self.port, timeout=10)
+
+            self.connection.read_until(b"Login: ", timeout=10)
+            self.connection.write(username.encode("ascii") + b"\r\n")
+
+            self.connection.read_until(b"Password: ", timeout=10)
+            self.connection.write(password.encode("ascii") + b"\r\n")
+
+            time.sleep(2)
+            response = self.connection.read_very_eager().decode("ascii", errors="ignore")
+
+            if "Login incorrect" in response:
+                raise Exception("Authentication failed")
+
+            print("Connected successfully")
+            return True
+
+        except Exception as e:
+            print(f"Connection error: {e}")
+            self.connection = None
+            return False
+
+    def send_command(self, command, wait_time=2):
+        if not self.connection:
+            raise Exception("Not connected")
+
+        self.connection.write(command.encode("ascii") + b"\r\n")
+        time.sleep(wait_time)
+        response = self.connection.read_very_eager().decode("ascii", errors="ignore")
+        return response
+
+    def disconnect(self):
+        if self.connection:
+            self.connection.close()
+            self.connection = None
+            print("Disconnected")
+
+
+def smdr_debug_read(host, port=23, password="PCCSMDR", max_lines=10):
+    """Simple helper to debug SMDR stream over TCP.
+
+    Connects to the PBX SMDR port, sends SMDR command and password,
+    then prints up to max_lines lines of raw SMDR data.
+    This function is only for manual debugging and does not touch the DB.
+    """
+    sock = telnetConnection(3, port=port, network_id=host)
+    if not sock:
+        print("Could not open socket to SMDR host")
+        return
+
+    # For debug helper, do not allow blocking forever on recv
+    try:
+        sock.settimeout(5)
+    except Exception:
+        pass
+
+    reader = SocketReader()
+    try:
+        banner = reader.read_until(sock, b"-")
+        print("BANNER:", banner.decode("utf-8", errors="ignore"))
+
+        sock.sendall(b"SMDR\r")
+        prompt = reader.read_until(sock, b"Enter Password:")
+        print("PROMPT:", prompt.decode("utf-8", errors="ignore"))
+
+        sock.sendall((password + "\r").encode("utf-8"))
+
+        for i in range(max_lines):
+            data = reader.read_until(sock, b"\n")
+            if not data:
+                break
+            line = data.decode("utf-8", errors="ignore").replace("*", "").replace("\r", "").replace("\n", "")
+            print(f"LINE {i+1}:", line)
+    except Exception as exc:
+        print("SMDR debug error:", exc)
+    finally:
+        try:
+            sock.close()
+        except Exception:
+            pass
+
+# ======================= SMDR STREAM (ETHERNET) =======================
+# Simple background client to read SMDR over TCP and log/store records
+_smdr_thread = None
+_smdr_stop = threading.Event()
+
+def _smdr_debug(msg: str):
+         pass
+
+
+def _smdr_worker(host: str, port: int, password: str):
+    log_dir = os.path.join("logs", "smdr")
+    os.makedirs(log_dir, exist_ok=True)
+    _smdr_debug(f"Worker start host={host} port={port}")
+
+    while not _smdr_stop.is_set():
+        sock = None
+        try:
+            _smdr_debug("Connecting socket...")
+            sock = telnetConnection(3, port=port, network_id=host)
+            if not sock:
+                _smdr_debug("Socket connect failed (None). Retry in 3s")
+                time.sleep(3)
+                continue
+
+            reader = SocketReader()
+
+            # Read initial banner (ends with '-') if present
+            try:
+                banner = reader.read_until(sock, b"-")
+                _smdr_debug(f"Banner: {banner.decode('utf-8', errors='ignore')[:80]}")
+            except Exception:
+                _smdr_debug("No banner or read banner failed")
+
+            # Handshake for SMDR
+            try:
+                _smdr_debug("Sending SMDR command")
+                sock.sendall(b"SMDR\r")
+                prompt = reader.read_until(sock, b"Enter Password:")
+                _smdr_debug(f"Prompt: {prompt.decode('utf-8', errors='ignore')[:80]}")
+                sock.sendall((password + "\r").encode("utf-8"))
+                _smdr_debug("Password sent; start reading lines")
+            except Exception:
+                try:
+                    sock.close()
+                except Exception:
+                    pass
+                _smdr_debug("Handshake failed; retry in 2s")
+                time.sleep(2)
+                continue
+
+            # Main loop: read lines
+            while not _smdr_stop.is_set():
+                data = reader.read_until(sock, b"\n")
+                if not data:
+                    _smdr_debug("Socket returned empty; break read loop")
+                    break
+                line = data.decode("utf-8", errors="ignore").replace("*", "").replace("\r", "").replace("\n", "")
+
+                # Append raw line to monthly log
+                try:
+                    with open(os.path.join(log_dir, f"{datetime.datetime.now().strftime('%Y-%m')}.txt"), 'a+', encoding='utf-8') as f:
+                        f.write(line + "\n")
+                except Exception:
+                    pass
+
+                # Process valid data into DB and records log
+                try:
+                    if checkIfValidData(line):
+                        processToCheckEverything(line)
+                except Exception:
+                    pass
+
+        except Exception:
+            _smdr_debug("Unexpected error in worker loop; backoff 2s")
+            time.sleep(2)
+        finally:
+            try:
+                if sock:
+                    sock.close()
+            except Exception:
+                pass
+
+        # Backoff before reconnect unless stop requested
+        if not _smdr_stop.is_set():
+            _smdr_debug("Reconnect delay 1.5s")
+            time.sleep(1.5)
+
+
+def start_smdr_stream(host: str, port: int = 2300, password: str = "PCCSMDR"):
+    global _smdr_thread
+    # Stop existing thread if running
+    stop_smdr_stream()
+    _smdr_stop.clear()
+    _smdr_thread = threading.Thread(target=_smdr_worker, args=(host, int(port), password), daemon=True)
+    _smdr_thread.start()
+    _smdr_debug(f"start_smdr_stream invoked host={host} port={port}")
+
+
+def stop_smdr_stream():
+    global _smdr_thread
+    try:
+        if _smdr_thread and _smdr_thread.is_alive():
+            _smdr_stop.set()
+            # Give the thread a moment to exit its loop
+            _smdr_thread.join(timeout=2.0)
+    except Exception:
+        pass
+    finally:
+        _smdr_stop.clear()
+        _smdr_thread = None
+        _smdr_debug("stop_smdr_stream invoked; state cleared")

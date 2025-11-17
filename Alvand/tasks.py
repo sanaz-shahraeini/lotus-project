@@ -93,7 +93,6 @@ def connectToDevice():
                 SocketReader().read_until(telnet, b"Enter Password:")
                 telnet.sendall(f"{getNetInfo.first().smdrpassword}\r".encode() if getNetInfo.exists() else b"PCCSMDR\r")
                 cache.set("telLogin", True)
-                cache.set("telnet", telnet)
             except Exception as err:
                 print("ERR CONN:", err)
                 time.sleep(3)

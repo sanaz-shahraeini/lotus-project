@@ -247,4 +247,11 @@ form.bg-white.rounded-xl.shadow-sm.p-5.mb-6.rtl { padding: 1.5rem !important; ma
 .stat-card { padding: 1.75rem !important; }
 .min-h-screen.bg-gradient-to-b { padding-bottom: 2rem !important; }
 
+/* Profile header visibility fixes */
+.profile-name {
+    color: #111827; /* dark slate for light mode */
+}
 
+html.dark .profile-name {
+    color: #F9FAFB; /* keep high contrast in dark mode */
+}
