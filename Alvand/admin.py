@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import SMDRRecord, Users, Groups, Infos, Permissions, ContactInfo, Log, lices, SupportMessage
+from .models import Records, SMDRRecord, Users, Groups, Infos, Permissions, ContactInfo, Log, lices, SupportMessage
 
 @admin.register(Users)
 class UsersAdmin(admin.ModelAdmin):
@@ -45,6 +45,12 @@ class licesAdmin(admin.ModelAdmin):
     list_filter = ('active', 'version')
     search_fields = ('lice',)
     readonly_fields = ('created_at', 'updated_at')
+
+@admin.register(Records)
+class RecordsAdmin(admin.ModelAdmin):
+    list_display = ('date', 'hour', 'extension', 'urbanline', 'contactnumber', 'calltype', 'durationtime')
+    list_filter = ('date', 'calltype', 'extension', 'urbanline')
+    search_fields = ('extension', 'contactnumber', 'urbanline')
 
 @admin.register(SMDRRecord)
 class SMDRRecordAdmin(admin.ModelAdmin):
