@@ -1,5 +1,5 @@
 from django.template import Library
-from Alvand.models import Groups, Users, Infos, Permissions
+from Alvand.models import Groups, Users, Infos, Permissions, Extensionsgroups
 from Alvand.user_utils import getUserinfoByUsername
 import json
 register = Library()
@@ -59,3 +59,51 @@ def hasErrorsAccess(username):
 def getUserInfo(username, value):
     getInfo = getUserinfoByUsername(username, value)
     return getInfo if getInfo else ""
+
+@register.filter
+def needsPasswordChange(username):
+    if not isinstance(username, str):
+        return False
+    user = Users.objects.filter(username__iexact=username).first()
+    if not user:
+        return False
+    return bool(getattr(user, 'needs_password_change', False))
+
+@register.filter
+def getUserExtensions(username):
+    """برگرداندن لیست داخلی‌هایی که کاربر به آن‌ها دسترسی دارد."""
+    if not isinstance(username, str):
+        return []
+
+    user = Users.objects.filter(username__iexact=username).first()
+    if not user:
+        return []
+
+    exts = set()
+
+    # داخلی اصلی کاربر
+    if getattr(user, 'extension', None):
+        exts.add(str(user.extension))
+
+    # داخلی‌های اضافی تعریف‌شده برای کاربر
+    user_exts = getattr(user, 'usersextension', None)
+    if user_exts:
+        for e in user_exts:
+            if e:
+                exts.add(str(e))
+
+    # داخلی‌های ناشی از گروه‌های داخلی (Extensionsgroups)
+    perm = Permissions.objects.filter(user=user).first()
+    if perm and getattr(perm, 'exts_label', None):
+        groups_qs = Extensionsgroups.objects.filter(label__in=perm.exts_label)
+        for g in groups_qs:
+            if g.exts:
+                for e in g.exts:
+                    if e:
+                        exts.add(str(e))
+
+    # برگرداندن لیست مرتب‌شده (به صورت رشته)
+    try:
+        return sorted(exts, key=lambda x: int(x))
+    except ValueError:
+        return sorted(exts)

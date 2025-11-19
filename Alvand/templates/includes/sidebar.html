@@ -414,6 +414,7 @@
 <!-- Debug: Show pending_password_reset_count value -->
 
 <!-- Desktop Sidebar -->
+{% if 'user' in request.session and not request.session.user|needsPasswordChange %}
 <aside id="sidebar"
        class="w-[220px] overflow-y-auto h-screen text-white z-40 fixed top-0 right-0 transform transition-all duration-300 ease-in-out sm:w-[220px] hidden lg:block">
     <div class="sidebar-profile-section text-center">
@@ -425,6 +426,15 @@
             {% if 'user' in request.session %}{{ request.session.user|capfirst }}{% endif %}</p>
         <p class="profile-extension">
             {% if 'user' in request.session %}{{ request.session.user|getBaseInfo:'extension' }}{% endif %}</p>
+        {% if 'user' in request.session %}
+            {% with exts=request.session.user|getUserExtensions %}
+                {% if exts %}
+                    <p class="profile-extension" style="font-size: 0.75rem !important; color: #B2EBF2 !important; margin-top: 0.25rem !important;">
+                        داخلی‌ها: {{ exts|join:', ' }}
+                    </p>
+                {% endif %}
+            {% endwith %}
+        {% endif %}
     </div>
     <nav class="sidebar-nav">
         <a href="{% url 'dashboard' %}"
@@ -469,6 +479,7 @@
         </button>
     </nav>
 </aside>
+{% endif %}
 
 <!-- Mobile Sidebar Toggle Button -->
 <button id="toggle-menu"
@@ -477,6 +488,7 @@
 </button>
 
 <!-- Mobile Sidebar -->
+{% if 'user' in request.session and not request.session.user|needsPasswordChange %}
 <div id="mobile-sidebar"
      class="fixed overflow-y-auto top-0 right-0 w-[220px] h-screen text-white z-40 transform translate-x-full transition-transform duration-300 ease-in-out">
     <div class="sidebar-profile-section text-center" style="margin-top: 1.5rem !important;">
@@ -488,6 +500,15 @@
             {% if 'user' in request.session %}{{ request.session.user|capfirst }}{% endif %}</p>
         <p class="profile-extension">
             {% if 'user' in request.session %}{{ request.session.user|getBaseInfo:'extension' }}{% endif %}</p>
+        {% if 'user' in request.session %}
+            {% with exts=request.session.user|getUserExtensions %}
+                {% if exts %}
+                    <p class="profile-extension" style="font-size: 0.75rem !important; color: #B2EBF2 !important; margin-top: 0.25rem !important;">
+                        داخلی‌ها: {{ exts|join:', ' }}
+                    </p>
+                {% endif %}
+            {% endwith %}
+        {% endif %}
     </div>
     <nav class="sidebar-nav">
         <a href="{% url 'dashboard' %}"
@@ -531,6 +552,7 @@
         </button>
     </nav>
 </div>
+{% endif %}
 
 <!-- Logout Confirmation Modal (Desktop) -->
 <div id="exitmodal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden" style="opacity: 0; transition: opacity 0.3s ease;">

@@ -2290,11 +2290,18 @@ class userLogin(View):
                 messages.error(request, messagesTypes.deAvtive)
                 return redirect(reverse_lazy('logout' if checkSession(request) else 'login'))
             if check_password(password, user.first().password):
+                user_obj = Users.objects.get(username=username)
+
+                # اگر کاربر با رمز عبور پیش فرض وارد شده است، اجبار تغییر رمز را فعال کن
+                if password == "12345678" and not user_obj.needs_password_change:
+                    user_obj.needs_password_change = True
+                    user_obj.save()
+
                 login(request, username)
                 log(request, logErrCodes.logInOut, logMessages.loggedIn.format(user.first().username.capitalize(), ),
                     user.first().username)
                 messages.success(request, messagesTypes.login.format(user.first().username.capitalize(), ))
-                user_obj = Users.objects.get(username=username)
+
                 if user_obj.needs_password_change:
                     return redirect('change_password')
                 return redirect(reverse_lazy('dashboard'))

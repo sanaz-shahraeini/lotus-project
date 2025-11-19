@@ -1,4 +1,4 @@
-{% load static baseTags %}
+{% load static baseTags userProfileTags %}
 <!DOCTYPE html>
 <html lang="fa" dir="rtl" class="light">
 <head>
@@ -51,7 +51,7 @@
 
     {% include 'includes/sidebar.html' %}
     
-    <div class="main-content mr-0 lg:mr-[260px]">
+    <div class="main-content {% if 'user' in request.session and not request.session.user|needsPasswordChange %}mr-0 lg:mr-[260px]{% else %}mr-0{% endif %}">
         {% include 'includes/navbar.html' %}
         
         <div class="content-wrapper px-4 py-6">
