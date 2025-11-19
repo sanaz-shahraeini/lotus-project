@@ -20,7 +20,7 @@
     .profile-header {
         position: relative;
         margin-top: 1.5rem;
-        margin-bottom: 3rem;
+        margin-bottom: 1.5rem;
         padding: 0;
         display: flex;
         flex-direction: column;
@@ -74,10 +74,10 @@
     
     .profile-info {
         background-color: var(--card-bg);
-        padding: 1.25rem 1.5rem 1.5rem;
+        padding: 0.75rem 1.25rem 1rem;
         border-radius: 0 0 0.75rem 0.75rem;
         box-shadow: var(--card-shadow);
-        margin-top: -1rem;
+        margin-top: -0.75rem;
         border: 1px solid var(--border-color);
         border-top: none;
         position: relative;
@@ -86,6 +86,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        gap: 0.35rem;
     }
     
     .dark .profile-info {
@@ -201,26 +202,31 @@
     .profile-user-info {
         text-align: center;
         display: flex;
-        flex-direction: column;
+        flex-direction: column; /* ردیف اول نام، ردیف دوم متا */
         align-items: center;
         justify-content: center;
         background-color: transparent;
+        gap: 0.4rem;
     }
     
-    @media (min-width: 640px) {
-        .profile-user-info {
-            text-align: center;
-            align-items: center;
-        }
+    .profile-meta-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
     }
     
     /* High visibility profile elements */
     .profile-name-container {
         background-color: #e0f7fa; /* Solid light cyan for clear separation in light mode */
-        padding: 0.5rem 1.5rem;
-        border-radius: 0.5rem;
-        margin-bottom: 0.75rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+        padding: 0.35rem 1.2rem;
+        border-radius: 999px;
+        margin-bottom: 0.35rem;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.10);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
     
     .dark .profile-name-container {
@@ -244,15 +250,15 @@
     
     .profile-info .profile-user-info .profile-username {
         display: inline-block;
-        background-color: #e0f7fa !important; /* Light cyan pill in light mode */
-        color: #004d40 !important;          /* Dark teal text for light mode */
-        padding: 0.5rem 1.25rem;
-        border-radius: 0.5rem;
-        font-size: 1.125rem;
+        background-color: rgba(224, 247, 250, 0.9) !important;
+        color: #004d40 !important;
+        padding: 0.2rem 0.8rem;
+        border-radius: 999px;
+        font-size: 0.85rem;
         font-weight: 600;
-        margin: 0.75rem 0;
+        margin: 0.1rem 0 0.1rem;
         text-align: center;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     }
 
     html.dark .profile-info .profile-user-info .profile-username {
@@ -263,15 +269,15 @@
     
     .profile-detail {
         color: #37474F; /* Dark gray for light mode visibility */
-        font-size: 0.875rem;
-        margin-bottom: 1rem;
-        background-color: rgba(41, 182, 246, 0.1);
-        padding: 0.375rem 1rem;
-        border-radius: 0.375rem;
+        font-size: 0.8rem;
+        margin-bottom: 0.25rem;
+        background-color: rgba(41, 182, 246, 0.08);
+        padding: 0.25rem 0.8rem;
+        border-radius: 999px;
         display: inline-flex;
         align-items: center;
-        gap: 0.375rem;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        gap: 0.3rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
         font-weight: 500;
     }
     
@@ -534,20 +540,22 @@
     align-items: center;
     gap: 0.75rem;
     padding: 1.25rem;
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(8px);
-    border-radius: 1rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    margin: 1.5rem auto;
-    max-width: 90%;
+    background: transparent;
+    backdrop-filter: none;
+    border-radius: 0;
+    box-shadow: none;
     width: 100%;
-    border: 1px solid rgba(0, 188, 212, 0.2);
+    border: none;
 }
 
 @media (min-width: 768px) {
     .profile-actions-panel {
-        max-width: 700px;
-        padding: 1.5rem;
+        padding: 0.5rem 1.5rem;
+        max-width: 100%;
+        grid-column: 1 / -1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 }
 
@@ -567,7 +575,6 @@
     font-weight: 500;
     transition: all 0.2s ease;
     min-width: 110px;
-    margin: 0.25rem;
 }
 
 @media (min-width: 768px) {
@@ -700,17 +707,26 @@
                 <div class="profile-name-container">
                     <h1 class="profile-name" style="color:#111827;">{{ user.name|capfirst }} {{ user.lastname|capfirst }}</h1>
                 </div>
-                <div class="profile-username" style="background-color:#e0f7fa; color:#004d40;">{{ user.username }}</div>
-                <p class="profile-detail">
-                    <i class="fa-solid fa-location-dot"></i>
-                    {{ user.username|getFieldOfInfo:"city" }}، {{ user.username|getFieldOfInfo:"province"|getValueOfIndexes:"province" }}
-                </p>
+                <div class="profile-meta-row">
+                    <div class="profile-username" style="background-color:#e0f7fa; color:#004d40;">
+                        <i class="fa-solid fa-user-tie" style="margin-left:4px; font-size:0.8rem;"></i>
+                        {{ user.group|getGroupnameById }}
+                    </div>
+                    <p class="profile-detail">
+                        <i class="fa-solid fa-location-dot"></i>
+                        {{ user.username|getFieldOfInfo:"city" }}، {{ user.username|getFieldOfInfo:"province"|getValueOfIndexes:"province" }}
+                    </p>
+                </div>
             </div>
         </div>
     </div>
     
     <!-- Profile Content -->
-    <div class="card-container">
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="save_profile" value="1">
+        <div class="card-container">
+            
             <!-- Personal Information -->
         <div class="info-card">
             <div class="card-header">
@@ -732,37 +748,37 @@
                     
                     <div class="field-group">
                         <label class="field-label">نام</label>
-                        <div class="field-value">{{ user.name|capfirst }}</div>
+                        {{ user_form.name }}
                     </div>
                     
                     <div class="field-group">
                         <label class="field-label">نام خانوادگی</label>
-                        <div class="field-value">{{ user.lastname|capfirst }}</div>
+                        {{ user_form.lastname }}
                     </div>
                     
                     <div class="field-group">
                         <label class="field-label">کد ملی</label>
-                        <div class="field-value">{{ user.username|getFieldOfInfo:"nationalcode"|format_number }}</div>
+                        {{ infos_form.nationalcode }}
                     </div>
                     
                     <div class="field-group">
                         <label class="field-label">جنسیت</label>
-                        <div class="field-value">{{ user.username|getFieldOfInfo:"gender"|getValueOfIndexes:"gender" }}</div>
+                        {{ infos_form.gender }}
                     </div>
                     
                     <div class="field-group">
                         <label class="field-label">تاریخ تولد</label>
-                        <div class="field-value">{{ user.username|getFieldOfInfo:"birthdate" }}</div>
+                        {{ infos_form.birthdate }}
                     </div>
                     
                     <div class="field-group">
                         <label class="field-label">وضعیت تاهل</label>
-                        <div class="field-value">{{ user.username|getFieldOfInfo:"maritalstatus"|getValueOfIndexes:"marital" }}</div>
+                        {{ infos_form.maritalstatus }}
                     </div>
                     
                     <div class="field-group">
                         <label class="field-label">وضعیت سربازی</label>
-                        <div class="field-value">{{ user.username|getFieldOfInfo:"military"|getValueOfIndexes:"military" }}</div>
+                        {{ infos_form.military }}
                     </div>
                 </div>
                     </div>
@@ -807,12 +823,12 @@
                     
                     <div class="field-group">
                         <label class="field-label">شماره همراه</label>
-                        <div class="field-value">{{ user.username|getFieldOfInfo:"phonenumber"|format_number }}</div>
+                        {{ infos_form.phonenumber }}
                     </div>
                     
                     <div class="field-group">
                         <label class="field-label">تلفن ثابت</label>
-                        <div class="field-value">{{ user.username|getFieldOfInfo:"telephone"|format_number }}</div>
+                        {{ infos_form.telephone }}
                     </div>
                     
                     <div class="field-group">
@@ -822,17 +838,17 @@
                     
                     <div class="field-group full-width">
                         <label class="field-label">آدرس</label>
-                        <div class="field-value">{{ user.username|getFieldOfInfo:"address" }}</div>
+                        {{ infos_form.address }}
                     </div>
                     
                     <div class="field-group">
                         <label class="field-label">استان</label>
-                        <div class="field-value">{{ user.username|getFieldOfInfo:"province"|getValueOfIndexes:"province" }}</div>
+                        {{ infos_form.province }}
                     </div>
                     
                     <div class="field-group">
                         <label class="field-label">شهر</label>
-                        <div class="field-value">{{ user.username|getFieldOfInfo:"city" }}</div>
+                        {{ infos_form.city }}
                     </div>
                     </div>
                 </div>
@@ -859,12 +875,12 @@
                     
                     <div class="field-group">
                         <label class="field-label">مدرک تحصیلی</label>
-                        <div class="field-value">{{ user.username|getFieldOfInfo:"educationdegree"|getValueOfIndexes:"degree" }}</div>
+                        {{ infos_form.educationdegree }}
                     </div>
                     
                     <div class="field-group full-width">
                         <label class="field-label">رشته تحصیلی</label>
-                        <div class="field-value">{{ user.username|getFieldOfInfo:"educationfield" }}</div>
+                        {{ infos_form.educationfield }}
                     </div>
                     </div>
                 </div>
@@ -886,23 +902,29 @@
                 <div class="field-container">
                     <div class="field-group">
                         <label class="field-label">شماره کارت</label>
-                        <div class="field-value">{{ user.username|getFieldOfInfo:"cardnumber"|format_number }}</div>
+                        {{ infos_form.cardnumber }}
                     </div>
                     
                     <div class="field-group">
                         <label class="field-label">شماره حساب</label>
-                        <div class="field-value">{{ user.username|getFieldOfInfo:"accountnumber"|format_number }}</div>
+                        {{ infos_form.accountnumber }}
                     </div>
                     
                     <div class="field-group full-width">
                         <label class="field-label">شماره شبا</label>
-                        <div class="field-value">{{ user.username|getFieldOfInfo:"accountnumbershaba"|format_number }}</div>
+                        {{ infos_form.accountnumbershaba }}
                     </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+        <div class="profile-actions-panel">
+            <button type="submit" class="action-button save-user">
+                <i class="fa-solid fa-floppy-disk"></i>
+                ذخیره تغییرات
+            </button>
+        </div>
+    </form>
 {% endblock %}
 
 {% block extra_js %}

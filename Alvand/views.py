@@ -2100,7 +2100,15 @@ class Profile(TemplateView, View):
         context = super().get_context_data(**kwargs)
         context['pageTitle'] = "پروفایل کاربری"
         user = Users.objects.filter(username__iexact=str(checkSession(self.request)))
-        context['user'] = user.first() if user.exists() else None
+        user_obj = user.first() if user.exists() else None
+        context['user'] = user_obj
+
+        from .forms import SelfInfosProfileForm, SelfUserProfileForm
+        infos = None
+        if user_obj:
+            infos = Infos.objects.filter(user=user_obj).first()
+        context['infos_form'] = SelfInfosProfileForm(instance=infos)
+        context['user_form'] = SelfUserProfileForm(instance=user_obj)
         return context
 
     def get(self, request, *args, **kwargs):
@@ -2186,6 +2194,29 @@ class Profile(TemplateView, View):
                 
             except Exception as e:
                 return JsonResponse({'success': False, 'error': str(e)})
+
+        if request.POST.get('save_profile'):
+            from .forms import SelfInfosProfileForm, SelfUserProfileForm
+            username = checkSession(request)
+            user = Users.objects.filter(username__iexact=username).first()
+            if not user:
+                messages.error(request, messagesTypes.userInfoNotFound)
+                return redirect(reverse_lazy("profile"))
+
+            infos = Infos.objects.filter(user=user).first()
+            infos_form = SelfInfosProfileForm(request.POST, instance=infos)
+            user_form = SelfUserProfileForm(request.POST, instance=user)
+            if infos_form.is_valid() and user_form.is_valid():
+                obj = infos_form.save(commit=False)
+                obj.user = user
+                obj.save()
+                user_form.save()
+                messages.success(request, "پروفایل شما با موفقیت بروزرسانی شد.")
+                return redirect(reverse_lazy("profile"))
+            context = self.get_context_data()
+            context['infos_form'] = infos_form
+            context['user_form'] = user_form
+            return render(request, self.template_name, context=context)
         
         email = getUserinfoByUsername("email")
         user = Users.objects.filter(email__iexact=email)

@@ -100,6 +100,53 @@ class InfosForm(forms.ModelForm):
         }
 
 
+class SelfInfosProfileForm(forms.ModelForm):
+    class Meta:
+        model = Infos
+        fields = ('nationalcode', 'birthdate', 'telephone', 'phonenumber', 'gender', 'maritalstatus', 'military',
+                  'educationfield', 'educationdegree', 'province', 'city', 'accountnumbershaba',
+                  'cardnumber', 'groupname', 'accountnumber', 'address')
+
+        widgets = {
+            'nationalcode': forms.TextInput(
+                attrs={'class': 'field-value ltr', 'type': 'tel', 'inputmode': 'numeric'}),
+            'birthdate': forms.TextInput(attrs={'class': 'field-value', 'data-jdp': None}),
+            'telephone': forms.TextInput(
+                attrs={'class': 'field-value ltr', 'type': 'tel', 'inputmode': 'numeric'}),
+            'phonenumber': forms.TextInput(
+                attrs={'class': 'field-value ltr', 'type': 'tel', 'inputmode': 'numeric'}),
+            'gender': forms.Select(attrs={'class': 'field-value appearance-none'}),
+            'maritalstatus': forms.Select(
+                attrs={'class': 'field-value appearance-none'}),
+            'military': forms.Select(attrs={'class': 'field-value appearance-none'}),
+            'educationfield': forms.TextInput(attrs={'class': 'field-value'}),
+            'educationdegree': forms.Select(
+                attrs={'class': 'field-value appearance-none'}),
+            'province': forms.Select(attrs={'class': 'field-value appearance-none'}),
+            'city': forms.TextInput(attrs={'class': 'field-value'}),
+            'accountnumbershaba': forms.TextInput(attrs={'class': 'field-value ltr'}),
+            'cardnumber': forms.TextInput(
+                attrs={'class': 'field-value ltr', 'type': 'tel', 'inputmode': 'numeric'}),
+            'accountnumber': forms.TextInput(
+                attrs={'class': 'field-value ltr', 'type': 'tel', 'inputmode': 'numeric'}),
+            'address': forms.Textarea(
+                attrs={'class': 'field-value align-top text-start', 'rows': 2}),
+            'groupname': forms.Select(
+                attrs={'class': 'field-value appearance-none'}),
+        }
+
+
+class SelfUserProfileForm(forms.ModelForm):
+    class Meta:
+        model = Users
+        fields = ("name", "lastname", "email")
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'field-value'}),
+            'lastname': forms.TextInput(attrs={'class': 'field-value'}),
+            'email': forms.EmailInput(attrs={'class': 'field-value ltr'}),
+        }
+
+
 class PermissionsForm(forms.ModelForm):
     class Meta:
         model = Permissions
