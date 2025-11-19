@@ -40,15 +40,31 @@ html.dark .theme-toggle .fa-moon {
 html.light .lotus-theme-toggle .fa-moon,
 html.light #theme-toggle .fa-moon,
 html.light .theme-toggle .fa-moon {
-    opacity: 1 !important;
-    transform: translate(-50%, -50%) rotate(0) !important;
-    visibility: visible !important;
+    opacity: 0 !important;
+    transform: translate(-50%, -50%) rotate(-180deg) !important;
+    visibility: hidden !important;
 }
 
 html.light .lotus-theme-toggle .fa-sun,
 html.light #theme-toggle .fa-sun,
 html.light .theme-toggle .fa-sun {
+    opacity: 1 !important;
+    transform: translate(-50%, -50%) rotate(0) !important;
+    visibility: visible !important;
+}
+
+html.dark .lotus-theme-toggle .fa-moon,
+html.dark #theme-toggle .fa-moon,
+html.dark .theme-toggle .fa-moon {
+    opacity: 1 !important;
+    transform: translate(-50%, -50%) rotate(0) !important;
+    visibility: visible !important;
+}
+
+html.dark .lotus-theme-toggle .fa-sun,
+html.dark #theme-toggle .fa-sun,
+html.dark .theme-toggle .fa-sun {
     opacity: 0 !important;
     transform: translate(-50%, -50%) rotate(-180deg) !important;
     visibility: hidden !important;
-} 
+}

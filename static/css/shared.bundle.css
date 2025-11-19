@@ -82,10 +82,10 @@ html[dir="ltr"] .main-content { margin-right: 0; margin-left: var(--sidebar-widt
 /* === Begin: shared-theme-toggle.css === */
 .theme-toggle-btn i, .dark-mode-toggle i, .light-mode-toggle i, [data-theme-toggle] i, .theme-switch i, #themeToggle i, .navbar .fa-moon, .navbar .fa-sun, header .fa-moon, header .fa-sun, .nav .fa-moon, .nav .fa-sun, .theme-toggle-icon { color: var(--primary-color) !important; font-size: 1.25rem !important; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2)) !important; opacity: 1 !important; visibility: visible !important; transition: all 0.2s ease !important; }
 html.dark .theme-toggle-btn i, html.dark .dark-mode-toggle i, html.dark .light-mode-toggle i, html.dark [data-theme-toggle] i, html.dark .theme-switch i, html.dark #themeToggle i, html.dark .navbar .fa-moon, html.dark .navbar .fa-sun, html.dark header .fa-moon, html.dark header .fa-sun, html.dark .nav .fa-moon, html.dark .nav .fa-sun, html.dark .theme-toggle-icon { color: var(--primary-light) !important; }
-.fa-sun { display: none !important; }
-.fa-moon { display: inline-block !important; color: var(--primary-color) !important; }
-html.dark .fa-moon { display: none !important; }
-html.dark .fa-sun { display: inline-block !important; color: var(--primary-light) !important; }
+.fa-sun { display: inline-block !important; color: #FF9800 !important; }
+.fa-moon { display: none !important; }
+html.dark .fa-moon { display: inline-block !important; color: var(--primary-light) !important; }
+html.dark .fa-sun { display: none !important; }
 
 /* === Begin: shared-cards.css === */
 .card-container { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }

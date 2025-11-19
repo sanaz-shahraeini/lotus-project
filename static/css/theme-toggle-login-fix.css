@@ -28,7 +28,8 @@
 
 /* Fix icon colors */
 .fa-sun {
-    color: #f59e0b !important; /* Amber color for sun icon */
+    color: #FF9800 !important; /* Brighter Orange for sun icon visibility */
+    text-shadow: 0 0 4px rgba(255, 152, 0, 0.3) !important; /* Add glow for better visibility */
 }
 
 .fa-moon {

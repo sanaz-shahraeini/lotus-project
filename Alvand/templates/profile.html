@@ -216,35 +216,36 @@
     
     /* High visibility profile elements */
     .profile-name-container {
-        background-color: rgba(0, 188, 212, 0.1);
+        background-color: #e0f7fa; /* Solid light cyan for clear separation in light mode */
         padding: 0.5rem 1.5rem;
         border-radius: 0.5rem;
         margin-bottom: 0.75rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
     }
     
     .dark .profile-name-container {
-        background-color: rgba(0, 188, 212, 0.15);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        background-color: rgba(0, 188, 212, 0.25);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
     }
     
-    .profile-name {
+    /* Main profile header name (override sidebar .profile-name) */
+    .profile-info .profile-name {
         font-size: 1.75rem;
         font-weight: 700;
-        color: #1a1a1a; /* Dark color for light mode visibility */
+        color: #000000 !important; /* Dark text for light mode */
         margin-bottom: 0;
         text-align: center;
         text-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
     
-    .dark .profile-name {
-        color: #F5F7FA; /* Light color for dark mode */
+    html.dark .profile-info .profile-name {
+        color: #F9FAFB !important; /* Light text for dark mode */
     }
     
-    .profile-username {
+    .profile-info .profile-user-info .profile-username {
         display: inline-block;
-        background-color: rgba(0, 188, 212, 0.2);
-        color: #006064; /* Darker cyan for better visibility in light mode */
+        background-color: #e0f7fa !important; /* Light cyan pill in light mode */
+        color: #004d40 !important;          /* Dark teal text for light mode */
         padding: 0.5rem 1.25rem;
         border-radius: 0.5rem;
         font-size: 1.125rem;
@@ -253,10 +254,10 @@
         text-align: center;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-    
-    .dark .profile-username {
-        background-color: rgba(0, 188, 212, 0.25);
-        color: #80DEEA;
+
+    html.dark .profile-info .profile-user-info .profile-username {
+        background-color: rgba(0, 188, 212, 0.25) !important;
+        color: #e0f7fa !important; /* Light text for dark mode */
         box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
     
@@ -697,9 +698,9 @@
         <div class="profile-info">
             <div class="profile-user-info">
                 <div class="profile-name-container">
-                    <h1 class="profile-name">{{ user.name|capfirst }} {{ user.lastname|capfirst }}</h1>
+                    <h1 class="profile-name" style="color:#111827;">{{ user.name|capfirst }} {{ user.lastname|capfirst }}</h1>
                 </div>
-                <div class="profile-username">{{ user.username }}</div>
+                <div class="profile-username" style="background-color:#e0f7fa; color:#004d40;">{{ user.username }}</div>
                 <p class="profile-detail">
                     <i class="fa-solid fa-location-dot"></i>
                     {{ user.username|getFieldOfInfo:"city" }}، {{ user.username|getFieldOfInfo:"province"|getValueOfIndexes:"province" }}

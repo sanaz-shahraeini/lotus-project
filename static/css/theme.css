@@ -511,22 +511,22 @@ header .fa-sun,
 
 .fa-moon {
     color: var(--primary-color) !important;
-    display: inline-block !important;
+    display: none !important;
 }
 
 .fa-sun {
-    color: #FF7043 !important;
-    display: none !important;
+    color: #FF9800 !important;
+    display: inline-block !important;
 }
 
 .dark .fa-sun {
     color: #FF9E80 !important;
-    display: inline-block !important;
+    display: none !important;
 }
 
 .dark .fa-moon {
     color: var(--primary-light) !important;
-    display: none !important;
+    display: inline-block !important;
 }
 
 /* RTL Layout Styles */
