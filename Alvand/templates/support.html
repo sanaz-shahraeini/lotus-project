@@ -449,6 +449,18 @@
         line-height: 1.6;
     }
 
+    .alert-support-success {
+        background: linear-gradient(135deg, rgba(0, 188, 212, 0.1) 0%, rgba(63, 81, 181, 0.15) 100%);
+        border: 2px solid rgba(0, 188, 212, 0.3);
+        color: var(--primary-color);
+    }
+
+    .alert-support-error {
+        background: rgba(239, 68, 68, 0.1);
+        border: 2px solid rgba(239, 68, 68, 0.3);
+        color: #dc2626;
+    }
+
     /* Premium Company Image Section */
     .company-image {
         height: 12rem;
@@ -1238,13 +1250,14 @@
                 {% if messages %}
                     <div class="messages-container" style="margin-bottom: var(--space-lg);">
                         {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }}" style="padding: var(--space-md); border-radius: var(--radius-md); margin-bottom: var(--space-sm); {% if message.tags == 'success' %}background: linear-gradient(135deg, rgba(0, 188, 212, 0.1) 0%, rgba(63, 81, 181, 0.15) 100%); border: 2px solid rgba(0, 188, 212, 0.3); color: var(--primary-color);{% else %}background: rgba(239, 68, 68, 0.1); border: 2px solid rgba(239, 68, 68, 0.3); color: #dc2626;{% endif %}">
+                            <div class="alert alert-{{ message.tags }} {% if message.tags == 'success' %}alert-support-success{% else %}alert-support-error{% endif %}" style="padding: var(--space-md); border-radius: var(--radius-md); margin-bottom: var(--space-sm);">
                                 {{ message }}
                             </div>
                         {% endfor %}
                     </div>
                 {% endif %}
-                
+
+                {% if is_supporter %}
                 <form class="support-form" method="post" action="{% url 'support' %}">
                     {% csrf_token %}
                     <div class="form-group">
@@ -1272,12 +1285,19 @@
                             </div>
                         {% endif %}
                     </div>
-                    
+
                     <button type="submit" class="support-button">
                         <i class="fas fa-paper-plane ltr"></i>
                         ارسال پیام
                     </button>
                 </form>
+                {% else %}
+                <div class="support-form" style="text-align: center;">
+                    <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">
+                        فقط کاربران با نقش پشتیبان مجاز به ارسال پیام پشتیبانی هستند.
+                    </p>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>

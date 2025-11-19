@@ -2022,9 +2022,18 @@ def dashboard_export(request):
 def support(request):
     from django.contrib import messages
     from .forms import SupportMessageForm
-    
+
+    # Determine current logged-in custom user and supporter role
+    current_user = None
+    username = checkSession(request)
+    if username:
+        current_user = Users.objects.filter(username__iexact=username).first()
+
+    is_supporter = bool(current_user and str(current_user.groupname).lower() == 'supporter')
+
     if request.method == 'POST':
         form = SupportMessageForm(request.POST)
+
         if form.is_valid():
             form.save()
             messages.success(request, 'پیام شما با موفقیت ارسال شد. به زودی با شما تماس خواهیم گرفت.')
@@ -2033,8 +2042,8 @@ def support(request):
             messages.error(request, 'لطفا تمام فیلدها را به درستی پر کنید.')
     else:
         form = SupportMessageForm()
-    
-    return render(request, 'support.html', context={'pageTitle': 'پشتیبانی', 'form': form})
+
+    return render(request, 'support.html', context={'pageTitle': 'پشتیبانی', 'form': form, 'user': current_user, 'is_supporter': is_supporter})
 
 def checkSession(request):
     if 'user' in request.session:
