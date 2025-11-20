@@ -9,9 +9,9 @@ from django.contrib.postgres.fields import ArrayField
 """
 
 GENDER = (
-    ('0', 'مرد'),
-    ('1', 'زن'),
-    ('2', 'نامعلوم')
+    (0, 'مرد'),
+    (1, 'زن'),
+    (2, 'نامعلوم')
 )
 
 MILITARY = (

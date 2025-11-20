@@ -139,11 +139,10 @@ class SelfInfosProfileForm(forms.ModelForm):
 class SelfUserProfileForm(forms.ModelForm):
     class Meta:
         model = Users
-        fields = ("name", "lastname", "email")
+        fields = ("name", "lastname")
         widgets = {
             'name': forms.TextInput(attrs={'class': 'field-value'}),
             'lastname': forms.TextInput(attrs={'class': 'field-value'}),
-            'email': forms.EmailInput(attrs={'class': 'field-value ltr'}),
         }
 
 

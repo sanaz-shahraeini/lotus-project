@@ -2212,7 +2212,11 @@ class Profile(TemplateView, View):
                 obj.save()
                 user_form.save()
                 messages.success(request, "پروفایل شما با موفقیت بروزرسانی شد.")
-                return redirect(reverse_lazy("profile"))
+                response = redirect(reverse_lazy("profile"))
+                response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+                response['Pragma'] = 'no-cache'
+                response['Expires'] = '0'
+                return response
             context = self.get_context_data()
             context['infos_form'] = infos_form
             context['user_form'] = user_form

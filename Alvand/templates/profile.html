@@ -616,6 +616,10 @@
         background: linear-gradient(135deg, #00BCD4, #29B6F6);
         color: white;
         box-shadow: 0 2px 6px rgba(0, 188, 212, 0.3);
+        position: relative;
+        z-index: 100;
+        pointer-events: auto !important;
+        cursor: pointer !important;
     }
 
     .action-button.save-user:hover {
@@ -725,6 +729,22 @@
     <form method="post">
         {% csrf_token %}
         <input type="hidden" name="save_profile" value="1">
+        {% if user_form.errors or infos_form.errors %}
+        <div class="mb-3" style="color:#b91c1c; font-size:0.8rem;">
+            {{ user_form.non_field_errors }}
+            {{ infos_form.non_field_errors }}
+            {% for field in user_form %}
+                {% for err in field.errors %}
+                    <div>{{ field.label }}: {{ err }}</div>
+                {% endfor %}
+            {% endfor %}
+            {% for field in infos_form %}
+                {% for err in field.errors %}
+                    <div>{{ field.label }}: {{ err }}</div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+        {% endif %}
         <div class="card-container">
             
             <!-- Personal Information -->
@@ -804,13 +824,10 @@
                             <span>{{ user.email|capfirst }}</span>
                                 {% if not user.email_verified_at %}
                                     {% if not email %}
-                                    <form method="post" class="inline">
-                                        {% csrf_token %}
                                     <button type="submit" name="verifyEmail" class="btn btn-primary btn-sm">
                                         <i class="fa-solid fa-envelope-circle-check"></i>
                                         تایید
                                     </button>
-                                </form>
                                 {% else %}
                                 <button id="verify" class="btn btn-primary btn-sm">
                                     <i class="fa-solid fa-envelope-circle-check"></i>
@@ -1256,3 +1273,18 @@
     });
 </script>
 {% endblock %}
+         / /   D e b u g :   T e s t   s a v e   b u t t o n   c l i c k 
+         d o c u m e n t . a d d E v e n t L i s t e n e r ( ' D O M C o n t e n t L o a d e d ' ,   f u n c t i o n ( )   { 
+                 c o n s t   s a v e B t n   =   d o c u m e n t . q u e r y S e l e c t o r ( ' . a c t i o n - b u t t o n . s a v e - u s e r ' ) ; 
+                 i f   ( s a v e B t n )   { 
+                         c o n s o l e . l o g ( ' S a v e   b u t t o n   f o u n d : ' ,   s a v e B t n ) ; 
+                         s a v e B t n . a d d E v e n t L i s t e n e r ( ' c l i c k ' ,   f u n c t i o n ( e )   { 
+                                 c o n s o l e . l o g ( ' S a v e   b u t t o n   c l i c k e d ! ' ) ; 
+                                 / /   L e t   t h e   f o r m   s u b m i t   n o r m a l l y 
+                         } ) ; 
+                 }   e l s e   { 
+                         c o n s o l e . l o g ( ' S a v e   b u t t o n   n o t   f o u n d ! ' ) ; 
+                 } 
+         } ) ; 
+ 
+ 
