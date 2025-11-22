@@ -10,6 +10,7 @@ urlpatterns = [
     path('profile/', views.Profile.as_view(), name='profile'),
     path('dashboard/', views.dashboardPage.as_view(), name='dashboard'),
     path('dashboard/export/', views.dashboard_export, name='dashboard_export'),
+    path('api/live-call-status/', views.live_call_status, name='live_call_status'),
     path('dashboard-improved/', views_improved.ImprovedDashboardView.as_view(), name='dashboard-improved'),
     path('smdr-dashboard/', views_improved.SMDRDashboardView.as_view(), name='smdr-dashboard'),
     path('settings/', views.systemSettings.as_view(), name='settings'),

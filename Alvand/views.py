@@ -1804,6 +1804,44 @@ class dashboardPage(TemplateView, View):
         return context
 
 
+def live_call_status(request):
+    """Return the latest active call (if any) for use in the live dashboard popup."""
+    if not checkSession(request):
+        return JsonResponse({"active": False}, status=401)
+    if not check_active(checkSession(request)):
+        return JsonResponse({"active": False}, status=403)
+
+    try:
+        # Consider calls that are currently ringing, answered, or outgoing
+        active_types = ['incomingRC', 'incomingAN', 'outGoing']
+        qs = Records.objects.filter(calltype__in=active_types, durationtime__isnull=True)
+
+        # Limit to very recent records to avoid stale entries (e.g., last 2 minutes)
+        try:
+            two_minutes_ago = timezone.now() - datetime.timedelta(minutes=2)
+            qs = qs.filter(created_at__gte=two_minutes_ago)
+        except Exception:
+            pass
+
+        rec = qs.order_by('-created_at', '-id').first()
+        if not rec:
+            return JsonResponse({"active": False})
+
+        data = {
+            "active": True,
+            "id": rec.id,
+            "extension": getattr(rec, 'extension', None),
+            "contactnumber": getattr(rec, 'contactnumber', None),
+            "calltype": getattr(rec, 'calltype', None),
+            "urbanline": getattr(rec, 'urbanline', None),
+            "durationtime": getattr(rec, 'durationtime', None),
+            "created_at": timezone.localtime(getattr(rec, 'created_at', timezone.now())).strftime('%Y-%m-%d %H:%M:%S'),
+        }
+        return JsonResponse(data)
+    except Exception:
+        return JsonResponse({"active": False})
+
+
 def dashboard_export(request):
     """Export filtered dashboard records as CSV or Excel using the same filter logic as the dashboard page."""
     if not checkSession(request):

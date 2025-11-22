@@ -2708,10 +2708,250 @@
         }
     });
 </script>
+
+<!-- Live call popup (global, for all users on dashboard) -->
+<style>
+    #live-call-popup {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        z-index: 9999;
+        min-width: 260px;
+        max-width: 360px;
+        background: rgba(15, 23, 42, 0.96);
+        color: #e2e8f0;
+        border-radius: 12px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+        padding: 14px 16px;
+        display: none;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+    #live-call-popup .live-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 6px;
+    }
+    #live-call-popup .live-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+    #live-call-popup .live-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: #22c55e;
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+        animation: livePulse 1.5s infinite;
+    }
+    #live-call-popup .live-body {
+        font-size: 0.8rem;
+        line-height: 1.6;
+    }
+    #live-call-popup .live-row {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 4px;
+    }
+    #live-call-popup .live-label {
+        color: #9ca3af;
+    }
+    #live-call-popup .live-value {
+        font-weight: 600;
+        color: #e5e7eb;
+    }
+    #live-call-popup .live-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 8px;
+        font-size: 0.75rem;
+        color: #9ca3af;
+    }
+    #live-call-popup .live-timer {
+        font-family: "IRANSans", system-ui, sans-serif;
+        font-weight: 600;
+        color: #fbbf24;
+    }
+    #live-call-popup .live-close {
+        background: transparent;
+        border: none;
+        color: #9ca3af;
+        cursor: pointer;
+        padding: 2px 4px;
+    }
+    #live-call-popup .live-close:hover {
+        color: #e5e7eb;
+    }
+    @keyframes livePulse {
+        0% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+        }
+        70% {
+            transform: scale(1.15);
+            box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+        }
+        100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+        }
+    }
+</style>
+
+<div id="live-call-popup" dir="rtl">
+    <div class="live-header">
+        <div class="live-title">
+            <span class="live-dot"></span>
+            <span>تماس در حال برقراری</span>
+        </div>
+        <button type="button" class="live-close" id="live-call-close-btn">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+    <div class="live-body">
+        <div class="live-row">
+            <span class="live-label">شماره تماس گیرنده:</span>
+            <span class="live-value" id="live-call-number" dir="ltr" style="text-align: left; direction: ltr; display: inline-block; min-width: 120px;">-</span>
+        </div>
+        <div class="live-row">
+            <span class="live-label">داخلی:</span>
+            <span class="live-value" id="live-call-ext">-</span>
+        </div>
+        <div class="live-row">
+            <span class="live-label">نوع تماس:</span>
+            <span class="live-value" id="live-call-type">-</span>
+        </div>
+    </div>
+    <div class="live-footer">
+        <span id="live-call-start">-</span>
+        <span class="live-timer" id="live-call-timer">00:00</span>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        let liveTimerInterval = null;
+        let liveStartTime = null;
+        let lastCallId = null;
+        let userDismissed = false;
+
+        function formatCallType(ct) {
+            if (!ct) return '-';
+            switch (ct) {
+                case 'incomingRC': return 'ورودی (در حال زنگ)';
+                case 'incomingAN': return 'ورودی (پاسخ داده شده)';
+                case 'outGoing': return 'خروجی';
+                default: return ct;
+            }
+        }
+
+        function startLiveTimer(startDateTimeStr) {
+            if (!startDateTimeStr) {
+                $('#live-call-timer').text('00:00');
+                return;
+            }
+
+            // Parse server datetime as local
+            liveStartTime = new Date(startDateTimeStr.replace(' ', 'T'));
+            if (isNaN(liveStartTime.getTime())) {
+                $('#live-call-timer').text('00:00');
+                return;
+            }
+
+            if (liveTimerInterval) {
+                clearInterval(liveTimerInterval);
+            }
+
+            function updateTimer() {
+                const now = new Date();
+                const diffMs = now - liveStartTime;
+                if (diffMs < 0) {
+                    $('#live-call-timer').text('00:00');
+                    return;
+                }
+                const totalSec = Math.floor(diffMs / 1000);
+                const mm = String(Math.floor(totalSec / 60)).padStart(2, '0');
+                const ss = String(totalSec % 60).padStart(2, '0');
+                $('#live-call-timer').text(mm + ':' + ss);
+            }
+
+            updateTimer();
+            liveTimerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function showLivePopup(data) {
+            if (userDismissed && data.id === lastCallId) {
+                return; // user closed this call popup manually
+            }
+
+            lastCallId = data.id;
+            userDismissed = false;
+
+            $('#live-call-number').text(data.contactnumber || '-');
+            $('#live-call-ext').text(data.extension || '-');
+            $('#live-call-type').text(formatCallType(data.calltype));
+            $('#live-call-start').text(data.created_at || '-');
+
+            startLiveTimer(data.created_at);
+
+            if (!$('#live-call-popup').is(':visible')) {
+                $('#live-call-popup').fadeIn(200);
+            }
+        }
+
+        function hideLivePopup() {
+            if (liveTimerInterval) {
+                clearInterval(liveTimerInterval);
+                liveTimerInterval = null;
+            }
+            $('#live-call-popup').fadeOut(200);
+            $('#live-call-timer').text('00:00');
+        }
+
+        function pollLiveCall() {
+            $.ajax({
+                url: '/api/live-call-status/',
+                method: 'GET',
+                cache: false,
+                success: function(res) {
+                    if (res && res.active) {
+                        showLivePopup(res);
+                    } else {
+                        hideLivePopup();
+                        lastCallId = null;
+                    }
+                },
+                error: function() {
+                    // در صورت خطا، فقط پاپ‌آپ را مخفی کن و دوباره تلاش کن
+                    hideLivePopup();
+                }
+            });
+        }
+
+        // Poll every 2 seconds for live calls
+        setInterval(pollLiveCall, 2000);
+
+        // Initial check
+        pollLiveCall();
+
+        // Close button handler
+        $('#live-call-close-btn').on('click', function() {
+            userDismissed = true;
+            hideLivePopup();
+        });
+    });
+</script>
+
 <!-- Safe JSON injection for filter values - Django's json_script is preferred -->
 {{ request.GET|getlist:'calls'|json_script:"calls-data" }}
 {{ request.GET|getlist:'extline'|json_script:"exts-data" }}
 {{ request.GET|getlist:'urbanline'|json_script:"urbanlines-data" }}
+
 {% endblock js_extra %}
 
 <!-- Direct fix for dashboard statistics -->
