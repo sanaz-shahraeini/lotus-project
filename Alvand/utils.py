@@ -6,7 +6,7 @@ from .models import Faults, Records, ArrayAppend
 import threading
 
 
-def telnetConnection(attempts=3, port: int = 2300, network_id: str = "192.168.1.100"):
+def telnetConnection(attempts=3, port: int = 23, network_id: str = "192.168.0.100"):
     """Open a TCP socket to the PBX SMDR port with limited retries.
 
     Returns a connected socket object on success, or None on failure.

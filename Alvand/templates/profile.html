@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- Page relies on shared + app.css from base.html -->
+    <link rel="stylesheet" href="{% static 'css/profile-select-fix.css' %}">
     
     <style>
     /* Page-specific profile styles (shared tokens moved to static/css/shared-*.css) */
@@ -402,6 +403,53 @@
         padding: 1.25rem;
     }
     
+    /* Fix for duplicate dropdown arrows in select elements */
+    select.form-control,
+    .select2-container--default .select2-selection--single,
+    .profile-page select {
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23757575'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e") !important;
+        background-repeat: no-repeat !important;
+        background-position: left 0.5rem center !important;
+        background-size: 1.5em !important;
+        padding-right: 0.75rem !important;
+        padding-left: 2rem !important;
+        background-color: rgba(245, 247, 250, 0.5) !important;
+        border: 1px solid #e2e8f0 !important;
+    }
+
+    .dark select.form-control,
+    .dark .select2-container--default .select2-selection--single,
+    .dark .profile-page select {
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a0aec0'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e") !important;
+        background-color: rgba(13, 27, 42, 0.8) !important;
+        border-color: #37474F !important;
+        color: #F5F7FA !important;
+    }
+
+    /* Remove any additional arrows from select2 */
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        display: none !important;
+    }
+
+    /* Make sure the select is properly sized */
+    .select2-container--default .select2-selection--single {
+        height: 38px !important;
+        line-height: 38px !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 38px !important;
+        padding-right: 0.5rem !important;
+    }
+
+    /* For IE11 */
+    select::-ms-expand {
+        display: none !important;
+    }
+
     /* Form fields */
     .field-container {
         display: grid;
@@ -641,16 +689,48 @@
 }
 
 .action-button.password-reset {
-    background-color: #FF9800;
-    color: white;
-    box-shadow: 0 2px 6px rgba(255, 152, 0, 0.3);
-}
 
-.action-button.password-reset:hover {
-    background-color: #F57C00;
-    box-shadow: 0 4px 8px rgba(255, 152, 0, 0.4);
-    transform: translateY(-2px);
-}
+    /* Hide any additional arrows */
+    .select2-container--default .select2-selection--single .select2-selection__arrow,
+    .select2-selection__arrow,
+    .select2-selection__arrow b,
+    .select2-selection__arrow::before,
+    .select2-selection__arrow::after {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        border: none !important;
+        background: none !important;
+    }
+
+    /* Make sure the select2 container is properly sized */
+    .select2-container--default .select2-selection--single,
+    .select2-container .select2-selection--single {
+        height: 38px !important;
+        line-height: 38px !important;
+        padding: 0 !important;
+    }
+
+    /* For the select2 rendered text */
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 38px !important;
+        padding-right: 0.5rem !important;
+        padding-left: 1.5rem !important;
+    }
+
+    /* Remove any box shadow or additional styling */
+    select:focus,
+    .select2-container--default .select2-selection--single:focus,
+    .select2-container .select2-selection--single:focus {
+        outline: none !important;
+        box-shadow: none !important;
+        border-color: #00BCD4 !important;
+    }
+
+    /* For IE11 */
+    select::-ms-expand {
+        display: none !important;
+    }
     </style>
 {% endblock %}
 
@@ -674,18 +754,6 @@
                     <div class="status-badge">
                         <i class="fa-solid fa-exclamation-circle"></i>
                         حساب غیرفعال
-                    </div>
-                {% endif %}
-                
-                {% if user.email_verified_at %}
-                    <!-- <div class="status-badge">
-                        <i class="fa-solid fa-envelope-circle-check"></i>
-                        ایمیل تایید شده
-                    </div> -->
-                {% else %}
-                    <div class="status-badge">
-                        <i class="fa-solid fa-envelope"></i>
-                        ایمیل تایید نشده
                     </div>
                 {% endif %}
             </div>
@@ -822,19 +890,6 @@
                         <label class="field-label">ایمیل</label>
                         <div class="field-value" dir="ltr" style="display: flex; justify-content: space-between; align-items: center">
                             <span>{{ user.email|capfirst }}</span>
-                                {% if not user.email_verified_at %}
-                                    {% if not email %}
-                                    <button type="submit" name="verifyEmail" class="btn btn-primary btn-sm">
-                                        <i class="fa-solid fa-envelope-circle-check"></i>
-                                        تایید
-                                    </button>
-                                {% else %}
-                                <button id="verify" class="btn btn-primary btn-sm">
-                                    <i class="fa-solid fa-envelope-circle-check"></i>
-                                    تایید
-                                </button>
-                                {% endif %}
-                            {% endif %}
                         </div>
                     </div>
                     
@@ -945,90 +1000,6 @@
 {% endblock %}
 
 {% block extra_js %}
-{% if email %}
-<div id="emailMod" class="modal {% if not email %}hidden{% endif %}">
-    <div class="modal-content max-w-md w-full p-5">
-        <div class="text-center">
-            <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style="background: linear-gradient(135deg, rgba(0, 188, 212, 0.15), rgba(83, 109, 254, 0.15)); color: #00BCD4; box-shadow: 0 4px 12px rgba(0, 188, 212, 0.2);">
-                <i class="fa-solid fa-envelope text-2xl"></i>
-            </div>
-            <h3 class="text-lg font-bold mb-3">تایید آدرس ایمیل</h3>
-            <p class="mb-4 text-sm text-gray-600">لطفا کد ارسال شده به ایمیل خود را وارد کنید</p>
-            
-            <form method="POST" class="space-y-3">
-                {% csrf_token %}
-                <div class="mb-4">
-                    <input type="number" name="code" 
-                           class="verification-input w-full text-center text-xl py-2.5 px-3 border rounded-lg transition duration-200"
-                           placeholder="- - - - - -" 
-                           maxlength="6">
-                </div>
-                
-                <div class="flex justify-between items-center text-xs mb-3">
-                    <span class="text-gray-500">کد را دریافت نکردید؟</span>
-                    <button type="submit" name="resend" style="color: #00BCD4; font-weight: 500; transition: all 0.2s ease;">
-                        ارسال مجدد
-                    </button>
-                </div>
-                
-                <div class="flex gap-2 mt-4">
-                    <button type="button" id="cancel" class="btn btn-outline flex-1 text-sm">
-                        انصراف
-                    </button>
-                    <button type="submit" name="verify" class="btn btn-primary flex-1 text-sm">
-                        تأیید
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const emailModal = document.getElementById('emailMod');
-        
-        if (emailModal) {
-            // Cancel button functionality
-            document.getElementById('cancel').addEventListener('click', function() {
-                emailModal.classList.remove('open');
-                setTimeout(() => {
-                emailModal.classList.add('hidden');
-                }, 200);
-            });
-            
-            // Verify button functionality (if exists)
-            const verifyBtn = document.getElementById('verify');
-            if (verifyBtn) {
-                verifyBtn.addEventListener('click', function() {
-                    emailModal.classList.remove('hidden');
-                    setTimeout(() => {
-                        emailModal.classList.add('open');
-                    }, 10);
-                });
-            }
-            
-            // Animation for modal
-            if (!emailModal.classList.contains('hidden')) {
-                setTimeout(() => {
-                    emailModal.classList.add('open');
-                }, 10);
-            }
-            
-            // Close when clicking outside
-            emailModal.addEventListener('click', function(e) {
-                if (e.target === emailModal) {
-                    emailModal.classList.remove('open');
-                    setTimeout(() => {
-                        emailModal.classList.add('hidden');
-                    }, 200);
-                }
-            });
-        }
-    });
-</script>
-{% endif %}
-
 <!-- Profile Picture Upload Modal -->
 <div id="profilePicModal" class="modal hidden">
     <div class="modal-content max-w-md w-full p-5">

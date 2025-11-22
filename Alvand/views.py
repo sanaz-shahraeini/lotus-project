@@ -2119,12 +2119,6 @@ class Profile(TemplateView, View):
         if not check_active(checkSession(request)):
             messages.error(request, messagesTypes.deAvtive)
             return redirect(reverse_lazy('logout' if checkSession(request) else 'login'))
-        if not Users.objects.filter(username__iexact=checkSession(request)).first().email_verified_at:
-            if Verifications.objects.filter(user=Users.objects.filter(username__iexact=checkSession(request)).first(),
-                                            type=verificationType.email).exists():
-                context['email'] = True
-        else:
-            if 'email' in context: del context['email']
         return render(request, self.template_name, context=context)
 
     def post(self, request):
@@ -2222,80 +2216,6 @@ class Profile(TemplateView, View):
             context['user_form'] = user_form
             return render(request, self.template_name, context=context)
         
-        email = getUserinfoByUsername("email")
-        user = Users.objects.filter(email__iexact=email)
-        verEmail = request.POST.get("verifyEmail")
-        resend = request.POST.get("resend")
-        if verEmail or resend:
-            context = self.get_context_data()
-            if not email:
-                messages.error(request, messagesTypes.userInfoNotFound)
-                return redirect(reverse_lazy("profile"))
-            if not user.exists():
-                messages.error(request, messagesTypes.userInfoNotFound)
-                return redirect(reverse_lazy("profile"))
-            if user.first().email_verified_at:
-                messages.error(request, "ایمیل شما از قبل تایید شده است.")
-                return redirect(reverse_lazy("profile"))
-            verModel = Verifications.objects.filter(type=verificationType.email, user=user.first())
-            if verEmail and not resend:
-                if verModel.exists():
-                    context['email'] = True
-                    messages.error(request, "کد تاییدیه ایمیل از قبل برای شما ارسال شده است.")
-                    return render(request, self.template_name, context=context)
-            elif not verEmail and resend:
-                if not verModel.exists():
-                    if 'email' in context:
-                        del context['email']
-                    messages.error(request, "شما هیچ فرایند تاییدیه ایمیلی ندارید.")
-                    return render(request, self.template_name, context=context)
-            rand = getRandomCode()
-            sent = sendEmail("تاییدیه ایمیل", f"code: {rand}", [email], request=request)
-            if sent is True:
-                if verEmail and not resend:
-                    Verifications.objects.create(type=verificationType.email,
-                                                 user=user.first(), code=rand)
-                    log(request, logErrCodes.emails, logMessages.userProcessEmail.format(user.first().username, ),
-                        user.first().username)
-                elif not verEmail and resend:
-                    verModel.update(code=rand)
-                log(request, logErrCodes.emails,
-                    logMessages.emailVerifyCodeSent.format(user.first().username.capitalize(), email.capitalize()),
-                    user.first().username)
-                context['email'] = True
-                messages.success(request,
-                                 f"کد تاییدیه {'مجددا' if not verEmail and resend else ''} به ایمیل شما ارسال شد.\nتوجه داشته باشید که حتما پوشه اسپم چک شود.")
-                return render(request, self.template_name, context=context)
-            elif sent is not True and sent is not False:
-                messages.error(request, sent)
-            messages.error(request, "در ارسال ایمیل با مشکلی مواجه شده ایم\nلطفا با مدیر خود در ارتباط باشید.")
-        verifyBtn = request.POST.get("verify")
-        if verifyBtn:
-            code = request.POST.get("code")
-            if not user.exists():
-                messages.error(request, messagesTypes.userInfoNotFound)
-                return redirect(reverse_lazy("profile"))
-            if not user.first().email_verified_at:
-                messages.error(request, "ایمیل شما از قبل تایید شده است.")
-                return redirect(reverse_lazy("profile"))
-            context = self.get_context_data()
-            if not code.isdigit():
-                context['email'] = True
-                messages.error(request, "کد وارد شده نامعتبر است.")
-                return render(request, self.template_name, context=context)
-            verObj = Verifications.objects.filter(user=user.first(), code=int(code), type=verificationType.email)
-            if not verObj.exists():
-                context['email'] = True
-                messages.warning(request, "کد وارد شده اشتباه است.")
-                return render(request, self.template_name, context=context)
-            verObj.delete()
-            Users.objects.filter(email__iexact=email).update(email_verified_at=timezone.now())
-            log(request, logErrCodes.emails, logMessages.emailVerified.format(user.first().username.capitalize(), ),
-                user.first().username)
-            messages.success(request, "ایمیل شما با موفقیت تایید شد.")
-            if 'email' in context:
-                del context['email']
-            return render(request, self.template_name, context=context)
         return redirect(reverse_lazy("profile"))
 
 
