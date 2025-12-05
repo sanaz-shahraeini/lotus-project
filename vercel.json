@@ -13,15 +13,7 @@
   ],
   "functions": {
     "lotus/asgi.py": {
-      "excludeFiles": [
-        "logs/**",
-        "static/**",
-        "staticfiles/**",
-        "lotus-backup/**",
-        "*.rar",
-        "*.bak",
-        "celery/**"
-      ]
+      "excludeFiles": "{logs/**,static/**,staticfiles/**,lotus-backup/**,*.rar,*.bak,celery/**}"
     }
   }
 }
