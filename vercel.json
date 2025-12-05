@@ -10,5 +10,18 @@
       "src": "/(.*)",
       "dest": "lotus/asgi.py"
     }
-  ]
+  ],
+  "functions": {
+    "lotus/asgi.py": {
+      "excludeFiles": [
+        "logs/**",
+        "static/**",
+        "staticfiles/**",
+        "lotus-backup/**",
+        "*.rar",
+        "*.bak",
+        "celery/**"
+      ]
+    }
+  }
 }
