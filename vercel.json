@@ -1,19 +1,15 @@
 {
+  "version": 2,
   "builds": [
     {
-      "src": "lotus/asgi.py",
+      "src": "lotus/wsgi.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "lotus/asgi.py"
+      "dest": "lotus/wsgi.py"
     }
-  ],
-  "functions": {
-    "lotus/asgi.py": {
-      "excludeFiles": "{logs/**,static/**,staticfiles/**,lotus-backup/**,*.rar,*.bak,celery/**}"
-    }
-  }
+  ]
 }

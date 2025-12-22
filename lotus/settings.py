@@ -10,10 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
-from pathlib import Path
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 from urllib.parse import urlparse
+import dj_database_url
 
 # Try to load environment variables, but handle errors gracefully
 try:
@@ -30,17 +31,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-qiezo77a$)bo(gs=fvzjobm_!x5u$w$==v982gn#m=8n9g*aqm'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-qiezo77a$)bo(gs=fvzjobm_!x5u$w$==v982gn#m=8n9g*aqm')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-    "192.168.43.137",
-    "https://lotus-project-seven.vercel.app/"
-]
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -60,6 +56,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'Alvand.middlewares.LicenseCheckMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -74,6 +71,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:8000',
     'http://localhost:8000',
     'http://192.168.43.137:8000',
+    'https://lotus-project-seven.vercel.app',
 ]
 
 TEMPLATES = [
@@ -106,15 +104,13 @@ WSGI_APPLICATION = 'lotus.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 # Local PostgreSQL Database
+# Database configuration using environment variables for Vercel
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'LotusDB',
-        'USER': 'postgres',
-        'PASSWORD': 'mgee5d65',  # Replace this with your actual password
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL', 'postgresql://postgres:mgee5d65@localhost:5432/LotusDB'),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 # Neon Database (commented out for now)
@@ -167,6 +163,16 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+# WhiteNoise storage configuration
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 # Media files (User uploaded files)
 MEDIA_URL = '/media/'
