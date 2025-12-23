@@ -12,28 +12,36 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import os
 from pathlib import Path
-from dotenv import load_dotenv
-from urllib.parse import urlparse
 import dj_database_url
+from dotenv import load_dotenv
+from urllib.parse import urlparse, parse_qsl
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 IS_VERCEL = os.getenv('VERCEL') == '1' or os.getenv('VERCEL')
 
 # Try to load environment variables, but handle errors gracefully
 try:
-    load_dotenv()
+    load_dotenv(dotenv_path=BASE_DIR / '.env', encoding='utf-8')
+except UnicodeDecodeError:
+    try:
+        load_dotenv(dotenv_path=BASE_DIR / '.env', encoding='utf-16')
+    except Exception as e:
+        print(f"Warning: Error loading .env file: {e}")
+        # This allows the application to continue even if the .env file is missing or has issues
+        pass
 except Exception as e:
     print(f"Warning: Error loading .env file: {e}")
     # This allows the application to continue even if the .env file is missing or has issues
     pass
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-qiezo77a$)bo(gs=fvzjobm_!x5u$w$==v982gn#m=8n9g*aqm')
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
