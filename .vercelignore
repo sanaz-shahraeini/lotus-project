@@ -13,3 +13,11 @@ start_all.bat
 start_celery_beat.bat
 start_celery_worker.bat
 2025-11.txt
+staticfiles/fontawesomefree/**
+staticfiles/fontawesomefree1.rar
+staticfiles/fonts/**
+
+# Keep these in the deployment (allowlist approach is safer)
+!staticfiles/css/
+!staticfiles/js/
+!staticfiles/upload/

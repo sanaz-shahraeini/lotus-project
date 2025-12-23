@@ -12,11 +12,18 @@
   ],
   "routes": [
     {
-      "handle": "filesystem"
+      "src": "/static/fontawesomefree/(.*)",
+      "dest": "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
     },
     {
       "src": "/static/(.*)",
       "dest": "/staticfiles/$1"
+    },
+    {
+      "handle": "filesystem"
     },
     {
       "src": "/(.*)",
