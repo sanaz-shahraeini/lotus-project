@@ -34,14 +34,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-qiezo77a$)bo(gs=fvzjobm_!x5u$w$==v982gn#m=8n9g*aqm')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG = False #os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    'django.contrib.a dmin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -104,29 +104,14 @@ WSGI_APPLICATION = 'lotus.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 # Local PostgreSQL Database
-# Database configuration using environment variables for Vercel
+# Database configuration using Neon (PostgreSQL)
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL', 'postgresql://postgres:mgee5d65@localhost:5432/LotusDB'),
+        default='postgresql://lotusdb_owner:npg_6dUorONf5mtR@ep-orange-mud-a2by6urk-pooler.eu-central-1.aws.neon.tech/lotusdb?sslmode=require',
         conn_max_age=600,
         conn_health_checks=True,
     )
 }
-
-# Neon Database (commented out for now)
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'lotusdb',
-#         'USER': 'lotusdb_owner',
-#         'PASSWORD': 'npg_6dUorONf5mtR',
-#         'HOST': 'ep-orange-mud-a2by6urk-pooler.eu-central-1.aws.neon.tech',
-#         'PORT': 5432,
-#         'OPTIONS': {
-#             'sslmode': 'require',
-#         },
-#     }
-# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -195,11 +180,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
 
-# EMAIL SENDING SETTINGS
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+# # EMAIL SENDING SETTINGS
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
 
 # CELERY - GET DATA FROM DEVICE SETTIGNS
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')

@@ -2,6 +2,7 @@
 
 <!DOCTYPE html>
 <html lang="fa" dir="rtl" class="light">
+
 <head>
     <title>لوتوس - ورود</title>
     <meta charset="UTF-8">
@@ -15,46 +16,50 @@
     <link href="{% static 'css/theme.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/login-styles.css' %}" rel="stylesheet" type="text/css">
 </head>
+
 <body class="login-page">
-{% include "messages.html" %}
+    {% include "messages.html" %}
 
-<!-- Theme Toggle Button (matching navbar style) -->
-<button id="theme-toggle" class="lotus-theme-toggle" aria-label="تغییر حالت نمایش">
-    <i class="fa-solid fa-sun"></i>
-    <i class="fa-solid fa-moon" style="color: #00BCD4 !important;"></i>
-</button>
+    <!-- Theme Toggle Button (matching navbar style) -->
+    <button id="theme-toggle" class="lotus-theme-toggle" aria-label="تغییر حالت نمایش">
+        <i class="fa-solid fa-sun"></i>
+        <i class="fa-solid fa-moon" style="color: #00BCD4 !important;"></i>
+    </button>
 
-<div class="login-container">
-    <div class="logo-container">
-        <img src="{% static 'pic/logo.png' %}" alt="Lotus Logo" class="logo">
-        <h1 class="app-name">لوتوس</h1>
+    <div class="login-container">
+        <div class="logo-container">
+            <img src="{% static 'pic/logo.png' %}" alt="Lotus Logo" class="logo">
+            <h1 class="app-name">لوتوس</h1>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="username" class="form-label">نام کاربری</label>
+                <div class="input-icon-wrapper">
+                    <input type="text" id="username" name="user" placeholder="نام کاربری خود را وارد کنید"
+                        class="form-input">
+                    <i class="fa-solid fa-user input-icon"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">رمز عبور</label>
+                <div class="input-icon-wrapper">
+                    <input type="password" id="password" name="pass" placeholder="رمز عبور خود را وارد کنید"
+                        class="form-input">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                </div>
+            </div>
+
+            <button type="submit" class="login-button">ورود به سیستم</button>
+            <a href="{% url 'forgot_password' %}" class="forgot-password">فراموشی رمز عبور؟</a>
+        </form>
     </div>
-    
-    <form method="post">
-        {% csrf_token %}
-        
-        <div class="form-group">
-            <label for="username" class="form-label">نام کاربری</label>
-            <div class="input-icon-wrapper">
-                <input type="text" id="username" name="user" placeholder="نام کاربری خود را وارد کنید" class="form-input">
-                <i class="fa-solid fa-user input-icon"></i>
-            </div>
-        </div>
-        
-        <div class="form-group">
-            <label for="password" class="form-label">رمز عبور</label>
-            <div class="input-icon-wrapper">
-                <input type="password" id="password" name="pass" placeholder="رمز عبور خود را وارد کنید" class="form-input">
-                <i class="fa-solid fa-lock input-icon"></i>
-            </div>
-        </div>
-        
-        <button type="submit" class="login-button">ورود به سیستم</button>
-        <a href="{% url 'forgot_password' %}" class="forgot-password">فراموشی رمز عبور؟</a>
-    </form>
-</div>
 
-<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
-<script src="{% static 'js/theme-toggle.js' %}"></script>
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/theme-toggle.js' %}"></script>
 </body>
+
 </html>

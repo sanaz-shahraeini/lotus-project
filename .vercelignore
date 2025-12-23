@@ -1,0 +1,16 @@
+.git
+.venv
+.env
+__pycache__
+*.pyc
+static/
+lotus-backup
+celerybeat-schedule*
+logs/
+password.txt
+run.bat
+run_server.bat
+start_all.bat
+start_celery_beat.bat
+start_celery_worker.bat
+2025-11.txt

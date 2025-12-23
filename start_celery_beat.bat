@@ -8,6 +8,6 @@ set DJANGO_SETTINGS_MODULE=lotus.settings
 call venv\Scripts\activate.bat
 
 :: Start Celery beat
-celery -A lotus beat --loglevel=info --logfile=celery/celery_beat.log --pidfile=celery/celery_beat.pid --scheduler django_celery_beat.schedulers:DatabaseScheduler
+celery -A lotus beat --loglevel=info --logfile=celery_logs/celery_beat.log --pidfile=celery_logs/celery_beat.pid --scheduler django_celery_beat.schedulers:DatabaseScheduler
 
 pause 
