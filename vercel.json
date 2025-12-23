@@ -6,15 +6,11 @@
       "src": "lotus/wsgi.py",
       "use": "@vercel/python",
       "config": {
-        "maxLambdaSize": "15mb"
+        "maxLambdaSize": "15mb",
+        "excludeFiles": "staticfiles/**"
       }
     }
   ],
-  "functions": {
-    "lotus/wsgi.py": {
-      "excludeFiles": "staticfiles/**"
-    }
-  },
   "routes": [
     {
       "handle": "filesystem"
