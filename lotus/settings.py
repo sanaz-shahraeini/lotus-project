@@ -50,9 +50,12 @@ INSTALLED_APPS = [
     'Alvand',
    # 'tailwind',
    # 'fontawesomefree',
-    'django_celery_beat',  # DOES TASK
-
 ]
+if os.getenv('VERCEL') == '1' or os.getenv('VERCEL'):
+    # Don't use celery on vercel
+    pass
+else:
+    INSTALLED_APPS += ['django_celery_beat']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -187,16 +190,21 @@ NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
 # EMAIL_USE_TLS = True
 
 # CELERY - GET DATA FROM DEVICE SETTIGNS
-CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
-CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_ACKS_LATE = True
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+# CELERY - GET DATA FROM DEVICE SETTIGNS
+# DISABLE FOR VERCEL
+if os.getenv('VERCEL') == '1' or os.getenv('VERCEL'):
+    pass
+else:
+    CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+    CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
+    CELERY_ACCEPT_CONTENT = ['json']
+    CELERY_TASK_SERIALIZER = 'json'
+    CELERY_ACKS_LATE = True
+    CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
-# # Celery error handling
-CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
-CELERY_BROKER_CONNECTION_MAX_RETRIES = 10
+    # # Celery error handling
+    CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+    CELERY_BROKER_CONNECTION_MAX_RETRIES = 10
 
 # # External DB
 # externalDB_user = "postgres"
