@@ -71,7 +71,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'lotus.urls'
 CSRF_TRUSTED_ORIGINS = [
-   "*"
+    'https://lotus-project-seven.vercel.app',
+    'https://*.vercel.app'
 ]
 
 TEMPLATES = [
@@ -105,13 +106,22 @@ WSGI_APPLICATION = 'lotus.wsgi.application'
 
 # Local PostgreSQL Database
 # Database configuration using Neon (PostgreSQL)
-DATABASES = {
-    'default': dj_database_url.config(
-        default='postgresql://lotusdb_owner:npg_6dUorONf5mtR@ep-orange-mud-a2by6urk-pooler.eu-central-1.aws.neon.tech/lotusdb?sslmode=require',
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
+if os.getenv('DATABASE_URL'):
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL'),
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
+else:
+     DATABASES = {
+        'default': dj_database_url.config(
+            default='postgresql://lotusdb_owner:npg_6dUorONf5mtR@ep-orange-mud-a2by6urk-pooler.eu-central-1.aws.neon.tech/lotusdb?sslmode=require',
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
