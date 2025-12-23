@@ -71,10 +71,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'lotus.urls'
 CSRF_TRUSTED_ORIGINS = [
-    'http://127.0.0.1:8000',
-    'http://localhost:8000',
-    'http://192.168.43.137:8000',
-    'https://lotus-project-seven.vercel.app/',
+   "*"
 ]
 
 TEMPLATES = [
