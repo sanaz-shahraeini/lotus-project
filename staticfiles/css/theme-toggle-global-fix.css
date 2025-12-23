@@ -1,0 +1,80 @@
+/* Global Theme Toggle Icon Fix - Ensures sun icon visible in light mode */
+
+/* Force sun icon to be visible in light mode */
+html.light .fa-sun,
+html:not(.dark) .fa-sun {
+    display: inline-block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    color: #FF9800 !important;
+}
+
+/* Force moon icon to be hidden in light mode */
+html.light .fa-moon,
+html:not(.dark) .fa-moon {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+/* Force moon icon to be visible in dark mode */
+html.dark .fa-moon {
+    display: inline-block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    color: var(--primary-light) !important;
+}
+
+/* Force sun icon to be hidden in dark mode */
+html.dark .fa-sun {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+/* Specific targeting for navbar theme toggle */
+.navbar .fa-sun,
+header .fa-sun,
+.nav .fa-sun,
+#theme-toggle .fa-sun,
+.theme-toggle .fa-sun,
+.lotus-theme-toggle .fa-sun {
+    display: inline-block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    color: #FF9800 !important;
+}
+
+html.dark .navbar .fa-sun,
+html.dark header .fa-sun,
+html.dark .nav .fa-sun,
+html.dark #theme-toggle .fa-sun,
+html.dark .theme-toggle .fa-sun,
+html.dark .lotus-theme-toggle .fa-sun {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+.navbar .fa-moon,
+header .fa-moon,
+.nav .fa-moon,
+#theme-toggle .fa-moon,
+.theme-toggle .fa-moon,
+.lotus-theme-toggle .fa-moon {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+html.dark .navbar .fa-moon,
+html.dark header .fa-moon,
+html.dark .nav .fa-moon,
+html.dark #theme-toggle .fa-moon,
+html.dark .theme-toggle .fa-moon,
+html.dark .lotus-theme-toggle .fa-moon {
+    display: inline-block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    color: var(--primary-light) !important;
+}

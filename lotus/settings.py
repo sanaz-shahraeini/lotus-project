@@ -60,7 +60,7 @@ else:
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    'Alvand.middlewares.LicenseCheckMiddleware',
+    # 'Alvand.middlewares.LicenseCheckMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -114,14 +114,14 @@ if os.getenv('DATABASE_URL'):
             conn_health_checks=True,
         )
     }
-else:
-     DATABASES = {
-        'default': dj_database_url.config(
-            default='postgresql://lotusdb_owner:npg_6dUorONf5mtR@ep-orange-mud-a2by6urk-pooler.eu-central-1.aws.neon.tech/lotusdb?sslmode=require',
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
-    }
+# else:
+#      DATABASES = {
+#         'default': dj_database_url.config(
+#             default='postgresql://lotusdb_owner:npg_6dUorONf5mtR@ep-orange-mud-a2by6urk-pooler.eu-central-1.aws.neon.tech/lotusdb?sslmode=require',
+#             conn_max_age=600,
+#             conn_health_checks=True,
+#         )
+#     }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -165,7 +165,7 @@ STORAGES = {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
 

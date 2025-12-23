@@ -1,0 +1,70 @@
+/* Force remove all dropdown arrows and add a single one */
+select.form-control,
+.select2-container--default .select2-selection--single,
+.select2-container .select2-selection--single,
+select {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23757575'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important;
+    background-position: left 0.5rem center !important;
+    background-size: 1.5em !important;
+    padding-right: 0.75rem !important;
+    padding-left: 2rem !important;
+    background-color: rgba(245, 247, 250, 0.5) !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+/* Dark mode */
+.dark select.form-control,
+.dark .select2-container--default .select2-selection--single,
+.dark .select2-container .select2-selection--single,
+.dark select {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a0aec0'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e") !important;
+    background-color: rgba(13, 27, 42, 0.8) !important;
+    border-color: #37474F !important;
+    color: #F5F7FA !important;
+}
+
+/* Hide any additional arrows */
+.select2-container--default .select2-selection--single .select2-selection__arrow,
+.select2-selection__arrow,
+.select2-selection__arrow b,
+.select2-selection__arrow::before,
+.select2-selection__arrow::after {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    border: none !important;
+    background: none !important;
+}
+
+/* Make sure the select2 container is properly sized */
+.select2-container--default .select2-selection--single,
+.select2-container .select2-selection--single {
+    height: 38px !important;
+    line-height: 38px !important;
+    padding: 0 !important;
+}
+
+/* For the select2 rendered text */
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 38px !important;
+    padding-right: 0.5rem !important;
+    padding-left: 1.5rem !important;
+}
+
+/* Remove any box shadow or additional styling */
+select:focus,
+.select2-container--default .select2-selection--single:focus,
+.select2-container .select2-selection--single:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: #00BCD4 !important;
+}
+
+/* For IE11 */
+select::-ms-expand {
+    display: none !important;
+}

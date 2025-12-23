@@ -216,26 +216,26 @@ html.dark .lotus-theme-toggle {
 }
 
 .lotus-theme-toggle .fa-sun {
-    opacity: 0;
-    transform: translate(-50%, -50%) rotate(-180deg);
-    color: #FF7043; /* Sunset Orange */
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(0);
+    color: #FF9800; /* Brighter Orange */
 }
 
 .lotus-theme-toggle .fa-moon {
-    opacity: 1;
-    transform: translate(-50%, -50%) rotate(0);
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(-180deg);
     color: #00BCD4; /* Lotus Aqua */
 }
 
 html.dark .lotus-theme-toggle .fa-sun {
-    opacity: 1;
-    transform: translate(-50%, -50%) rotate(0);
-    color: #FF7043; /* Sunset Orange */
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(180deg);
+    color: #FF9800; /* Brighter Orange */
 }
 
 html.dark .lotus-theme-toggle .fa-moon {
-    opacity: 0;
-    transform: translate(-50%, -50%) rotate(180deg);
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(0);
     color: #00BCD4; /* Lotus Aqua */
 }
 

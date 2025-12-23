@@ -7,18 +7,18 @@ import psutil
 
 IS_VERCEL = os.getenv('VERCEL') == '1' or os.getenv('VERCEL')
 
-celery = os.path.join('celery')
+celery_runtime_logs = os.path.join('celery_runtime_logs')
 if not IS_VERCEL:
     try:
-        os.makedirs(celery, exist_ok=True)
+        os.makedirs(celery_runtime_logs, exist_ok=True)
     except OSError:
         import tempfile
-        celery = os.path.join(tempfile.gettempdir(), 'celery')
-        os.makedirs(celery, exist_ok=True)
+        celery_runtime_logs = os.path.join(tempfile.gettempdir(), 'celery_runtime_logs')
+        os.makedirs(celery_runtime_logs, exist_ok=True)
 else:
     # On Vercel, use /tmp as a fallback path even though we shouldn't be writing
     import tempfile
-    celery = os.path.join(tempfile.gettempdir(), 'celery')
+    celery_runtime_logs = os.path.join(tempfile.gettempdir(), 'celery_runtime_logs')
 
 def isCeleryRunning():
     for p in psutil.process_iter(attrs=["pid", "name", "cmdline"]):
@@ -42,7 +42,7 @@ def startTask():
         return
     print("Starting Celery Worker...")
     Popen(['celery', '-A', 'lotus', 'worker', '--pool=gevent', '--loglevel=INFO'],
-          stdout=open(os.path.join(celery, 'celery_worker.log'), 'w'), stderr=open(os.path.join(celery, 'celery_worker_err.log'), 'w'), shell=True)
+          stdout=open(os.path.join(celery_runtime_logs, 'celery_worker.log'), 'w'), stderr=open(os.path.join(celery_runtime_logs, 'celery_worker_err.log'), 'w'), shell=True)
 
 
 def beatTask():
@@ -52,7 +52,7 @@ def beatTask():
                for p in psutil.process_iter(attrs=["cmdline"])):
         print("Starting Celery Beat...")
         Popen(['celery', '-A', 'lotus', 'beat', '--loglevel=INFO'],
-              stdout=open(os.path.join(celery, 'celery_beat.log'), 'w'), stderr=open(os.path.join(celery, 'celery_beat_err.log'), 'w'), shell=True)
+              stdout=open(os.path.join(celery_runtime_logs, 'celery_beat.log'), 'w'), stderr=open(os.path.join(celery_runtime_logs, 'celery_beat_err.log'), 'w'), shell=True)
 
 
 
