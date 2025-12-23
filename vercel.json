@@ -6,8 +6,7 @@
       "src": "lotus/wsgi.py",
       "use": "@vercel/python",
       "config": {
-        "maxLambdaSize": "15mb",
-        "excludeFiles": "staticfiles/**"
+        "maxLambdaSize": "15mb"
       }
     }
   ],
