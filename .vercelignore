@@ -13,11 +13,13 @@ start_all.bat
 start_celery_beat.bat
 start_celery_worker.bat
 2025-11.txt
+
+# Exclude large font files that are served from CDN
 staticfiles/fontawesomefree/**
 staticfiles/fontawesomefree1.rar
 staticfiles/fonts/**
 
-# Keep these in the deployment (allowlist approach is safer)
+# Include only necessary static files
 !staticfiles/css/
 !staticfiles/js/
 !staticfiles/upload/
