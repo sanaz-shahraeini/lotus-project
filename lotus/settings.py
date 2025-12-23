@@ -16,6 +16,8 @@ from dotenv import load_dotenv
 from urllib.parse import urlparse
 import dj_database_url
 
+IS_VERCEL = os.getenv('VERCEL') == '1' or os.getenv('VERCEL')
+
 # Try to load environment variables, but handle errors gracefully
 try:
     load_dotenv()
@@ -34,7 +36,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-qiezo77a$)bo(gs=fvzjobm_!x5u$w$==v982gn#m=8n9g*aqm')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False #os.getenv('DEBUG', 'False') == 'True'
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ["*"]
 
@@ -51,7 +53,7 @@ INSTALLED_APPS = [
    # 'tailwind',
    # 'fontawesomefree',
 ]
-if os.getenv('VERCEL') == '1' or os.getenv('VERCEL'):
+if IS_VERCEL:
     # Don't use celery on vercel
     pass
 else:
@@ -114,14 +116,8 @@ if os.getenv('DATABASE_URL'):
             conn_health_checks=True,
         )
     }
-# else:
-#      DATABASES = {
-#         'default': dj_database_url.config(
-#             default='postgresql://lotusdb_owner:npg_6dUorONf5mtR@ep-orange-mud-a2by6urk-pooler.eu-central-1.aws.neon.tech/lotusdb?sslmode=require',
-#             conn_max_age=600,
-#             conn_health_checks=True,
-#         )
-#     }
+else:
+    raise RuntimeError('DATABASE_URL is required (configure your Neon Postgres connection string).')
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -171,14 +167,14 @@ STORAGES = {
 
 # Media files (User uploaded files)
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = '/tmp/media' if IS_VERCEL else os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#TAILWIND_APP_NAME = 'Alvand'
+# TAILWIND_APP_NAME = 'Alvand'
 
 # INTERNAL_IPS = [
 #     "127.0.0.1",
@@ -186,7 +182,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #     "192.168.43.137:8000",
 # ]
 # ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.43.137']
-
 
 NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
 
@@ -199,7 +194,7 @@ NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
 # CELERY - GET DATA FROM DEVICE SETTIGNS
 # CELERY - GET DATA FROM DEVICE SETTIGNS
 # DISABLE FOR VERCEL
-if os.getenv('VERCEL') == '1' or os.getenv('VERCEL'):
+if IS_VERCEL:
     pass
 else:
     CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')

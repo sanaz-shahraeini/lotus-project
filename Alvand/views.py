@@ -11,7 +11,14 @@ from django.core.mail import send_mail
 from .forms import *
 from .models import *
 from functools import wraps
-import math, jdatetime, wmi, pythoncom, random, os, sys
+import math, jdatetime, random, os, sys
+try:
+    import wmi
+    import pythoncom
+except ImportError:
+    wmi = None
+    pythoncom = None
+
 from django.db.models import Q, Count
 from django.utils import timezone
 from django.core.serializers.json import DjangoJSONEncoder
@@ -22,8 +29,12 @@ from .templatetags.userProfileTags import getListOfExtsGroups, getUserCanPerm, g
 import csv
 from .utils import start_smdr_stream, stop_smdr_stream
 
-upload = os.path.join("Alvand/static/upload")
-os.makedirs(upload, exist_ok=True)
+IS_VERCEL = os.getenv('VERCEL') == '1' or os.getenv('VERCEL')
+upload = '/tmp/upload' if IS_VERCEL else os.path.join("Alvand/static/upload")
+try:
+    os.makedirs(upload, exist_ok=True)
+except OSError:
+    pass
 
 # Error data moved to setup_initial_data function to avoid DB access during module import
 
@@ -128,9 +139,27 @@ def getInfosOfUserByUsername(username, value):
     return next(iter(infos.values(value).first().values()))
 
 def getHWID():
-    pythoncom.CoInitialize()
-    system = wmi.WMI()
-    return system.Win32_ComputerSystemProduct()[0].UUID if system else None
+    if sys.platform == "win32" and wmi and pythoncom:
+        try:
+            pythoncom.CoInitialize()
+            system = wmi.WMI()
+            return system.Win32_ComputerSystemProduct()[0].UUID if system else None
+        except Exception:
+            pass
+    
+    # Fallback for Linux/Vercel or if WMI fails
+    try:
+        if os.path.exists('/etc/machine-id'):
+            with open('/etc/machine-id', 'r') as f:
+                return f.read().strip()
+        if os.path.exists('/var/lib/dbus/machine-id'):
+            with open('/var/lib/dbus/machine-id', 'r') as f:
+                return f.read().strip()
+    except Exception:
+        pass
+        
+    return "fallback-hwid-non-windows"
+
 
 
 def validatePhotoExt(filename):

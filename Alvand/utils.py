@@ -5,6 +5,8 @@ from django.db.models import F, Case, When, Value
 from .models import Faults, Records, ArrayAppend
 import threading
 
+IS_VERCEL = os.getenv('VERCEL') == '1' or os.getenv('VERCEL')
+
 
 def telnetConnection(attempts=3, port: int = 23, network_id: str = "192.168.0.100"):
     """Open a TCP socket to the PBX SMDR port with limited retries.
@@ -178,10 +180,14 @@ def processToCheckEverything(string: str):
     if isinstance(string, bytes):
         string = string.decode("utf-8")
     string = string.replace("-", "")
-    path = os.path.join("logs", "records")
-    os.makedirs(path, exist_ok=True)
-    with open(f"{path}/{datetime.datetime.now().strftime('%Y-%m')}.txt", 'a+', encoding="utf-8") as file:
-        file.write(f"record ~> {string}\n")
+    base_logs = os.path.join('/tmp', 'logs') if IS_VERCEL else "logs"
+    path = os.path.join(base_logs, "records")
+    try:
+        os.makedirs(path, exist_ok=True)
+        with open(f"{path}/{datetime.datetime.now().strftime('%Y-%m')}.txt", 'a+', encoding="utf-8") as file:
+            file.write(f"record ~> {string}\n")
+    except OSError:
+        pass
     spliting = string.split()
     # Normalize RS232 date/time like "1/ 6/05   1:18AM" where the date is split into two tokens.
     # Example tokens: ['1/', '6/05', '1:18AM', '107', '01', '09155150730', "00:00'15\"", ...]
@@ -428,8 +434,12 @@ def _smdr_debug(msg: str):
 
 
 def _smdr_worker(host: str, port: int, password: str):
-    log_dir = os.path.join("logs", "smdr")
-    os.makedirs(log_dir, exist_ok=True)
+    base_logs = os.path.join('/tmp', 'logs') if IS_VERCEL else "logs"
+    log_dir = os.path.join(base_logs, "smdr")
+    try:
+        os.makedirs(log_dir, exist_ok=True)
+    except OSError:
+        pass
     _smdr_debug(f"Worker start host={host} port={port}")
 
     while not _smdr_stop.is_set():
