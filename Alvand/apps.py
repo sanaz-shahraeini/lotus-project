@@ -6,7 +6,12 @@ from subprocess import Popen, DEVNULL
 import psutil
 
 celery = os.path.join('celery')
-os.makedirs(celery, exist_ok=True)
+try:
+    os.makedirs(celery, exist_ok=True)
+except OSError:
+    import tempfile
+    celery = os.path.join(tempfile.gettempdir(), 'celery')
+    os.makedirs(celery, exist_ok=True)
 
 def isCeleryRunning():
     for p in psutil.process_iter(attrs=["pid", "name", "cmdline"]):
@@ -28,7 +33,7 @@ def isCeleryRunning():
 def startTask():
     print("Starting Celery Worker...")
     Popen(['celery', '-A', 'lotus', 'worker', '--pool=gevent', '--loglevel=INFO'],
-          stdout=open('celery/celery_worker.log', 'w'), stderr=open('celery/celery_worker_err.log', 'w'), shell=True)
+          stdout=open(os.path.join(celery, 'celery_worker.log'), 'w'), stderr=open(os.path.join(celery, 'celery_worker_err.log'), 'w'), shell=True)
 
 
 def beatTask():
@@ -36,7 +41,7 @@ def beatTask():
                for p in psutil.process_iter(attrs=["cmdline"])):
         print("Starting Celery Beat...")
         Popen(['celery', '-A', 'lotus', 'beat', '--loglevel=INFO'],
-              stdout=open('celery/celery_beat.log', 'w'), stderr=open('celery/celery_beat_err.log', 'w'), shell=True)
+              stdout=open(os.path.join(celery, 'celery_beat.log'), 'w'), stderr=open(os.path.join(celery, 'celery_beat_err.log'), 'w'), shell=True)
 
 
 
