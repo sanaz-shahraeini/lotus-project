@@ -30,6 +30,12 @@ wheels/
 .installed.cfg
 *.egg
 
+# Keep Python build artifacts ignored, but allow static asset dist folders to be committed
+!static/dist/
+!static/dist/**
+!static/css/dist/
+!static/css/dist/**
+
 # Virtual Environment
 venv/
 ENV/
