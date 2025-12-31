@@ -9,36 +9,26 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <script src="{% static 'dist/jalalidatepicker.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'dist/jalalidatepicker.css' %}"/>
-    <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'fonts/css/iransans.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'css/dist/styles.css' %}" rel="stylesheet" type="text/css">
+    <!-- Font Awesome from CDN (reduced size) -->
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" rel="stylesheet" type="text/css">
     
-    <!-- Shared CSS Components (bundled) -->
-    <link href="{% static 'css/shared.bundle.css' %}" rel="stylesheet" type="text/css">
+    <!-- Other CSS files -->
+    <script src="{% static 'js/dist/jalalidatepicker.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/jalalidatepicker.css' %}"/>
+    <link href="{% static 'css/iransans.css' %}" rel="stylesheet" type="text/css">
     
-    <!-- Legacy/Specific CSS -->
-    <link href="{% static 'css/app.css' %}" rel="stylesheet" type="text/css">
+    <!-- Bundle CSS -->
+    <link href="{% static 'dist/styles.bundle.css' %}" rel="stylesheet" type="text/css">
+    
+    <!-- Theme and Responsive CSS -->
     <link href="{% static 'css/theme.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'css/mobile-responsive-fix.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'css/mobile-menu-fix.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'css/sidebar-dark-mode.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'css/dark-mode-fix.css' %}" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="{% static 'css/high-contrast-dark.css' %}">
-    <link href="{% static 'css/sidebar-desktop-fix.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'css/mobile-sidebar-fix.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'css/mobile-sidebar-improved.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'css/mobile-sidebar-toggle-fix.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'css/mobile-links-fix.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'css/sidebar-padding-fix.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'css/search-filters-redesign.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'css/consistent-form-elements.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'css/settings-page-fix.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/responsive.css' %}" rel="stylesheet" type="text/css">
+    
+    <!-- Dark Mode -->
+    <link href="{% static 'css/dark-mode.css' %}" rel="stylesheet" type="text/css">
+    
+    <!-- Calendar -->
     <link href="{% static 'css/calendar.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'css/theme-toggle-global-fix.css' %}" rel="stylesheet" type="text/css">
   
 
   
