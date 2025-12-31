@@ -1,0 +1,336 @@
+/* Access Groups Section Styling Optimization */
+.access-groups-section {
+    border: 1px solid var(--primary-color) !important;
+    box-shadow: 0 5px 15px rgba(0, 188, 212, 0.1) !important;
+}
+
+.access-groups-section .card-header {
+    color: var(--primary-color) !important;
+    border-bottom: 2px solid var(--primary-color) !important;
+    padding-bottom: 0.75rem !important;
+}
+
+/* Card header styling */
+.settings-card .card-header {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+/* Radio button group styling */
+.radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    padding: 0.75rem;
+    background-color: var(--secondary-color);
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-color);
+}
+
+/* Specific styling for access groups radio group */
+.access-groups-section .radio-group {
+    background-color: rgba(0, 188, 212, 0.05);
+    border: 1px solid var(--primary-color);
+    padding: 1rem;
+    border-radius: 0.75rem;
+}
+
+/* Enhanced radio button styling */
+.radio-item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    padding: 0.5rem 1rem;
+    border-radius: 1.5rem;
+    transition: all 0.2s ease;
+    min-width: 120px;
+    justify-content: center;
+    background-color: transparent;
+}
+
+.radio-item:hover {
+    background-color: rgba(0, 188, 212, 0.1);
+}
+
+.radio-item input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.radio-item label {
+    cursor: pointer;
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    transition: all 0.2s ease;
+}
+
+/* Active state for radio buttons */
+.radio-item input[type="radio"]:checked + label {
+    color: white;
+}
+
+.radio-item input[type="radio"]:checked + label::before {
+    content: '';
+    position: absolute;
+    top: -0.25rem;
+    left: -0.5rem;
+    right: -0.5rem;
+    bottom: -0.25rem;
+    background-color: var(--primary-color);
+    border-radius: 1.5rem;
+    z-index: -1;
+    box-shadow: 0 2px 5px rgba(0, 188, 212, 0.3);
+}
+
+/* Mobile optimization for radio buttons */
+@media (max-width: 768px) {
+    .radio-group {
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 0.5rem;
+        padding: 0.5rem;
+    }
+    
+    .radio-item {
+        flex: 1;
+        min-width: 0;
+        padding: 0.5rem 0.25rem;
+    }
+    
+    .radio-item label {
+        font-size: 0.9rem;
+        padding: 0.25rem;
+        white-space: nowrap;
+    }
+}
+
+/* Form groups styling */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group .form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+/* Dropdown styling */
+.dropdown {
+    position: relative;
+}
+
+/* Specific styling for access groups dropdown */
+.access-groups-section .dropdown-toggle {
+    background-color: var(--bg-color);
+    border: 1px solid var(--primary-color);
+    color: var(--text-color);
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.access-groups-section .dropdown-toggle:hover {
+    background-color: rgba(0, 188, 212, 0.05);
+}
+
+.access-groups-section .dropdown-menu {
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 5px 15px rgba(0, 188, 212, 0.15);
+}
+
+.dropdown-toggle {
+    width: 100%;
+    height: 38px;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    text-align: right;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dropdown-toggle i {
+    margin-left: 0.5rem;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    right: 0;
+    background-color: var(--card-bg);
+    border-radius: 0.375rem;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--card-shadow);
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.dropdown-menu.hidden {
+    display: none !important;
+}
+
+/* Fix for the dropdown in access groups section */
+.access-groups-section .dropdown {
+    position: relative;
+    z-index: 100;
+}
+
+.access-groups-section .dropdown-menu {
+    position: absolute;
+    display: block;
+    width: 100%;
+    z-index: 1000;
+}
+
+.dropdown-item {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-item:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Toggle switch styling */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 3.5rem;
+    height: 2rem;
+    margin-right: 0.5rem;
+}
+
+/* Specific styling for access groups toggle switch */
+.access-groups-section .toggle-switch {
+    margin-right: 1rem;
+}
+
+/* Fix for access groups toggle switch container */
+.access-groups-section .form-group:has(.toggle-switch) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--border-color);
+    transition: .4s;
+    border-radius: 2rem;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 1.5rem;
+    width: 1.5rem;
+    right: 0.25rem;
+    bottom: 0.25rem;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--primary-color);
+}
+
+input:checked + .slider:before {
+    transform: translateX(-1.5rem);
+}
+
+/* Fix for RTL layout */
+body[dir="rtl"] .radio-item input[type="radio"] {
+    margin-right: 0;
+    margin-left: 0.5rem;
+}
+
+/* Access groups specific styles */
+.access-groups-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -0.5rem;
+}
+
+.access-groups-column {
+    flex: 1;
+    min-width: 250px;
+    padding: 0 0.5rem;
+}
+
+/* Fix for select elements in the access groups section */
+/* Only apply dropdown arrow to select elements, not text inputs */
+select#id_label, #id_users {
+    height: 38px;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2337474F' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: left 0.75rem center;
+    padding-left: 2rem;
+}
+
+input#id_label {
+    height: 38px;
+    background-image: none !important;
+    padding-left: 0.75rem;
+}
+
+.dark select#id_label, .dark #id_users {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23F5F7FA' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+}
+
+/* Ensure consistent form element heights */
+.access-groups-section select,
+.access-groups-section input[type="text"],
+.access-groups-section input[type="password"],
+.access-groups-section input[type="email"],
+.access-groups-section input[type="number"],
+.access-groups-section .dropdown-toggle {
+    height: 38px !important;
+    line-height: 38px !important;
+    box-sizing: border-box !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* Fix for Firefox which renders select elements differently */
+@-moz-document url-prefix() {
+    .access-groups-section select {
+        height: 38px !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+} 

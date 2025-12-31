@@ -1,0 +1,303 @@
+/* Shared Table Components */
+
+/* Table Container */
+.table-container {
+    overflow-x: auto;
+    border-radius: var(--radius-lg);
+    background: var(--card-bg);
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-color);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) var(--bg-color);
+    transition: background-color 0.3s;
+}
+
+.table-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: var(--bg-color);
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 4px;
+}
+
+/* Modern Table Design */
+table,
+.table-modern {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 650px;
+}
+
+/* Table Headers */
+th {
+    background-color: var(--secondary-color);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.6875rem;
+    letter-spacing: 0.05em;
+    color: var(--light-text);
+    padding: 0.875rem 1rem;
+    text-align: center !important;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 2px solid var(--border-color);
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+/* Table Cells */
+td {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    text-align: center !important;
+    vertical-align: middle;
+    font-size: 0.9375rem;
+    color: var(--text-color);
+    white-space: nowrap;
+    transition: color 0.3s, border-color 0.3s;
+}
+
+/* Table Rows */
+tbody tr {
+    transition: background-color 0.15s ease-in-out;
+}
+
+tbody tr:hover {
+    background-color: rgba(59, 130, 246, 0.03);
+}
+
+tbody tr:hover td {
+    background-color: var(--hover-color, rgba(0, 0, 0, 0.02));
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Call Type Icons */
+.call-type-icon-container {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    position: relative;
+}
+
+.call-type-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+/* Tooltip for Icons */
+.tooltip-text {
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    z-index: 50;
+    transition: opacity 0.3s ease;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 150%;
+    min-width: 80px;
+    text-align: center;
+}
+
+.tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #1f2937 transparent transparent transparent;
+}
+
+.call-type-icon-container:hover .tooltip-text {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Text Cells with Hover Effects */
+.text-cell {
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+    max-width: 200px;
+}
+
+.text-cell .clean-text {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.text-cell:hover {
+    background-color: var(--hover-color) !important;
+    color: var(--primary-color) !important;
+    border-radius: 8px;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 188, 212, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.text-cell::after {
+    content: "⋮";
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: var(--primary-color);
+    opacity: 0;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.text-cell:hover::after {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.1);
+    color: var(--primary-hover);
+}
+
+/* Status Badges */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.65rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.status-incoming {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.status-outgoing {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.status-missed {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.status-internal {
+    background-color: #e0f2fe;
+    color: #075985;
+}
+
+/* RTL Table Support */
+.table-container {
+    direction: rtl;
+}
+
+table {
+    direction: rtl;
+}
+
+th, td {
+    text-align: right !important;
+}
+
+/* Custom table for RTL */
+.custom-table th,
+.custom-table td {
+    direction: rtl;
+    text-align: right !important;
+}
+
+/* Fixed positioning for RTL */
+.th-fixed {
+    position: sticky;
+    right: 0;
+    background-color: #f8fafc;
+    z-index: 10;
+}
+
+.td-fixed {
+    position: sticky;
+    right: 0;
+    background-color: white;
+    z-index: 10;
+    border-left: 1px solid #e5e7eb !important;
+}
+
+/* Dark mode table adjustments */
+.dark th {
+    background-color: var(--input-bg);
+    color: var(--light-text);
+}
+
+.dark .call-type-icon {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 4px;
+    padding: 2px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.dark .th-fixed {
+    background-color: var(--input-bg);
+}
+
+.dark .td-fixed {
+    background-color: var(--card-bg);
+}
+
+/* Mobile Responsive Tables */
+@media (max-width: 768px) {
+    .desktop-table {
+        display: none;
+    }
+    
+    .mobile-table {
+        display: block;
+    }
+    
+    .mobile-card {
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+        margin-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .mobile-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+    
+    .mobile-card-body {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+        font-size: 0.875rem;
+    }
+}
+
+@media (min-width: 769px) {
+    .desktop-table {
+        display: block;
+    }
+    
+    .mobile-table {
+        display: none;
+    }
+}

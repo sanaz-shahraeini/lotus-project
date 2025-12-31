@@ -1,0 +1,93 @@
+/* Fix for dropdown layering issues */
+
+/* Ensure dropdowns are on top of other elements */
+.dropdown {
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+.dropdown-toggle {
+    position: relative !important;
+    z-index: 11 !important;
+    cursor: pointer !important;
+    user-select: none !important;
+    background-color: white !important;
+    border: 1px solid #cfd8dc !important;
+    border-radius: 4px !important;
+    padding: 0.5rem 1rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    height: 38px !important;
+}
+
+.dropdown-menu {
+    position: absolute !important;
+    z-index: 1050 !important; /* Higher z-index to ensure it's on top */
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+.dropdown-menu.hidden {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Specific fix for the extensions dropdown */
+.ext-dropdown {
+    isolation: isolate !important; /* Creates a new stacking context */
+}
+
+.ext-dropdown .dropdown-menu {
+    min-width: 100% !important;
+    width: 100% !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid var(--primary-color) !important;
+}
+
+/* Fix for dropdown items */
+.dropdown-item {
+    cursor: pointer !important;
+    user-select: none !important;
+    padding: 0.5rem 1rem !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(0, 188, 212, 0.05) !important;
+}
+
+/* Fix for checkboxes inside dropdown */
+.dropdown-item input[type="checkbox"] {
+    margin-left: 0.5rem !important;
+    cursor: pointer !important;
+    width: 1rem !important;
+    height: 1rem !important;
+}
+
+/* Fix for RTL layout */
+body[dir="rtl"] .dropdown-item input[type="checkbox"] {
+    margin-right: 0.5rem !important;
+    margin-left: 0 !important;
+}
+
+/* Create overlay to prevent interaction with elements behind dropdown */
+.dropdown-backdrop {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    z-index: 1040 !important;
+    background-color: transparent !important;
+    display: none !important;
+}
+
+.dropdown-backdrop.show {
+    display: block !important;
+} 
