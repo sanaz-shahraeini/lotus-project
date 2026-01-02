@@ -6,17 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {# Uses app.css from base.html #}
 
-
 <style>
     /* Shared variables, toggle, and layout moved to shared CSS files */
 
-    @media (max-width: 768px) {
-        .main-content {
-            margin-right: 0;
-            margin-left: 0;
-            width: 100%;
-        }
-    }
 
     .filter-section {
         background-color: var(--card-bg);
@@ -28,72 +20,6 @@
         transition: all 0.3s ease;
     }
 
-    .filter-section:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(0, 188, 212, 0.15);
-    }
-
-    .btn {
-        padding: 0.75rem 1.25rem;
-        border-radius: 0.75rem;
-        font-weight: 500;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border: none;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        text-decoration: none;
-        min-height: 44px;
-        font-size: 0.95rem;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .btn::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-        transition: left 0.5s ease;
-    }
-
-    .btn:hover::before {
-        left: 100%;
-    }
-
-    .btn-primary {
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
-        color: white;
-        box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3);
-    }
-
-    .btn-primary:hover {
-        background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary-color) 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(0, 188, 212, 0.4);
-    }
-
-    .btn-secondary {
-        background: linear-gradient(135deg, var(--secondary-color) 0%, rgba(255, 255, 255, 0.9) 100%);
-        color: var(--text-color);
-        border: 1px solid var(--border-color);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn-secondary:hover {
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
-        color: white;
-        border-color: var(--primary-color);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(0, 188, 212, 0.3);
-    }
-
-    /* Compact Filter Controls - allow wrapping on smaller screens */
     .filter-controls-single-line {
         display: flex;
         align-items: center;
@@ -104,7 +30,6 @@
         width: 100%;
     }
 
-    /* Compact Input Fields */
     .input-field-compact {
         border: 1px solid var(--border-color);
         border-radius: 0.5rem;
@@ -124,13 +49,6 @@
         width: 120px;
     }
 
-    .input-field-compact:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.1);
-        outline: none;
-    }
-
-    /* Compact Buttons */
     .btn-compact {
         padding: 0.5rem 0.75rem;
         border-radius: 0.5rem;
@@ -149,12 +67,6 @@
         white-space: nowrap;
     }
 
-    .btn-compact.btn-primary {
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
-        color: white;
-        min-width: 60px;
-    }
-
     .sort-btn-compact {
         background: var(--card-bg);
         border: 1px solid var(--border-color);
@@ -171,13 +83,6 @@
         color: var(--text-color);
     }
 
-    .sort-btn-compact:hover {
-        background: var(--primary-color);
-        border-color: var(--primary-color);
-        color: white;
-    }
-
-    /* Compact Pagination - clean minimal pill */
     .pagination-compact {
         display: inline-flex;
         align-items: center;
@@ -206,14 +111,6 @@
         font-size: 0.75rem;
     }
 
-    .nav-btn:hover:not(.disabled) {
-        background: var(--primary-color);
-        color: #ffffff;
-        border-color: var(--primary-color);
-        transform: translateY(-1px);
-        box-shadow: 0 3px 8px rgba(0, 188, 212, 0.35);
-    }
-
     .nav-btn.disabled {
         opacity: 0.4;
         cursor: not-allowed;
@@ -230,7 +127,6 @@
         text-align: center;
     }
 
-    /* Compact Excel Button */
     .excel-btn-compact {
         background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
         color: white;
@@ -251,483 +147,21 @@
         box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3);
     }
 
-    .excel-btn-compact:hover {
-        background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary-color) 100%);
-        transform: translateY(-1px);
-        box-shadow: 0 6px 16px rgba(0, 188, 212, 0.4);
-    }
-
-    /* Filter Controls Container */
-    .filter-controls {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1.5rem;
-        align-items: flex-start;
-        justify-content: space-between;
-    }
-
-    .filter-left {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-        align-items: center;
-        flex: 1;
-        min-width: 0;
-    }
-
-    .filter-right {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
-        flex-shrink: 0;
-    }
-
-    .date-filter-group {
-        display: flex;
-        align-items: center;
-        background: rgba(255, 255, 255, 0.9);
-        padding: 0.75rem;
-        border-radius: 0.75rem;
-        border: 1px solid var(--border-color);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        flex-shrink: 0;
-    }
-
-    .search-group {
-        display: flex;
-        gap: 0.5rem;
-        align-items: center;
-        background: rgba(255, 255, 255, 0.9);
-        padding: 0.75rem;
-        border-radius: 0.75rem;
-        border: 1px solid var(--border-color);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        flex-shrink: 0;
-    }
-
-    /* Enhanced Excel Button */
-    .excel-btn {
-        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-        color: white;
-        border: none;
-        padding: 0.875rem 1.75rem;
-        font-weight: 600;
-        box-shadow: 0 4px 16px rgba(40, 167, 69, 0.25);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border-radius: 0.75rem;
-        position: relative;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        white-space: nowrap;
-        min-height: 44px;
-    }
-
-    .excel-btn::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        transition: left 0.6s ease;
-    }
-
-    .excel-btn:hover::before {
-        left: 100%;
-    }
-
-    .excel-btn:hover {
-        background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
-    }
-
-    .excel-btn:active {
-        transform: translateY(0);
-        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-    }
-
-    .excel-btn i {
-        font-size: 1.1rem;
-        transition: transform 0.3s ease;
-    }
-
-    .excel-btn:hover i {
-        transform: scale(1.1);
-    }
-
-    .input-field {
-        border: 1px solid var(--border-color);
-        border-radius: 0.375rem;
-        padding: 0.5rem 0.75rem;
-        transition: all 0.2s;
-    }
-
-    .input-field:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
-        /* Lotus Aqua with opacity */
-        outline: none;
-    }
-
-    .table-container {
-        background: var(--card-bg);
-        border-radius: 0.75rem;
-        box-shadow: var(--card-shadow);
-        overflow-x: auto;
-        border: 1px solid var(--border-color);
-    }
-
-    .table-modern {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
-        min-width: 650px;
-    }
-
-    .table-modern th {
-        background-color: var(--secondary-color);
-        color: var(--text-color);
-        padding: 1rem;
-        font-weight: 600;
-        text-align: center !important;
-        border-bottom: 2px solid var(--border-color);
-        direction: ltr;
-    }
-
-    .table-modern td {
-        padding: 1rem;
-        text-align: center !important;
-        border-bottom: 1px solid var(--border-color);
-        max-width: 200px; /* محدود کردن عرض ستون‌ها */
-        word-wrap: break-word;
-        position: relative;
-        direction: ltr;
-    }
-
- 
-
-    /* استایل برای ستون‌های متن طولانی */
-    .text-cell {
-        cursor: pointer;
-        position: relative;
-        transition: all 0.2s;
-        max-width: 200px;
-    }
-    
-    /* Row hover effect */
-    .table-modern tbody tr:hover td {
-        background-color: var(--hover-color) !important;
-        color: var(--primary-color) !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    /* Dark mode specific hover styles */
-    html.dark .table-modern tbody tr:hover td {
-        background-color: rgba(0, 188, 212, 0.1) !important;
-        color: #ffffff !important;
-    }
-
-    .text-cell:hover::after {
-        opacity: 1;
-        transform: translateY(-50%) scale(1.1);
-        color: var(--primary-hover);
-    }
-
-    /* Modals rely on shared-modals.css */
-
-    @keyframes modalFadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .close:hover { opacity: 0.8; }
-
-    .excel-btn:hover {
-        background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
-    }
-
-    .excel-btn:active {
-        transform: translateY(0);
-        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-    }
-
-    .excel-btn i {
-        font-size: 1.1rem;
-        transition: transform 0.3s ease;
-    }
-
-    .excel-btn:hover i {
-        transform: scale(1.1);
-    }
-
-    .modal-section-title {
-        font-weight: 600;
-        color: var(--primary-color);
-        margin-bottom: 1rem;
-        font-size: 1.2rem;
-        border-bottom: 2px solid #e0f7fa;
-        padding-bottom: 0.5rem;
-    }
-
-    .modal-content {
-        max-height: 85vh;
-        display: flex;
-        flex-direction: column;
-        border-radius: 18px;
-        width: 70vw;
-        max-width: 900px;
-        min-width: 500px;
-    }
-
-    .modal-body {
-        padding-top: 0.75rem;
-        padding-bottom: 0.75rem;
-        overflow: hidden;
-    }
-
-    .modal-section-content {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(240, 249, 255, 0.96));
-        color: var(--text-color);
-        padding: 1.75rem 1.5rem;
-        border-radius: 16px;
-        border-right: 4px solid var(--primary-color);
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-        font-size: 1rem;
-        line-height: 1.9;
-        text-align: left;
-        direction: ltr;
-        max-height: 60vh;
-        overflow-y: auto;
-        overflow-x: hidden;
-        word-break: break-word;
-        white-space: pre-line;
-        scrollbar-width: thin;
-        scrollbar-color: var(--primary-color) rgba(0, 0, 0, 0.06);
-    }
-
-    .modal-section-content::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    .modal-section-content::-webkit-scrollbar-track {
-        background: rgba(0, 0, 0, 0.04);
-        border-radius: 999px;
-    }
-
-    .modal-section-content::-webkit-scrollbar-thumb {
-        background: linear-gradient(180deg, var(--primary-color), var(--primary-hover));
-        border-radius: 999px;
-    }
-
-    /* بهبود نمایش متن‌های طولانی */
-    .modal-section-content p {
-        margin-bottom: 1.5rem;
-        text-indent: 0;
-        padding: 0.5rem 0;
-    }
-
-    .modal-section-content ul {
-        margin: 1.5rem 0;
-        padding-left: 0;
-        list-style: none;
-    }
-
-    .modal-section-content li {
-        margin-bottom: 1.2rem;
-        position: relative;
-        padding: 0.8rem 1.5rem;
-        background: rgba(255, 255, 255, 0.95);
-        color: var(--text-color);
-        border-radius: 8px;
-        border-left: 4px solid var(--primary-color);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        transition: all 0.3s ease;
-    }
-
-    .modal-section-content li:hover {
-        background: rgba(255, 255, 255, 0.2) !important;
-        color: var(--text-color) !important;
-        transform: translateX(5px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    }
-
-    .modal-section-content li:before {
-        content: none;
-    }
-
-    .table-modern tbody tr:hover {
-        background-color: var(--hover-color);
-    }
-
-    .pagination {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        background: rgba(255, 255, 255, 0.9);
-        padding: 0.75rem;
-        border-radius: 0.75rem;
-        border: 1px solid var(--border-color);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    .pagination-btn {
-        padding: 0.625rem 1rem;
-        border-radius: 0.5rem;
-        font-weight: 500;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.375rem;
-        min-height: 40px;
-        font-size: 0.9rem;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .pagination-btn::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        transition: left 0.4s ease;
-    }
-
-    .pagination-btn:hover::before {
-        left: 100%;
-    }
-
-    .pagination-btn:not(.opacity-50):hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0, 188, 212, 0.2);
-    }
-
-    .sort-btn {
-        background: rgba(255, 255, 255, 0.9);
-        border: 1px solid var(--border-color);
-        cursor: pointer;
-        padding: 0.75rem;
-        border-radius: 0.75rem;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 44px;
-        min-width: 44px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    .sort-btn:hover {
-        background: var(--primary-color);
-        border-color: var(--primary-color);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(0, 188, 212, 0.3);
-    }
-
-    .sort-btn:hover i {
-        color: white !important;
-        transform: scale(1.1);
-    }
-
-    @media print {
-
-        .filter-section,
-        .sort-btn,
-        .pagination {
-            display: none !important;
-        }
-
-        .table-container {
-            box-shadow: none;
-            border: none;
-        }
-
-        .table-modern th,
-        .table-modern td {
-            border: 1px solid #000;
-        }
-    }
-
-    /* Enhanced Mobile Responsive Styles for Compact Layout */
-    @media (max-width: 1200px) {
-        .input-field-compact {
-            min-width: 100px;
-            width: 100px;
-        }
-        
-        .search-compact {
-            min-width: 110px;
-            width: 110px;
-        }
-        
-        .excel-btn-compact {
-            min-width: 60px;
-        }
-        
-        .page-info {
-            min-width: 35px;
-        }
-    }
-
-    @media (max-width: 1024px) {
-        .filter-controls-single-line {
-            gap: 0.375rem;
-        }
-        
-        .input-field-compact {
-            min-width: 90px;
-            width: 90px;
-            font-size: 0.8rem;
-        }
-        
-        .search-compact {
-            min-width: 100px;
-            width: 100px;
-        }
-        
-        .btn-compact {
-            padding: 0.4rem 0.6rem;
-            font-size: 0.8rem;
-            min-width: 50px;
-        }
-        
-        .excel-btn-compact {
-            min-width: 55px;
-            font-size: 0.8rem;
-        }
-
-        .filter-controls {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 1.5rem;
-        }
-
-        .filter-left {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .filter-right {
-            justify-content: center;
-        }
+    .table-container::before,
+    .table-container::after {
+        content: none !important;
+        display: none !important;
+        background: transparent !important;
     }
 
     @media (max-width: 768px) {
+
+        .main-content {
+            margin-right: 0;
+            margin-left: 0;
+            width: 100%;
+        }
+
         .filter-section {
             padding: 1rem 0.75rem;
             margin-bottom: 1.5rem;
@@ -831,27 +265,22 @@
             margin: 0;
             width: 100%;
             border-radius: 0.75rem;
-            overflow-x: visible;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
-        /* Card-style rows instead of wide table */
         .table-modern {
             width: 100%;
-            min-width: 0;
-            border-spacing: 0;
+            min-width: 900px;
+            border-collapse: collapse;
         }
 
         .table-modern thead {
-            display: none;
+            display: table-header-group;
         }
 
         .table-modern tbody tr {
-            display: block;
-            margin-bottom: 0.75rem;
-            border-radius: 0.75rem;
-            background: rgba(15, 23, 42, 0.95);
-            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.4);
-            overflow: hidden;
+            display: table-row;
         }
 
         .table-modern th,
@@ -861,25 +290,25 @@
             white-space: normal;
             word-break: break-word;
         }
-
+        
         .table-modern td {
-            display: flex;
-            flex-direction: row-reverse; /* label on right, value on left */
-            justify-content: space-between;
-            align-items: flex-start;
-            border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+            display: table-cell;
+            max-width: none;
+            width: auto;
+            text-align: center !important;
+            direction: ltr;
+            vertical-align: top;
         }
 
-        .table-modern td:last-child {
-            border-bottom: none;
+        .table-modern td .clean-text {
+            display: inline;
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
 
         .table-modern td::before {
-            content: attr(data-label);
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-left: 0.75rem;
-            white-space: nowrap;
+            content: none;
+            display: none;
         }
 
         /* On mobile card layout, disable row/cell hover highlight */
@@ -1008,7 +437,8 @@
         }
         
         .table-modern td {
-            max-width: 150px;
+            max-width: none;
+            width: auto;
             font-size: 0.9rem;
         }
     }

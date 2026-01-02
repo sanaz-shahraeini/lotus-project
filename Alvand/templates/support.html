@@ -804,7 +804,7 @@
     /* Simple Form Inputs */
     .form-input, .form-textarea {
         width: 100%;
-        padding: var(--space-md);
+        padding: var(--space-md) 3.5rem var(--space-md) var(--space-md);
         border: 2px solid var(--border-color);
         border-radius: var(--radius-md);
         font-size: 0.95rem;
@@ -825,18 +825,21 @@
         resize: vertical;
         min-height: 5rem;
         line-height: 1.6;
+        max-width: 1400px;
+        padding: var(--space-xl) var(--space-lg);
     }
 
     /* Simple Form Icons */
     .form-icon {
         position: absolute;
-        right: var(--space-lg);
+        right: 1rem;
         top: 50%;
         transform: translateY(-50%);
         color: var(--text-muted);
         transition: var(--transition-base);
         font-size: 1.1rem;
         z-index: 5;
+        pointer-events: none;
     }
 
     .form-input:focus + .form-icon,
@@ -850,198 +853,23 @@
         transform: translateY(0);
     }
 
-    /* Simple Submit Button */
-    .support-button {
-        background: var(--primary-color);
-        color: white;
-        padding: var(--space-md) var(--space-xl);
-        border-radius: var(--radius-md);
-        font-weight: 600;
-        font-size: 1rem;
-        transition: var(--transition-base);
-        border: none;
-        cursor: pointer;
-        display: block;
-        margin: var(--space-lg) auto 0;
-        width: auto;
-        min-width: 160px;
-        text-align: center;
-        box-shadow: var(--card-shadow);
-        position: relative;
-    }
-
-    .support-button:hover {
-        background: var(--primary-hover);
-        transform: translateY(-2px);
-        box-shadow: var(--card-shadow-hover);
-    }
-
-    .support-button:active {
-        transform: translateY(0);
-    }
-
-    .support-button {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: var(--space-sm);
-    }
-
-    .support-button i {
-        font-size: 1rem;
-    }
-
-    /* Comprehensive Dark Mode Support */
-    html.dark .form-input, 
-    html.dark .form-textarea {
-        background: rgba(45, 55, 72, 0.9);
-        border-color: var(--border-color);
-        color: var(--text-primary);
-        backdrop-filter: blur(10px);
-    }
-
-    html.dark .form-input:focus, 
-    html.dark .form-textarea:focus {
-        background: rgba(45, 55, 72, 1);
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 6px rgba(38, 198, 218, 0.2);
-    }
-
-    html.dark .form-input:hover,
-    html.dark .form-textarea:hover {
-        background: rgba(45, 55, 72, 0.95);
-        border-color: var(--primary-light);
-    }
-
-    html.dark .contact-item,
-    html.dark .quote-box,
-    html.dark .announcement-box {
-        background: linear-gradient(135deg, 
-            var(--card-bg) 0%, 
-            rgba(45, 55, 72, 0.6) 100%);
-        border-color: var(--border-color);
-        backdrop-filter: blur(20px);
-    }
-
-    /* Dark mode quote box specific styling */
-    html.dark .quote-box {
-        background: linear-gradient(135deg, 
-            rgba(13, 27, 42, 0.8) 0%, 
-            rgba(18, 18, 18, 0.6) 100%);
-        border-color: rgba(13, 27, 42, 0.8);
-    }
-
-    /* Dark mode announcement box specific styling */
-    html.dark .announcement-box {
-        background: linear-gradient(135deg, 
-            rgba(13, 27, 42, 0.7) 0%, 
-            rgba(18, 18, 18, 0.5) 100%);
-        border-color: rgba(13, 27, 42, 0.9);
-    }
-
-    html.dark .support-button {
-        background: linear-gradient(135deg, #0D1B2A 0%, #121212 100%);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
-    }
-
-    html.dark .support-button:hover {
-        box-shadow: 0 20px 40px rgba(38, 198, 218, 0.6);
-    }
-
-    html.dark .contact-icon-wrapper {
-        box-shadow: 0 8px 20px rgba(38, 198, 218, 0.5);
-    }
-
-    html.dark .contact-item:hover .contact-icon-wrapper {
-        box-shadow: 0 12px 25px rgba(38, 198, 218, 0.7);
-    }
-
-    /* Enhanced Responsive Design with Mobile-First Approach */
+    /* Responsive Design */
     @media (max-width: 768px) {
-        .support-container {
-            padding: var(--space-md);
-        }
-        
         .support-hero {
-            padding: var(--space-lg) var(--space-md);
-            border-radius: var(--radius-md);
+            padding: var(--space-xl) var(--space-md);
         }
         
         .support-hero-title {
-            font-size: clamp(1.5rem, 5vw, 2rem);
-            margin-bottom: var(--space-sm);
+            font-size: 2.5rem;
         }
         
-        .support-hero-subtitle {
-            font-size: clamp(0.9rem, 3.5vw, 1.1rem);
-            margin-bottom: var(--space-md);
-        }
-        
-        .support-hero-button {
-            padding: var(--space-sm) var(--space-lg);
-            font-size: 0.95rem;
-        }
-        
-        .support-card-content {
-            padding: var(--space-md);
-        }
-        
-        .section-header {
-            flex-direction: column;
-            text-align: center;
-            gap: var(--space-sm);
-            margin-bottom: var(--space-md);
-        }
-        
-        .section-icon-wrapper {
-            margin: 0;
-            padding: var(--space-sm);
-        }
-        
-        .section-icon {
-            font-size: 1.1rem;
-        }
-        
-        .section-header::after {
-            width: 60%;
-            right: 20%;
-        }
-        
-        .contact-item {
-            flex-direction: column;
-            text-align: center;
-            padding: var(--space-md);
+        .support-grid {
+            grid-template-columns: 1fr;
             gap: var(--space-md);
         }
         
-        .contact-item::before {
-            width: 100%;
-            height: 4px;
-            top: 0;
-            left: 0;
-        }
-        
-        .contact-item::after {
-            width: 4px;
-            height: 100%;
-            top: 0;
-            right: 0;
-        }
-        
-        .contact-icon-wrapper {
-            margin: 0;
-        }
-        
-        .quote-box {
+        .support-card {
             padding: var(--space-md);
-        }
-        
-        .quote-text {
-            font-size: 0.95rem;
-        }
-        
-        .announcement-text {
-            font-size: clamp(0.95rem, 3.5vw, 1.1rem);
         }
         
         .company-image {
@@ -1052,88 +880,64 @@
             width: 80px;
             height: 80px;
         }
-    }
-
-    /* Ultra-Small Screens Optimization */
-    @media (max-width: 480px) {
-        .support-container {
-            padding: var(--space-sm);
-        }
         
-        .support-hero {
-            padding: var(--space-md);
-        }
-        
-        .support-hero-title {
-            font-size: clamp(1.4rem, 7vw, 1.8rem);
-            line-height: 1.1;
-        }
-        
-        .support-hero-subtitle {
-            font-size: clamp(0.85rem, 4vw, 1rem);
-        }
-        
-        .support-hero-button {
-            width: 100%;
-            justify-content: center;
-            padding: var(--space-sm) var(--space-md);
-            font-size: 0.9rem;
-        }
-        
-        .support-card-content {
-            padding: var(--space-sm) var(--space-md);
-        }
-        
-        .section-title {
-            font-size: clamp(1.1rem, 4.5vw, 1.4rem);
+        .contact-grid {
+            grid-template-columns: 1fr;
+            gap: var(--space-md);
         }
         
         .contact-item {
-            padding: var(--space-sm) var(--space-md);
+            padding: var(--space-md);
+        }
+        
+        .support-form {
+            padding: var(--space-md);
+        }
+        
+        .form-group:first-child {
+            max-width: 100%;
+        }
+        
+        .form-input, .form-textarea {
+            padding: var(--space-sm) 3rem var(--space-sm) var(--space-sm);
+            font-size: 0.9rem;
+        }
+        
+        .form-icon {
+            right: 0.75rem;
+            font-size: 1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .support-hero {
+            padding: var(--space-lg) var(--space-sm);
+        }
+        
+        .support-hero-title {
+            font-size: 2rem;
+        }
+        
+        .support-card-content {
+            padding: var(--space-lg);
+        }
+        
+        .company-image {
+            height: 8rem;
+        }
+        
+        .lotus-logo {
+            width: 60px;
+            height: 60px;
         }
         
         .form-input, .form-textarea {
             font-size: 0.9rem;
-            padding: var(--space-sm);
+            padding: var(--space-sm) 3rem var(--space-sm) var(--space-sm);
         }
         
-        .support-button {
-            font-size: 0.9rem;
-            padding: var(--space-sm) var(--space-md);
-        }
-        
-        .lotus-logo {
-            width: 70px;
-            height: 70px;
-        }
-        
-        .company-image {
-            height: 9rem;
-        }
-    }
-
-    /* Large Desktop Screens Enhancement */
-    @media (min-width: 1440px) {
-        .support-container {
-            max-width: 1400px;
-            padding: var(--space-xl) var(--space-lg);
-        }
-        
-        .support-hero {
-            padding: var(--space-2xl) var(--space-xl);
-        }
-        
-        .support-card-content {
-            padding: var(--space-xl);
-        }
-        
-        .company-image {
-            height: 14rem;
-        }
-        
-        .lotus-logo {
-            width: 110px;
-            height: 110px;
+        .form-icon {
+            right: 0.5rem;
         }
     }
 </style>
@@ -1222,7 +1026,6 @@
                         <div class="contact-details">
                             <h4>شماره تماس</h4>
                             <a href="tel:09384535171">09384535171</a>
-                            
                         </div>
                     </div>
                     
@@ -1264,7 +1067,7 @@
                         <label for="id_name" class="form-label">نام و نام خانوادگی</label>
                         <div class="form-input-wrapper">
                             {{ form.name }}
-                            <i class="fas fa-user form-icon"></i>
+                            <!-- <i class="fas fa-user form-icon"></i> -->
                         </div>
                         {% if form.name.errors %}
                             <div class="error-message" style="color: #dc2626; font-size: 0.875rem; margin-top: 0.25rem;">
@@ -1277,7 +1080,7 @@
                         <label for="id_message" class="form-label">پیام شما</label>
                         <div class="form-input-wrapper">
                             {{ form.message }}
-                            <i class="fas fa-comment form-icon"></i>
+                            <!-- <i class="fas fa-comment form-icon"></i> -->
                         </div>
                         {% if form.message.errors %}
                             <div class="error-message" style="color: #dc2626; font-size: 0.875rem; margin-top: 0.25rem;">
@@ -1339,3 +1142,4 @@
 </script>
 
 {% endblock %}
+
