@@ -1,0 +1,555 @@
+/* Mobile-specific responsive fixes */
+
+/* Basic responsive styling */
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Fix content display on small screens */
+@media (max-width: 640px) {
+    /* General content fixes */
+    .container, .container-fluid, main, .dashboard-content {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+    }
+    
+    /* Fix for cards and tables */
+    .card, .table-responsive {
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    
+    /* Table container improvements */
+    .table-container {
+        width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        position: relative !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border-radius: 0.5rem !important;
+    }
+    
+    /* Table styling improvements */
+    .table-container table {
+        width: 100% !important;
+        min-width: 800px !important; /* Ensures horizontal scroll on mobile */
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+    }
+    
+    /* Table cell improvements */
+    .table-container th,
+    .table-container td {
+        white-space: nowrap !important;
+        padding: 0.75rem 1rem !important;
+        font-size: 0.875rem !important;
+        line-height: 1.25rem !important;
+    }
+    
+    /* Dashboard cards on mobile */
+    .stat-card {
+        min-height: 170px !important;
+        padding: 1rem !important;
+        margin-bottom: 1rem !important;
+        width: 100% !important;
+    }
+    
+    /* Fix mobile forms */
+    form, input, select, textarea {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+    
+    /* Fix header button spacing */
+    .dashboard-header button {
+        padding: 8px 12px !important;
+        font-size: 12px !important;
+    }
+    
+    /* Fix sidebar toggle positioning */
+    #toggle-menu {
+        position: fixed !important;
+        top: 10px !important;
+        right: 20px !important;
+        z-index: 10000 !important;
+    }
+
+    /* Fix font sizes for better readability on mobile */
+    .text-sm {
+        font-size: 0.8rem !important;
+    }
+    .text-xs {
+        font-size: 0.7rem !important;
+    }
+
+    /* Improve touch targets for mobile */
+    button, a, input[type="submit"], input[type="button"] {
+        min-height: 40px !important;
+        padding: 8px 16px !important;
+    }
+    
+    /* Fix RTL layout on mobile */
+    .rtl {
+        direction: rtl !important;
+        text-align: right !important;
+    }
+    
+    /* Fix table scroll indicators */
+    .table-container::after,
+    .table-container::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        width: 20px !important;
+        z-index: 3 !important;
+        pointer-events: none !important;
+    }
+    
+    .table-container::before {
+        left: 0 !important;
+        background: linear-gradient(to right, rgba(255,255,255,0.9), rgba(255,255,255,0)) !important;
+    }
+    
+    .table-container::after {
+        right: 0 !important;
+        background: linear-gradient(to left, rgba(255,255,255,0.9), rgba(255,255,255,0)) !important;
+    }
+} 
+
+/* Fix for hamburger menu and mobile layout issues */
+
+/* Remove background color from hamburger menu but keep it clickable */
+#toggle-menu {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    color: #4f46e5 !important; /* Change text color to be visible against white background */
+    pointer-events: auto !important; /* Ensure it's clickable */
+    cursor: pointer !important;
+    z-index: 10000 !important; /* Very high z-index to ensure it's above everything */
+}
+
+/* Fix icon color */
+#toggle-menu i {
+    color: #4f46e5 !important;
+    pointer-events: none !important; /* Let the parent handle the click */
+}
+
+/* Push لوتوس text to the right in mobile view */
+@media (max-width: 768px) {
+    header .text-xl.font-bold.text-slate-800 {
+        margin-right: 2.5rem !important; /* Add right margin to push text away from hamburger */
+        position: relative !important;
+        z-index: 10 !important;
+    }
+}
+
+/* Fix spacing issues */
+@media (max-width: 640px) {
+    /* Add more space between header and content */
+    .dashboard-header {
+        margin-top: 2rem !important;
+    }
+    
+    /* Ensure stat cards don't overlap */
+    #statsCards {
+        margin-top: 2rem !important;
+        padding-top: 1rem !important;
+    }
+    
+    /* Fix header positioning */
+    header.bg-white.shadow-sm {
+        position: relative !important;
+        margin-bottom: 2rem !important;
+    }
+    
+    /* Ensure proper spacing between cards */
+    .stat-card {
+        margin-bottom: 1rem !important;
+    }
+}
+
+/* Fix for mobile sidebar visibility */
+
+/* Ensure desktop sidebar is hidden on mobile - more aggressive approach */
+@media (max-width: 1023px) {
+    #sidebar {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        position: absolute !important;
+        pointer-events: none !important;
+    }
+    
+    /* Override any display properties that might be set elsewhere */
+    #sidebar.lg\:block {
+        display: none !important;
+    }
+}
+
+/* Hide toggle menu button on desktop */
+@media (min-width: 1024px) {
+    #toggle-menu {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+}
+
+/* Ensure mobile sidebar is properly styled */
+#mobile-sidebar {
+    right: 0 !important;
+    width: 160px !important;
+    background-color: #4f46e5;
+    z-index: 40 !important;
+    transition: transform 0.3s ease-in-out !important;
+}
+
+/* Fix mobile sidebar in dark mode */
+html.dark #mobile-sidebar {
+    background-color: #1f2937 !important;
+}
+
+/* Only show mobile sidebar when it has the active class */
+#mobile-sidebar.active {
+    transform: translateX(0) !important;
+}
+
+/* Fix hamburger menu position */
+#toggle-menu {
+    z-index: 9999 !important; /* Ensure it's above everything */
+    top: 1rem !important;
+    right: 1rem !important;
+    background-color: rgba(255, 255, 255, 0.8) !important; /* Semi-transparent background */
+    position: fixed !important;
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Fix hamburger menu icon color in dark mode */
+html.dark #menu-icon {
+    color: var(--text-color) !important;
+}
+
+/* Fix for dark mode toggle button */
+html.dark #toggle-menu {
+    background-color: rgba(31, 41, 55, 0.8) !important;
+}
+
+/* Ensure the toggle button is always visible and clickable */
+#toggle-menu {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+/* Enhanced Mobile Sidebar Styling */
+
+/* Improve base styling of mobile sidebar */
+#mobile-sidebar {
+    background: linear-gradient(to bottom, #4f46e5, #3b82f6) !important;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2) !important;
+    width: 200px !important; /* Slightly wider for better content display */
+    padding: 0 !important;
+    overflow-y: auto !important;
+    z-index: 10000 !important;
+}
+
+/* Improve profile section in sidebar */
+#mobile-sidebar .text-center {
+    padding: 1rem !important;
+    background: rgba(0, 0, 0, 0.1) !important;
+    margin-bottom: 1rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Enhance profile image */
+#mobile-sidebar .text-center img {
+    width: 70px !important;
+    height: 70px !important;
+    object-fit: cover !important;
+    border: 3px solid white !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Improve profile text */
+#mobile-sidebar .text-center p {
+    margin: 0.5rem 0 !important;
+    color: white !important;
+    font-weight: 500 !important;
+    font-size: 0.9rem !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Style navigation section */
+#mobile-sidebar nav {
+    padding: 0.5rem !important;
+}
+
+/* Enhance all navigation links */
+#mobile-sidebar nav a,
+#mobile-sidebar nav button {
+    display: flex !important;
+    align-items: center !important;
+    padding: 0.75rem 1rem !important;
+    color: white !important;
+    text-decoration: none !important;
+    border-radius: 8px !important;
+    margin-bottom: 0.5rem !important;
+    transition: all 0.2s ease-in-out !important;
+    position: relative !important;
+    overflow: hidden !important;
+    font-size: 0.9rem !important;
+}
+
+/* Highlight active link */
+#mobile-sidebar nav a.active {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    font-weight: bold !important;
+}
+
+/* Create hover effect */
+#mobile-sidebar nav a:hover,
+#mobile-sidebar nav button:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Style icons */
+#mobile-sidebar nav a i,
+#mobile-sidebar nav button i {
+    margin-left: 0.75rem !important;
+    font-size: 1.1rem !important;
+    width: 24px !important;
+    text-align: center !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Special styling for settings links */
+#mobile-sidebar nav a:nth-child(4),
+#mobile-sidebar nav a:nth-child(5) {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-left: 3px solid #00BCD4 !important;
+}
+
+/* Style for logout button */
+#mobile-sidebar nav button#exit-mb {
+    border: none !important;
+    background-color: rgba(255, 87, 34, 0.2) !important;
+    color: white !important;
+    border-left: 3px solid #FF5722 !important;
+    width: 100% !important;
+    text-align: right !important;
+    cursor: pointer !important;
+}
+
+#mobile-sidebar nav button#exit-mb:hover {
+    background-color: rgba(255, 87, 34, 0.3) !important;
+}
+
+/* Improve hamburger menu positioning and styling */
+#toggle-menu {
+    background-color: #4f46e5 !important;
+    color: white !important;
+    border: none !important;
+    width: 45px !important;
+    height: 45px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+    z-index: 10001 !important;
+    transition: all 0.3s ease !important;
+}
+
+#toggle-menu:hover {
+    background-color: #3b82f6 !important;
+    transform: scale(1.05) !important;
+}
+
+/* Fix for RTL alignment */
+#mobile-sidebar nav a,
+#mobile-sidebar nav button {
+    text-align: right !important;
+    justify-content: flex-start !important;
+}
+
+/* Dark mode adjustments */
+html.dark #mobile-sidebar {
+    background: linear-gradient(to bottom, #1e293b, #0f172a) !important;
+}
+
+html.dark #toggle-menu {
+    background-color: #1e293b !important;
+}
+
+html.dark #toggle-menu:hover {
+    background-color: #0f172a !important;
+}
+
+/* Better animation for sidebar opening */
+@keyframes slideIn {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+@keyframes slideOut {
+    from { transform: translateX(0); }
+    to { transform: translateX(100%); }
+}
+
+#mobile-sidebar.slide-in {
+    animation: slideIn 0.3s forwards;
+}
+
+#mobile-sidebar.slide-out {
+    animation: slideOut 0.3s forwards;
+} 
+
+/* 
+ * Mobile Sidebar Toggle Button Fix
+ * Removes background and adds proper styling for the toggle button
+ */
+
+/* Hide toggle button on desktop */
+@media (min-width: 1024px) {
+    #toggle-menu,
+    #toggle-sidebar-mobile {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+}
+
+#toggle-menu,
+#toggle-sidebar-mobile {
+    background-color: rgba(255, 255, 255, 0.8) !important; /* Semi-transparent background */
+    border: none !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important; /* Add subtle shadow */
+    position: fixed !important; /* Ensure it stays fixed on screen */
+    z-index: 9999 !important; /* Very high z-index to be above all other elements */
+}
+
+#toggle-menu:hover,
+#toggle-sidebar-mobile:hover {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+#toggle-menu:focus,
+#toggle-sidebar-mobile:focus {
+    outline: none !important;
+}
+
+#toggle-menu i,
+#toggle-sidebar-mobile i {
+    color: var(--primary-color, #4f46e5) !important; /* Use theme color or default to indigo */
+    font-size: 1.25rem !important;
+}
+
+/* Dark mode adjustments */
+html.dark #toggle-menu,
+html.dark #toggle-sidebar-mobile {
+    background-color: rgba(31, 41, 55, 0.8) !important; /* Dark semi-transparent background */
+}
+
+html.dark #toggle-menu i,
+html.dark #toggle-sidebar-mobile i {
+    color: var(--text-color, #F5F7FA) !important;
+}
+
+/* Make sure the button is easily clickable but doesn't have a visible background */
+#toggle-menu,
+#toggle-sidebar-mobile {
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    transition: background-color 0.2s ease !important;
+    pointer-events: auto !important; /* Ensure it's clickable */
+    cursor: pointer !important;
+}
+
+/* Fix for mobile sidebar links and icons to match desktop view */
+
+/* Ensure consistent styling for links in mobile sidebar */
+#mobile-sidebar a,
+#mobile-sidebar button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 0.75rem 1rem !important;
+    text-align: right !important;
+    width: 100% !important;
+    color: white !important;
+}
+
+/* Fix icon alignment in mobile sidebar */
+#mobile-sidebar i {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 1.5rem !important;
+    margin-left: 0.75rem !important;
+    font-size: 1.1rem !important;
+}
+
+/* Ensure text is visible and properly aligned */
+#mobile-sidebar .sidebar-text {
+    display: inline-block !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 0.85rem !important;
+}
+
+/* Fix mobile sidebar padding and spacing */
+#mobile-sidebar {
+    padding-top: 1rem !important;
+}
+
+/* Fix profile section in mobile sidebar */
+#mobile-sidebar .text-center {
+    padding: 1rem 0.5rem !important;
+    margin-bottom: 1rem !important;
+}
+
+/* Fix dark mode styling for mobile sidebar links */
+html.dark #mobile-sidebar a,
+html.dark #mobile-sidebar button {
+    color: var(--text-color) !important;
+}
+
+html.dark #mobile-sidebar i {
+    color: var(--text-color) !important;
+}
+
+/* Fix hover states */
+#mobile-sidebar a:hover,
+#mobile-sidebar button:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+html.dark #mobile-sidebar a:hover,
+html.dark #mobile-sidebar button:hover {
+    background-color: var(--secondary-color) !important;
+}

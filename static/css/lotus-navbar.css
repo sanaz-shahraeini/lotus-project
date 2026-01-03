@@ -1,0 +1,211 @@
+/* Self-contained styles with unique class names to avoid conflicts */
+#lotus-navbar {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    padding: 0.8rem 1.5rem;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+html.dark #lotus-navbar {
+    background: rgba(13, 27, 42, 0.95); /* Deep Indigo with opacity */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+#lotus-navbar .navbar-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+#lotus-navbar .navbar-left {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+#lotus-navbar .logo-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-right: 0.5rem;
+    min-width: 0;
+}
+
+#lotus-navbar .logo-container::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(135deg, #00BCD4, #29B6F6); /* Lotus Aqua to Sky Blue */
+    transition: width 0.3s ease;
+}
+
+#lotus-navbar .logo-container:hover::after {
+    width: 100%;
+}
+
+#lotus-navbar .logo-text {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin: 0;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background: linear-gradient(135deg, #00BCD4, #536DFE); /* Lotus Aqua to Electric Violet */
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+}
+
+html.dark #lotus-navbar .logo-text {
+    background: linear-gradient(135deg, #00BCD4, #536DFE); /* Lotus Aqua to Electric Violet */
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#lotus-navbar .nav-actions {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    gap: 0.5rem;
+}
+
+.lotus-nav-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    margin-left: 10px;
+    margin-top: 7px;
+    border: none;
+    background: rgba(240, 242, 245, 0.8);
+    color: #37474F; /* Dark Gray */
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+html.dark .lotus-nav-button {
+    background: rgba(13, 27, 42, 0.8); /* Deep Indigo with opacity */
+    color: #F5F7FA; /* White Smoke */
+}
+
+.lotus-nav-button:hover {
+    background: #CFD8DC; /* Light Gray */
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+html.dark .lotus-nav-button:hover {
+    background: rgba(0, 188, 212, 0.2); /* Lotus Aqua with opacity */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.lotus-nav-button:active {
+    transform: translateY(0);
+}
+
+.lotus-theme-toggle {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    padding: 0;
+    overflow: hidden;
+    margin-top: 0;
+    transform: translateY(5px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: rgba(240, 242, 245, 0.9);
+    color: #00BCD4; /* Lotus Aqua */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+}
+
+html.dark .lotus-theme-toggle {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    background: rgba(13, 27, 42, 0.9); /* Deep Indigo with opacity */
+}
+
+.lotus-theme-toggle i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.lotus-theme-toggle .fa-sun {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(0);
+    color: #FF9800; /* Brighter Orange for better visibility */
+    text-shadow: 0 0 4px rgba(255, 152, 0, 0.3); /* Add glow for better visibility */
+}
+
+.lotus-theme-toggle .fa-moon {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(-180deg);
+    color: #00BCD4; /* Lotus Aqua */
+}
+
+html.dark .lotus-theme-toggle .fa-sun {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(180deg);
+    color: #FFB74D; /* Lighter Orange for dark mode visibility */
+    text-shadow: 0 0 6px rgba(255, 183, 77, 0.5); /* Enhanced glow in dark mode */
+}
+
+html.dark .lotus-theme-toggle .fa-moon {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(0);
+    color: #00BCD4; /* Lotus Aqua */
+}
+
+/* Responsive adjustments */
+@media (max-width: 1023px) {
+    #lotus-navbar {
+        padding-right: 4.25rem;
+    }
+}
+
+@media (max-width: 768px) {
+    #lotus-navbar {
+        padding: 0.7rem 1rem;
+        padding-right: 4.25rem;
+    }
+
+    #lotus-navbar .button-text {
+        display: none;
+    }
+
+    .lotus-nav-button {
+        padding: 0.6rem;
+    }
+}
+
+@media (max-width: 420px) {
+    #lotus-navbar .logo-text {
+        font-size: 1.35rem;
+    }
+}
