@@ -5,527 +5,7 @@
 {% block head_extra %}
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {# Uses app.css from base.html #}
-
-<style>
-    /* Shared variables, toggle, and layout moved to shared CSS files */
-
-
-    .filter-section {
-        background-color: var(--card-bg);
-        border-radius: 1rem;
-        padding: 1.5rem;
-        box-shadow: var(--card-shadow);
-        margin-bottom: 2rem;
-        border: 1px solid var(--border-color);
-        transition: all 0.3s ease;
-    }
-
-    .filter-controls-single-line {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        flex-wrap: wrap;
-        justify-content: center;
-        padding: 0.5rem 0;
-        width: 100%;
-    }
-
-    .input-field-compact {
-        border: 1px solid var(--border-color);
-        border-radius: 0.5rem;
-        padding: 0.5rem 0.75rem;
-        transition: all 0.2s;
-        background: var(--card-bg);
-        color: var(--text-color);
-        font-size: 0.875rem;
-        min-width: 140px;
-        width: 160px;
-        height: 36px;
-        flex-shrink: 0;
-    }
-
-    .search-compact {
-        min-width: 120px;
-        width: 120px;
-    }
-
-    .btn-compact {
-        padding: 0.5rem 0.75rem;
-        border-radius: 0.5rem;
-        font-weight: 500;
-        transition: all 0.3s;
-        border: none;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.25rem;
-        text-decoration: none;
-        height: 36px;
-        font-size: 0.875rem;
-        flex-shrink: 0;
-        white-space: nowrap;
-    }
-
-    .sort-btn-compact {
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        cursor: pointer;
-        padding: 0.5rem;
-        border-radius: 0.5rem;
-        transition: all 0.3s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 36px;
-        width: 36px;
-        flex-shrink: 0;
-        color: var(--text-color);
-    }
-
-    .pagination-compact {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        padding: 0.3rem 0.75rem;
-        border-radius: 999px;
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
-        flex-shrink: 0;
-        height: 38px;
-    }
-
-    .nav-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 30px;
-        height: 30px;
-        border-radius: 999px;
-        border: none;
-        background: transparent;
-        color: var(--text-color);
-        text-decoration: none;
-        transition: all 0.18s ease;
-        font-size: 0.75rem;
-    }
-
-    .nav-btn.disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-        box-shadow: none;
-    }
-
-    .page-info {
-        font-size: 0.78rem;
-        color: var(--text-color);
-        font-weight: 500;
-        padding: 0 0.5rem;
-        white-space: nowrap;
-        min-width: 46px;
-        text-align: center;
-    }
-
-    .excel-btn-compact {
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
-        color: white;
-        border: none;
-        padding: 0.5rem 0.75rem;
-        font-weight: 500;
-        border-radius: 0.5rem;
-        transition: all 0.3s;
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
-        height: 36px;
-        font-size: 0.875rem;
-        flex-shrink: 0;
-        white-space: nowrap;
-        cursor: pointer;
-        min-width: 70px;
-        box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3);
-    }
-
-    .table-container::before,
-    .table-container::after {
-        content: none !important;
-        display: none !important;
-        background: transparent !important;
-    }
-
-    @media (max-width: 768px) {
-
-        .main-content {
-            margin-right: 0;
-            margin-left: 0;
-            width: 100%;
-        }
-
-        .filter-section {
-            padding: 1rem 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .filter-controls-single-line {
-            flex-direction: row;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 0.75rem;
-            justify-content: center;
-        }
-        
-        .input-field-compact {
-            min-width: 100%;
-            width: 100%;
-        }
-        
-        .search-compact {
-            min-width: 100%;
-            width: 100%;
-        }
-        
-        .btn-compact {
-            width: 100%;
-            min-width: 100%;
-        }
-        
-        .excel-btn-compact {
-            width: 100%;
-            min-width: 100%;
-        }
-
-        .filter-controls {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 1rem;
-        }
-
-        #filterForm {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: stretch;
-            row-gap: 0.5rem;
-        }
-
-        /* All forms (filter + export buttons) take full row; small controls share rows */
-        .filter-controls-single-line > form {
-            width: 100%;
-        }
-
-        .date-filter-group,
-        .search-group {
-            flex-direction: column;
-            align-items: stretch;
-            padding: 1rem;
-        }
-
-        .date-filter-group {
-            gap: 1rem;
-        }
-
-        .search-group {
-            gap: 0.75rem;
-        }
-
-        .input-field {
-            width: 100%;
-            min-height: 44px;
-            font-size: 1rem;
-        }
-
-        .btn {
-            width: 100%;
-            min-height: 44px;
-            font-size: 1rem;
-            justify-content: center;
-        }
-
-        .excel-btn {
-            padding: 1rem 1.5rem;
-            justify-content: center;
-        }
-
-        .pagination {
-            width: 100%;
-            justify-content: center;
-            padding: 0.75rem 0;
-        }
-
-        .sort-btn {
-            min-height: 44px;
-            min-width: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .table-container {
-            margin: 0;
-            width: 100%;
-            border-radius: 0.75rem;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .table-modern {
-            width: 100%;
-            min-width: 900px;
-            border-collapse: collapse;
-        }
-
-        .table-modern thead {
-            display: table-header-group;
-        }
-
-        .table-modern tbody tr {
-            display: table-row;
-        }
-
-        .table-modern th,
-        .table-modern td {
-            padding: 0.4rem 0.75rem;
-            font-size: 0.8rem;
-            white-space: normal;
-            word-break: break-word;
-        }
-        
-        .table-modern td {
-            display: table-cell;
-            max-width: none;
-            width: auto;
-            text-align: center !important;
-            direction: ltr;
-            vertical-align: top;
-        }
-
-        .table-modern td .clean-text {
-            display: inline;
-            overflow-wrap: anywhere;
-            word-break: break-word;
-        }
-
-        .table-modern td::before {
-            content: none;
-            display: none;
-        }
-
-        /* On mobile card layout, disable row/cell hover highlight */
-        .table-modern tbody tr:hover {
-            background-color: transparent;
-        }
-
-        .table-modern .text-cell:hover,
-        .table-modern td:hover {
-            background-color: transparent !important;
-            color: inherit !important;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .filter-section {
-            padding: 1rem 0.75rem;
-        }
-
-        .filter-controls {
-            gap: 1rem;
-        }
-
-        .filter-controls-single-line {
-            align-items: stretch;
-        }
-
-        #filterForm {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .input-field-compact,
-        .search-compact {
-            width: 100%;
-            min-width: 100%;
-        }
-
-        .date-filter-group,
-        .search-group {
-            padding: 0.75rem;
-        }
-
-        .excel-btn {
-            padding: 0.875rem 1.25rem;
-            font-size: 0.95rem;
-        }
-
-        .btn-compact,
-        .excel-btn-compact {
-            width: 100%;
-        }
-
-        .pagination-compact {
-            width: auto;
-            align-self: center;
-            padding-left: 0.75rem;
-            padding-right: 0.75rem;
-        }
-
-        .pagination span {
-            display: none;
-        }
-
-        .btn {
-            font-size: 0.95rem;
-        }
-    }
-
-    /* Dark mode enhancements for filter section */
-    .dark .filter-section {
-        background: linear-gradient(135deg, var(--card-bg) 0%, rgba(13, 27, 42, 0.8) 100%);
-        border-color: var(--border-color);
-    }
-
-    .dark .date-filter-group,
-    .dark .search-group {
-        background: rgba(255, 255, 255, 0.05);
-        border-color: var(--border-color);
-    }
-
-    .dark .excel-btn {
-        box-shadow: 0 4px 16px rgba(40, 167, 69, 0.15);
-    }
-
-    .dark .excel-btn:hover {
-        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.25);
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-        .modal {
-            padding: 1rem;
-        }
-        .modal-content {
-            width: 95%;
-            max-width: 100%;
-            padding: 1.5rem;
-            max-height: 90vh;
-            margin: 1rem auto;
-        }
-        
-        .modal-section-content {
-            padding: 1.5rem;
-            font-size: 1rem;
-            text-align: left;
-            direction: ltr;
-            color: var(--text-color);
-        }
-        
-        .modal-section-content li {
-            padding: 0.6rem 1rem;
-            margin-bottom: 1rem;
-            color: var(--text-color);
-        }
-        
-        .modal-section-content li:hover {
-            background: rgba(255, 255, 255, 0.2) !important;
-            color: var(--text-color) !important;
-        }
-        
-        .modal-section-content li:before {
-            width: 6px;
-            height: 6px;
-            font-size: 0;
-        }
-        
-        .table-modern td {
-            max-width: none;
-            width: auto;
-            font-size: 0.9rem;
-        }
-    }
-    
-    @media (max-width: 480px) {
-        .modal {
-            padding: 0.5rem;
-        }
-        .modal-content {
-            width: 98%;
-            padding: 1.25rem;
-            max-height: 95vh;
-            margin: 0.5rem auto;
-        }
-        
-        .modal-title {
-            font-size: 1.2rem;
-        }
-        
-        .modal-section-title {
-            font-size: 1.1rem;
-        }
-        
-        .modal-section-content {
-            padding: 1rem;
-            font-size: 0.95rem;
-            text-align: left;
-            direction: ltr;
-            color: var(--text-color);
-        }
-        
-        .modal-section-content li {
-            padding: 0.5rem 0.8rem;
-            margin-bottom: 0.8rem;
-            color: var(--text-color);
-        }
-        
-        .modal-section-content li:hover {
-            background: rgba(255, 255, 255, 0.2) !important;
-            color: var(--text-color) !important;
-        }
-        
-        .modal-section-content li:before {
-            width: 6px;
-            height: 6px;
-            font-size: 0;
-        }
-    }
-
-    /* Dark mode specific styles */
-    [data-theme="dark"] .text-cell {
-        color: var(--text-color);
-    }
-
-    [data-theme="dark"] .text-cell:hover {
-        background-color: rgba(99, 102, 241, 0.2) !important;
-        color: #60a5fa !important;
-    }
-
-    /* Dark mode cards inside modal (supports both .dark class and data-theme="dark") */
-    .dark .modal-section-content,
-    [data-theme="dark"] .modal-section-content {
-        background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.96));
-        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.75);
-    }
-
-    .dark .modal-section-content li,
-    [data-theme="dark"] .modal-section-content li {
-        background: rgba(15, 23, 42, 0.9);
-        border-left-color: var(--primary-color);
-        color: var(--text-color);
-    }
-
-    .dark .modal-section-content li:hover,
-    [data-theme="dark"] .modal-section-content li:hover {
-        /* در دارک مود، هاور اضافی نداشته باشد */
-        background: rgba(15, 23, 42, 0.9) !important;
-        color: var(--text-color) !important;
-        transform: none !important;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
-    }
-
-    /* Clean text styles to remove question marks */
-    .clean-text {
-        display: inline-block;
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css/pages/error.css' %}" type="text/css">
 {% endblock %}
 
 {% block main %}
@@ -535,14 +15,13 @@
         <div class="filter-section">
             <div class="filter-controls-single-line">
                 <!-- Compact form elements -->
-                <form id="filterForm" method="get" style="display: flex; gap: 10px; align-items: center;">
+                <form id="filterForm" method="get" class="error-filter-form-inline">
                     <input id="dateFrom" data-jdp placeholder="از تاریخ" name="dateFrom" class="input-field-compact"
                         value="{{ request.GET.dateFrom|default:'' }}" />
                     <input id="dateTo" data-jdp placeholder="تا تاریخ" name="dateTo" class="input-field-compact"
                         value="{{ request.GET.dateTo|default:'' }}" />
                     <input type="search" id="search" name="search" placeholder="شماره خطا"
-                        class="input-field-compact search-compact" value="{{ request.GET.search|default:'' }}" 
-                        style="background-color: #fff; border: 2px solid #00BCD4; min-width: 150px;" />
+                        class="input-field-compact search-compact error-search-input-emphasis" value="{{ request.GET.search|default:'' }}" />
                     <button type="submit" id="applyFilterBtn" class="btn-compact btn-primary">
                         <i class="fas fa-filter"></i>
                         فیلتر
@@ -649,9 +128,24 @@
             <span class="close" onclick="closeModal()"></span>
         </div>
         <div class="modal-body">
-            <div class="modal-section">
-                <div class="modal-section-content" id="modalContent">
-                    <!-- Content will be loaded here -->
+            <div class="modal-sections-grid">
+                <div class="modal-section">
+                    <h4 class="modal-section-title">عنوان خطا</h4>
+                    <div class="modal-section-content" id="modalErrorMessage">
+                        <!-- Will be populated by JS -->
+                    </div>
+                </div>
+                <div class="modal-section">
+                    <h4 class="modal-section-title">علت احتمالی</h4>
+                    <div class="modal-section-content" id="modalProbableCause">
+                        <!-- Will be populated by JS -->
+                    </div>
+                </div>
+                <div class="modal-section">
+                    <h4 class="modal-section-title">راه حل پیشنهادی</h4>
+                    <div class="modal-section-content" id="modalSolution">
+                        <!-- Will be populated by JS -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -781,67 +275,82 @@
 </script>
 <script>
     // Modal functions
-    function showDetailModal(type, content, errorCode) {
-        console.log('Opening modal for:', {type, errorCode});
+    function showDetailModal(event, errorCode) {
+        console.log('Opening modal for:', {errorCode});
         const modal = document.getElementById('detailModal');
         const modalTitle = document.getElementById('modalTitle');
-        const modalContent = document.getElementById('modalContent');
+        const modalErrorMessage = document.getElementById('modalErrorMessage');
+        const modalProbableCause = document.getElementById('modalProbableCause');
+        const modalSolution = document.getElementById('modalSolution');
 
         if (!modal) {
             console.error('Modal element not found!');
             return;
         }
-        if (!modalTitle || !modalContent) {
+        if (!modalTitle || !modalErrorMessage || !modalProbableCause || !modalSolution) {
             console.error('Modal content elements not found!');
             return;
         }
 
-        // Set modal content based on type
-        const titles = {
-            'errormessage': 'عنوان خطا',
-            'probablecause': 'علت احتمالی',
-            'solution': 'راه حل پیشنهادی',
-            'default': 'جزئیات'
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text == null ? '' : String(text);
+            return div.innerHTML;
+        }
+
+        const safeCode = escapeHtml(errorCode);
+        modalTitle.innerHTML = `خطای <span class="ltr">${safeCode}</span> - جزئیات`;
+
+        // Get all row data from the clicked row
+        const targetCell = event.target.closest('.text-cell');
+        const row = targetCell ? targetCell.closest('tr') : null;
+        const data = {
+            errormessage: row ? row.querySelector('[data-type="errormessage"]')?.getAttribute('data-content') || 'محتوا موجود نیست' : 'محتوا موجود نیست',
+            probablecause: row ? row.querySelector('[data-type="probablecause"]')?.getAttribute('data-content') || 'محتوا موجود نیست' : 'محتوا موجود نیست',
+            solution: row ? row.querySelector('[data-type="solution"]')?.getAttribute('data-content') || 'محتوا موجود نیست' : 'محتوا موجود نیست'
         };
-        
-        const title = titles[type] || titles['default'];
-        
-        modalTitle.textContent = `خطای ${errorCode} - ${title}`;
-        // Use formatted HTML for better, structured display
-        const rawText = (content || 'محتوا موجود نیست').replace(/\?/g, '');
-        modalContent.innerHTML = formatTextForModal(rawText);
-        
+
+        modalErrorMessage.innerHTML = formatTextForModal(data.errormessage.replace(/\?/g, ''));
+        modalProbableCause.innerHTML = formatTextForModal(data.probablecause.replace(/\?/g, ''));
+        modalSolution.innerHTML = formatTextForModal(data.solution.replace(/\?/g, ''));
+
         // Show the modal
         modal.style.display = 'flex';
-        // Force reflow
         void modal.offsetHeight;
-        // Add show class
         modal.classList.add('show');
-        
-        // Prevent body scroll
-        document.body.style.overflow = 'hidden';
-        
+        document.body.classList.add('modal-open');
         console.log('Modal should be visible now');
     }
-    
+
     // تابع برای فرمت کردن متن
     function formatTextForModal(text) {
+        function wrapLtrTokens(value) {
+            if (!value) return '';
+            // If line is mostly English, wrap the whole line
+            if (/^[A-Za-z0-9][\s\-_/().,:+]*[A-Za-z0-9]$/.test(String(value).trim())) {
+                return `<span class="ltr">${value}</span>`;
+            }
+            // Otherwise wrap English tokens
+            return String(value)
+                .replace(/([A-Za-z0-9][A-Za-z0-9\s\-_/().,:+]*[A-Za-z0-9])/g, '<span class="ltr">$1</span>');
+        }
+
         if (!text) {
-            return '<p style="padding: 1rem;">محتوا موجود نیست</p>';
+            return '<p class="modal-empty-paragraph">محتوا موجود نیست</p>';
         }
 
         // ابتدا بر اساس خط جدید تقسیم کن تا هر خط به یک آیتم مستقل تبدیل شود
-        let lines = text.split(/[\r\n]+/).map(l => l.trim()).filter(l => l.length > 0);
+        let lines = String(text).split(/[\r\n]+/).map(l => l.trim()).filter(l => l.length > 0);
 
         // اگر فقط یک خط داشتیم، دوباره بر اساس نقطه/علامت تعجب/سؤال تقسیم کنیم
         if (lines.length <= 1) {
-            lines = text.split(/[.!?]/).map(l => l.trim()).filter(l => l.length > 0);
+            lines = String(text).split(/[.!?]/).map(l => l.trim()).filter(l => l.length > 0);
         }
 
         // اگر باز هم فقط یک مورد بود، همان را در یک پاراگراف ساده برگردان
         if (lines.length <= 1) {
-            const clean = lines[0] || text;
-            return `<p style="padding: 1rem; background: rgba(255, 255, 255, 0.1); color: var(--text-color); border-radius: 8px; border-left: 4px solid var(--primary-color);">${clean}</p>`;
+            const clean = lines[0] || String(text);
+            return `<p class="modal-single-paragraph">${wrapLtrTokens(clean)}</p>`;
         }
 
         // تبدیل به لیست زیبا
@@ -851,14 +360,14 @@
                 .replace(/^[,\.\s]+/, '')
                 .replace(/[,\.\s]+$/, '');
             if (cleanSentence.length > 0) {
-                formattedText += `<li>${cleanSentence}</li>`;
+                formattedText += `<li>${wrapLtrTokens(cleanSentence)}</li>`;
             }
         });
         formattedText += '</ul>';
 
         return formattedText;
     }
-    
+
     function closeModal() {
         const modal = document.getElementById('detailModal');
         if (modal) {
@@ -866,11 +375,9 @@
             setTimeout(() => {
                 modal.style.display = 'none';
             }, 300);
-            document.body.style.overflow = 'auto';
+            document.body.classList.remove('modal-open');
         }
     }
-    
-    
     
     // Initialize modal state and event listeners
     function initModal() {
@@ -918,10 +425,8 @@
                 const textCell = e.target.closest('.text-cell');
                 if (textCell) {
                     e.preventDefault();
-                    const type = textCell.getAttribute('data-type') || 'errormessage';
-                    const content = textCell.getAttribute('data-content') || '';
                     const code = textCell.getAttribute('data-code') || '';
-                    showDetailModal(type, content, code);
+                    showDetailModal(e, code);
                 }
             });
         }
@@ -962,13 +467,13 @@
             // If search is empty and no date filters, don't make AJAX call
             if (!searchValue && !dateFrom && !dateTo) {
                 console.log("No filters applied, skipping AJAX call");
-                $searchInput.css('background-color', '#fff');
+                $searchInput.removeClass('search-state-loading search-state-success search-state-error').addClass('search-state-default');
                 $searchInput.attr('title', 'جستجوی شماره خطا');
                 return;
             }
             
             // Show loading indicator
-            $searchInput.css('background-color', '#fff3cd'); // Light yellow for loading
+            $searchInput.removeClass('search-state-default search-state-success search-state-error').addClass('search-state-loading');
             $searchInput.attr('title', 'در حال جستجو...');
             
             // Build URL parameters
@@ -1030,19 +535,19 @@
                             updatePaginationInfo(response.count);
                             
                             // Success feedback
-                            $searchInput.css('background-color', '#d4edda'); // Light green for success
+                            $searchInput.removeClass('search-state-default search-state-loading search-state-error').addClass('search-state-success');
                             $searchInput.attr('title', `${response.count} نتیجه پیدا شد`);
                         } else {
                             // No results found
                             $tableBody.html(`
                                 <tr>
-                                    <td colspan="7" style="text-align: center; padding: 2rem; color: #666;">
+                                    <td colspan="7" class="no-results-cell">
                                         نتیجه‌ای یافت نشد
                                     </td>
                                 </tr>
                             `);
                             
-                            $searchInput.css('background-color', '#f8d7da'); // Light red for no results
+                            $searchInput.removeClass('search-state-default search-state-loading search-state-success').addClass('search-state-error');
                             $searchInput.attr('title', 'نتیجه‌ای یافت نشد');
                             
                             updatePaginationInfo(0);
@@ -1052,7 +557,7 @@
                 error: function(xhr, status, error) {
                     if (status !== 'abort') {
                         console.error("AJAX search error:", error);
-                        $searchInput.css('background-color', '#f8d7da'); // Light red for error
+                        $searchInput.removeClass('search-state-default search-state-loading search-state-success').addClass('search-state-error');
                         $searchInput.attr('title', 'خطا در جستجو');
                     }
                 },
