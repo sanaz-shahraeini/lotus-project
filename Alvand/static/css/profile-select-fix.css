@@ -3,15 +3,11 @@ select.form-control,
 .select2-container--default .select2-selection--single,
 .select2-container .select2-selection--single,
 select {
-    -webkit-appearance: none !important;
-    -moz-appearance: none !important;
-    appearance: none !important;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23757575'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e") !important;
-    background-repeat: no-repeat !important;
-    background-position: left 0.5rem center !important;
-    background-size: 1.5em !important;
-    padding-right: 0.75rem !important;
-    padding-left: 2rem !important;
+    -webkit-appearance: auto !important;
+    -moz-appearance: auto !important;
+    appearance: auto !important;
+    background-image: none !important;
+    padding-left: 0.75rem !important;
     background-color: rgba(245, 247, 250, 0.5) !important;
     border: 1px solid #e2e8f0 !important;
 }
@@ -21,7 +17,7 @@ select {
 .dark .select2-container--default .select2-selection--single,
 .dark .select2-container .select2-selection--single,
 .dark select {
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a0aec0'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e") !important;
+    background-image: none !important;
     background-color: rgba(13, 27, 42, 0.8) !important;
     border-color: #37474F !important;
     color: #F5F7FA !important;

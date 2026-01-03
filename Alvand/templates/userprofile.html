@@ -187,6 +187,32 @@
         margin-top: 0.25rem;
     }
 
+    #accessToExtsDp,
+    #accessLevelDp {
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    #accessToExtsDp input[type="checkbox"],
+    #accessLevelDp input[type="checkbox"] {
+        width: 16px !important;
+        height: 16px !important;
+        min-width: 16px !important;
+        min-height: 16px !important;
+        max-width: 16px !important;
+        max-height: 16px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        flex: 0 0 16px;
+        box-sizing: border-box;
+        -webkit-appearance: checkbox !important;
+        -moz-appearance: checkbox !important;
+        appearance: checkbox !important;
+    }
+
     .dropdown-item {
         padding: 0.625rem 0.75rem;
         transition: var(--transition);
@@ -679,12 +705,7 @@
     .dark .photo-upload-zone:hover {
         background: linear-gradient(135deg, rgba(0, 188, 212, 0.1), rgba(83, 109, 254, 0.1));
     }
-    
-    .dark .file-types {
-        background: rgba(0, 188, 212, 0.2);
-        border-color: rgba(0, 188, 212, 0.3);
-    }
-    
+
     /* Mobile responsive */
     @media (max-width: 768px) {
         .profile-section {
@@ -709,6 +730,73 @@
         }
         .upload-text {
             font-size: 0.875rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .card-header {
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            padding: 1rem;
+        }
+
+        .profile-name-display {
+            min-width: 0;
+            width: 100%;
+        }
+
+        .profile-username {
+            align-self: center;
+        }
+
+        .profile-section {
+            padding: 1rem;
+        }
+
+        .photo-upload-zone {
+            min-width: 0;
+            padding: 1rem;
+            min-height: 160px;
+        }
+
+        .form-section {
+            padding: 1rem;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        #accessToExtsDp,
+        #accessLevelDp {
+            max-height: 55vh;
+            overflow-y: auto;
+        }
+
+        #id_editOrAdd, #id_username, #id_name, #id_lastname,
+        #id_extension, #id_email, #id_groupname,
+        #id_nationalcode, #id_birthdate, #id_telephone,
+        #id_phonenumber, #id_province, #id_city,
+        #id_gender, #id_maritalstatus, #id_military,
+        #id_educationfield, #id_educationdegree,
+        #id_accountnumbershaba, #id_cardnumber, #id_accountnumber,
+        #id_address {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        #id_address {
+            height: auto !important;
+        }
+
+        .action-buttons-container {
+            padding: 1rem;
+            margin: 0.75rem auto 1.25rem;
+        }
+
+        .action-button {
+            min-width: 0;
         }
     }
     
@@ -1180,7 +1268,7 @@ body jdp-container {
 
 {% block main %}
 <div style="max-width: 1400px; margin: 0 auto; padding: 1rem;">
-    <h1 style="margin-bottom: 1.5rem; color: var(--text-color); font-size: 1.875rem; font-weight: 700;">تنظیمات کاربری</h1>
+    <h1 style="margin-bottom: 1.5rem; color: var(--text-color); font-size: clamp(1.25rem, 4.5vw, 1.875rem); font-weight: 700;">تنظیمات کاربری</h1>
         
     <!-- Password Reset Requests Section - Modern Design -->
     {% if password_reset_requests %}
@@ -1373,7 +1461,7 @@ body jdp-container {
                 <!-- Right: Profile info card with avatar & names -->
                 <div class="profile-info-card">
                     <div class="profile-image-container">
-                        <img id="id_picurl" src="" class="user-image placeholder" alt="Profile Picture">
+                        <img id="id_picurl" src="{% static 'pic/avatar.jpg' %}" data-fallback="{% static 'pic/avatar.jpg' %}" class="user-image placeholder" alt="Profile Picture" onerror="this.onerror=null;this.src=this.dataset.fallback;">
                         <div class="photo-upload-overlay">
                             <i class="fa-solid fa-camera"></i>
                             <span>تغییر عکس پروفایل</span>

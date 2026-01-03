@@ -19,6 +19,7 @@
         margin: 0 auto;
         padding: var(--space-lg) var(--space-md);
         position: relative;
+        overflow-x: hidden;
     }
 
     /* Revolutionary Hero Section with Advanced Effects */
@@ -548,6 +549,11 @@
         border-radius: 50%;
         transition: var(--transition-slow);
     }
+
+    img {
+        max-width: 100%;
+        height: auto;
+    }
     
     /* Dynamic Glow Animation */
     .lotus-logo::before {
@@ -654,7 +660,7 @@
     }
 
     .contact-item:hover {
-        transform: translateX(-8px) translateY(-4px);
+        transform: translateY(-4px);
         box-shadow: var(--card-shadow-hover);
         border-color: var(--primary-color);
     }
@@ -738,6 +744,8 @@
         transition: var(--transition-base);
         position: relative;
         display: inline-block;
+        overflow-wrap: anywhere;
+        word-break: break-word;
     }
 
     .contact-details a::after {
@@ -815,6 +823,25 @@
         font-family: inherit;
     }
 
+    .support-form input,
+    .support-form textarea {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        padding: var(--space-md);
+        direction: rtl;
+        text-align: right;
+    }
+
+    .support-form input::placeholder,
+    .support-form textarea::placeholder {
+        font-size: 0.9rem;
+        opacity: 0.75;
+    }
+
     .form-input:focus, .form-textarea:focus {
         outline: none;
         border-color: var(--primary-color);
@@ -860,7 +887,7 @@
         }
         
         .support-hero-title {
-            font-size: 2.5rem;
+            font-size: clamp(1.6rem, 6vw, 2.2rem);
         }
         
         .support-grid {
@@ -881,13 +908,12 @@
             height: 80px;
         }
         
-        .contact-grid {
-            grid-template-columns: 1fr;
-            gap: var(--space-md);
-        }
-        
         .contact-item {
             padding: var(--space-md);
+        }
+
+        .contact-item:hover {
+            transform: none;
         }
         
         .support-form {
@@ -902,6 +928,16 @@
             padding: var(--space-sm) 3rem var(--space-sm) var(--space-sm);
             font-size: 0.9rem;
         }
+
+        .support-form input,
+        .support-form textarea {
+            font-size: 0.9rem;
+        }
+
+        .support-form input::placeholder,
+        .support-form textarea::placeholder {
+            font-size: 0.85rem;
+        }
         
         .form-icon {
             right: 0.75rem;
@@ -915,7 +951,7 @@
         }
         
         .support-hero-title {
-            font-size: 2rem;
+            font-size: clamp(1.4rem, 7vw, 1.9rem);
         }
         
         .support-card-content {
@@ -930,10 +966,49 @@
             width: 60px;
             height: 60px;
         }
+
+        .contact-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--space-sm);
+        }
+
+        .contact-icon-wrapper {
+            margin-left: 0;
+        }
         
         .form-input, .form-textarea {
             font-size: 0.9rem;
             padding: var(--space-sm) 3rem var(--space-sm) var(--space-sm);
+        }
+
+        .support-form {
+            padding: var(--space-md);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-md);
+        }
+
+        .form-label {
+            margin-bottom: var(--space-sm);
+            font-size: 0.95rem;
+        }
+
+        .support-form input,
+        .support-form textarea {
+            font-size: 0.9rem;
+            padding: var(--space-sm) var(--space-md);
+        }
+
+        .form-textarea {
+            padding: var(--space-sm) var(--space-md);
+            min-height: 7rem;
+        }
+
+        .support-form input::placeholder,
+        .support-form textarea::placeholder {
+            font-size: 0.8rem;
         }
         
         .form-icon {
@@ -1006,7 +1081,7 @@
                 <div class="tech-pattern"></div>
                 <div class="lotus-logo">
                     <!-- Use the static logo file -->
-                    <img src="{% static 'pic/logo.png' %}" alt="Lotus Logo" width="120" height="auto">
+                    <img src="{% static 'pic/logo.png' %}" alt="Lotus Logo" width="120">
                 </div>
             </div>
             
