@@ -114,4 +114,4 @@
     body[dir="rtl"] .access-groups-section input:checked + .slider:before {
         transform: translateX(-18px);
     }
-} 
+}

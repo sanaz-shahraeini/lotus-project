@@ -1,416 +1,5 @@
 {% load static baseTags userProfileTags %}
 
-<!-- Modern Sidebar Styles -->
-<style>
-    /* Sidebar Container - Modern Glassmorphism */
-    #sidebar, #mobile-sidebar {
-        background: linear-gradient(180deg, #0D1B2A 0%, #1a2332 100%) !important;
-        backdrop-filter: blur(10px) !important;
-        border-left: 1px solid rgba(0, 188, 212, 0.1) !important;
-        box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3) !important;
-    }
-    
-    html.dark #sidebar,
-    html.dark #mobile-sidebar {
-        background: linear-gradient(180deg, #0a1219 0%, #0D1B2A 100%) !important;
-        border-left: 1px solid rgba(0, 188, 212, 0.15) !important;
-    }
-
-    /* Profile Section - Enhanced with gradient border */
-    .sidebar-profile-section {
-        position: relative !important;
-        padding: 2rem 1rem 1.5rem !important;
-        margin-bottom: 1rem !important;
-        background: linear-gradient(135deg, rgba(0, 188, 212, 0.05), rgba(83, 109, 254, 0.05)) !important;
-        border-bottom: 1px solid rgba(0, 188, 212, 0.15) !important;
-    }
-    
-    .sidebar-profile-section::before {
-        content: '' !important;
-        position: absolute !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        height: 3px !important;
-        background: linear-gradient(90deg, transparent, #00BCD4, #536DFE, transparent) !important;
-    }
-    
-    /* Profile Image - Modern with gradient ring */
-    .profile-image-container {
-        position: relative !important;
-        width: 80px !important;
-        height: 80px !important;
-        margin: 0 auto 1rem !important;
-        border-radius: 50% !important;
-        overflow: visible !important;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
-    
-    .profile-image-container::before {
-        content: '' !important;
-        position: absolute !important;
-        inset: -3px !important;
-        border-radius: 50% !important;
-        background: linear-gradient(135deg, #00BCD4, #536DFE, #00BCD4) !important;
-        background-size: 200% 200% !important;
-        animation: gradientRotate 3s ease infinite !important;
-        z-index: -1 !important;
-    }
-    
-    @keyframes gradientRotate {
-        0%, 100% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-    }
-    
-    .profile-image-container:hover {
-        transform: scale(1.08) !important;
-    }
-    
-    .profile-image {
-        width: 100% !important;
-        height: 100% !important;
-        object-fit: cover !important;
-        border-radius: 50% !important;
-        border: 3px solid #0D1B2A !important;
-        transition: transform 0.4s ease !important;
-        display: block !important;
-    }
-    
-    .profile-image-container:hover .profile-image {
-        transform: scale(1.05) !important;
-    }
-    
-    /* Profile Text */
-    .profile-name {
-        font-size: 0.95rem !important;
-        font-weight: 600 !important;
-        color: #F5F7FA !important;
-        margin-bottom: 0.25rem !important;
-        letter-spacing: 0.3px !important;
-    }
-    
-    .profile-extension {
-        font-size: 0.8rem !important;
-        color: #80DEEA !important;
-        font-weight: 500 !important;
-    }
-
-    /* Navigation Links - Modern Card Style */
-    .sidebar-nav {
-        padding: 0.5rem 0.75rem !important;
-    }
-    
-    #sidebar a, #mobile-sidebar a,
-    #sidebar button, #mobile-sidebar button {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: flex-start !important;
-        width: 100% !important;
-        padding: 0.875rem 1rem !important;
-        margin-bottom: 0.375rem !important;
-        border-radius: 0.75rem !important;
-        cursor: pointer !important;
-        text-decoration: none !important;
-        color: #CFD8DC !important;
-        position: relative !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        overflow: hidden !important;
-        border: 1px solid transparent !important;
-        background: transparent !important;
-    }
-    
-    /* Hover Effect with Gradient */
-    #sidebar a::before, #mobile-sidebar a::before,
-    #sidebar button::before, #mobile-sidebar button::before {
-        content: '' !important;
-        position: absolute !important;
-        left: 0 !important;
-        top: 0 !important;
-        height: 100% !important;
-        width: 3px !important;
-        background: linear-gradient(180deg, #00BCD4, #536DFE) !important;
-        transform: scaleY(0) !important;
-        transition: transform 0.3s ease !important;
-    }
-    
-    #sidebar a:hover, #mobile-sidebar a:hover,
-    #sidebar button:hover, #mobile-sidebar button:hover {
-        background: linear-gradient(90deg, rgba(0, 188, 212, 0.12), rgba(83, 109, 254, 0.08)) !important;
-        border-color: rgba(0, 188, 212, 0.2) !important;
-        color: #FFFFFF !important;
-        transform: translateX(-2px) !important;
-        box-shadow: 0 4px 12px rgba(0, 188, 212, 0.15) !important;
-    }
-    
-    #sidebar a:hover::before, #mobile-sidebar a:hover::before,
-    #sidebar button:hover::before, #mobile-sidebar button:hover::before {
-        transform: scaleY(1) !important;
-    }
-    
-    /* Active State */
-    #sidebar a.active, #mobile-sidebar a.active {
-        background: linear-gradient(90deg, rgba(0, 188, 212, 0.15), rgba(83, 109, 254, 0.1)) !important;
-        border-color: rgba(0, 188, 212, 0.3) !important;
-        color: #FFFFFF !important;
-        box-shadow: 0 2px 8px rgba(0, 188, 212, 0.2) !important;
-    }
-    
-    /* Icon Styling - Modern with background circle */
-    #sidebar i, #mobile-sidebar i {
-        width: 2.25rem !important;
-        height: 2.25rem !important;
-        margin-left: 0.75rem !important;
-        font-size: 1rem !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        background: rgba(0, 188, 212, 0.1) !important;
-        border-radius: 0.5rem !important;
-        transition: all 0.3s ease !important;
-        color: #80DEEA !important;
-    }
-    
-    #sidebar a:hover i, #mobile-sidebar a:hover i,
-    #sidebar button:hover i, #mobile-sidebar button:hover i {
-        background: rgba(0, 188, 212, 0.2) !important;
-        color: #00BCD4 !important;
-        transform: scale(1.1) !important;
-    }
-    
-    /* Sidebar Text */
-    .sidebar-text {
-        white-space: nowrap !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-        font-size: 0.875rem !important;
-        font-weight: 500 !important;
-        letter-spacing: 0.2px !important;
-        flex: 1 !important;
-    }
-    
-    /* Badge - Modern Pill Design */
-    .sidebar-badge {
-        position: absolute !important;
-        top: 50% !important;
-        left: 0.75rem !important;
-        transform: translateY(-50%) !important;
-        background: linear-gradient(135deg, #FF7043, #FF5722) !important;
-        color: white !important;
-        border-radius: 1rem !important;
-        font-size: 0.7rem !important;
-        padding: 0.25rem 0.5rem !important;
-        font-weight: 700 !important;
-        z-index: 10 !important;
-        box-shadow: 0 2px 8px rgba(255, 112, 67, 0.4) !important;
-        min-width: 1.25rem !important;
-        height: 1.25rem !important;
-        line-height: 1 !important;
-        text-align: center !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        transition: all 0.3s ease !important;
-        animation: pulse 2s ease-in-out infinite !important;
-    }
-    
-    @keyframes pulse {
-        0%, 100% { box-shadow: 0 2px 8px rgba(255, 112, 67, 0.4); }
-        50% { box-shadow: 0 2px 12px rgba(255, 112, 67, 0.6); }
-    }
-    
-    .sidebar-badge:hover {
-        transform: translateY(-50%) scale(1.1) !important;
-    }
-    
-    /* Mobile Toggle Button - Modern */
-    #toggle-menu {
-        background: linear-gradient(135deg, rgba(0, 188, 212, 0.2), rgba(83, 109, 254, 0.2)) !important;
-        backdrop-filter: blur(10px) !important;
-        border: 1px solid rgba(0, 188, 212, 0.3) !important;
-        border-radius: 0.75rem !important;
-        padding: 0.625rem !important;
-        transition: all 0.3s ease !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
-    }
-    
-    #toggle-menu:hover {
-        background: linear-gradient(135deg, rgba(0, 188, 212, 0.3), rgba(83, 109, 254, 0.3)) !important;
-        transform: scale(1.05) !important;
-        box-shadow: 0 6px 16px rgba(0, 188, 212, 0.3) !important;
-    }
-    
-    #toggle-menu i {
-        color: #00BCD4 !important;
-        font-size: 1.25rem !important;
-    }
-    
-    /* Exit Button - Special Styling */
-    #sidebar button#exit, #mobile-sidebar button#exit-mb {
-        margin-top: 1rem !important;
-        border-top: 1px solid rgba(0, 188, 212, 0.1) !important;
-        padding-top: 1.25rem !important;
-        background: transparent !important;
-    }
-    
-    #sidebar button#exit:hover, #mobile-sidebar button#exit-mb:hover {
-        background: linear-gradient(90deg, rgba(255, 112, 67, 0.12), rgba(255, 87, 34, 0.08)) !important;
-        border-color: rgba(255, 112, 67, 0.2) !important;
-    }
-    
-    #sidebar button#exit:hover i, #mobile-sidebar button#exit-mb:hover i {
-        background: rgba(255, 112, 67, 0.2) !important;
-        color: #FF7043 !important;
-    }
-    
-    /* Scrollbar Styling */
-    #sidebar::-webkit-scrollbar, #mobile-sidebar::-webkit-scrollbar {
-        width: 6px !important;
-    }
-    
-    #sidebar::-webkit-scrollbar-track, #mobile-sidebar::-webkit-scrollbar-track {
-        background: rgba(0, 0, 0, 0.2) !important;
-    }
-    
-    #sidebar::-webkit-scrollbar-thumb, #mobile-sidebar::-webkit-scrollbar-thumb {
-        background: rgba(0, 188, 212, 0.3) !important;
-        border-radius: 3px !important;
-    }
-    
-    #sidebar::-webkit-scrollbar-thumb:hover, #mobile-sidebar::-webkit-scrollbar-thumb:hover {
-        background: rgba(0, 188, 212, 0.5) !important;
-    }
-    
-    /* Responsive Adjustments */
-    @media (max-width: 640px) {
-        #mobile-sidebar {
-            width: 100% !important;
-        }
-        
-        .profile-image-container {
-            width: 70px !important;
-            height: 70px !important;
-        }
-    }
-</style>
-
-<!-- Modal styles remain unchanged -->
-<style>
-    /* استایل‌های سفارشی برای مودال خروج با استفاده از !important برای بازنویسی استایل‌های موجود */
-    #exitmodal, #exitmodal-mb {
-        background-color: rgba(0, 0, 0, 0.8) !important;
-        backdrop-filter: blur(5px) !important;
-        z-index: 9999 !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
-    
-    #exitmodal.hidden, #exitmodal-mb.hidden {
-        display: none !important;
-    }
-    
-    .modal-content {
-        border-radius: 0.75rem !important;
-        border: 1px solid #e5e7eb !important;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
-        background-color: white !important;
-        max-width: 24rem !important;
-        width: 100% !important;
-        padding: 1.5rem !important;
-        margin: 0 1rem !important;
-    }
-    
-    html.dark .modal-content {
-        background-color: #0D1B2A !important;
-        border-color: #37474F !important;
-    }
-    
-    .modal-title {
-        color: #1F2937 !important;
-        font-weight: 700 !important;
-        font-size: 1.25rem !important;
-    }
-    
-    html.dark .modal-title {
-        color: #F3F4F6 !important;
-    }
-    
-    .modal-icon {
-        color: #00BCD4 !important;
-        font-size: 1.5rem !important;
-        margin-right: 0.75rem !important;
-    }
-    
-    .modal-text {
-        color: #374151 !important;
-        line-height: 1.6 !important;
-        margin-bottom: 1.5rem !important;
-        text-align: right !important;
-        padding-right: 0.5rem !important;
-        font-size: 1rem !important;
-    }
-    
-    html.dark .modal-text {
-        color: #D1D5DB !important;
-    }
-    
-    .modal-divider {
-        height: 1px !important;
-        width: 100% !important;
-        background: linear-gradient(to right, transparent, #d1d5db, transparent) !important;
-        margin: 1.25rem 0 !important;
-    }
-    
-    html.dark .modal-divider {
-        background: linear-gradient(to right, transparent, #4b5563, transparent) !important;
-    }
-    
-    .modal-cancel {
-        background-color: #e5e7eb !important;
-        color: #4b5563 !important;
-        transition: all 0.2s ease !important;
-        padding: 0.5rem 1rem !important;
-        border-radius: 0.375rem !important;
-        font-weight: 500 !important;
-        display: flex !important;
-        align-items: center !important;
-    }
-    
-    .modal-cancel:hover {
-        background-color: #d1d5db !important;
-    }
-    
-    html.dark .modal-cancel {
-        background-color: #374151 !important;
-        color: #e5e7eb !important;
-    }
-    
-    html.dark .modal-cancel:hover {
-        background-color: #4b5563 !important;
-    }
-    
-    .exit-btn {
-        background: linear-gradient(to right, #FF7043, #FF5722) !important;
-        color: white !important;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
-        transition: all 0.2s ease !important;
-        padding: 0.5rem 1rem !important;
-        border-radius: 0.375rem !important;
-        font-weight: 500 !important;
-        display: flex !important;
-        align-items: center !important;
-    }
-    
-    .exit-btn:hover {
-        background: linear-gradient(to right, #FF5722, #FF7043) !important;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
-        transform: translateY(-1px) !important;
-    }
-</style>
-
 <!-- Debug: Show pending_password_reset_count value -->
 
 <!-- Desktop Sidebar -->
@@ -429,7 +18,7 @@
         {% if 'user' in request.session %}
             {% with exts=request.session.user|getUserExtensions %}
                 {% if exts %}
-                    <p class="profile-extension" style="font-size: 0.75rem !important; color: #B2EBF2 !important; margin-top: 0.25rem !important;">
+                    <p class="profile-extension sidebar-extension-list">
                         داخلی‌ها: {{ exts|join:', ' }}
                     </p>
                 {% endif %}
@@ -491,7 +80,7 @@
 {% if 'user' in request.session and not request.session.user|needsPasswordChange %}
 <div id="mobile-sidebar"
      class="fixed overflow-y-auto top-0 right-0 w-[220px] h-screen text-white z-40 transform translate-x-full transition-transform duration-300 ease-in-out">
-    <div class="sidebar-profile-section text-center" style="margin-top: 1.5rem !important;">
+    <div class="sidebar-profile-section text-center">
         <div class="profile-image-container">
             <img src="{% if 'user' in request.session %}{% if request.session.user|getBaseInfo:'picurl'|lower == 'avatar.jpg' %}{% static 'pic/' %}{% else %}{% static 'upload/' %}{% endif %}{{ request.session.user|getBaseInfo:'picurl' }}{% endif %}"
                 alt="Profile" class="profile-image">
@@ -503,7 +92,7 @@
         {% if 'user' in request.session %}
             {% with exts=request.session.user|getUserExtensions %}
                 {% if exts %}
-                    <p class="profile-extension" style="font-size: 0.75rem !important; color: #B2EBF2 !important; margin-top: 0.25rem !important;">
+                    <p class="profile-extension sidebar-extension-list">
                         داخلی‌ها: {{ exts|join:', ' }}
                     </p>
                 {% endif %}
@@ -555,8 +144,8 @@
 {% endif %}
 
 <!-- Logout Confirmation Modal (Desktop) -->
-<div id="exitmodal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden" style="opacity: 0; transition: opacity 0.3s ease;">
-    <div class="bg-white dark:bg-[#0D1B2A] rounded-xl p-6 max-w-md w-full shadow-lg border border-gray-100 dark:border-[#37474F] modal-content" style="transform: scale(0.95); transition: transform 0.3s ease;">
+<div id="exitmodal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+    <div class="bg-white dark:bg-[#0D1B2A] rounded-xl p-6 max-w-md w-full shadow-lg border border-gray-100 dark:border-[#37474F] modal-content">
         <div class="flex items-center mb-5">
             <i class="fa-solid fa-circle-question text-2xl mr-3 text-[#00BCD4] modal-icon"></i>
             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 modal-title mr-2">تأیید خروج</h3>
@@ -583,8 +172,8 @@
 </div>
 
 <!-- Logout Confirmation Modal (Mobile) -->
-<div id="exitmodal-mb" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden" style="opacity: 0; transition: opacity 0.3s ease;">
-    <div class="bg-white dark:bg-[#0D1B2A] rounded-xl p-6 max-w-md w-full mx-4 shadow-lg border border-gray-100 dark:border-[#37474F] modal-content" style="transform: scale(0.95); transition: transform 0.3s ease;">
+<div id="exitmodal-mb" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+    <div class="bg-white dark:bg-[#0D1B2A] rounded-xl p-6 max-w-md w-full mx-4 shadow-lg border border-gray-100 dark:border-[#37474F] modal-content">
         <div class="flex items-center mb-5">
             <i class="fa-solid fa-circle-question text-2xl mr-3 text-[#00BCD4] modal-icon"></i>
             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 modal-title mr-2">تأیید خروج</h3>

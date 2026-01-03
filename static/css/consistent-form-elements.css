@@ -22,11 +22,8 @@ input:not([type="checkbox"]):not([type="radio"]) {
 
 /* Fix dropdown arrows to maintain consistency */
 select {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e") !important;
-    background-position: left 0.5rem center !important;
-    background-repeat: no-repeat !important;
-    background-size: 1.5em 1.5em !important;
-    padding-left: 2.5rem !important;
+    background-image: none !important;
+    padding-left: 0.75rem !important;
 }
 
 /* Fix for RTL alignment in selects */
@@ -80,5 +77,5 @@ input:focus {
 
 /* Fix for select arrows in dark mode */
 .dark select {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23f3f4f6' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e") !important;
+    background-image: none !important;
 } 
