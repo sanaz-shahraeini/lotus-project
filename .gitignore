@@ -7,6 +7,7 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 media
+staticfiles/
 
 # Python
 *.py[cod]
@@ -29,12 +30,6 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-
-# Keep Python build artifacts ignored, but allow static asset dist folders to be committed
-!static/dist/
-!static/dist/**
-!static/css/dist/
-!static/css/dist/**
 
 # Virtual Environment
 venv/

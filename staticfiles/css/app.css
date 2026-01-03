@@ -1,8 +1,0 @@
-/* Canonical CSS bundle: aggregates commonly used site styles */
-
-/* Shared foundation (already linked in base.html) intentionally not re-imported here */
-
-/* Frequently used legacy/dashboard styles - consolidated */
-@import url('dashboard.bundle.css');
-
-
