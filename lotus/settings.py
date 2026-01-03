@@ -10,40 +10,46 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
-from pathlib import Path
 import os
+from pathlib import Path
+import dj_database_url
 from dotenv import load_dotenv
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qsl
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+IS_VERCEL = os.getenv('VERCEL') == '1' or os.getenv('VERCEL')
 
 # Try to load environment variables, but handle errors gracefully
 try:
+    load_dotenv(dotenv_path=BASE_DIR / '.env', encoding='utf-8')
+except UnicodeDecodeError:
     try:
-        load_dotenv(encoding="utf-8")
-    except UnicodeDecodeError:
-        load_dotenv(encoding="utf-16")
+        load_dotenv(dotenv_path=BASE_DIR / '.env', encoding='utf-16')
+    except Exception as e:
+        print(f"Warning: Error loading .env file: {e}")
+        # This allows the application to continue even if the .env file is missing or has issues
+        pass
 except Exception as e:
     print(f"Warning: Error loading .env file: {e}")
     # This allows the application to continue even if the .env file is missing or has issues
     pass
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-qiezo77a$)bo(gs=fvzjobm_!x5u$w$==v982gn#m=8n9g*aqm'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-    "192.168.43.137",
-    "https://lotus-project.onrender.com/"
-]
+ALLOWED_HOSTS = ["*"]
+
+
 
 # Application definition
 
@@ -57,13 +63,19 @@ INSTALLED_APPS = [
     'Alvand',
    # 'tailwind',
    # 'fontawesomefree',
-    'django_celery_beat',  # DOES TASK
+
 
 ]
+if IS_VERCEL:
+    # Don't use celery on vercel
+    pass
+else:
+    INSTALLED_APPS += ['django_celery_beat']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'Alvand.middlewares.LicenseCheckMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    # 'Alvand.middlewares.LicenseCheckMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -74,9 +86,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'lotus.urls'
 CSRF_TRUSTED_ORIGINS = [
-    'http://127.0.0.1:8000',
-    'http://localhost:8000',
-    'http://192.168.43.137:8000',
+    'https://lotus-project-seven.vercel.app',
+    'https://*.vercel.app'
+
 ]
 
 TEMPLATES = [
@@ -109,31 +121,18 @@ WSGI_APPLICATION = 'lotus.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 # Local PostgreSQL Database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'LotusDB',
-        'USER': 'postgres',
-        'PASSWORD': 'mgee5d65',  # Replace this with your actual password
-        'HOST': 'localhost',
-        'PORT': '5432',
+# Database configuration using Neon (PostgreSQL)
+if os.getenv('DATABASE_URL'):
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL'),
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
-}
+else:
+    raise RuntimeError('DATABASE_URL is required (configure your Neon Postgres connection string).')
 
-# Neon Database (commented out for now)
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'lotusdb',
-#         'USER': 'lotusdb_owner',
-#         'PASSWORD': 'npg_6dUorONf5mtR',
-#         'HOST': 'ep-orange-mud-a2by6urk-pooler.eu-central-1.aws.neon.tech',
-#         'PORT': 5432,
-#         'OPTIONS': {
-#             'sslmode': 'require',
-#         },
-#     }
-# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -171,16 +170,26 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
+# WhiteNoise storage configuration
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    },
+}
+
 # Media files (User uploaded files)
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = '/tmp/media' if IS_VERCEL else os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#TAILWIND_APP_NAME = 'Alvand'
+# TAILWIND_APP_NAME = 'Alvand'
 
 # INTERNAL_IPS = [
 #     "127.0.0.1",
@@ -192,26 +201,30 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
 
-# EMAIL SENDING SETTINGS
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+# # EMAIL SENDING SETTINGS
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
 
 # CELERY - GET DATA FROM DEVICE SETTIGNS
-CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
-CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_ACKS_LATE = True
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+# CELERY - GET DATA FROM DEVICE SETTIGNS
+# DISABLE FOR VERCEL
+if IS_VERCEL:
+    pass
+else:
+    CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+    CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
+    CELERY_ACCEPT_CONTENT = ['json']
+    CELERY_TASK_SERIALIZER = 'json'
+    CELERY_ACKS_LATE = True
+    CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
-# # Celery error handling
-CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
-CELERY_BROKER_CONNECTION_MAX_RETRIES = 10
+    # # Celery error handling
+    CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+    CELERY_BROKER_CONNECTION_MAX_RETRIES = 10
 
 # # External DB
 # externalDB_user = "postgres"
 # externalDB_password = "Erfan1345"
 # externalDB_database = "postgres"
-# externalDB_ip = "127.0.0.1"
